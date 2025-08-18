@@ -12,14 +12,14 @@ return new class extends Migration {
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->integer('subject_id');
+            $table->bigInteger('subject_id')->unsigned();
             $table->foreign('subject_id')->references('id')->on('subjects');
             $table->string("level");
             $table->integer("imported_quantity");
             $table->integer("available_quantity");
-            $table->year("year");
+            $table->integer("year");
             $table->enum("semester", ["الأول", "الثاني"]);
-            $table->year("academic_year");
+            $table->string("academic_year");
             $table->decimal("price", 10, 2);
             $table->timestamps();
         });

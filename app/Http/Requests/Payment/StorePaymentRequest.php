@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Book;
+namespace App\Http\Requests\Payment;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreBookRequest extends FormRequest
+class StorePaymentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,11 @@ class StoreBookRequest extends FormRequest
     {
         return [
             'academic_year' => ["required", 'regex:/^\d{4}\/\d{4}$/'],
-            'imported_quantity' => ["required", "integer"],
-            'available_quantity' => ["required", "integer"],
-            'semester' => ["required", "string", Rule::in(["الثاني", 'الأول'])],
-            'price' => ["decimal:2", "required"],
-            'level' => ["string", "required",],
-            'subject_id' => ["required", "integer", "exists:subjects,id"],
-            'year' => ["required", "integer"],
+            'level' => ['required', 'string'],
+            'language' => ["required", "string", Rule::in(["لغات", "عربي"])],
+            'type' => ["required", "string"],
+            'student_id' => ["required", "numeric", "exists:students,id"],
+            'value' => ["required", "decimal:2"]
         ];
     }
 }

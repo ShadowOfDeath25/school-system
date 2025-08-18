@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Http\Requests\Student;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class UpdateStudentRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'name_in_arabic' => ['string'],
+            'name_in_english' => ['string'],
+            'nid' => ['string', 'regex:/^[0-9]{14}$/'],
+            'birth_date' => ['date'],
+            'birth_ address' => ['string'],
+            'language' => ['string', Rule::in(['عربي', 'لغات'])],
+            'gender' => ['string', Rule::in(['female', 'male'])],
+            'religion' => ['string', Rule::in(["مسيحي", 'مسلم'])],
+            'nationality' => ["string"],
+            'class_id' => ["numeric", "exists:classes,id"],
+        ];
+    }
+}

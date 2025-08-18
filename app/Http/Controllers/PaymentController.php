@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\Payment\StorePaymentRequest;
+use App\Models\Payment;
+
+class PaymentController extends CRUDController
+{
+    protected string $model = Payment::class;
+    protected string $updateRequest = StorePaymentRequest::class;
+    protected string $storeRequest = StorePaymentRequest::class;
+
+}

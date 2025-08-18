@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Bus;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateBusRequest extends FormRequest
 {
@@ -26,7 +27,7 @@ class UpdateBusRequest extends FormRequest
             "supervisor_name" => ["string"],
             "driver_name" => ["string"],
             'capacity' => ["integer",],
-            'license_plate' => ["unique:buses,license_plate"],
+            'license_plate' => [Rule::unique('buses', 'license_plate')->ignore($this->route('bus'))],
         ];
     }
 }
