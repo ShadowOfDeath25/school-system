@@ -1,4 +1,4 @@
-export default function Accordion() {
+export default function Accordion({children}) {
     return (
         <>
 
