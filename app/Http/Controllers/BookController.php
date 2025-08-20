@@ -7,7 +7,7 @@ use App\Http\Requests\Book\UpdateBookRequest;
 use App\Models\Book;
 use App\Traits\HasCRUD;
 
-class BookController
+class BookController extends Controller
 {
     use HasCRUD;
 

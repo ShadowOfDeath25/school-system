@@ -7,7 +7,7 @@ use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Models\Student;
 use App\Traits\HasCRUD;
 
-class StudentController
+class StudentController extends Controller
 {
     use HasCRUD;
 

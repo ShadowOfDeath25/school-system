@@ -7,7 +7,7 @@ use App\Http\Requests\Bus\UpdateBusRequest;
 use App\Models\Bus;
 use App\Traits\HasCRUD;
 
-class BusController
+class BusController extends Controller
 {
     use HasCRUD;
 

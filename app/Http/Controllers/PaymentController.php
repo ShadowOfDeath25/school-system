@@ -6,7 +6,7 @@ use App\Http\Requests\Payment\StorePaymentRequest;
 use App\Models\Payment;
 use App\Traits\HasCRUD;
 
-class PaymentController
+class PaymentController extends Controller
 {
     use hasCRUD;
     protected string $model = Payment::class;

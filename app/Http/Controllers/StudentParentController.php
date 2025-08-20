@@ -7,7 +7,7 @@ use App\Http\Requests\StudentParent\UpdateStudentParentRequest;
 use App\Http\Resources\StudentParentResource;
 use App\Traits\HasCRUD;
 
-class StudentParentController
+class StudentParentController extends Controller
 {
     use HasCRUD;
 
