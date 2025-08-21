@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->decimal('value', 10, 2);
+            $table->text("description")->nullable();
             $table->timestamps();
         });
     }

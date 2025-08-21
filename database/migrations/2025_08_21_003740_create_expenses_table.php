@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('description', 255);
             $table->decimal('value', 10, 2);
             $table->date('expense_date');
-            $table->integer('academic_year');
-    
+            $table->string('academic_year');
+
             $table->timestamps();
         });
     }

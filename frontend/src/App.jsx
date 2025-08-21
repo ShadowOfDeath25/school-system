@@ -1,11 +1,15 @@
-import DefaultLayout from "./components/layouts/DefaultLayout.jsx";
-import './index.css'
+import './index.css';
+import './App.css';
+
 function App() {
 
     return (
         <>
-            <DefaultLayout/>
-
+            <center>
+                <h1>
+                    This is some stuff from the app element
+                </h1>
+            </center>
         </>
     )
 }

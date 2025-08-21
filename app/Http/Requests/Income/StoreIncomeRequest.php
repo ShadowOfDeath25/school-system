@@ -25,11 +25,16 @@ class StoreIncomeRequest extends FormRequest
             "type" => [
                 "required",
                 "string",
-                "max:255" ],
+                "max:255"
+            ],
             "value" => [
                 "required",
                 "numeric",
-                "decimal:10,2" ],
+                "decimal:10,2"
+            ],
+            "description" => [
+                "string",
+            ]
         ];
     }
 }

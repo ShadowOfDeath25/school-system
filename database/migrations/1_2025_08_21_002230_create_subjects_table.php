@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('phase');
             $table->string('term');
             $table->string('language');
-            $table->integer('academic_year');
+            $table->string('academic_year');
             $table->enum('added_to_total', ['نعم', 'لا']);
             $table->timestamps();
         });

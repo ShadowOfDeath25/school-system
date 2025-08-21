@@ -2,9 +2,13 @@
 
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BusController;
+use App\Http\Controllers\ClassController;
+use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentParentController;
+use App\Http\Controllers\SubjectController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

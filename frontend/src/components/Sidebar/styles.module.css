@@ -1,14 +1,13 @@
 .sidebar {
     display: flex;
     flex-direction: column;
-    position: fixed;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    min-height: 100vh;
     overflow-y: auto;
-    width: 15%;
+    width: 15vw;
     background-color: var(--primary-color);
     scrollbar-width: none;
+    border-left: 3px solid var(--secondary-color);
+    transition: all .5s ease-in-out;
 }
 
 .searchContainer {
@@ -39,9 +38,19 @@
 
     &:focus {
         outline: #0176fa solid 2px;
-        border-color:transparent;
-
+        border-color: transparent;
 
 
     }
+}
+
+.open {
+    max-width: 15vw;
+    opacity: 1;
+}
+
+.closed {
+    max-width: 0;
+    border: none;
+    opacity: 0;
 }

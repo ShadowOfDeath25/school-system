@@ -5,18 +5,17 @@ import SearchIcon from '@mui/icons-material/Search';
 import sidebarItems from "./sidebarItems.js";
 import SidebarLink from "../SidebarLink/SidebarLink.jsx";
 
-export default function Sidebar() {
+export default function Sidebar({isOpen}) {
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const filteredItems = sidebarItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     };
 
-    const filteredItems = sidebarItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
-
     return (
-        <aside className={styles.sidebar}>
+        <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}` }>
             <div className={styles.searchContainer}>
                 <SearchIcon className={styles.searchIcon}/>
                 <input
