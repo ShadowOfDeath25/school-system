@@ -16,4 +16,9 @@ Route::apiResource('buses', BusController::class);
 Route::apiResource('parents', StudentParentController::class);
 Route::apiResource('students', StudentController::class);
 Route::apiResource('payments', PaymentController::class);
+Route::apiResource('incomes', IncomeController::class);
+Route::apiResource('classes', ClassController::class);
+Route::apiResource('subjects', SubjectController::class);
+Route::apiResource('expenses', ExpensesController::class);
+
 

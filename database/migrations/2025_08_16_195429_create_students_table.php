@@ -21,7 +21,6 @@ return new class extends Migration {
             $table->enum('gender', ['male', 'female']);
             $table->text('birth_address');
             $table->enum('language', ["لغات", 'عربي']);
-            $table->string('gender');
             $table->enum('religion', ['مسلم', "مسيحي"]);
             $table->bigInteger('class_id')->unsigned();
             $table->foreign('class_id')->references('id')->on('classes');
