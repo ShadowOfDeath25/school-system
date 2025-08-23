@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\ClassController;
@@ -9,12 +10,18 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentParentController;
 use App\Http\Controllers\SubjectController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+
 
 Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+    return response()->json(["user" => $request->user()]);
+})->middleware("auth:sanctum");
+
+Route::post("/login", AuthController::class . "@login")->name("login");
+Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
+
 Route::apiResource('books', BookController::class);
 Route::apiResource('buses', BusController::class);
 Route::apiResource('parents', StudentParentController::class);
@@ -24,5 +31,6 @@ Route::apiResource('incomes', IncomeController::class);
 Route::apiResource('classes', ClassController::class);
 Route::apiResource('subjects', SubjectController::class);
 Route::apiResource('expenses', ExpensesController::class);
+Route::apiResource('users', UserController::class);
 
 

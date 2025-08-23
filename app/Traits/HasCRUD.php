@@ -2,38 +2,16 @@
 
 namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
 trait HasCRUD
 {
-    /**
-     * @var class-string<Model>
-     */
-    protected string $model;
-
-    /**
-     * @var class-string<Request>
-     */
-    protected string $storeRequest;
-
-    /**
-     * @var class-string<Request>
-     */
-    protected string $updateRequest;
-
-    /**
-     * @var class-string<JsonResource>
-     */
-    protected string $resource;
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $data = ($this->model)::all();
+        $data = ($this->model)::paginate(10);
 
         if (isset($this->resource)) {
             return $this->resource::collection($data);

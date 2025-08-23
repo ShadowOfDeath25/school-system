@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Bus;
+namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
-class StoreBusRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +23,10 @@ class StoreBusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "route" => ["required"],
-            "supervisor_name" => ["required", "string"],
-            "driver_name" => ["required", "string"],
-            'capacity' => ["integer", 'required'],
-            'license_plate' => ["required", "unique:buses,license_plate"],
-            'number' => ["required", "numeric", "integer"]
+            'email' => ["required", "unique:users,email"],
+            'password' => ["required", "string", Password::min(8)->letters()->symbols(), 'confirmed'],
+            'role' => ["required", "string"],
+            'name' => ["required", "string"]
         ];
     }
 }

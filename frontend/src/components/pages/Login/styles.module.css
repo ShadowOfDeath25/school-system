@@ -1,0 +1,83 @@
+.loginForm {
+    background-color: #fff;
+    width: max(30vw, 576px);
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+    color: black;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    gap: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.40);
+
+
+}
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    font-weight: bold;
+    gap: 10px;
+
+    input {
+        width: 100%;
+        outline: none;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid black;
+        &:focus{
+            outline: 3px solid #294ca4;
+        }
+    }
+}
+
+.passwordInputContainer {
+    position: relative;
+    width: 100%;
+}
+
+.passwordInputContainer input {
+    padding-right: 40px;
+}
+
+.showPasswordButton {
+    position: absolute !important;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #000 !important;
+}
+
+
+.signInBtn {
+    width: 50%;
+    height: 50px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background-color: #0F1B3A;
+    color: var(--primary-text-color);
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+
+    &:hover {
+        background-color: white;
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
+    }
+}
+
+@media (max-width: 768px){
+    .loginForm{
+        width: min(70vw,500px);
+        margin-bottom: 20%;
+    }
+    .inputWrapper{
+        width: 80%;
+    }
+    .signInBtn{
+        width: 80%;
+    }
+}

@@ -6,7 +6,23 @@ const sidebarItems = [
             {
                 title: "Test",
                 to: "#"
-            }
+            },
+            {
+                title: "Test",
+                to: "#"
+            },
+            {
+                title: "Test",
+                to: "#"
+            },
+            {
+                title: "Test",
+                to: "#"
+            },
+            {
+                title: "Test",
+                to: "#"
+            },
         ]
     },
     {

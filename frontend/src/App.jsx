@@ -1,14 +1,17 @@
 import './index.css';
-import './App.css';
+import {useLogout} from "./hooks/useAuth.js";
+
 
 function App() {
-
+    const logoutMutation = useLogout()
+    const handleLogout = (e) => {
+        e.preventDefault();
+        logoutMutation.mutate();
+    }
     return (
         <>
             <center>
-                <h1>
-                    This is some stuff from the app element
-                </h1>
+                <button onClick={handleLogout}>Logout</button>
             </center>
         </>
     )

@@ -11,6 +11,7 @@ class Bus extends Model
         'supervisor_name',
         'driver_name',
         'capacity',
-        'license_plate'
+        'license_plate',
+        'number'
     ];
 }

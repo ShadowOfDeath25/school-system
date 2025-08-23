@@ -1,14 +1,16 @@
 import {Navigate} from "react-router";
-import {Outlet} from 'react-router-dom';
+import {useCurrentUser} from "../../hooks/useAuth.js";
 
 export default function ProtectedRoute({children, allowedRoles}) {
-    const user = true;
+    const {data: user, isLoading} = useCurrentUser()
+    console.log(user);
 
+    if (isLoading) {
+        return <center><h1>Loading...</h1></center>
+    }
     if (!user) {
         return <Navigate to="/login" replace/>
     }
-    return (
-        <Outlet/>
-    );
+    return children;
 }
 

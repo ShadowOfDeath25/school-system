@@ -1,23 +1,37 @@
 import {createBrowserRouter} from "react-router";
-import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 import App from "./App.jsx";
 import GuestRoute from "./components/routes/GuestRoute.jsx";
-import DefaultLayout from "./components/layouts/DefaultLayout/DefaultLayout.jsx";
+import DefaultLayout from "./components/layouts/Default/DefaultLayout.jsx";
+import LoginPage from "./components/pages/Login/LoginPage.jsx";
+import GuestLayout from "./components/layouts/Guest/GuestLayout.jsx";
+import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
     {
-        path:'/',
+        path: '/',
         element: <DefaultLayout/>,
         children: [
             {
-                index:true,
-                element: <App/>
+                index: true,
+                element:
+                    <ProtectedRoute>
+                        <App/>
+                    </ProtectedRoute>
             }
         ]
     },
     {
         path: "/",
-        element: <GuestRoute/>
+        element: <GuestLayout/>,
+        children: [
+            {
+                path: '/login',
+                element:
+                    <GuestRoute>
+                        <LoginPage/>
+                    </GuestRoute>
+            }
+        ]
     }
 ]);
 export default router;
