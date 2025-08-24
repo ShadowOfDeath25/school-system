@@ -1,15 +1,14 @@
-import {Navigate} from "react-router";
 import {useCurrentUser} from "../../hooks/useAuth.js";
+import {Navigate} from 'react-router';
+import LoadingScreen from "../ui/LoadingScreen/LoadingScreen.jsx";
 
 export default function ProtectedRoute({children, allowedRoles}) {
-    const {data: user, isLoading} = useCurrentUser()
-    console.log(user);
-
+    const {data, isLoading} = useCurrentUser();
     if (isLoading) {
-        return <center><h1>Loading...</h1></center>
+        return <LoadingScreen/>
     }
-    if (!user) {
-        return <Navigate to="/login" replace/>
+    if (!data?.user) {
+        return <Navigate to="/login" replace/>;
     }
     return children;
 }

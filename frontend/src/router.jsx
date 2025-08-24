@@ -1,37 +1,47 @@
-import {createBrowserRouter} from "react-router";
-import App from "./App.jsx";
+// frontend/src/router.jsx
+import {createBrowserRouter} from 'react-router-dom';
+import App from './App';
+import LoginPage from './components/pages/Login/LoginPage';
+import ProtectedRoute from './components/routes/ProtectedRoute';
+import GuestLayout from './components/layouts/Guest/GuestLayout';
+import DefaultLayout from './components/layouts/Default/DefaultLayout';
+import RootLayout from './components/layouts/Root/RootLayout';
 import GuestRoute from "./components/routes/GuestRoute.jsx";
-import DefaultLayout from "./components/layouts/Default/DefaultLayout.jsx";
-import LoginPage from "./components/pages/Login/LoginPage.jsx";
-import GuestLayout from "./components/layouts/Guest/GuestLayout.jsx";
-import ProtectedRoute from "./components/routes/ProtectedRoute.jsx";
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <DefaultLayout/>,
+        element: <RootLayout/>,
         children: [
             {
-                index: true,
-                element:
-                    <ProtectedRoute>
-                        <App/>
-                    </ProtectedRoute>
-            }
-        ]
-    },
-    {
-        path: "/",
-        element: <GuestLayout/>,
-        children: [
+                path: '',
+                element: <DefaultLayout/>,
+                children: [
+                    {
+                        path: '',
+                        element: (
+                            <ProtectedRoute>
+                                <App/>
+                            </ProtectedRoute>
+                        )
+                    }
+                ]
+            },
             {
-                path: '/login',
-                element:
-                    <GuestRoute>
-                        <LoginPage/>
-                    </GuestRoute>
+                path: '',
+                element: <GuestLayout/>,
+                children: [
+                    {
+                        path: 'login',
+                        element:
+                            <GuestRoute>
+                                <LoginPage/>
+                            </GuestRoute>
+                    }
+                ]
             }
         ]
     }
 ]);
+
 export default router;

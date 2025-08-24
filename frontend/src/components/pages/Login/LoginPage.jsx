@@ -14,8 +14,6 @@ export default function LoginPage() {
     const handleLogin = async (e) => {
         e.preventDefault();
         loginMutation.mutate({email, password});
-        console.log(await loginMutation.data);
-
     }
 
     return (

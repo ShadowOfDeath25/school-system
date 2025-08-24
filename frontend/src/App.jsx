@@ -3,6 +3,7 @@ import {useLogout} from "./hooks/useAuth.js";
 
 
 function App() {
+    console.log("This is text from the app component");
     const logoutMutation = useLogout()
     const handleLogout = (e) => {
         e.preventDefault();

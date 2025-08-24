@@ -17,9 +17,6 @@ class AuthController extends Controller
             return response()->json([
                 'message' => 'Logged in successfully',
                 'user' => Auth::user(),
-                'auth_check' => Auth::check(),
-                'session_all' => session()->all(),
-                'session_id' => session()->getId()
             ]);
         }
 

@@ -7,13 +7,14 @@ export const useLogin = () => {
     return useMutation({
         mutationFn: async (credentials) => {
             await axiosClient.get("/csrf-cookie");
-            const response = await axiosClient.post("/login",credentials);
-            return response.data;
+            const response = await axiosClient.post("/login", credentials);
+            return response.data.user;
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["currentUser"]);
+        onSuccess: (userData) => {
+            console.log(userData);
+            queryClient.setQueryData(["currentUser"], userData);
         },
-        onError: (error)=>{
+        onError: (error) => {
             console.error("Login Failed:", error);
         }
     });
@@ -25,7 +26,7 @@ export const useLogout = () => {
         mutationFn: async () => {
             await axiosClient.post("/logout").then();
         },
-        onSuccess:()=> {
+        onSuccess: () => {
             queryClient.invalidateQueries(["currentUser"]);
             queryClient.removeQueries(["currentUser"]);
         }
@@ -37,7 +38,6 @@ export const useCurrentUser = () => {
         queryKey: ["currentUser"],
         queryFn: async () => {
             const response = await axiosClient.get("/user");
-
             return response.data;
         },
 

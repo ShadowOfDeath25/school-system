@@ -4,18 +4,26 @@ import {useState} from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import sidebarItems from "./sidebarItems.js";
 import SidebarLink from "../SidebarLink/SidebarLink.jsx";
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
 
-export default function Sidebar({isOpen}) {
+export default function Sidebar({isOpen, setIsOpen}) {
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const filteredItems = sidebarItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
-    };
+    }
 
     return (
-        <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}` }>
+        <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
+            <IconButton
+                onClick={() => setIsOpen(false)}
+                className={styles.closeButton}
+            >
+                <CloseIcon sx={{color: "var(--primary-text-color)"}}/>
+            </IconButton>
             <div className={styles.searchContainer}>
                 <SearchIcon className={styles.searchIcon}/>
                 <input
@@ -33,7 +41,8 @@ export default function Sidebar({isOpen}) {
                     expanded={expanded === item.panel}
                     onChange={handleChange(item.panel)}
                 >
-                    {item.links.map((link, index) => <SidebarLink key={index} to={link.to}>{link.title}</SidebarLink>)}
+                    {item.links.map((link, index) => <SidebarLink key={index} setSideBarIsOpen={setIsOpen}
+                                                                  to={link.to}>{link.title}</SidebarLink>)}
                 </CustomAccordion>
             ))}
         </aside>);
