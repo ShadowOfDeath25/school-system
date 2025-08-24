@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {useState} from "react";
 
 export default function Navbar({handleMenuClick}) {
-    const [menuOpen, setMenuOpen] = useState(false);
+
 
     return (
         <nav className={styles.navbar}>
