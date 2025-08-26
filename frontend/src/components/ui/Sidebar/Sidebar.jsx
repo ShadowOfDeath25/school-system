@@ -1,9 +1,9 @@
-import CustomAccordion from "../Accordion/CustomAccordion.jsx";
+import CustomAccordion from "@ui/Accordion/CustomAccordion.jsx";
 import styles from './styles.module.css';
 import {useState} from "react";
 import SearchIcon from '@mui/icons-material/Search';
 import sidebarItems from "./sidebarItems.js";
-import SidebarLink from "../SidebarLink/SidebarLink.jsx";
+import SidebarLink from "@ui/SidebarLink/SidebarLink.jsx";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 
@@ -15,11 +15,15 @@ export default function Sidebar({isOpen, setIsOpen}) {
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     }
+    const handleCloseIconClick = (e) => {
+        setIsOpen(false);
+        localStorage.setItem("sideBarIsOpen", JSON.stringify(false));
+    }
 
     return (
         <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
             <IconButton
-                onClick={() => setIsOpen(false)}
+                onClick={handleCloseIconClick}
                 className={styles.closeButton}
             >
                 <CloseIcon sx={{color: "var(--primary-text-color)"}}/>
@@ -34,16 +38,15 @@ export default function Sidebar({isOpen, setIsOpen}) {
                     className={styles.searchInput}
                 />
             </div>
-            {filteredItems.map(item => (
-                <CustomAccordion
-                    key={item.panel}
-                    header={item.header}
-                    expanded={expanded === item.panel}
-                    onChange={handleChange(item.panel)}
-                >
-                    {item.links.map((link, index) => <SidebarLink key={index} setSideBarIsOpen={setIsOpen}
-                                                                  to={link.to}>{link.title}</SidebarLink>)}
-                </CustomAccordion>
-            ))}
-        </aside>);
+            {filteredItems.map(item => (<CustomAccordion
+                key={item.panel}
+                header={item.header}
+                expanded={expanded === item.panel}
+                onChange={handleChange(item.panel)}
+            >
+                {item.links.map((link, index) => <SidebarLink key={index} setSideBarIsOpen={setIsOpen}
+                                                              to={link.to}>{link.title}</SidebarLink>)}
+            </CustomAccordion>))}
+        </aside>
+    );
 }

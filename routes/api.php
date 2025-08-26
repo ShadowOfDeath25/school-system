@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 
 Route::get('/user', function (Request $request) {
     return response()->json(["user" => $request->user()]);
-})->middleware("auth:sanctum");
+});
 
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");

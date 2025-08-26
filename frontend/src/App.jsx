@@ -1,9 +1,8 @@
 import './index.css';
 import {useLogout} from "./hooks/useAuth.js";
-
+import Errors from '@ui/Errors/Errors.jsx'
 
 function App() {
-    console.log("This is text from the app component");
     const logoutMutation = useLogout()
     const handleLogout = (e) => {
         e.preventDefault();
@@ -11,6 +10,7 @@ function App() {
     }
     return (
         <>
+
             <center>
                 <button onClick={handleLogout}>Logout</button>
             </center>

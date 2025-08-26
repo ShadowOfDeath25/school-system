@@ -7,6 +7,7 @@ import GuestLayout from './components/layouts/Guest/GuestLayout';
 import DefaultLayout from './components/layouts/Default/DefaultLayout';
 import RootLayout from './components/layouts/Root/RootLayout';
 import GuestRoute from "./components/routes/GuestRoute.jsx";
+import Test from "@ui/Test.jsx";
 
 const router = createBrowserRouter([
     {
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
                                 <App/>
                             </ProtectedRoute>
                         )
+                    },
+                    {
+                        path:'/test',
+                        element: <Test/>
                     }
                 ]
             },

@@ -1,7 +1,7 @@
 .loginForm {
     background-color: #fff;
-    width: max(30vw, 576px);
-    height: 50vh;
+    width: max(30dvw, 576px);
+    height: 50dvh;
     display: flex;
     flex-direction: column;
     color: black;
@@ -10,8 +10,12 @@
     border-radius: 20px;
     gap: 40px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.40);
+    transition: all .3s ease-in-out;
 
 
+}
+.pushDown{
+    transform: translateY(0);
 }
 
 .inputWrapper {
@@ -27,7 +31,8 @@
         padding: 10px;
         border-radius: 10px;
         border: 1px solid black;
-        &:focus{
+
+        &:focus {
             outline: 3px solid #294ca4;
         }
     }
@@ -69,15 +74,17 @@
     }
 }
 
-@media (max-width: 768px){
-    .loginForm{
-        width: min(70vw,500px);
+@media (max-width: 768px) {
+    .loginForm {
+        width: min(70vw, 500px);
         margin-bottom: 20%;
     }
-    .inputWrapper{
+
+    .inputWrapper {
         width: 80%;
     }
-    .signInBtn{
+
+    .signInBtn {
         width: 80%;
     }
 }

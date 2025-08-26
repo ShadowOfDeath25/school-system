@@ -1,5 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import axiosClient from "../axiosClient.js";
+import {useNavigate} from 'react-router';
 
 export const useLogin = () => {
     const queryClient = useQueryClient();
@@ -8,26 +9,23 @@ export const useLogin = () => {
         mutationFn: async (credentials) => {
             await axiosClient.get("/csrf-cookie");
             const response = await axiosClient.post("/login", credentials);
-            return response.data.user;
-        },
-        onSuccess: (userData) => {
-            console.log(userData);
+            return response.data;
+        }, onSuccess: (userData) => {
             queryClient.setQueryData(["currentUser"], userData);
-        },
-        onError: (error) => {
+        }, onError: (error) => {
             console.error("Login Failed:", error);
         }
     });
 };
 export const useLogout = () => {
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
     return useMutation({
-        mutationKey: ["logout"],
-        mutationFn: async () => {
+        mutationKey: ["logout"], mutationFn: async () => {
             await axiosClient.post("/logout").then();
-        },
-        onSuccess: () => {
-            queryClient.invalidateQueries(["currentUser"]);
+        }, onSuccess: () => {
+            queryClient.setQueryData(["currentUser"], {user: null});
+            queryClient.invalidateQueries(["currentUser"]).then();
             queryClient.removeQueries(["currentUser"]);
         }
 
@@ -35,10 +33,10 @@ export const useLogout = () => {
 }
 export const useCurrentUser = () => {
     return useQuery({
-        queryKey: ["currentUser"],
-        queryFn: async () => {
+        queryKey: ["currentUser"], queryFn: async () => {
             const response = await axiosClient.get("/user");
             return response.data;
+
         },
 
         retry: false

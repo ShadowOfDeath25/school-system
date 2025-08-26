@@ -1,26 +1,32 @@
 import styles from './styles.module.css'
 import {useState} from "react";
-import {IconButton} from "@mui/material";
+import {CircularProgress, IconButton} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {useLogin} from "../../../hooks/useAuth.js";
+import {useLogin} from "@hooks/useAuth.js";
+import Errors from "@ui/Errors/Errors.jsx"
+
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const loginMutation = useLogin();
+    const {mutate: login, error, isLoading} = useLogin();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleLogin = async (e) => {
         e.preventDefault();
-        loginMutation.mutate({email, password});
+        login({email, password})
+
     }
 
     return (
         <>
 
+            <Errors
+                error={error?.response?.data}
+            />
 
-            <form action="" className={`${styles.loginForm}`}>
+            <form action="" className={`${styles.loginForm} ${error ? styles.pushDown : ""}`}>
                 <div className={`${styles.inputWrapper}`}>
                     <label htmlFor="email">البريد الإلكتروني</label>
                     <input
@@ -51,7 +57,8 @@ export default function LoginPage() {
                         </IconButton>
                     </div>
                 </div>
-                <button className={`${styles.signInBtn}`} onClick={handleLogin} type="submit">تسجيل الدخول</button>
+                <button className={`${styles.signInBtn}`} onClick={handleLogin} type="submit">{isLoading ?
+                    <CircularProgress/> : "تسجيل الدخول"}</button>
             </form>
 
         </>

@@ -8,11 +8,23 @@ const axiosClient = axios.create({
         Accept: "application/json"
     }
 })
+
 axiosClient.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error?.response?.status === 401) return Promise.reject(error);
-        console.error(error)
-        return Promise.reject(error)
-    })
+        if (error.response) {
+            // Handle validation errors (422)
+            if (error.response.status === 422) {
+                return Promise.reject({
+                    response: {
+                        status: error.response.status,
+                        data: error.response.data
+                    }
+                });
+            }
+        }
+        return Promise.reject(error);
+    }
+)
+
 export default axiosClient

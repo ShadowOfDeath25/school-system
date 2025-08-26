@@ -1,8 +1,12 @@
 body {
-    min-height: 100vh;
-    min-width: 100vw;
+    min-height: 100dvh;
+    min-width: 100dvw;
     display: flex;
 
+}
+#root{
+    min-height: 100dvh;
+    min-width: 100dvw;
 }
 * {
     margin: 0;
@@ -14,6 +18,9 @@ body {
     --primary-color: #1b223c;
     --primary-text-color: #fefffe;
     --secondary-color: #bfa15c;
+    /*--color-danger: #E63946*/
+    --color-danger: #be434a;
+    /*--color-danger: rgb(190, 67, 74)*/
 }
 
 

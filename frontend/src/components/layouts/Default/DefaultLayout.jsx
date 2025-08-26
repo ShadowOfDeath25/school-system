@@ -1,5 +1,5 @@
-import Sidebar from "../../ui/Sidebar/Sidebar.jsx";
-import Navbar from "../../ui/Navbar/Navbar.jsx";
+import Sidebar from "@ui/Sidebar/Sidebar.jsx";
+import Navbar from "@ui/Navbar/Navbar.jsx";
 import styles from "./styles.module.css"
 import {useState} from "react";
 import {Outlet} from 'react-router-dom';
