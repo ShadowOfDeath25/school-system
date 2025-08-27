@@ -1,21 +1,22 @@
-import {useCurrentUser} from "@hooks/useAuth.js";
-import {Navigate} from 'react-router';
+import {Navigate} from 'react-router-dom';
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
+import {useSelector} from "react-redux";
 
 export default function ProtectedRoute({children, allowedRoles}) {
-    const {data, isLoading} = useCurrentUser();
+    const authState = useSelector((state) => state.auth);
 
-    if (isLoading) {
-        return <LoadingScreen/>
+    if (authState?.isLoading) {
+        return <LoadingScreen />;
     }
-    console.log("Protected route debug:", {
-        isLoading,
-        data
-    })
 
-    if (!data?.user) {
-        return <Navigate to="/login"/>
+    if (!authState?.user) {
+        return <Navigate to="/login" replace />;
     }
+
+    // Optional: Role-based access control can be added here later
+    // if (allowedRoles && !allowedRoles.includes(authState.user.role)) {
+    //     return <Navigate to="/unauthorized" replace />;
+    // }
 
     return children;
 }

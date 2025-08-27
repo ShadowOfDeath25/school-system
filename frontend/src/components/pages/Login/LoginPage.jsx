@@ -10,12 +10,13 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [remember, setRemember] = useState(false);
     const {mutate: login, error, isLoading} = useLogin();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleLogin = async (e) => {
         e.preventDefault();
-        login({email, password})
+        login({email, password, remember})
 
     }
 
@@ -56,6 +57,11 @@ export default function LoginPage() {
                             {showPassword ? <VisibilityOff/> : <Visibility/>}
                         </IconButton>
                     </div>
+                </div>
+                <div className={styles.rememberMe}>
+                    <label htmlFor="remember">تذكرني</label>
+                    <input type="checkbox" name="remember" value={remember}
+                           onChange={() => setRemember(!remember)} id="remember"/>
                 </div>
                 <button className={`${styles.signInBtn}`} onClick={handleLogin} type="submit">{isLoading ?
                     <CircularProgress/> : "تسجيل الدخول"}</button>

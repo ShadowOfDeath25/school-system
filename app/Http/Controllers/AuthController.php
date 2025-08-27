@@ -10,9 +10,9 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        $credentials = $request->validated();
-
-        if (Auth::attempt($credentials)) {
+        $credentials = $request->only('email', 'password');
+        $remember = $request->filled("remember");
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             return response()->json([
                 'message' => 'Logged in successfully',

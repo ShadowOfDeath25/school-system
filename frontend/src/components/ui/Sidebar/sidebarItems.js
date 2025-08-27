@@ -5,32 +5,20 @@ const sidebarItems = [
         links: [
             {
                 title: "Test",
-                to: "#"
+                to: "/test"
             },
             {
-                title: "Test",
-                to: "#"
-            },
-            {
-                title: "Test",
-                to: "#"
-            },
-            {
-                title: "Test",
-                to: "#"
-            },
-            {
-                title: "Test",
-                to: "#"
-            },
+                title: "App",
+                to: "/"
+            }
         ]
     },
     {
         panel: 'panel2',
-        header: 'test 2',
+        header: 'المستخدمين',
         links: [
             {
-                title: "Test",
+                title: "اضافة مستخدم",
                 to: "#"
             }
         ]

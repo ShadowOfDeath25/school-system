@@ -1,21 +1,15 @@
-import {Navigate} from "react-router";
-import {useCurrentUser} from "@hooks/useAuth.js";
+import {Navigate} from "react-router-dom";
 import LoadingScreen from "../ui/LoadingScreen/LoadingScreen.jsx";
+import {useSelector} from 'react-redux';
 
 export default function GuestRoute({children}) {
-    const {data, isLoading} = useCurrentUser();
-    console.log('GuestRoute Debug:', {
-        data: data,
-        isLoading: isLoading,
-        user: data?.user
-    });
-    if (isLoading) {
+    const authState = useSelector(state => state.auth);
+    if (authState?.isLoading) {
         return <LoadingScreen color={"#fff"}/>
     }
-    if (data?.user) {
+    if (authState?.user) {
         return <Navigate to="/" replace/>;
     }
     return children;
 
 }
-
