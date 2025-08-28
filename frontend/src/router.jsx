@@ -15,11 +15,11 @@ const router = createBrowserRouter([
         element: <RootLayout/>,
         children: [
             {
-                // Authenticated routes are rendered within the DefaultLayout
+
                 element: <DefaultLayout/>,
                 children: [
                     {
-                        index: true, // Matches the parent route path ('/')
+                        index: true,
                         element: (
                             <ProtectedRoute>
                                 <App/>
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
                 ]
             },
             {
-                // Guest-only routes are rendered within the GuestLayout
+
                 element: <GuestLayout/>,
                 children: [
                     {

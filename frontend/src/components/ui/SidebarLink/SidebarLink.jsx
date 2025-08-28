@@ -3,8 +3,10 @@ import styles from "./styles.module.css"
 
 export default function SidebarLink({to, children, setSideBarIsOpen}) {
     const handleClick = () => {
-        setSideBarIsOpen(false);
-        localStorage.setItem("sideBarIsOpen", JSON.stringify(false));
+        if (window.innerWidth <= 768) {
+            setSideBarIsOpen(false);
+            localStorage.setItem("sideBarIsOpen", JSON.stringify(false));
+        }
     };
 
     return (
