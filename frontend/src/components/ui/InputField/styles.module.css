@@ -1,0 +1,83 @@
+.inputWrapper {
+    width: 100%;
+    font-size: 16px;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+}
+
+.inputWrapper input {
+    padding: 10px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 10px;
+    font-size: 16px;
+    margin-bottom: 5px;
+
+    &:focus {
+        outline: 3px solid var(--color-focus);
+        border-color: var(--color-focus);
+    }
+
+    width: 100%;
+
+
+}
+
+.error {
+    outline: 2px solid var(--color-danger) !important;
+    border-color: var(--color-danger) !important;
+}
+
+.error + span, .error + button + span {
+    font-size: 12px !important;
+}
+
+.inputWrapper label {
+    color: white;
+    margin-bottom: 10px;
+
+}
+
+.inputWrapper span {
+    color: var(--color-danger);
+    position: absolute;
+    bottom: -20px;
+}
+
+.inputWrapper div {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    position: relative;
+}
+
+.password {
+    padding-right: 40px !important;
+}
+
+.showPasswordButton {
+    position: absolute !important;
+    right: 10px;
+    top: 3px;
+    color: #000 !important;
+}
+
+@media (max-width: 768px) {
+    .inputWrapper {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .inputWrapper div {
+        width: 100%;
+    }
+
+    .inputWrapper input {
+        width: 100%;
+    }
+}

@@ -1,14 +1,13 @@
-// frontend/src/router.jsx
 import {createBrowserRouter} from 'react-router-dom';
 import App from './App';
-import LoginPage from './components/pages/Login/LoginPage';
-import ProtectedRoute from './components/routes/ProtectedRoute';
-import GuestLayout from './components/layouts/Guest/GuestLayout';
-import DefaultLayout from './components/layouts/Default/DefaultLayout';
-import RootLayout from './components/layouts/Root/RootLayout';
-import GuestRoute from "./components/routes/GuestRoute.jsx";
+import LoginPage from '@pages/Login/LoginPage';
+import ProtectedRoute from '@routes/ProtectedRoute';
+import GuestLayout from '@layouts/Guest/GuestLayout';
+import DefaultLayout from '@layouts/Default/DefaultLayout';
+import RootLayout from '@layouts/Root/RootLayout';
+import GuestRoute from "@routes/GuestRoute.jsx";
 import Test from "@ui/Test.jsx";
-
+import AddUsers from "@pages/Users/AddUsers.jsx";
 const router = createBrowserRouter([
     {
         path: '/',
@@ -16,33 +15,38 @@ const router = createBrowserRouter([
         children: [
             {
 
-                element: <DefaultLayout/>,
+                element: <ProtectedRoute/>,
                 children: [
                     {
-                        index: true,
-                        element: (
-                            <ProtectedRoute>
-                                <App/>
-                            </ProtectedRoute>
-                        )
-                    },
-                    {
-                        path: 'test',
-                        element: (
-                            <ProtectedRoute>
-                                <Test/>
-                            </ProtectedRoute>
-                        )
+                        element: <DefaultLayout/>,
+                        children: [
+                            {index: true, element: <App/>},
+                            {path: 'test', element: <Test/>}
+                        ]
                     }
                 ]
             },
             {
-
-                element: <GuestLayout/>,
+                // Sibling group for ADMIN-ONLY routes
+                element: <ProtectedRoute allowedRoles={['admin']}/>,
+                children: [
+                    {
+                        element: <DefaultLayout/>,
+                        children: [
+                            {path: '/users/add', element: <AddUsers/>}
+                        ]
+                    }
+                ]
+            },
+            {
+                element: <GuestRoute/>,
                 children: [
                     {
                         path: 'login',
-                        element: <GuestRoute><LoginPage/></GuestRoute>
+                        element: <GuestLayout/>,
+                        children: [
+                            {index: true, element: <LoginPage/>}
+                        ]
                     }
                 ]
             }

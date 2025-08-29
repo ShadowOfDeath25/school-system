@@ -1,0 +1,80 @@
+.inputWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 5px;
+    align-items: center;
+    width: 100%;
+}
+
+.inputWrapper > div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+
+}
+
+.inputWrapper label {
+    color: var(--primary-text-color);
+}
+
+.inputWrapper select {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: white;
+    position: relative;
+
+    &:focus {
+        outline: 3px solid var(--color-focus)
+    }
+
+}
+
+.inputWrapper select[dir="auto"]:dir(rtl) {
+    background-position: left 10px top 50%;
+    background-size: .65em auto;
+    padding-right: 10px;
+    padding-left: 30px;
+}
+
+.inputWrapper select[dir="auto"]:dir(ltr) {
+    background-position: right 10px top 50%;
+    background-size: .65em auto;
+    padding-left: 10px;
+    padding-right: 30px;
+}
+
+.inputWrapper span {
+    color: var(--color-danger);
+    font-size: 12px;
+    margin-top: 5px;
+    position: absolute;
+    bottom: -20px;
+}
+
+.inputWrapper select.error {
+    border-color: var(--color-danger);
+}
+
+@media (max-width: 768px) {
+    .inputWrapper {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom:20px;
+    }
+    /*.inputWrapper:not(:first-of-type){*/
+    /*    margin-top: 10px;*/
+    /*}*/
+
+    .inputWrapper > div {
+        width: 100%;
+
+    }
+
+
+}

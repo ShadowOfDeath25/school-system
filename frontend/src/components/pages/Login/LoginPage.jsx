@@ -2,7 +2,7 @@ import styles from './styles.module.css'
 import {useState} from "react";
 import {CircularProgress, IconButton} from "@mui/material";
 import {Visibility, VisibilityOff} from "@mui/icons-material";
-import {useLogin} from "@hooks/useAuth.js";
+import {useLogin} from "@hooks/api/auth.js";
 import Errors from "@ui/Errors/Errors.jsx"
 
 

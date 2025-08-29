@@ -1,16 +1,19 @@
-import {Navigate} from 'react-router-dom';
-import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
-import {useCurrentUser} from "@hooks/useAuth.js";
+import {Navigate, Outlet} from 'react-router-dom';
+import {useCurrentUser} from "@hooks/api/auth.js";
 
-export default function ProtectedRoute({children, allowedRoles}) {
-    const {data, isLoading} = useCurrentUser()
+export default function ProtectedRoute({ allowedRoles }) {
+    const {data} = useCurrentUser();
+    const user = data?.user;
 
-    if (isLoading) {
-        return <LoadingScreen/>;
-    }
-    if (!data?.user) {
+    if (!user) {
         return <Navigate to="/login" replace/>;
     }
 
-    return children;
+    // If allowedRoles are provided, check if the user's role is included.
+    if (allowedRoles && !allowedRoles.includes(user.role)) {
+        // Redirect to an "unauthorized" page or the main dashboard.
+        return <Navigate to="/" replace />;
+    }
+
+    return <Outlet />;
 }

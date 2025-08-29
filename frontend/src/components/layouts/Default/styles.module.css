@@ -1,8 +1,8 @@
 .container {
     display: flex;
     flex-direction: row;
-    min-width: 100vw;
-    min-height: 100vh;
+    height: 100%;
+    width: 100%;
 
 }
 
@@ -12,6 +12,7 @@
     width: 100%;
     transition: all .5s ease-in-out;
     opacity: 1;
+
 }
 
 @media (max-width: 768px) {
@@ -20,7 +21,8 @@
         overflow: hidden;
         opacity: 0;
     }
-    .expanded{
+
+    .expanded {
         max-width: 100%;
         opacity: 1;
     }

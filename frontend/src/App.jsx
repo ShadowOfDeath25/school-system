@@ -1,6 +1,5 @@
 import './index.css';
-import {useLogout} from "./hooks/useAuth.js";
-import Errors from '@ui/Errors/Errors.jsx'
+import {useLogout} from "@hooks/api/auth.js";
 
 function App() {
     const logoutMutation = useLogout()

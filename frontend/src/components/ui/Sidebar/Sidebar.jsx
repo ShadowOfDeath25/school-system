@@ -6,11 +6,17 @@ import sidebarItems from "./sidebarItems.js";
 import SidebarLink from "@ui/SidebarLink/SidebarLink.jsx";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
+import {useCurrentUser} from "@hooks/api/auth.js";
 
 export default function Sidebar({isOpen, setIsOpen}) {
+    const {data: user} = useCurrentUser();
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const filteredItems = sidebarItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
+    const allowedItems = sidebarItems.filter((item) => {
+        return !(item.allowedRoles && !item.allowedRoles.includes(user?.user?.role));
+
+    })
+    const filteredItems = allowedItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);

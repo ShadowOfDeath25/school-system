@@ -1,17 +1,18 @@
-body {
-    min-height: 100dvh;
-    min-width: 100dvw;
-    display: flex;
+html, body, #root {
+    height: 100%;
+    width: 100%;
+}
+
+#root {
+    min-height: 100vh;
 
 }
-#root{
-    min-height: 100dvh;
-    min-width: 100dvw;
-}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'readex-pro', Roboto, sans-serif
 }
 
 :root {
@@ -21,6 +22,28 @@ body {
     /*--color-danger: #E63946*/
     --color-danger: #be434a;
     /*--color-danger: rgb(190, 67, 74)*/
+    --color-focus: #0176fa;
 }
 
+
+h1 {
+    font-size: clamp(2rem, 5vw + 1rem, 3.5rem);
+}
+
+h2 {
+    font-size: clamp(1.5rem, 3vw + 0.5rem, 2.5rem);
+}
+
+h3 {
+    font-size: clamp(1.25rem, 2vw + 0.5rem, 2rem);
+}
+
+label {
+    font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+}
+input,
+select,
+textarea {
+    font-size: clamp(0.9375rem, 0.6vw + 0.75rem, 1.0625rem);
+}
 

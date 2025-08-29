@@ -1,6 +1,7 @@
 .sidebar {
     display: flex;
     flex-direction: column;
+
     min-height: 100vh;
     overflow-y: auto;
     width: 15vw;
@@ -37,7 +38,7 @@
     }
 
     &:focus {
-        outline: #0176fa solid 2px;
+        outline: var(--color-focus) solid 2px;
         border-color: transparent;
 
 
