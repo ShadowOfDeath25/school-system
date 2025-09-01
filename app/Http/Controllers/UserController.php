@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AuthorizationException;
+use App\Http\Requests\User\RoleRequest;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
@@ -17,21 +19,38 @@ class UserController extends Controller
     protected string $updateRequest = UpdateUserRequest::class;
     protected string $resource = UserResource::class;
 
-    public function assignRole(User $user, array $roles)
+    /**
+     * @throws AuthorizationException
+     */
+    public function assignRole(RoleRequest $request, User $user)
     {
+        $this->authorizeAction("assign");
+        $roles = $request->validated();
         $user->assignRole($roles);
         return response()->json(["message" => "Role was assigned successfully", "user" => UserResource::make($user)]);
     }
 
-    public function syncRole(User $user, string|array $roles)
+    /**
+     * @throws AuthorizationException
+     */
+    public function syncRole(RoleRequest $request, User $user)
     {
+        $this->authorizeAction("sync");
+        $roles = $request->validated();
         $user->syncRoles($roles);
         return response()->json(["message" => "Role was synced successfully", "user" => UserResource::make($user)]);
     }
 
-    public function removeRole(User $user, string|array $role)
+    /**
+     * @throws AuthorizationException
+     */
+    public function removeRole(RoleRequest $request, User $user)
     {
-        $user->removeRole($role);
+        $this->authorizeAction("remove");
+        $roles= $request->validated();
+        foreach($roles as $role){
+            $user->removeRole($role);
+        }
         return response()->json(["message" => "Role was removed successfully", "user" => UserResource::make($user)]);
     }
 }

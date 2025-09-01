@@ -33,11 +33,13 @@ trait HasCRUD
     public function store(Request $request)
     {
         $this->authorizeAction("create");
-
         $validated = app($this->storeRequest)->validated();
 
 
         $record = new ($this->model)($validated);
+        if (class_basename($this->model)==='User'){
+            $record->assignRole("مستخدم");
+        }
         $record->save();
         return isset($this->resource)
             ? new $this->resource($record)

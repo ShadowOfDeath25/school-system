@@ -38,12 +38,13 @@ class RoleController extends Controller
         $data = $request->validated();
         $role->update($data);
         if ($request->has("permissions")) {
-            foreach ($data["permissions"] as $permission) {
-                $role->givePermissionTo(Permission::findOrCreate($permission));
-            }
+            $role->syncPermissions();
         }
         $role->save();
 
         return response()->json($role);
+    }
+    public function addPermission(Role $role, array|string $permission){
+
     }
 }
