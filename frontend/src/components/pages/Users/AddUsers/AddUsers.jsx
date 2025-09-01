@@ -2,9 +2,14 @@ import Page from "@ui/Page/Page.jsx";
 import {validator} from "@hooks/useValidator.js";
 import Form from "@ui/Form/Form.jsx";
 import {useCreateUser} from "@hooks/api/users.js";
+import {useEffect, useState} from "react";
+import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import styles from './styles.module.css'
+
 
 export default function AddUser() {
-    const {mutate,isSuccess} = useCreateUser()
+    const {mutate, isSuccess, isError, error} = useCreateUser()
+    const [serverErrors, setServerErrors] = useState(null);
     const fields = [
         {
             name: "email",
@@ -59,18 +64,44 @@ export default function AddUser() {
             ]
         }
     ]
+    const {showSnackbar} = useSnackbar()
+    useEffect(() => {
+        if (isSuccess) {
+            showSnackbar("تم إضافة المستخدم بنجاح");
+            setServerErrors(null);
+        }
+    }, [isSuccess, showSnackbar])
+
+    useEffect(() => {
+        if (isError && error?.response?.data?.errors) {
+            setServerErrors(error.response.data.errors);
+            showSnackbar("حدث خطأ أثناء إضافة المستخدم", "error");
+        }
+    }, [isError, error, showSnackbar]);
+
     const onFormSubmit = (data) => {
+        setServerErrors(null);
         mutate(data);
     }
-    if (isSuccess){
-        console.log("User Added Successfully")
-    }
+
     return (
         <Page
             title="اضافة مستخدم"
             breadcrumbs={[<span>المستخدمين</span>, <span>اضافة مستخدم</span>]}
         >
-            <Form fields={fields} onFormSubmit={onFormSubmit}/>
+            <Form fields={fields} onFormSubmit={onFormSubmit} serverErrors={serverErrors}/>
+            <div className={styles.instructions}>
+                <h3>تعليمات كلمة المرور:</h3>
+                <span>يجب ان تحتوي كلمة المرور علي الاقل علي كلٍ من:</span>
+                <ul>
+                    <li>8 رموز (حروف او ارقام او علامات)</li>
+                    <li>حرف كبير (A,B,C,...)</li>
+                    <li>حرف صغير (a,b,c,...)</li>
+                    <li>رقم</li>
+                    <li>علامة من العلامات الآتية (@$!%*#?&)</li>
+                </ul>
+            </div>
         </Page>
+
     );
 }

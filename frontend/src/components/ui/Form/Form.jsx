@@ -1,9 +1,9 @@
 import InputField from "@ui/InputField/InputField.jsx";
 import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
-export default function Form({fields, title, btnText = "إضافة", onFormSubmit}) {
+export default function Form({fields, title, btnText = "إضافة", onFormSubmit, serverErrors}) {
     const [formData, setFormData] = useState(() =>
         fields.reduce((acc, field) => {
             acc[field.name] = field.value ?? "";
@@ -16,6 +16,25 @@ export default function Form({fields, title, btnText = "إضافة", onFormSubmi
             return acc;
         }, {})
     );
+
+    useEffect(() => {
+        if (serverErrors && Object.keys(serverErrors).length > 0) {
+            const newValidity = {};
+            for (const fieldName in serverErrors) {
+                if (formData.hasOwnProperty(fieldName)) {
+                    newValidity[fieldName] = false;
+                }
+            }
+            setValidity(prev => ({...prev, ...newValidity}));
+
+
+            setFormData(prev => ({
+                ...prev,
+                password: "",
+                password_confirmation: ""
+            }));
+        }
+    }, [serverErrors]);
 
     const handleChange = useCallback((e) => {
         const {name, value} = e.target;
@@ -85,27 +104,26 @@ export default function Form({fields, title, btnText = "إضافة", onFormSubmi
 
     const isFormInvalid = Object.values(validity).some(v => v === false);
     const hasEmptyFields = fields.some(field => {
-        // A field is considered empty if it's required and its value is empty.
-        // By default, a field is considered required.
         const isRequired = field.required !== false;
         return isRequired && formData[field.name] === '';
     });
     const isButtonDisabled = isFormInvalid || hasEmptyFields;
 
     return (
-        <form className={styles.form}  onSubmit={onSubmit}>
+        <form className={styles.form} onSubmit={onSubmit}>
             {title && <h3>{title}</h3>}
             <div className={styles.formInputs}>
                 {fields.map((field) => {
+                    const serverErrorForField = serverErrors?.[field.name]?.[0];
                     const commonProps = {
                         key: field.id || field.name,
                         ...field,
                         value: formData[field.name],
                         handleChange: handleChange,
                         handleBlur: handleBlur,
+                        error: serverErrorForField || field.error,
                         isValid: validity[field.name],
                     };
-
                     if (field.type === 'select') {
                         return <SelectField {...commonProps} />;
                     }

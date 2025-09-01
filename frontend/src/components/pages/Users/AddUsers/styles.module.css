@@ -1,0 +1,12 @@
+.instructions{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.instructions ul li{
+    margin-bottom: 10px;
+}
+.instructions span{
+    font-weight: bold;
+}

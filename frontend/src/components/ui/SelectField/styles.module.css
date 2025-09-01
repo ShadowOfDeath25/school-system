@@ -67,9 +67,7 @@
         align-items: flex-start;
         margin-bottom:20px;
     }
-    /*.inputWrapper:not(:first-of-type){*/
-    /*    margin-top: 10px;*/
-    /*}*/
+
 
     .inputWrapper > div {
         width: 100%;

@@ -7,7 +7,7 @@ import DefaultLayout from '@layouts/Default/DefaultLayout';
 import RootLayout from '@layouts/Root/RootLayout';
 import GuestRoute from "@routes/GuestRoute.jsx";
 import Test from "@ui/Test.jsx";
-import AddUsers from "@pages/Users/AddUsers.jsx";
+import AddUsers from "@pages/Users/AddUsers/AddUsers.jsx";
 const router = createBrowserRouter([
     {
         path: '/',

@@ -5,7 +5,7 @@ export default function Page({title, breadcrumbs, children}) {
     return (
         <div className={styles.container}>
             <div className={styles.heading}>
-                <h3>{title}</h3>
+                <h2>{title}</h2>
                 <Breadcrumbs>
                     {breadcrumbs}
                 </Breadcrumbs>

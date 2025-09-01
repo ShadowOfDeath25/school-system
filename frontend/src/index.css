@@ -46,4 +46,6 @@ select,
 textarea {
     font-size: clamp(0.9375rem, 0.6vw + 0.75rem, 1.0625rem);
 }
-
+ul{
+    list-style-position: inside;
+}
