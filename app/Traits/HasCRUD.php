@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Exceptions\AuthorizationException;
 use Illuminate\Http\Request;
-use phpDocumentor\Reflection\Types\InterfaceString;
 
 trait HasCRUD
 {
@@ -97,7 +96,6 @@ trait HasCRUD
      */
     private function authorizeAction(string $action)
     {
-
         $modelName = strtolower(class_basename($this->model)) . "s";
         if (!auth()->user()->can("$action $modelName")) {
             throw new AuthorizationException();
