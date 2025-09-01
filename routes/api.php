@@ -33,7 +33,10 @@ Route::apiResource('incomes', IncomeController::class);
 Route::apiResource('classrooms', ClassroomController::class);
 Route::apiResource('subjects', SubjectController::class);
 Route::apiResource('expenses', ExpensesController::class);
+Route::apiResource('roles', RoleController::class);
 Route::apiResource('users', UserController::class);
-Route::apiResource('roles',RoleController::class);
 
+Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
+Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
+Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
 
