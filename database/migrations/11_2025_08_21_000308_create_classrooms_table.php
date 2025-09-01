@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classes', function (Blueprint $table) {
+        Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
             $table->string('language');
             $table->string('phase');
@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('class_number');
             $table->integer('actual_capacity');
             $table->integer('max_capacity');
-            
+
 
             $table->timestamps();
         });

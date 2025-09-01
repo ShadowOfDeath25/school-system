@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->enum('language', ["لغات", 'عربي']);
             $table->enum('religion', ['مسلم', "مسيحي"]);
             $table->bigInteger('class_id')->unsigned()->nullable();
-            $table->foreign('class_id')->references('id')->on('classes');
+            $table->foreign('class_id')->references('id')->on('classrooms');
             $table->timestamps();
         });
     }

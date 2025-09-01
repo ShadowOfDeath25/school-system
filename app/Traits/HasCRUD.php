@@ -2,15 +2,22 @@
 
 namespace App\Traits;
 
+use App\Exceptions\AuthorizationException;
 use Illuminate\Http\Request;
+use phpDocumentor\Reflection\Types\InterfaceString;
 
 trait HasCRUD
 {
+
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    public function index(Request $request)
     {
+
+        $this->authorizeAction("view");
         $data = ($this->model)::paginate(10);
 
         if (isset($this->resource)) {
@@ -22,9 +29,12 @@ trait HasCRUD
 
     /**
      * Store a newly created resource in storage.
+     * @throws AuthorizationException
      */
     public function store(Request $request)
     {
+        $this->authorizeAction("create");
+
         $validated = app($this->storeRequest)->validated();
 
 
@@ -37,9 +47,11 @@ trait HasCRUD
 
     /**
      * Display the specified resource.
+     * @throws AuthorizationException
      */
     public function show(string $id)
     {
+        $this->authorizeAction("view");
         $record = ($this->model)::findOrFail($id);
 
         return isset($this->resource)
@@ -49,10 +61,15 @@ trait HasCRUD
 
     /**
      * Update the specified resource in storage.
+     * @throws AuthorizationException
      */
     public function update(Request $request, string $id)
     {
-        $validated = app($this->updateRequest)->validated();
+        $this->authorizeAction("update");
+        $requestClass = $this->storeRequest;
+        $rules = (new $requestClass())->rules();
+        $validated = validator(request()->all(), $rules)->validate();
+
 
         $record = ($this->model)::findOrFail($id);
         $record->update($validated);
@@ -64,12 +81,26 @@ trait HasCRUD
 
     /**
      * Remove the specified resource from storage.
+     * @throws AuthorizationException
      */
     public function destroy(string $id)
     {
+        $this->authorizeAction("delete");
         $record = ($this->model)::findOrFail($id);
         $record->delete();
 
         return response()->json(null, 204);
+    }
+
+    /**
+     * @throws AuthorizationException
+     */
+    private function authorizeAction(string $action)
+    {
+
+        $modelName = strtolower(class_basename($this->model)) . "s";
+        if (!auth()->user()->can("$action $modelName")) {
+            throw new AuthorizationException();
+        }
     }
 }
