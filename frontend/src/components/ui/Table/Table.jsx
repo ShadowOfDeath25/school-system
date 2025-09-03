@@ -23,12 +23,12 @@ export default function Table({query, fields = {}}) {
     }
 
     if (isError) {
-        return <div className={styles.wrapper}><h1>حدث خطأ في تحميل البيانات ، الرجاء المحاولة لاحقًا</h1></div>
+        return <div className={styles.wrapper}><h3>حدث خطأ في تحميل البيانات ، الرجاء المحاولة لاحقًا</h3></div>
     }
 
 
     if (!data?.data?.length) {
-        return <div className={styles.wrapper}><h1>لا يوجد بيانات للعرض</h1></div>
+        return <div className={styles.wrapper}><h3>لا يوجد بيانات للعرض</h3></div>
     }
 
 

@@ -41,7 +41,7 @@ export const useCurrentUser = () => {
         queryKey: ["currentUser"],
         queryFn: async () => {
             const response = await axiosClient.get("/user");
-            return response.data;
+            return response.data.user;
         },
         retry: false,
         refetchOnWindowFocus: false,

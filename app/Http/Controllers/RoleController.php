@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\AuthorizationException;
 use App\Http\Requests\Roles\StoreRoleRequest;
 use App\Http\Requests\Roles\UpdateRoleRequest;
+use App\Http\Resources\RoleResource;
 use App\Traits\HasCRUD;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -15,6 +17,7 @@ class RoleController extends Controller
     protected string $model = Role::class;
     protected string $storeRequest = StoreRoleRequest::class;
     protected string $updateRequest = UpdateRoleRequest::class;
+    protected string $resource = RoleResource::class;
 
     public function store(StoreRoleRequest $request)
     {
@@ -38,13 +41,12 @@ class RoleController extends Controller
         $data = $request->validated();
         $role->update($data);
         if ($request->has("permissions")) {
-            $role->syncPermissions();
+            $role->syncPermissions($data["permissions"]);
         }
         $role->save();
 
-        return response()->json($role);
+        return response()->json(["role"=>$role,"permissions"=>$role->permissions]);
     }
-    public function addPermission(Role $role, array|string $permission){
 
-    }
+
 }

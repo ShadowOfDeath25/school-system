@@ -19,10 +19,16 @@ const sidebarItems = [
         links: [
             {
                 title: "اضافة مستخدم",
-                to: "/users/add"
+                to: "/users/add",
+                action: "create users"
+            },
+            {
+                title: "عرض المستخدمين",
+                to: "/users",
+                action: "view users"
             }
         ],
-        allowedRoles: ['admin']
+        name:"users"
     },
 
 ];

@@ -27,6 +27,7 @@ class UserController extends Controller
         $this->authorizeAction("assign");
         $roles = $request->validated();
         $user->assignRole($roles);
+        $user->save();
         return response()->json(["message" => "Role was assigned successfully", "user" => UserResource::make($user)]);
     }
 

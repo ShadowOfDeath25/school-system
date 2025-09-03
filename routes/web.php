@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return view('welcome');
 });
-// routes/web.php
+// guards/web.php
 Route::get('/debug-session', function (Request $request) {
     return response()->json([
         'session_id' => session()->getId(),

@@ -10,10 +10,11 @@ export default defineConfig({
             '@pages': path.resolve(__dirname, 'src/components/pages'),
             '@components': path.resolve(__dirname, 'src/components'),
             '@hooks': path.resolve(__dirname, 'src/hooks'),
-            '@routes': path.resolve(__dirname, 'src/components/routes'),
+            '@guards': path.resolve(__dirname, 'src/components/guards'),
             '@layouts': path.resolve(__dirname, 'src/components/layouts'),
             '@features': path.resolve(__dirname,'src/features'),
-            '@contexts': path.resolve(__dirname,'src/context')
+            '@contexts': path.resolve(__dirname,'src/context'),
+            '@routes':path.resolve(__dirname,'src/routes')
         },
     },
 })

@@ -2,9 +2,9 @@ import {Navigate, Outlet} from "react-router-dom";
 import {useCurrentUser} from "@hooks/api/auth.js";
 
 export default function GuestRoute() {
-    const {data} = useCurrentUser();
+    const {data: user} = useCurrentUser();
 
-    if (data?.user) {
+    if (user) {
         return <Navigate to="/" replace/>;
     }
     return <Outlet/>;

@@ -1,7 +1,7 @@
 .navbar {
     background-color: var(--primary-color);
-    min-height: 8vh;
-
+    height: 8vh;
+    min-height: 75px;
     width: 100%;
     border-bottom: 3px solid var(--secondary-color);
     display: flex;
