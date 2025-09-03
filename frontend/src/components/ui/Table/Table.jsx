@@ -1,11 +1,30 @@
 import styles from './styles.module.css';
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
+import SearchIcon from '@mui/icons-material/Search';
+import {useGetAll} from "@hooks/api/useCrud.js";
+import {useCurrentUser} from "@hooks/api/auth.js";
 
-export default function Table({query, fields = {}}) {
+export default function Table({resource, fields = {}}) {
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+    const {data: user, isLoading: userIsLoading} = useCurrentUser();
+    const userCanEdit = user.permissions.includes(`update ${resource}`) || user.roles.includes("Super Admin");
+    const userCanDelete = user.permissions.includes(`delete ${resource}`) || user.roles.includes("Super Admin");
 
-    const {data, isLoading, isError} = query(currentPage);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+            setCurrentPage(1);
+        }, 500);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchTerm]);
+
+    const {data, isLoading, isError} = useGetAll(resource, {page: currentPage, search: debouncedSearchTerm});
 
     const handlePageChange = (link) => {
 
@@ -18,17 +37,12 @@ export default function Table({query, fields = {}}) {
         setCurrentPage(pageNumber);
     };
 
-    if (isLoading) {
+    if (isLoading || userIsLoading) {
         return <div className={styles.wrapper}><LoadingScreen/></div>
     }
 
     if (isError) {
         return <div className={styles.wrapper}><h3>حدث خطأ في تحميل البيانات ، الرجاء المحاولة لاحقًا</h3></div>
-    }
-
-
-    if (!data?.data?.length) {
-        return <div className={styles.wrapper}><h3>لا يوجد بيانات للعرض</h3></div>
     }
 
 
@@ -44,12 +58,28 @@ export default function Table({query, fields = {}}) {
             className={link.active ? styles.active : ""}
         />)
     })
+    // Todo: Handle editing and deleting resources
     return (<div className={styles.wrapper}>
+        <div className={styles.toolbar}>
+            <div className={styles.searchContainer}>
+                <input
+                    type="text"
+                    placeholder="بحث..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className={styles.searchInput}
+                />
+                <SearchIcon className={styles.searchIcon}/>
+            </div>
+        </div>
         <div className={styles.tableContainer}>
             <table className={styles.table}>
                 <thead>
                     <tr>
                         {columnKeys.map(key => (<th key={key} className={styles.cell}>{fields[key] || key}</th>))}
+                        {userCanEdit && <th>تعديل</th>}
+                        {userCanDelete && <th>حذف</th>}
+
                     </tr>
                 </thead>
                 <tbody>
@@ -57,7 +87,8 @@ export default function Table({query, fields = {}}) {
 
                         return <tr key={rowIndex} className={styles.row}>
                             {columnKeys.map((key, cellIndex) => (
-                                <td key={`${rowIndex}-${cellIndex}`} className={styles.cell}>{Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}</td>))}
+                                <td key={`${rowIndex}-${cellIndex}`}
+                                    className={styles.cell}>{Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}</td>))}
                         </tr>
                     })}
                 </tbody>

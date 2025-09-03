@@ -18,7 +18,15 @@ trait HasCRUD
     {
 
         $this->authorizeAction("view");
-        $data = ($this->model)::paginate(30);
+        $query = ($this->model)::query();
+
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->input('search') . '%');
+        }
+
+
+        $data = $query->paginate(30)->withQueryString();
 
         if (isset($this->resource)) {
             return $this->resource::collection($data);
@@ -38,8 +46,8 @@ trait HasCRUD
 
 
         $record = new ($this->model)($validated);
-        if (class_basename($this->model)==='User'){
-            $record->assignRole("مستخدم");
+        if (class_basename($this->model) === 'User') {
+            $record->assignRole($validated["role"]);
         }
         $record->save();
         return isset($this->resource)

@@ -4,7 +4,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 export default function Errors({error}) {
     const {message, errors} = error ?? {message: null, errors: null}
     let errorMessages = errors ? Object.values(errors).flat() : [message]
-    console.log(errorMessages);
+
 
     return (
         <div className={`${styles.container} ${error ? styles.show : ''}`}>

@@ -8,7 +8,7 @@ export default function SelectField({
                                         handleChange,
                                         handleBlur,
                                         isValid,
-                                        error,
+                                        error,placeholder,
                                         options = []
                                     }) {
     const isInvalid = isValid === false;
@@ -26,6 +26,7 @@ export default function SelectField({
                     className={isInvalid ? styles.error : ""}
                     dir="auto"
                 >
+                    <option key={"placeholder"} value={""} disabled={true}>{placeholder}</option>
                     {options.map(option => (
                         <option
                             key={option.value}

@@ -1,15 +1,31 @@
 import Page from "@ui/Page/Page.jsx";
 import {validator} from "@hooks/useValidator.js";
 import Form from "@ui/Form/Form.jsx";
-import {useCreateUser} from "@hooks/api/users.js";
 import {useEffect, useState} from "react";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import styles from './styles.module.css'
+import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
+import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 
 
 export default function AddUser() {
-    const {mutate, isSuccess, isError, error} = useCreateUser()
+    const {mutate, isError, error} = useCreate("users");
+    const {data: roles, isLoading} = useGetAll("roles")
     const [serverErrors, setServerErrors] = useState(null);
+    const {showSnackbar} = useSnackbar()
+
+    useEffect(() => {
+        if (isError && error?.response?.data?.errors) {
+            setServerErrors(error.response.data.errors);
+            showSnackbar("حدث خطأ أثناء إضافة المستخدم", "error");
+        }
+    }, [isError, error, showSnackbar]);
+
+
+    const normalizedRoles = roles?.data.map((role) => {
+        return {value: role?.name, label: role?.name}
+    })
+
     const fields = [
         {
             name: "email",
@@ -53,35 +69,26 @@ export default function AddUser() {
             name: "role",
             type: "select",
             label: "الصلاحية",
+            placeholder: "اختر صلاحية ...",
             id: "role",
             required: true,
             error: "الرجاء اختيار صلاحية",
             validator: (value) => value !== "",
-            options: [
-                {value: "", label: "اختر صلاحية...", disabled: true},
-                {value: "admin", label: "مدير"},
-                {value: "editor", label: "محرر"},
-            ]
+            options: normalizedRoles
+
         }
     ]
-    const {showSnackbar} = useSnackbar()
-    useEffect(() => {
-        if (isSuccess) {
-            showSnackbar("تم إضافة المستخدم بنجاح");
-            setServerErrors(null);
-        }
-    }, [isSuccess, showSnackbar])
-
-    useEffect(() => {
-        if (isError && error?.response?.data?.errors) {
-            setServerErrors(error.response.data.errors);
-            showSnackbar("حدث خطأ أثناء إضافة المستخدم", "error");
-        }
-    }, [isError, error, showSnackbar]);
-
+    if (isLoading) {
+        return <LoadingScreen/>
+    }
     const onFormSubmit = (data) => {
         setServerErrors(null);
-        mutate(data);
+        mutate(data, {
+            onSuccess: () => {
+                showSnackbar("تم إضافة المستخدم بنجاح");
+                setServerErrors(null);
+            }
+        });
     }
 
     return (

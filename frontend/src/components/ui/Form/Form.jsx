@@ -116,7 +116,6 @@ export default function Form({fields, title, btnText = "إضافة", onFormSubmi
                 {fields.map((field) => {
                     const serverErrorForField = serverErrors?.[field.name]?.[0];
                     const commonProps = {
-                        key: field.id || field.name,
                         ...field,
                         value: formData[field.name],
                         handleChange: handleChange,
@@ -125,10 +124,10 @@ export default function Form({fields, title, btnText = "إضافة", onFormSubmi
                         isValid: validity[field.name],
                     };
                     if (field.type === 'select') {
-                        return <SelectField {...commonProps} />;
+                        return <SelectField key={field.id || field.name} {...commonProps} />;
                     }
 
-                    return <InputField {...commonProps} />;
+                    return <InputField key={field.id || field.name} {...commonProps} />;
                 })}
             </div>
             <button type="submit" disabled={isButtonDisabled}>{btnText}</button>
