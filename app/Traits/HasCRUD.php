@@ -11,13 +11,14 @@ trait HasCRUD
 
     /**
      * Display a listing of the resource.
+     * @throws AuthorizationException
      */
 
     public function index(Request $request)
     {
 
         $this->authorizeAction("view");
-        $data = ($this->model)::paginate(10);
+        $data = ($this->model)::paginate(30);
 
         if (isset($this->resource)) {
             return $this->resource::collection($data);

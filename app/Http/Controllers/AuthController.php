@@ -37,4 +37,16 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'Logged out']);
     }
+
+    public function user(Request $request)
+    {
+        //todo change the way this is handled
+        if ($request->headers->get("referer") == null) {
+            return redirect(env("FRONTEND_URL"));
+        }
+        if ($request->user()) {
+            return response()->json(["user" => UserResource::make($request->user())]);
+        }
+        return response()->json(["user" => null]);
+    }
 }

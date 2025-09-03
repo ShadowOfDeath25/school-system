@@ -17,9 +17,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
 
-Route::get('/user', function (Request $request) {
-    return response()->json(["user" => UserResource::make($request->user())]);
-});
+Route::get("/user",AuthCOntroller::class."@user")->name("user");
 
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");

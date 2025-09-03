@@ -9,18 +9,6 @@ use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
 {
-    protected array $models= [
-        'books',
-        'buses',
-        'classrooms',
-        'expenses',
-        'incomes',
-        'payments',
-        'students',
-        'studentparents',
-        'subjects',
-        'users',
-    ];
 
 
     /**
