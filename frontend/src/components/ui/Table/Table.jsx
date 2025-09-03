@@ -37,33 +37,34 @@ export default function Table({query, fields = {}}) {
     const buttons = data.meta.links.map((link, index) => {
         const isDisabled = !link.url || link.active;
         return (<button
-                key={`${link.label}-${index}`}
-                disabled={isDisabled}
-                onClick={() => handlePageChange(link)}
-                dangerouslySetInnerHTML={{__html: link.label}}
-                className={link.active ? styles.active : ""}
-            />)
+            key={`${link.label}-${index}`}
+            disabled={isDisabled}
+            onClick={() => handlePageChange(link)}
+            dangerouslySetInnerHTML={{__html: link.label}}
+            className={link.active ? styles.active : ""}
+        />)
     })
     return (<div className={styles.wrapper}>
-            <div className={styles.tableContainer}>
-                <table className={styles.table}>
-                    <thead>
-                        <tr>
-                            {columnKeys.map(key => (<th key={key} className={styles.cell}>{fields[key] || key}</th>))}
+        <div className={styles.tableContainer}>
+            <table className={styles.table}>
+                <thead>
+                    <tr>
+                        {columnKeys.map(key => (<th key={key} className={styles.cell}>{fields[key] || key}</th>))}
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.data.map((row, rowIndex) => {
+
+                        return <tr key={rowIndex} className={styles.row}>
+                            {columnKeys.map((key, cellIndex) => (
+                                <td key={`${rowIndex}-${cellIndex}`} className={styles.cell}>{Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}</td>))}
                         </tr>
-                    </thead>
-                    <tbody>
-                        {data.data.map((row, rowIndex) => {
-                            return <tr key={rowIndex} className={styles.row}>
-                                {columnKeys.map((key, cellIndex) => (
-                                    <td key={rowIndex + cellIndex} className={styles.cell}>{row[key]}</td>))}
-                            </tr>
-                        })}
-                    </tbody>
-                </table>
-            </div>
-            <div className={styles.pagination}>
-                {buttons}
-            </div>
-        </div>);
+                    })}
+                </tbody>
+            </table>
+        </div>
+        <div className={styles.pagination}>
+            {buttons}
+        </div>
+    </div>);
 }
