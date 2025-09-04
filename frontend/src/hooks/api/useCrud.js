@@ -19,3 +19,11 @@ export const useGetAll = (resource, params = {}) => {
         keepPreviousData: true
     })
 }
+export const useFilters = (resource)=>{
+    return useQuery({
+        queryKey:[resource,"filters"],
+        queryFn:()=>axiosClient.get(`/${resource}/filters`).then(res=>res.data),
+        keepPreviousData:true
+
+    })
+}
