@@ -23,6 +23,8 @@ html, body, #root {
     --color-danger: #be434a;
     /*--color-danger: rgb(190, 67, 74)*/
     --color-focus: #0176fa;
+    --container-box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.2);
+    --container-border: 5px solid var(--secondary-color);
 }
 
 
@@ -41,11 +43,13 @@ h3 {
 label {
     font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
 }
+
 input,
 select,
 textarea {
     font-size: clamp(0.9375rem, 0.6vw + 0.75rem, 1.0625rem);
 }
-ul{
+
+ul {
     list-style-position: inside;
 }
