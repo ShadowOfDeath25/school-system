@@ -77,8 +77,8 @@ export default function Table({resource, fields = {}}) {
                 <thead>
                     <tr>
                         {columnKeys.map(key => (<th key={key} className={styles.cell}>{fields[key] || key}</th>))}
-                        {userCanEdit && <th>تعديل</th>}
-                        {userCanDelete && <th>حذف</th>}
+                        {userCanEdit && <th className={styles.cell}>تعديل</th>}
+                        {userCanDelete && <th className={styles.cell}>حذف</th>}
 
                     </tr>
                 </thead>
