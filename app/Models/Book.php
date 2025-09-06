@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Book extends Model
 {
@@ -13,7 +14,14 @@ class Book extends Model
         'semester',
         'price',
         'level',
-        'subject',
+        'subject_id',
         'year',
     ];
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class,'subject_id',"id");
+    }
+
+
 }

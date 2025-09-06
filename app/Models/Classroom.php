@@ -16,5 +16,10 @@ class Classroom extends Model
         'max_capacity',
     ];
 
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
+
 
 }
