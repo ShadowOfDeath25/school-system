@@ -20,8 +20,7 @@ Route::get("/user", AuthCOntroller::class . "@user")->name("user");
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
 
-Route::resourceWithFilters("books", BookController::class);
-
+Route::apiResource("books", BookController::class)->withFilters();
 Route::apiResource('buses', BusController::class);
 Route::apiResource('parents', GuardianController::class);
 Route::apiResource('students', StudentController::class);
@@ -31,7 +30,7 @@ Route::apiResource('classrooms', ClassroomController::class);
 Route::apiResource('subjects', SubjectController::class);
 Route::apiResource('expenses', ExpensesController::class);
 Route::apiResource('roles', RoleController::class);
-Route::resourceWithFilters('users', UserController::class);
+Route::apiResource('users', UserController::class)->withFilters();
 
 Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
 Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
