@@ -9,7 +9,7 @@ use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\StudentParentController;
+use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\UserController;
 use App\Http\Resources\UserResource;
@@ -22,9 +22,14 @@ Route::get("/user",AuthCOntroller::class."@user")->name("user");
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
 
+
+Route::get("/books/filters",BookController::class."@getFilterOptions")->name("books.filters");
+Route::get("/users/filters",UserController::class."@getFilterOptions")->name("users.filters");
+
+
 Route::apiResource('books', BookController::class);
 Route::apiResource('buses', BusController::class);
-Route::apiResource('parents', StudentParentController::class);
+Route::apiResource('parents', GuardianController::class);
 Route::apiResource('students', StudentController::class);
 Route::apiResource('payments', PaymentController::class);
 Route::apiResource('incomes', IncomeController::class);

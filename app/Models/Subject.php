@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subject extends Model
 {
@@ -16,4 +16,11 @@ class Subject extends Model
         'academic_year',
         'added_to_total',
     ];
+
+    public function books(): HasMany
+    {
+        return $this->hasMany(Book::class);
+    }
+
+
 }

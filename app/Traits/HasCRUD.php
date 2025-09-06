@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Exceptions\AuthorizationException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 
 trait HasCRUD
 {
@@ -35,33 +34,9 @@ trait HasCRUD
             });
         }
 
-        if (property_exists($this, 'filterable') && is_array($this->filterable) && !empty($this->filterable)) {
-            $modelInstance = new $this->model;
-            $tableColumns = Schema::getColumnListing($modelInstance->getTable());
-
-            foreach ($this->filterable as $filterKey) {
-                if ($request->has($filterKey)) {
-                    $value = $request->input($filterKey);
-                    if (in_array($filterKey, $tableColumns)) {
-                        $query->where($filterKey, $value);
-                    } elseif (method_exists($modelInstance, $filterKey)) {
-                        $query->whereHas($filterKey, fn($q) => $q->where('name', $value));
-                    }
-                }
-            }
-        }
-
         $data = $query->paginate(30)->withQueryString();
-
-        if (isset($this->resource)) {
-            $collection = $this->resource::collection($data);
-            if (method_exists($this, 'getFilterOptions')) {
-                $filterOptions = $this->getFilterOptions();
-                if (!empty($filterOptions)) {
-                    return $collection->additional(['meta' => ['filter_options' => $filterOptions]]);
-                }
-            }
-            return $collection;
+        if (property_exists($this, "resource")) {
+            return ($this->resource)::collection($data);
         }
 
         return response()->json($data);
@@ -134,16 +109,6 @@ trait HasCRUD
         return response()->json(null, 204);
     }
 
-    /**
-     * Provides an array of options for frontend filters.
-     * Can be overridden by controllers to provide specific filter data.
-     *
-     * @return array
-     */
-    protected function getFilterOptions(): array
-    {
-        return [];
-    }
 
     /**
      * @throws AuthorizationException

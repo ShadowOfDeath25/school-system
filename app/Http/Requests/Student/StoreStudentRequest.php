@@ -7,32 +7,31 @@ use Illuminate\Validation\Rule;
 
 class StoreStudentRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'name_in_arabic' => ['required', 'string'],
             'name_in_english' => ['required', 'string'],
-            'nid' => ['required', 'string', 'regex:/^[0-9]{14}$/'],
+            'nid' => ['required', 'string', 'regex:/^[0-9]{14}$/', 'unique:students,nid'],
             'birth_date' => ['required', 'date'],
             'birth_address' => ['required', 'string'],
             'language' => ['required', 'string', Rule::in(['عربي', 'لغات'])],
             'gender' => ['required', 'string', Rule::in(['female', 'male'])],
             'religion' => ['required', 'string', Rule::in(["مسيحي", 'مسلم'])],
             'nationality' => ["string", "required"],
-            'class_id' => ['required', "numeric", "exists:classes,id"],
+            'classroom_id' => [ "numeric", "exists:classrooms,id"],
+            'guardians' => ['sometimes', 'array'],
+            'guardians.*.name' => ['required', 'string', 'max:255'],
+            'guardians.*.nid' => ['required', 'string', 'regex:/^[0-9]{14}$/', 'distinct'],
+            'guardians.*.phone_number' => ['required', 'string', 'max:20', 'distinct'],
+            'guardians.*.job' => ['nullable', 'string', 'max:255'],
+            'guardians.*.edu' => ['nullable', 'string', 'max:255'],
+            'guardians.*.gender' => ['required', 'string', Rule::in(['male', 'female'])],
         ];
     }
 }

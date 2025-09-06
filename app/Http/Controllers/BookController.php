@@ -6,11 +6,14 @@ use App\Http\Requests\Book\StoreBookRequest;
 use App\Http\Requests\Book\UpdateBookRequest;
 use App\Models\Book;
 use App\Traits\HasCRUD;
+use App\Traits\HasFilters;
 
 class BookController extends Controller
 {
-    use HasCRUD;
-
+    use HasCRUD,HasFilters;
+    protected array $filterable = [
+        'subject'
+    ];
     protected string $model = Book::class;
     protected string $storeRequest = StoreBookRequest::class;
     protected string $updateRequest = UpdateBookRequest::class;

@@ -9,24 +9,21 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Traits\HasCRUD;
+use App\Traits\HasFilters;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    use HasCRUD;
+    use HasCRUD,HasFilters;
 
     protected string $model = User::class;
     protected string $storeRequest = StoreUserRequest::class;
     protected string $updateRequest = UpdateUserRequest::class;
     protected string $resource = UserResource::class;
 
-    // The generic filterable property. 'roles' is now handled by the trait.
     protected array $filterable = ['roles'];
 
-    /**
-     * Columns that will be searched using a LIKE query.
-     */
     protected array $searchable = [
         'name', 'email'
     ];
@@ -67,16 +64,5 @@ class UserController extends Controller
         return response()->json(["message" => "Role was removed successfully", "user" => UserResource::make($user)]);
     }
 
-    /**
-     * Provides the list of roles to the frontend for the filter dropdown.
-     * This method is called by the HasCRUD trait's index() method.
-     *
-     * @return array
-     */
-    protected function getFilterOptions(): array
-    {
-        return [
-            'roles' => Role::all()->pluck('name')
-        ];
-    }
+
 }
