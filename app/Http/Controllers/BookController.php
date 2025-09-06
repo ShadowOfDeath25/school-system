@@ -12,7 +12,7 @@ class BookController extends Controller
 {
     use HasCRUD,HasFilters;
     protected array $filterable = [
-        'subject'
+        'subject','academic_year',"semester"
     ];
     protected string $model = Book::class;
     protected string $storeRequest = StoreBookRequest::class;

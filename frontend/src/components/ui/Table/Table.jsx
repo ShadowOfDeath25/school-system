@@ -5,14 +5,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import {useGetAll} from "@hooks/api/useCrud.js";
 import {useCurrentUser} from "@hooks/api/auth.js";
 
-export default function Table({resource, fields = {}}) {
+export default function Table({resource, fields = {}, filters = null}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const {data: user, isLoading: userIsLoading} = useCurrentUser();
     const userCanEdit = user.permissions.includes(`update ${resource}`) || user.roles.includes("Super Admin");
     const userCanDelete = user.permissions.includes(`delete ${resource}`) || user.roles.includes("Super Admin");
-
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
@@ -24,7 +23,14 @@ export default function Table({resource, fields = {}}) {
         };
     }, [searchTerm]);
 
-    const {data, isLoading, isError} = useGetAll(resource, {page: currentPage, search: debouncedSearchTerm});
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filters]);
+
+    const {data, isLoading, isError} = useGetAll(resource, {
+        page: currentPage,
+        search: debouncedSearchTerm, ...filters
+    });
 
     const handlePageChange = (link) => {
 
@@ -37,18 +43,10 @@ export default function Table({resource, fields = {}}) {
         setCurrentPage(pageNumber);
     };
 
-    if (isLoading || userIsLoading) {
-        return <div className={styles.wrapper}><LoadingScreen/></div>
-    }
-
-    if (isError) {
-        return <div className={styles.wrapper}><h3>حدث خطأ في تحميل البيانات ، الرجاء المحاولة لاحقًا</h3></div>
-    }
-
 
     const columnKeys = Object.keys(fields).length > 0 ? Object.keys(fields) : Object.keys(data.data[0]);
 
-    const buttons = data.meta.links.map((link, index) => {
+    const buttons = data?.meta?.links.map((link, index) => {
         const isDisabled = !link.url || link.active;
         return (<button
             key={`${link.label}-${index}`}
@@ -73,26 +71,32 @@ export default function Table({resource, fields = {}}) {
             </div>
         </div>
         <div className={styles.tableContainer}>
-            <table className={styles.table}>
-                <thead>
-                    <tr>
-                        {columnKeys.map(key => (<th key={key} className={styles.cell}>{fields[key] || key}</th>))}
-                        {userCanEdit && <th className={styles.cell}>تعديل</th>}
-                        {userCanDelete && <th className={styles.cell}>حذف</th>}
+            {isLoading || userIsLoading? <LoadingScreen/> :
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {data.data.map((row, rowIndex) => {
+                isError ? <h3>لا يوجد بيانات للعرض</h3> :
 
-                        return <tr key={rowIndex} className={styles.row}>
-                            {columnKeys.map((key, cellIndex) => (
-                                <td key={`${rowIndex}-${cellIndex}`}
-                                    className={styles.cell}>{Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}</td>))}
-                        </tr>
-                    })}
-                </tbody>
-            </table>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                {columnKeys.map(key => (
+                                    <th key={key} className={styles.cell}>{fields[key] || key}</th>))}
+                                {userCanEdit && <th className={styles.cell}>تعديل</th>}
+                                {userCanDelete && <th className={styles.cell}>حذف</th>}
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {data.data.map((row, rowIndex) => {
+
+                                return <tr key={rowIndex} className={styles.row}>
+                                    {columnKeys.map((key, cellIndex) => (
+                                        <td key={`${rowIndex}-${cellIndex}`}
+                                            className={styles.cell}>{Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}</td>))}
+                                </tr>
+                            })}
+                        </tbody>
+                    </table>
+            }
         </div>
         <div className={styles.pagination}>
             {buttons}

@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Exceptions\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 trait HasCRUD
 {
@@ -32,6 +33,21 @@ trait HasCRUD
                     $q->orWhere($field, 'like', $searchTerm);
                 }
             });
+        }
+        if (property_exists($this, 'filterable') && is_array($this->filterable) && !empty($this->filterable)) {
+            $modelInstance = new $this->model;
+            $tableColumns = Schema::getColumnListing($modelInstance->getTable());
+
+            foreach ($this->filterable as $filterKey) {
+                if ($request->has($filterKey)) {
+                    $value = $request->input($filterKey);
+                    if (in_array($filterKey, $tableColumns)) {
+                        $query->where($filterKey, $value);
+                    } elseif (method_exists($modelInstance, $filterKey)) {
+                        $query->whereHas($filterKey, fn($q) => $q->where('name', $value));
+                    }
+                }
+            }
         }
 
         $data = $query->paginate(30)->withQueryString();
