@@ -19,9 +19,9 @@ export default function ProtectedRoute() {
         return <Navigate to="/login" replace/>;
     }
 
-    const hasPermission = requiredPermission ? user.permissions.includes(requiredPermission) : true;
+    const hasPermission = requiredPermission ? (user.roles.includes("Super Admin")||user.permissions.includes(requiredPermission)) : true;
 
-    if (!user.roles.includes("Super Admin") && !hasPermission) {
+    if ( !hasPermission) {
         return <Navigate to="/" replace/>;
     }
 
