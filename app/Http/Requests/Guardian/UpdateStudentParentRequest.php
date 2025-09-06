@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\StudentParent;
+namespace App\Http\Requests\Guardian;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -12,7 +12,7 @@ class UpdateStudentParentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -32,6 +32,7 @@ class UpdateStudentParentRequest extends FormRequest
             'edu' => ['string'],
             'student_id' => ['exists:students,id'],
             'job' => ['string'],
+            'nid' => ['string', 'regex:/^[0-9]{14}$/'],
         ];
     }
 }

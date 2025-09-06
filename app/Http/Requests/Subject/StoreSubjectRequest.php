@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Subject;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSubjectRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreSubjectRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -27,8 +28,8 @@ class StoreSubjectRequest extends FormRequest
             'phase' => ['required', 'string', 'max:50'],
             'term' => ['required', 'string', 'max:50'],
             'language' => ['required', 'string', 'max:50'],
-            'academic_year' => ['required', 'integer'],
-            'added_to_total' =>['required', 'string', Rule::in(['نعم ', 'لا'])],
+            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'added_to_total' =>['required', 'string', Rule::in(['نعم', 'لا'])],
         ];
     }
 }

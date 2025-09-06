@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\StudentParent;
+namespace App\Http\Requests\Guardian;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -28,6 +28,7 @@ class StoreStudentParentRequest extends FormRequest
             'edu' => ['required', 'string'],
             'student_id' => ['required', 'exists:students,id'],
             'job' => ['required', 'string'],
+            'nid' => ['required', 'string', 'regex:/^[0-9]{14}$/'],
         ];
     }
 }
