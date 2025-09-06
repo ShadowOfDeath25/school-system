@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->string('subject_name');
+            $table->string('name');
             $table->decimal('max_degree');
             $table->string('phase');
-            $table->string('term');
+            $table->string('semester');
             $table->string('language');
             $table->string('academic_year');
-            $table->enum('added_to_total', ['نعم', 'لا']);
+            $table->boolean('added_to_total');
             $table->timestamps();
         });
     }

@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('academic_year');
             $table->enum('language', ['عربي', 'لغات']);
             $table->string("type");
-            $table->decimal('value', 10);
+            $table->decimal('value', 10,2);
             $table->bigInteger('student_id')->unsigned();
             $table->foreign('student_id')->references('id')->on('students');
             $table->string('level');
