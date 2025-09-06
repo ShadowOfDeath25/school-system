@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 trait HasFilters
 {
 
-    public function getFilterOptions(): JsonResponse
+    public function filters(): JsonResponse
     {
         $data = [];
         if (property_exists($this, 'filterable') && is_array($this->filterable) && !empty($this->filterable)) {
