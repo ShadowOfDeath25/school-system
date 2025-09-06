@@ -19,11 +19,21 @@ export const useGetAll = (resource, params = {}) => {
         keepPreviousData: true
     })
 }
-export const useFilters = (resource)=>{
+export const useFilters = (resource) => {
     return useQuery({
-        queryKey:[resource,"filters"],
-        queryFn:()=>axiosClient.get(`/${resource}/filters`).then(res=>res.data),
-        keepPreviousData:true
+        queryKey: [resource, "filters"],
+        queryFn: () => axiosClient.get(`/${resource}/filters`).then(res => res.data),
+        keepPreviousData: true
 
+    })
+}
+export const useDelete = (resource) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationKey: [resource, "delete"],
+        mutationFn: (id) => axiosClient.delete(`/${resource}/${id}`),
+        onSuccess: () => {
+            queryClient.invalidateQueries(resource).then();
+        }
     })
 }

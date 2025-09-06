@@ -15,9 +15,11 @@ export default function AddUser() {
     const {showSnackbar} = useSnackbar()
 
     useEffect(() => {
-        if (isError && error?.response?.data?.errors) {
-            setServerErrors(error.response.data.errors);
+        if (isError) {
             showSnackbar("حدث خطأ أثناء إضافة المستخدم", "error");
+            if (error?.response?.data?.errors) {
+                setServerErrors(error.response.data.errors);
+            }
         }
     }, [isError, error, showSnackbar]);
 
