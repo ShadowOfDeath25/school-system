@@ -7,7 +7,11 @@ html, body, #root {
     min-height: 100vh;
 
 }
-
+::selection{
+    /*color: var(--primary-text-color);*/
+    color: black;
+    background-color: var(--secondary-color);
+}
 * {
     margin: 0;
     padding: 0;

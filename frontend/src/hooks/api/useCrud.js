@@ -2,14 +2,17 @@ import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query'
 import axiosClient from "../../axiosClient.js";
 
 
-export const useCreate = (resource) => {
+export const useCreate = (resource, options = {}) => {
     const queryClient = useQueryClient();
     return useMutation({
+        ...options,
         mutationKey: ["create", resource],
         mutationFn: (payload) => axiosClient.post(`/${resource}`, payload),
-        onSuccess: () => {
+        onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({queryKey: [resource]});
-        }
+            // Also call the original onSuccess from options if it was provided
+            options.onSuccess?.(data, variables, context);
+        },
     })
 }
 export const useGetAll = (resource, params = {}) => {
@@ -41,13 +44,15 @@ export const useFilters = (resource) => {
 
     })
 }
-export const useDelete = (resource) => {
+export const useDelete = (resource, options = {}) => {
     const queryClient = useQueryClient()
     return useMutation({
+        ...options,
         mutationKey: [resource, "delete"],
         mutationFn: (id) => axiosClient.delete(`/${resource}/${id}`),
-        onSuccess: () => {
-            queryClient.invalidateQueries(resource).then();
-        }
+        onSuccess: (data, variables, context) => {
+            queryClient.invalidateQueries({queryKey: [resource]});
+            options.onSuccess?.(data, variables, context);
+        },
     })
 }

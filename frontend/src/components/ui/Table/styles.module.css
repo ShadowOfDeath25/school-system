@@ -8,13 +8,15 @@
     box-shadow: var(--container-box-shadow);
     padding: 10px;
 }
-.toolbar{
+
+.toolbar {
     min-height: 60px;
 
     display: flex;
     align-items: center;
 
 }
+
 .searchContainer {
     position: relative;
 
@@ -65,19 +67,25 @@
 
 .table {
 
-
     box-sizing: border-box;
     width: 100%;
     color: var(--primary-text-color);
     border-collapse: collapse;
 }
 
-.table th {
-    text-align: start;
+.table thead {
     position: sticky;
     top: 0;
-
+    background-color: var(--primary-color);
     border-bottom: 2px solid var(--secondary-color);
+    z-index: 1;
+    box-shadow: 0 2px 0 var(--secondary-color);
+}
+
+.table th {
+    text-align: start;
+    border-bottom: 2px solid var(--secondary-color)
+
 }
 
 
@@ -87,8 +95,12 @@
 
 .cell {
     padding: 10px;
-    background-color: var(--primary-color);
 
+
+}
+
+.actionCell {
+    text-align: center !important;
 }
 
 .pagination {
@@ -124,7 +136,8 @@
     .tableContainer {
         overflow-x: scroll;
     }
-    .searchContainer{
+
+    .searchContainer {
         width: 100%;
     }
 }

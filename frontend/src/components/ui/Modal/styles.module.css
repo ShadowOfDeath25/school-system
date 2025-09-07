@@ -1,0 +1,27 @@
+
+:global(.modalContent .MuiPaper-root) {
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    min-width: 30vw;
+    border-radius: 20px;
+}
+
+.msg, .title {
+    font-weight: bold !important;
+    color: var(--primary-text-color) !important;
+}
+.title{
+    font-size: 1.5rem !important;
+}
+.msg{
+    font-size: 1.2rem !important;
+}
+.actions{
+    display: flex;
+    gap:20px;
+}
+@media (max-width: 768px) {
+    :global(.modalContent .MuiPaper-root) {
+        width: 70vw;
+    }
+}
