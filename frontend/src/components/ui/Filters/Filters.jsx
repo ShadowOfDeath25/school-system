@@ -7,7 +7,7 @@ import {useFilters} from "@hooks/api/useCrud.js";
 export default function Filters({onSubmit, resource, fields}) {
     const {data: fieldsData, isLoading} = useFilters(resource);
     const [filters, setFilters] = useState({});
-
+    console.log(fieldsData??"");
     const handleChange = useCallback((e) => {
         const {name, value} = e.target;
         setFilters(prevFilters => ({
@@ -36,7 +36,7 @@ export default function Filters({onSubmit, resource, fields}) {
                             name={field}
                             label={fields[field]}
                             id={field}
-                            options={fieldsData[field].map(option => ({label: option, value: option}))}
+                            options={fieldsData[field]}
                             placeholder={`اختر ${fields[field]}`}
                             handleChange={handleChange}
                             value={filters[field] || ''}

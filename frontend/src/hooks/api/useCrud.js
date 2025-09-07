@@ -22,8 +22,22 @@ export const useGetAll = (resource, params = {}) => {
 export const useFilters = (resource) => {
     return useQuery({
         queryKey: [resource, "filters"],
-        queryFn: () => axiosClient.get(`/${resource}/filters`).then(res => res.data),
-        keepPreviousData: true
+        queryFn: async () => {
+            const response = await axiosClient.get(`${resource}/filters`);
+            const normalizedData = {}
+            for (const [key, value] of Object.entries(response.data)) {
+                normalizedData[key] = value.map(item => {
+                    return {
+                        label: item,
+                        value: item
+                    }
+                })
+            }
+
+            return normalizedData;
+        },
+        keepPreviousData: true,
+
 
     })
 }
