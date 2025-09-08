@@ -30,6 +30,10 @@
     background-color: white;
     position: relative;
 
+    /* Truncate long text in the selected option display */
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
     &:focus {
         outline: 3px solid var(--color-focus)
     }
@@ -48,10 +52,6 @@
     background-size: .65em auto;
     padding-left: 10px;
     padding-right: 30px;
-}
-
-.inputWrapper option {
-
 }
 
 .inputWrapper span {
@@ -73,7 +73,9 @@
         margin-bottom: 20px;
     }
 
-
+    .inputWrapper select{
+        width: 100%;
+    }
     .inputWrapper > div {
         width: 100%;
 

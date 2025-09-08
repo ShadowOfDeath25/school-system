@@ -22,12 +22,12 @@ export default function ViewUsers() {
 
                     resource={"users"}
                     onSubmit={onSubmit}
-                    fields={{roles: "الصلاحية"}}
+                    fields={["roles"]}
                 />
                 <Table
                     resource={"users"}
                     filters={filters}
-                    fields={{name: "الاسم", email: "البريد الالكتروني", roles: "الصلاحيات"}}
+                    fields={["name", "email", "roles"]}
                 />
             </Page>
         </>

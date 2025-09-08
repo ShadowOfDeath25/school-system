@@ -1,6 +1,6 @@
 import {createContext, useCallback, useContext, useState} from "react";
 
-import ConfirmationModal from "@ui/Modal/ConfirmationModal.jsx";
+import ConfirmationModal from "@ui/ConfirmationModal/ConfirmationModal.jsx";
 
 const ModalContext = createContext(null)
 export const useModal = () => {
@@ -57,7 +57,6 @@ export function ModalProvider({children}) {
                     open={Boolean(confirmationState)}
                     onConfirm={handleConfirm}
                     onCancel={handleCancel}
-                    title={confirmationState.title}
                     message={confirmationState.message}
                 />
             )}

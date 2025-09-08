@@ -7,7 +7,7 @@ import './fonts.css'
 import './index.css'
 import {SnackbarProvider} from '@contexts/SnackbarContext.jsx'
 import {ModalProvider} from "@contexts/ModalContext.jsx";
-
+import './i18n'
 const queryClient = new QueryClient();
 window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 createRoot(document.getElementById('root')).render(
@@ -19,5 +19,5 @@ createRoot(document.getElementById('root')).render(
                 </ModalProvider>
             </SnackbarProvider>
         </QueryClientProvider>
-    </StrictMode>,
+     </StrictMode>,
 )

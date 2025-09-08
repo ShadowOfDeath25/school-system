@@ -3,11 +3,13 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import {useCallback, useState} from "react";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import {useFilters} from "@hooks/api/useCrud.js";
+import {useTranslation} from "react-i18next";
 
-export default function Filters({onSubmit, resource, fields}) {
+export default function Filters({onSubmit, resource}) {
     const {data: fieldsData, isLoading} = useFilters(resource);
     const [filters, setFilters] = useState({});
-    console.log(fieldsData??"");
+    console.log(fieldsData ?? "");
+    const {t, i18n} = useTranslation();
     const handleChange = useCallback((e) => {
         const {name, value} = e.target;
         setFilters(prevFilters => ({
@@ -34,10 +36,10 @@ export default function Filters({onSubmit, resource, fields}) {
                         <SelectField
                             key={field}
                             name={field}
-                            label={fields[field]}
+                            label={t(field)}
                             id={field}
                             options={fieldsData[field]}
-                            placeholder={`اختر ${fields[field]}`}
+                            placeholder={`اختر ${t(field)}`}
                             handleChange={handleChange}
                             value={filters[field] || ''}
                         />

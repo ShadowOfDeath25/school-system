@@ -9,6 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from "@mui/material/IconButton";
 import {useModal} from "@contexts/ModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import {useTranslation} from "react-i18next";
 
 export default function Table({resource, fields = {}, filters = null}) {
     const [currentPage, setCurrentPage] = useState(1);
@@ -19,6 +20,7 @@ export default function Table({resource, fields = {}, filters = null}) {
     const userCanDelete = user.roles.includes("Super Admin") || user.permissions.includes(`delete ${resource}`);
     const {confirm} = useModal()
     const {showSnackbar} = useSnackbar();
+    const {t, i18n} = useTranslation();
     const deleteMutation = useDelete(resource, {
         onSuccess: () => {
             showSnackbar("تم حذف العنصر بنجاح")
@@ -58,7 +60,7 @@ export default function Table({resource, fields = {}, filters = null}) {
         setCurrentPage(pageNumber);
     };
     const handleRowDelete = async (id) => {
-        const confirmed = await confirm({title: "تأكيد الحذف", message: "هل أنت متأكد من حذف هذا العنصر؟"})
+        const confirmed = await confirm({message: "هل أنت متأكد من حذف هذا العنصر؟"})
         if (confirmed) {
             deleteMutation.mutate(id);
         }
@@ -101,8 +103,8 @@ export default function Table({resource, fields = {}, filters = null}) {
     }
 
 
-    const columnKeys = Object.keys(fields).length > 0
-        ? Object.keys(fields)
+    const columnKeys = fields.length > 0
+        ? fields
         : (data.data.length > 0 ? Object.keys(data.data[0]) : []);
 
     const buttons = data.meta.links.map((link, index) => {
@@ -139,7 +141,7 @@ export default function Table({resource, fields = {}, filters = null}) {
                     <thead>
                         <tr>
                             {columnKeys.map(key => (
-                                <th key={key} className={styles.cell}>{fields[key] || key}</th>))}
+                                <th key={key} className={styles.cell}>{t(key) || key}</th>))}
                             {userCanEdit && <th className={`${styles.actionCell} ${styles.cell}`}>تعديل</th>}
                             {userCanDelete && <th className={`${styles.actionCell} ${styles.cell}`}>حذف</th>}
                         </tr>

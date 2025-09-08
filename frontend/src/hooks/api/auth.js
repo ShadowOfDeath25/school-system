@@ -10,11 +10,11 @@ export const useLogin = () => {
             const response = await axiosClient.post("/login", credentials);
             return response.data.user;
         }, onSuccess: (userData) => {
-            queryClient.setQueryData(["currentUser"], {user: userData});
+            queryClient.setQueryData(["currentUser"], {userData});
+
 
         }, onError: (error) => {
-            console.error("Login Failed:", error);
-            const errorMessage = error.response?.data?.message || "An unexpected error occurred.";
+            const errorMessage = error.response?.data?.message || "حدث خطأ في تسجيل الدخول";
 
         }
     });

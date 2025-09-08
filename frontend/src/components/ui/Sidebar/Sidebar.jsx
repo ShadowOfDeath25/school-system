@@ -13,7 +13,7 @@ export default function Sidebar({isOpen, setIsOpen}) {
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const allowedItems = sidebarItems.filter((item) => {
-        return user.roles.includes("Super Admin") || user.permissions.includes(`view ${item.name}`);
+        return user?.roles?.includes("Super Admin") || user?.permissions?.includes(`view ${item.name}`);
     })
     const filteredItems = allowedItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 

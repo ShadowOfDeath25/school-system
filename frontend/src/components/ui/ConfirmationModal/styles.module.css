@@ -1,0 +1,63 @@
+
+:global(.modalContent .MuiPaper-root) {
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    min-width: 30vw;
+    border-radius: 20px;
+}
+
+.msg, .title {
+    font-weight: bold !important;
+    color: var(--primary-text-color) !important;
+}
+
+.title {
+    font-size: 1.5rem !important;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+
+}
+
+.warningIcon {
+    color: var(--color-danger) !important;
+    font-size: 160px !important;
+    align-self: center;
+}
+
+.msg {
+    font-size: 2rem !important;
+}
+
+.actions {
+    display: flex;
+    gap: 20px;
+    padding: 20px !important;
+    & button {
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+
+    }
+}
+
+@media (max-width: 768px) {
+    :global(.modalContent .MuiPaper-root) {
+        width: 70vw;
+    }
+    .warningIcon{
+        font-size: 100px !important;
+    }
+    .msg{
+        font-size: 1.2rem !important;
+    }
+    .actions{
+        gap: 10px;
+    }
+    .actions button {
+        font-size: .8rem !important;
+    }
+}
