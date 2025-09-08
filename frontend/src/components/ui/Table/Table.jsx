@@ -7,7 +7,7 @@ import {useCurrentUser} from "@hooks/api/auth.js";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from "@mui/material/IconButton";
-import {useModal} from "@contexts/ModalContext.jsx";
+import {useModal} from "@contexts/ConfirmModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useTranslation} from "react-i18next";
 

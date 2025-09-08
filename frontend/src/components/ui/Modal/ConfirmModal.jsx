@@ -2,7 +2,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogContentText} from "@
 import styles from './styles.module.css';
 import WarningIcon from '@mui/icons-material/Warning'
 
-export default function ConfirmationModal({open, onConfirm, onCancel, message}) {
+export default function ConfirmModal({open, onConfirm, onCancel, message}) {
     return (
         <Dialog
             open={open}

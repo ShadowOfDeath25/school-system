@@ -11,6 +11,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
+        //TODO: handle multiple logins
         $credentials = $request->only('email', 'password');
         $remember = $request->filled("remember");
         if (Auth::attempt($credentials, $remember)) {
