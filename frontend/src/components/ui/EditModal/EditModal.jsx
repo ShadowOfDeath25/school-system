@@ -19,7 +19,6 @@ export default function EditModal({open, onCancel, fields, item, onSave, isLoadi
         if (onSave) {
             onSave({...formData, id: item.id});
         }
-        console.log(formData)
     };
     return (
         <>
@@ -44,7 +43,7 @@ export default function EditModal({open, onCancel, fields, item, onSave, isLoadi
                         />
 
                 </DialogContent>
-                <DialogActions>
+                <DialogActions className={styles.actions}>
                     <Button onClick={onCancel} sx={{color: 'var(--primary-text-color)'}} disabled={isLoading}>إلغاء</Button>
                     <Button form="edit-form" type="submit" autoFocus variant="contained" color="primary"
                             disabled={isLoading}>

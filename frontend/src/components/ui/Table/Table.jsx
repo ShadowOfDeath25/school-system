@@ -11,7 +11,7 @@ import TableToolbar from "./TableToolbar.jsx";
 import TablePresenter from "./TablePresenter.jsx";
 import TablePagination from "./TablePagination.jsx";
 
-export default function Table({resource, fields = [], editFields = [], filters = null}) {
+export default function Table({resource, fields = [], filters = null}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
@@ -21,21 +21,9 @@ export default function Table({resource, fields = [], editFields = [], filters =
     const {t} = useTranslation();
     const {showEditModal, hideEditModal} = useEditModal();
 
-    const updateMutation = useUpdate(resource, {
-        onSuccess: () => {
-            showSnackbar("تم تحديث العنصر بنجاح");
-            hideEditModal();
-        },
-        onError: () => showSnackbar("حدث خطأ أثناء تحديث العنصر", "error")
-    });
+    const updateMutation = useUpdate(resource);
 
-    const deleteMutation = useDelete(resource, {
-        onSuccess: () => {
-            showSnackbar("تم حذف العنصر بنجاح")
-        }, onError: () => {
-            showSnackbar("حدث خطأ أثناء حذف العنصر", "error")
-        }
-    });
+    const deleteMutation = useDelete(resource);
 
     useEffect(() => {
         const handler = setTimeout(() => {
@@ -69,25 +57,38 @@ export default function Table({resource, fields = [], editFields = [], filters =
     const handleRowDelete = async (id) => {
         const confirmed = await confirm({message: "هل أنت متأكد من حذف هذا العنصر؟"})
         if (confirmed) {
-            deleteMutation.mutate(id);
+            deleteMutation.mutate(id, {
+                onSuccess: () => {
+                    showSnackbar("تم حذف العنصر بنجاح")
+                }, onError: () => {
+                    showSnackbar("حدث خطأ أثناء حذف العنصر", "error")
+                }
+            });
         }
     };
 
     const handleEditClick = (item) => {
-        const modalFields = editFields.length > 0 ? editFields : fields;
         showEditModal({
-            fields: modalFields,
+            fields: fields,
             item: item,
             onSave: (formData) => {
-                updateMutation.mutate(formData);
+                updateMutation.mutate({...formData, id: item.id}, {
+                    onSuccess: () => {
+                        showSnackbar("تم تحديث العنصر بنجاح");
+                        hideEditModal();
+                    },
+                    onError: () => {
+                        showSnackbar("حدث خطأ اثناء تحديث العنصر")
+                    }
+                });
             },
             isLoading: updateMutation.isLoading,
             serverErrors: updateMutation.error?.response?.data?.errors,
         });
     };
 
-    const userCanEdit = user?.roles.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
-    const userCanDelete = user?.roles.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
+    const userCanEdit = user?.role.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
+    const userCanDelete = user?.role.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
 
     if (isLoading || userIsLoading) {
         return (

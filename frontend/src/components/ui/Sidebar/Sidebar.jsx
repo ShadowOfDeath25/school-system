@@ -13,7 +13,7 @@ export default function Sidebar({isOpen, setIsOpen}) {
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const allowedItems = sidebarItems.filter((item) => {
-        return user?.roles?.includes("Super Admin") || user?.permissions?.includes(`view ${item.name}`);
+        return user?.role?.includes("Super Admin") || user?.permissions?.includes(`view ${item.name}`);
     })
     const filteredItems = allowedItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 
@@ -50,7 +50,7 @@ export default function Sidebar({isOpen, setIsOpen}) {
                 onChange={handleChange(item.panel)}
             >
                 {
-                    item.links.filter((link) => user.roles.includes("Super Admin") || user.permissions.includes(link.action)).map((link, index) =>
+                    item.links.filter((link) => user.role.includes("Super Admin") || user.permissions.includes(link.action)).map((link, index) =>
                         <SidebarLink
                             key={index}
                             setSideBarIsOpen={setIsOpen}

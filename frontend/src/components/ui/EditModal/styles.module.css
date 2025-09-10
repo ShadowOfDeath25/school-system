@@ -5,6 +5,13 @@
     min-width: 30vw;
     border-radius: 20px;
 }
-.editModalContent{
+.actions {
+    display: flex;
+    gap: 20px;
+    padding: 20px !important;
+    & button {
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
 
+    }
 }

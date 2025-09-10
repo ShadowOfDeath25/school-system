@@ -99,13 +99,15 @@ trait HasCRUD
     public function update(Request $request, string $id)
     {
         $this->authorizeAction("update");
-        $requestClass = $this->storeRequest;
-        $rules = (new $requestClass())->rules();
-        $validated = validator(request()->all(), $rules)->validate();
-
+        $validated = app($this->updateRequest)->validated();
 
         $record = ($this->model)::findOrFail($id);
         $record->update($validated);
+
+        if (class_basename($this->model) === 'User' && isset($validated['role'])) {
+
+            $record->syncRoles($validated["role"]);
+        }
 
         return isset($this->resource)
             ? new $this->resource($record)

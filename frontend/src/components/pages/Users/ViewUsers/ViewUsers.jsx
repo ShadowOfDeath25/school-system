@@ -38,27 +38,7 @@ export default function ViewUsers() {
             id: 'name'
         },
         {
-            name: "password",
-            placeholder: "كلمة المرور",
-            type: "password",
-            validator: validator.users.password,
-            label: 'كلمة المرور',
-            required: false,
-            id: 'password',
-            error: 'كلمة المرور غير صالحه'
-        },
-        {
-            name: "password_confirmation",
-            placeholder: 'تأكيد كلمة المرور',
-            type: "password",
-            label: 'تأكيد كلمة المرور',
-            id: 'password_confirmation',
-            required: false,
-            error: 'كلمتان المرور غير متطابقتان',
-            validator: validator.users.confirmPassword,
-        },
-        {
-            name: "roles",
+            name: "role",
             type: "select",
             label: "الصلاحية",
             placeholder: "اختر صلاحية ...",

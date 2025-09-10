@@ -44,13 +44,15 @@ export const useFilters = (resource) => {
 
     })
 }
-export const useUpdate=(resource,payload)=>{
+export const useUpdate=(resource,options={})=>{
     const queryClient = useQueryClient()
     return useMutation({
+        ...options,
         mutationKey: [resource, "update"],
         mutationFn: (payload) => axiosClient.put(`/${resource}/${payload.id}`, payload),
-        onSuccess: ()=>{
+        onSuccess: (data,variables,context)=>{
             queryClient.invalidateQueries({queryKey: [resource]})
+            options.onSuccess?.(data,variables,context)
         }
     })
 }
