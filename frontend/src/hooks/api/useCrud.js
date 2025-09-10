@@ -44,6 +44,16 @@ export const useFilters = (resource) => {
 
     })
 }
+export const useUpdate=(resource,payload)=>{
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationKey: [resource, "update"],
+        mutationFn: (payload) => axiosClient.put(`/${resource}/${payload.id}`, payload),
+        onSuccess: ()=>{
+            queryClient.invalidateQueries({queryKey: [resource]})
+        }
+    })
+}
 export const useDelete = (resource, options = {}) => {
     const queryClient = useQueryClient()
     return useMutation({

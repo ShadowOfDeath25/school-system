@@ -3,13 +3,14 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
 import {useCallback, useEffect, useState} from "react";
 
-export default function Form({fields, title, btnText = "إضافة", onFormSubmit, serverErrors}) {
+export default function Form({fields,id, title, btnText = "إضافة", onFormSubmit, serverErrors, isModal = false}) {
     const [formData, setFormData] = useState(() =>
         fields.reduce((acc, field) => {
             acc[field.name] = field.value ?? "";
             return acc;
         }, {})
     );
+
     const [validity, setValidity] = useState(() =>
         fields.reduce((acc, field) => {
             acc[field.name] = undefined;
@@ -110,9 +111,10 @@ export default function Form({fields, title, btnText = "إضافة", onFormSubmi
     const isButtonDisabled = isFormInvalid || hasEmptyFields;
 
     return (
-        <form className={styles.form} onSubmit={onSubmit}>
+
+        <form className={`${isModal ? styles.modalForm : styles.form}`} id={id} onSubmit={onSubmit}>
             {title && <h3>{title}</h3>}
-            <div className={styles.formInputs}>
+            <div className={`${isModal ? styles.modalInputs : styles.formInputs} `}>
                 {fields.map((field) => {
                     const serverErrorForField = serverErrors?.[field.name]?.[0];
                     const commonProps = {
@@ -122,6 +124,7 @@ export default function Form({fields, title, btnText = "إضافة", onFormSubmi
                         handleBlur: handleBlur,
                         error: serverErrorForField || field.error,
                         isValid: validity[field.name],
+                        isModal: isModal
                     };
                     if (field.type === 'select') {
                         return <SelectField key={field.id || field.name} {...commonProps} />;
@@ -130,7 +133,7 @@ export default function Form({fields, title, btnText = "إضافة", onFormSubmi
                     return <InputField key={field.id || field.name} {...commonProps} />;
                 })}
             </div>
-            <button type="submit" disabled={isButtonDisabled}>{btnText}</button>
+            {!isModal && <button type="submit" disabled={isButtonDisabled}>{btnText}</button>}
         </form>
     );
 }

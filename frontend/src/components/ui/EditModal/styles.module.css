@@ -1,0 +1,10 @@
+:global(.editModal .MuiPaper-root) {
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    width: fit-content;
+    min-width: 30vw;
+    border-radius: 20px;
+}
+.editModalContent{
+
+}

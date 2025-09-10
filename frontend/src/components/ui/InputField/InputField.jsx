@@ -13,7 +13,9 @@ export default function InputField({
                                        value,
                                        handleChange,
                                        handleBlur,
-                                       isValid
+                                       isValid,
+                                        isModal=false
+
                                    }) {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -25,7 +27,7 @@ export default function InputField({
 
     return (
         <>
-            <div className={styles.inputWrapper}>
+            <div className={`${styles.inputWrapper} ${isModal ? styles.modalInputWrapper : ""} `}>
                 <label htmlFor={id}>{label}</label>
                 <div>
                     <input

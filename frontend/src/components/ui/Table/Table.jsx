@@ -2,7 +2,7 @@ import styles from './styles.module.css';
 import {useEffect, useState} from "react";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import SearchIcon from '@mui/icons-material/Search';
-import {useDelete, useGetAll} from "@hooks/api/useCrud.js";
+import {useDelete, useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useCurrentUser} from "@hooks/api/auth.js";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -10,22 +10,31 @@ import IconButton from "@mui/material/IconButton";
 import {useModal} from "@contexts/ConfirmModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useTranslation} from "react-i18next";
+import {useEditModal} from "@contexts/EditModalContext.jsx";
 
-export default function Table({resource, fields = {}, filters = null}) {
+export default function Table({resource, fields = [], editFields = [], filters = null}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const {data: user, isLoading: userIsLoading} = useCurrentUser();
-    const userCanEdit = user.roles.includes("Super Admin") || user.permissions.includes(`update ${resource}`);
-    const userCanDelete = user.roles.includes("Super Admin") || user.permissions.includes(`delete ${resource}`);
     const {confirm} = useModal()
     const {showSnackbar} = useSnackbar();
     const {t, i18n} = useTranslation();
+    const {showEditModal, hideEditModal} = useEditModal();
+    const updateMutation = useUpdate(resource, {
+        onSuccess: () => {
+            showSnackbar("تم تحديث العنصر بنجاح");
+            hideEditModal();
+        },
+        onError: () => showSnackbar("حدث خطأ أثناء تحديث العنصر", "error")
+    });
+    const userCanEdit = user?.roles.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
+    const userCanDelete = user?.roles.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
+    const fieldNames = fields.map(field => field.name).filter(field => field !== 'password' && field !== 'password_confirmation');
     const deleteMutation = useDelete(resource, {
         onSuccess: () => {
             showSnackbar("تم حذف العنصر بنجاح")
-        },
-        onError: () => {
+        }, onError: () => {
             showSnackbar("حدث خطأ أثناء حذف العنصر", "error")
         }
     });
@@ -45,8 +54,7 @@ export default function Table({resource, fields = {}, filters = null}) {
     }, [filters]);
 
     const {data, isLoading, isError} = useGetAll(resource, {
-        page: currentPage,
-        search: debouncedSearchTerm, ...filters
+        page: currentPage, search: debouncedSearchTerm, ...filters
     });
 
     const handlePageChange = (link) => {
@@ -66,10 +74,21 @@ export default function Table({resource, fields = {}, filters = null}) {
         }
     };
 
+    const handleEditClick = (item) => {
+        showEditModal({
+            fields: fields,
+            item: item,
+            onSave: (formData) => {
+                updateMutation.mutate(formData);
+            },
+            isLoading: updateMutation.isLoading,
+            serverErrors: updateMutation.error?.response?.data?.errors,
+        });
+    };
+
 
     if (isLoading || userIsLoading) {
-        return (
-            <div className={styles.wrapper}>
+        return (<div className={styles.wrapper}>
                 <div className={styles.toolbar}>
                     <div className={styles.searchContainer}>
                         <input type="text" placeholder="بحث..." value={searchTerm} disabled
@@ -80,13 +99,11 @@ export default function Table({resource, fields = {}, filters = null}) {
                 <div className={styles.tableContainer}>
                     <LoadingScreen/>
                 </div>
-            </div>
-        );
+            </div>);
     }
 
     if (isError || !data || !data.data) {
-        return (
-            <div className={styles.wrapper}>
+        return (<div className={styles.wrapper}>
                 <div className={styles.toolbar}>
                     <div className={styles.searchContainer}>
                         <input type="text" placeholder="بحث..." value={searchTerm}
@@ -98,14 +115,11 @@ export default function Table({resource, fields = {}, filters = null}) {
                      style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                     <h3>{isError ? "حدث خطأ أثناء جلب البيانات" : "لا يوجد بيانات للعرض"}</h3>
                 </div>
-            </div>
-        );
+            </div>);
     }
 
 
-    const columnKeys = fields.length > 0
-        ? fields
-        : (data.data.length > 0 ? Object.keys(data.data[0]) : []);
+    const columnKeys = fields.length > 0 ? fieldNames : (data.data.length > 0 ? Object.keys(data.data[0]) : []);
 
     const buttons = data.meta.links.map((link, index) => {
         const isDisabled = !link.url || link.active;
@@ -135,43 +149,33 @@ export default function Table({resource, fields = {}, filters = null}) {
             {data.data.length === 0 ? (
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%'}}>
                     <h3>لا يوجد بيانات للعرض</h3>
-                </div>
-            ) : (
-                <table className={styles.table}>
+                </div>) : (<table className={styles.table}>
                     <thead>
                         <tr>
-                            {columnKeys.map(key => (
-                                <th key={key} className={styles.cell}>{t(key) || key}</th>))}
+                            {columnKeys.map(key => (<th key={key} className={styles.cell}>{t(key) || key}</th>))}
                             {userCanEdit && <th className={`${styles.actionCell} ${styles.cell}`}>تعديل</th>}
                             {userCanDelete && <th className={`${styles.actionCell} ${styles.cell}`}>حذف</th>}
                         </tr>
                     </thead>
                     <tbody>
-                        {data.data.map((row) => (
-                            <tr key={row.id} className={styles.row}>
-                                {columnKeys.map((key) => (
-                                    <td key={`${row.id}-${key}`}
-                                        className={styles.cell}>{Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}</td>))}
-                                {userCanEdit &&
-                                    <td className={styles.actionCell}>
-                                        <IconButton>
-                                            <EditIcon sx={{color: "var(--color-focus)"}}/>
-                                        </IconButton>
-                                    </td>
-                                }
-                                {userCanDelete &&
-                                    <td className={styles.actionCell}>
-                                        <IconButton onClick={() => {
-                                            handleRowDelete(row.id)
-                                        }}>
-                                            <DeleteIcon sx={{color: 'var(--color-danger)'}}/>
-                                        </IconButton>
-                                    </td>}
-                            </tr>
-                        ))}
+                        {data.data.map((row) => (<tr key={row.id} className={styles.row}>
+                                {columnKeys.map((key) => (<td key={`${row.id}-${key}`}
+                                                              className={styles.cell}>{Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}</td>))}
+                                {userCanEdit && <td className={styles.actionCell}>
+                                    <IconButton onClick={() => handleEditClick(row)}>
+                                        <EditIcon sx={{color: "var(--color-focus)"}}/>
+                                    </IconButton>
+                                </td>}
+                                {userCanDelete && <td className={styles.actionCell}>
+                                    <IconButton onClick={() => {
+                                        handleRowDelete(row.id)
+                                    }}>
+                                        <DeleteIcon sx={{color: 'var(--color-danger)'}}/>
+                                    </IconButton>
+                                </td>}
+                            </tr>))}
                     </tbody>
-                </table>
-            )}
+                </table>)}
         </div>
         <div className={styles.pagination}>
             {buttons}

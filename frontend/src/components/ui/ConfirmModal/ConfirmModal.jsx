@@ -7,8 +7,6 @@ export default function ConfirmModal({open, onConfirm, onCancel, message}) {
         <Dialog
             open={open}
             onClose={onCancel}
-            aria-labelledby="confirmation-dialog-title"
-            aria-describedby="confirmation-dialog-description"
             className={"modalContent"}
         >
             <DialogContent className={styles.content}>

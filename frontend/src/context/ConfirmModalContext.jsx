@@ -1,17 +1,17 @@
 import {createContext, useCallback, useContext, useState} from "react";
 
-import ConfirmModal from "@ui/Modal/ConfirmModal.jsx";
+import ConfirmModal from "@ui/ConfirmModal/ConfirmModal.jsx";
 
 const ConfirmModalContext = createContext(null)
 export const useModal = () => {
     const context = useContext(ConfirmModalContext);
     if (!context) {
-        throw new Error('useModal must be used within a ModalProvider');
+        throw new Error('useModal must be used within a ConfirmModalProvider');
     }
     return context;
 }
 
-export function ModalProvider({children}) {
+export function ConfirmModalProvider({children}) {
     const [modal, setModal] = useState({
         open: false, msg: '', type: 'info',
     });
@@ -49,7 +49,7 @@ export function ModalProvider({children}) {
     };
 
     return (
-        <ConfirmModalContext.Provider value={{showModal, confirm}}>
+        <ConfirmModalContext.Provider value={{showEditModal: showModal, confirm}}>
             {children}
 
             {confirmationState && (

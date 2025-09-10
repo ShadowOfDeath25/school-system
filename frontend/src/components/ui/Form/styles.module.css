@@ -7,7 +7,22 @@
     box-sizing: border-box;
     flex-wrap: wrap;
 }
+.modalForm{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.modalInputs{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
 
+}
+.modalForm .inputWrapper{
+    flex-direction: column;
+}
 .form {
     box-shadow: var(--container-box-shadow);
     display: flex;
@@ -47,5 +62,8 @@
     .formInputs {
         grid-template-columns: repeat(1, 1fr);
 
+    }
+    .modalInputs {
+        gap: 10px;
     }
 }
