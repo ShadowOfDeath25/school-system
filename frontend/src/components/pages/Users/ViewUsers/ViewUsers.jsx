@@ -40,7 +40,7 @@ export default function ViewUsers() {
         {
             name: "role",
             type: "select",
-            label: "الصلاحية",
+            label: "الصلاحيات",
             placeholder: "اختر صلاحية ...",
             id: "role",
             required: true,
@@ -56,7 +56,6 @@ export default function ViewUsers() {
         <>
             <Page title={"عرض المستخدمين"} breadcrumbs={breadcrumbs}>
                 <Filters
-
                     resource={"users"}
                     onSubmit={onSubmit}
                     fields={["roles"]}
