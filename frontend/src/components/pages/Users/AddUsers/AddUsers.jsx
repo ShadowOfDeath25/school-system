@@ -74,6 +74,7 @@ export default function AddUser() {
             placeholder: "اختر صلاحية ...",
             id: "role",
             required: true,
+            multiple: true,
             error: "الرجاء اختيار صلاحية",
             validator: (value) => value !== "",
             options: normalizedRoles

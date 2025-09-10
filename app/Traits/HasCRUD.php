@@ -42,9 +42,9 @@ trait HasCRUD
                 if ($request->has($filterKey)) {
                     $value = $request->input($filterKey);
                     if (in_array($filterKey, $tableColumns)) {
-                        $query->where($filterKey, $value);
+                        $query->whereIn($filterKey, $value);
                     } elseif (method_exists($modelInstance, $filterKey)) {
-                        $query->whereHas($filterKey, fn($q) => $q->where('name', $value));
+                        $query->whereHas($filterKey, fn($q) => $q->whereIn('name', $value));
                     }
                 }
             }

@@ -8,15 +8,17 @@ import {useTranslation} from "react-i18next";
 export default function Filters({onSubmit, resource}) {
     const {data: fieldsData, isLoading} = useFilters(resource);
     const [filters, setFilters] = useState({});
-    console.log(fieldsData ?? "");
+
     const {t, i18n} = useTranslation();
-    const handleChange = useCallback((e) => {
-        const {name, value} = e.target;
+    const handleChange = (event) => {
+        const { name, value } = event.target;
+
         setFilters(prevFilters => ({
             ...prevFilters,
             [name]: value
         }));
-    }, []);
+    };
+        console.log(filters)
 
     const handleReset = () => {
         setFilters({});
@@ -38,10 +40,11 @@ export default function Filters({onSubmit, resource}) {
                             name={field}
                             label={t(field)}
                             id={field}
+                            multiple={true}
                             options={fieldsData[field]}
                             placeholder={`اختر ${t(field)}`}
                             handleChange={handleChange}
-                            value={filters[field] || ''}
+                            value={filters[field] || []}
                         />
                     ))}
                 </div>
