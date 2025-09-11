@@ -8,6 +8,7 @@ use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
@@ -36,3 +37,4 @@ Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name
 Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
 Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
 
+Route::get("/permissions",[PermissionController::class ,'index']);
