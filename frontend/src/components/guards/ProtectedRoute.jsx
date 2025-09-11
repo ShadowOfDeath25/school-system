@@ -5,8 +5,6 @@ import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 export default function ProtectedRoute() {
     const {data: user, isLoading} = useCurrentUser();
     const matches = useMatches();
-
-
     const currentRoute = matches[matches.length - 1];
     const requiredPermission = currentRoute.handle?.permission;
 

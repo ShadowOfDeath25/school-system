@@ -8,7 +8,7 @@ import RootLayout from '@layouts/Root/RootLayout';
 import GuestRoute from "@components/guards/GuestRoute.jsx";
 import Test from "@ui/Test.jsx";
 import {userRoutes} from "@routes/userRoutes.jsx";
-const router = createBrowserRouter([
+export const routes=[
     {
         path: '/',
         element: <RootLayout/>,
@@ -40,6 +40,7 @@ const router = createBrowserRouter([
             }
         ]
     }
-]);
+]
+const router = createBrowserRouter(routes);
 
 export default router;
