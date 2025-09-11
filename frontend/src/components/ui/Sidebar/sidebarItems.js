@@ -1,35 +1,45 @@
-const sidebarItems = [
-    {
-        panel: 'panel1',
-        header: 'test 1',
-        links: [
-            {
-                title: "Test",
-                to: "/test"
-            },
-            {
-                title: "App",
-                to: "/"
-            }
-        ]
-    },
-    {
-        panel: 'panel2',
-        header: 'المستخدمين',
-        links: [
-            {
-                title: "اضافة مستخدم",
-                to: "/users/add",
-                action: "create users"
-            },
-            {
-                title: "عرض المستخدمين",
-                to: "/users",
-                action: "view users"
-            }
-        ],
-        name:"users"
-    },
+import { appRoutes } from '@routes/routes.jsx';
 
-];
+const generateSidebarItems = (routeConfig) => {
+    const panels = [];
+    let panelCounter = 1;
+
+    routeConfig.forEach(routeGroup => {
+        if (routeGroup.handle?.sidebar?.header && routeGroup.children) {
+            const panel = {
+                panel: routeGroup.handle.sidebar.panel || `panel${panelCounter++}`,
+                header: routeGroup.handle.sidebar.header,
+                name: routeGroup.handle.sidebar.name,
+                links: []
+            };
+
+            const groupFullPath = routeGroup.path ? `/${routeGroup.path}` : '';
+
+            routeGroup.children.forEach(childRoute => {
+
+                if (childRoute.handle?.sidebar?.title) {
+
+                    const to = childRoute.index
+                        ? groupFullPath || '/'
+                        : `${groupFullPath}/${childRoute.path}`;
+
+                    panel.links.push({
+                        title: childRoute.handle.sidebar.title,
+                        to: to.replace(/\/+/g, '/'),
+                        action: childRoute.handle.sidebar.action
+                    });
+                }
+            });
+
+            if (panel.links.length > 0) {
+                panels.push(panel);
+            }
+        }
+    });
+
+    return panels;
+};
+
+const sidebarItems = generateSidebarItems(appRoutes);
+
 export default sidebarItems;
