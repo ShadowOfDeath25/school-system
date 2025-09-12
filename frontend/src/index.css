@@ -57,3 +57,15 @@ textarea {
 ul {
     list-style-position: inside;
 }
+.serverError{
+
+    height: 40vh;
+    width: 100%;
+    color: var(--primary-text-color);
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    border-top: var(--container-border);
+    box-shadow: var(--container-box-shadow);
+}

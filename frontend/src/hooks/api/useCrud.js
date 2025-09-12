@@ -10,7 +10,6 @@ export const useCreate = (resource, options = {}) => {
         mutationFn: (payload) => axiosClient.post(`/${resource}`, payload),
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({queryKey: [resource]});
-            // Also call the original onSuccess from options if it was provided
             options.onSuccess?.(data, variables, context);
         },
     })

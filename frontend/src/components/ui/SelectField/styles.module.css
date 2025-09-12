@@ -29,9 +29,13 @@
         outline: 3px solid var(--color-focus)
     }
 }
-:global(.MuiSelect-select){
+
+:global( .Mui-focused){
+    outline: 3px solid var(--color-focus) !important;
+}
+:global(.MuiSelect-select ){
     padding: 10px 32px 10px 10px !important;
-    border-radius: 10px !important;
+
 }
 :global(.Mui-selected){
     background-color: var(--secondary-color) !important;

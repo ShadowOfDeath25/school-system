@@ -6,6 +6,16 @@
     "role": "الصلاحية",
     "users": "المستخدمين",
     "view": "عرض",
-    "edit": "تعديل",
-    "delete": "حذف"
+    "update": "تعديل",
+    "delete": "حذف",
+    "create": "اضافة",
+    "books": "الكتب",
+    "guardians": "اولياء الأمور",
+    "expenses": "المصروفات",
+    "classrooms": "الفصول",
+    "payments": "المدفوعات",
+    "incomes": "المداخيل",
+    "students": "الطلاب",
+    "subjects": "المواد الدراسية",
+    "buses": "الاوتوبيسات"
 }

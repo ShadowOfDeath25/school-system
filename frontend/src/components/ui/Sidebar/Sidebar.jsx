@@ -13,14 +13,16 @@ export default function Sidebar({isOpen, setIsOpen}) {
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const allowedItems = sidebarItems.filter((item) => {
-        return user?.role?.includes("Super Admin") || user?.permissions?.includes(`view ${item.name}`);
+        const regex = new RegExp(`^\\w+\\s${item?.name}$`);
+
+        return user?.role?.includes("Super Admin") || user?.permissions?.some((permission=>regex.test(permission)));
     })
     const filteredItems = allowedItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleChange = (panel) => (event, isExpanded) => {
         setExpanded(isExpanded ? panel : false);
     }
-    const handleCloseIconClick = (e) => {
+    const handleCloseIconClick = () => {
         setIsOpen(false);
         localStorage.setItem("sideBarIsOpen", JSON.stringify(false));
     }

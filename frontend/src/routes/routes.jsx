@@ -31,9 +31,4 @@ const mainRoutes = {
     ],
 };
 
-/**
- * An array of route objects that are used to build the main application's
- * navigation and routing structure. These routes are rendered within the
- * DefaultLayout and are used to dynamically generate the sidebar.
- */
 export const appRoutes = [mainRoutes, userRoutes];
