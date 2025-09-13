@@ -1,7 +1,7 @@
 import React from 'react';
 import ViewUsers from "@pages/Users/ViewUsers/ViewUsers.jsx";
 import AddUser from "@pages/Users/AddUsers/AddUsers.jsx";
-import AddRoles from "@pages/Users/AddRoles/AddRoles.jsx";
+
 
 
 export const userRoutes = {
@@ -33,15 +33,6 @@ export const userRoutes = {
                 }
             }
         },
-        {
-            path: 'roles/add',
-            element: <AddRoles/>,
-            handle: {
-                sidebar: {
-                    title: "اضافة صلاحيات",
-                    action: "create roles"
-                }
-            }
-        }
+
     ]
 };

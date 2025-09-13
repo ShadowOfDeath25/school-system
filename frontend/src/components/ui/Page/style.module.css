@@ -7,7 +7,13 @@
     overflow-y: scroll;
     scrollbar-width: none;
 }
-
+.breadcrumbLink{
+    text-decoration: none;
+    color: #706f6c;
+    &:hover{
+        text-decoration: underline;
+    }
+}
 .container h2 {
     margin-bottom: 10px;
 }
