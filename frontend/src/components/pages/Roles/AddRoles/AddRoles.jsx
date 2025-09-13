@@ -8,7 +8,6 @@ import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
 
 export default function AddRoles() {
-    const breadcrumbs = [<span>الصلاحيات</span>, <span>إضافة صلاحيات</span>]
     const {data: permissions, isLoading, isError, error} = useGetAll("permissions");
     const {i18n, t} = useTranslation();
     const [serverErrors, setServerErrors] = useState(null);

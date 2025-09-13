@@ -6,10 +6,6 @@ import {validator} from "@hooks/useValidator.js";
 import {useGetAll} from "@hooks/api/useCrud.js";
 
 export default function ViewUsers() {
-    const breadcrumbs = [
-        <span>المستخدمين</span>,
-        <span>عرض المستخدمين</span>
-    ];
     const {data: roles, isLoading} = useGetAll("roles")
     const normalizedRoles = roles?.data.map((role) => {
         return {value: role?.name, label: role?.name}

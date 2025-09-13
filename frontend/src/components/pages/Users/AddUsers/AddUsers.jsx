@@ -97,7 +97,6 @@ export default function AddUser() {
     return (
         <Page
             title="اضافة مستخدم"
-            breadcrumbs={[<span>المستخدمين</span>, <span>اضافة مستخدم</span>]}
         >
             <Form fields={fields} onFormSubmit={onFormSubmit} serverErrors={serverErrors}/>
             <div className={styles.instructions}>
