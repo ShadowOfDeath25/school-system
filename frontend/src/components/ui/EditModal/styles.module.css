@@ -5,12 +5,20 @@
     min-width: 30vw;
     border-radius: 20px;
 }
+
+.editModalContent {
+    scrollbar-width: none;
+    max-height: 60vh;
+
+}
+
 .actions {
     display: flex;
     gap: 20px;
     padding: 20px !important;
+
     & button {
-        font-size: 1.2rem !important;
+        font-size: 1.1rem !important;
         font-weight: bold !important;
 
     }
