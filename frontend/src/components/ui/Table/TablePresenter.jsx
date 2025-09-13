@@ -34,7 +34,7 @@ export default function TablePresenter({
                 <tr key={row.id} className={styles.row}>
                     {columnKeys.map((key) => (
                         <td key={`${row.id}-${key}`} className={styles.cell}>
-                            {Array.isArray(row[key]) ? row[key].join(' ، ') : row[key]}
+                            {Array.isArray(row[key]) ? row[key].map(item=>t(item)||item).join(" ، "): row[key]}
                         </td>
                     ))}
                     {userCanEdit &&

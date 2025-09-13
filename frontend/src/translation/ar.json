@@ -17,5 +17,7 @@
     "incomes": "المداخيل",
     "students": "الطلاب",
     "subjects": "المواد الدراسية",
-    "buses": "الاوتوبيسات"
+    "buses": "الاوتوبيسات",
+    "permission": "{{action}} {{resource}}",
+    "permissions": "الصلاحيات"
 }
