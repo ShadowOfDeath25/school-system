@@ -1,5 +1,5 @@
 import styles from './styles.module.css';
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import {useDelete, useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useCurrentUser} from "@hooks/api/auth.js";
@@ -43,6 +43,25 @@ export default function Table({resource, fields = [], filters = null}) {
     const {data, isLoading, isError} = useGetAll(resource, {
         page: currentPage, search: debouncedSearchTerm, ...filters
     });
+
+    const tableData = useMemo(() => {
+        if (!data?.data) return [];
+
+        if (resource === "roles") {
+            return data.data.map(role => ({
+                ...role,
+                permissions: role.permissions.map(permission => {
+                    const [action, resourceName] = permission.split(" ");
+                    if (!action || !resourceName) return permission;
+                    return t("permission", {
+                        action: t(action),
+                        resource: t(resourceName)
+                    });
+                })
+            }));
+        }
+        return data.data;
+    }, [resource, t, data?.data]);
 
     const handlePageChange = (link) => {
         if (!link.url || link.active) {
@@ -101,7 +120,7 @@ export default function Table({resource, fields = [], filters = null}) {
         );
     }
 
-    if (isError || !data || !data.data) {
+    if (isError || !data || tableData.length === 0) {
         return (
             <div className={styles.wrapper}>
                 <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
@@ -114,14 +133,14 @@ export default function Table({resource, fields = [], filters = null}) {
     }
 
     const fieldNames = fields.map(field => field.name).filter(field => field !== 'password' && field !== 'password_confirmation');
-    const columnKeys = fields.length > 0 ? fieldNames : (data.data.length > 0 ? Object.keys(data.data[0]) : []);
+    const columnKeys = fields.length > 0 ? fieldNames : (tableData.length > 0 ? Object.keys(tableData[0]) : []);
 
     return (
         <div className={styles.wrapper}>
             <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
             <div className={styles.tableContainer}>
                 <TablePresenter
-                    data={data.data}
+                    data={tableData}
                     columnKeys={columnKeys}
                     t={t}
                     userCanEdit={userCanEdit}
