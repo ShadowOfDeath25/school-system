@@ -2,6 +2,7 @@ import React from 'react';
 import App from '/src/App.jsx'
 import Test from '@ui/Test.jsx';
 import { userRoutes } from '@routes/userRoutes.jsx';
+import {roleRoutes} from "@routes/roleRoutes.jsx";
 
 const mainRoutes = {
     handle: {
@@ -31,4 +32,4 @@ const mainRoutes = {
     ],
 };
 
-export const appRoutes = [mainRoutes, userRoutes];
+export const appRoutes = [mainRoutes, userRoutes,roleRoutes];
