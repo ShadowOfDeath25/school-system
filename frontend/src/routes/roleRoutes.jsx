@@ -16,7 +16,7 @@ export const roleRoutes =
                 element: <ViewRoles/>,
                 handle: {
                     sidebar: {
-                        title: "عرض الرتب",
+                        title: "الرتب",
                         action: "view roles"
                     }
                 }

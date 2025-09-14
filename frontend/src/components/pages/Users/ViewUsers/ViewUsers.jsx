@@ -50,7 +50,7 @@ export default function ViewUsers() {
 
     return (
         <>
-            <Page title={"عرض المستخدمين"}>
+            <Page>
                 <Filters
                     resource={"users"}
                     onSubmit={onSubmit}

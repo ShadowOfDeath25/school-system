@@ -37,7 +37,6 @@ export default function AddRoles() {
     }));
 
 
-
     const handleSubmit = (data) => {
 
         const normalizedData = Object.values(data).filter((value) => value !== "" && value !== data.name).flat();
@@ -57,7 +56,7 @@ export default function AddRoles() {
     }
     return (
         <>
-            <Page breadcrumbs={breadcrumbs} title={"إضافة صلاحيات"}>
+            <Page>
                 {isError &&
                     <h3 className={"serverError"}>حدث خطأ اثناء التحميل</h3>
                 }

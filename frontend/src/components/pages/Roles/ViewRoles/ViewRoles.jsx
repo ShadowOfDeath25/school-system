@@ -1,5 +1,4 @@
 import Page from "@ui/Page/Page.jsx";
-import {useMatches} from "react-router";
 import Table from "@ui/Table/Table.jsx";
 import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useTranslation} from "react-i18next";
@@ -75,7 +74,7 @@ export default function ViewRoles() {
 
 
     return (
-        <Page title={"عرض الرتب"}>
+        <Page>
 
             <Table
                 resource={"roles"}

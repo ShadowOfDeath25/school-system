@@ -95,9 +95,7 @@ export default function AddUser() {
     }
 
     return (
-        <Page
-            title="اضافة مستخدم"
-        >
+        <Page>
             <Form fields={fields} onFormSubmit={onFormSubmit} serverErrors={serverErrors}/>
             <div className={styles.instructions}>
                 <h3>تعليمات كلمة المرور:</h3>
