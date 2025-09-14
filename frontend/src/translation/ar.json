@@ -19,5 +19,6 @@
     "subjects": "المواد الدراسية",
     "buses": "الاوتوبيسات",
     "permission": "{{action}} {{resource}}",
-    "permissions": "الصلاحيات"
+    "permissions": "الصلاحيات",
+    "id": "#"
 }

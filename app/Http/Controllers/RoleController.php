@@ -45,7 +45,7 @@ class RoleController extends Controller
         }
         $role->save();
 
-        return response()->json(["role"=>$role,"permissions"=>$role->permissions]);
+        return response()->json(["role"=>$role]);
     }
 
 

@@ -11,7 +11,7 @@ import TableToolbar from "./TableToolbar.jsx";
 import TablePresenter from "./TablePresenter.jsx";
 import TablePagination from "./TablePagination.jsx";
 
-export default function Table({resource, fields = [], filters = null}) {
+export default function Table({resource, fields = [], filters = null, editFields = fields, handleEdit}) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
@@ -47,20 +47,28 @@ export default function Table({resource, fields = [], filters = null}) {
     const tableData = useMemo(() => {
         if (!data?.data) return [];
 
-        if (resource === "roles") {
-            return data.data.map(role => ({
-                ...role,
-                permissions: role.permissions.map(permission => {
-                    const [action, resourceName] = permission.split(" ");
-                    if (!action || !resourceName) return permission;
-                    return t("permission", {
-                        action: t(action),
-                        resource: t(resourceName)
-                    });
-                })
-            }));
+        if (resource !== "roles") {
+            return data.data;
         }
-        return data.data;
+
+        return data.data.map(role => {
+            if (role.permissions && typeof role.permissions === 'object' && !Array.isArray(role.permissions)) {
+                if (role.permissions.all?.includes('all')) {
+                    return {...role, permissions: [t('all_permissions', 'All Permissions')]};
+                }
+
+                const translatedPermissions = Object.entries(role.permissions).flatMap(([resourceName, actions]) =>
+                    actions.map(action =>
+                        t("permission", {
+                            action: t(action),
+                            resource: t(resourceName)
+                        })
+                    )
+                );
+                return {...role, permissions: translatedPermissions};
+            }
+            return role;
+        });
     }, [resource, t, data?.data]);
 
     const handlePageChange = (link) => {
@@ -87,8 +95,9 @@ export default function Table({resource, fields = [], filters = null}) {
     };
 
     const handleEditClick = (item) => {
+
         showEditModal({
-            fields: fields,
+            fields: editFields,
             item: item,
             onSave: (formData) => {
                 updateMutation.mutate({...formData, id: item.id}, {
@@ -96,7 +105,7 @@ export default function Table({resource, fields = [], filters = null}) {
                         showSnackbar("تم تحديث العنصر بنجاح");
                         hideEditModal();
                     },
-                    onError: () => {
+                    onError: (error) => {
                         showSnackbar("حدث خطأ اثناء تحديث العنصر")
                     }
                 });
@@ -105,6 +114,7 @@ export default function Table({resource, fields = [], filters = null}) {
             serverErrors: updateMutation.error?.response?.data?.errors,
         });
     };
+
 
     const userCanEdit = user?.role.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
     const userCanDelete = user?.role.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
@@ -126,7 +136,7 @@ export default function Table({resource, fields = [], filters = null}) {
                 <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
                 <div className={styles.tableContainer}
                      style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                    <h3>{isError ? "حدث خطأ أثناء جلب البيانات" : "لا يوجد بيانات للعرض"}</h3>
+                    <h3 className={"serverError"}>{isError ? "حدث خطأ أثناء جلب البيانات" : "لا يوجد بيانات للعرض"}</h3>
                 </div>
             </div>
         );
@@ -145,7 +155,7 @@ export default function Table({resource, fields = [], filters = null}) {
                     t={t}
                     userCanEdit={userCanEdit}
                     userCanDelete={userCanDelete}
-                    onEditClick={handleEditClick}
+                    onEditClick={handleEdit ?? handleEditClick}
                     onDeleteClick={handleRowDelete}
                 />
             </div>

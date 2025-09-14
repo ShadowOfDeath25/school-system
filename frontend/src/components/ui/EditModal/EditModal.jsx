@@ -10,11 +10,11 @@ export default function EditModal({open, onCancel, fields, item, onSave, isLoadi
         if (!item) return fields;
         return fields.map(field => ({
             ...field,
-            value: item[field.name] ?? field.value ?? ''
+            value: item[field.name] ?? field.value ?? item.permissions[field.name]??''
         }));
     }, [fields, item]);
 
-
+    console.log(item);
     const handleFormSubmit = (formData) => {
         if (onSave) {
             onSave({...formData, id: item.id});
