@@ -9,10 +9,8 @@ export const useLogin = () => {
             await axiosClient.get("/csrf-cookie");
             const response = await axiosClient.post("/login", credentials);
             return response.data.user;
-        }, onSuccess: (userData) => {
-            queryClient.setQueryData(["currentUser"], {userData});
-
-
+        }, onSuccess: (data) => {
+            queryClient.setQueryData(["currentUser"], {...data});
         }, onError: (error) => {
             const errorMessage = error.response?.data?.message || "حدث خطأ في تسجيل الدخول";
 

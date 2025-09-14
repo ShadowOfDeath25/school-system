@@ -19,7 +19,7 @@ export default function LoginPage() {
         login({email, password, remember})
 
     }
-
+    // Todo: handle loading state
     return (
         <>
 

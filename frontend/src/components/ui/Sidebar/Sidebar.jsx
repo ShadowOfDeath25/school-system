@@ -6,16 +6,17 @@ import sidebarItems from "./sidebarItems.js";
 import SidebarLink from "@ui/SidebarLink/SidebarLink.jsx";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
-import {useCurrentUser} from "@hooks/api/auth.js";
+import {useQueryClient} from "@tanstack/react-query";
 
 export default function Sidebar({isOpen, setIsOpen}) {
-    const {data: user} = useCurrentUser();
+    const queryClient = useQueryClient();
+    const user = queryClient.getQueryData(["currentUser"]);
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const allowedItems = sidebarItems.filter((item) => {
         const regex = new RegExp(`^\\w+\\s${item?.name}$`);
 
-        return user?.role?.includes("Super Admin") || user?.permissions?.some((permission=>regex.test(permission)));
+        return user?.role?.includes("Super Admin") || user?.permissions?.some((permission => regex.test(permission)));
     })
     const filteredItems = allowedItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 
