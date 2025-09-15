@@ -3,6 +3,7 @@ import App from '/src/App.jsx'
 import Test from '@ui/Test.jsx';
 import { userRoutes } from '@routes/userRoutes.jsx';
 import {roleRoutes} from "@routes/roleRoutes.jsx";
+import {studentRoutes} from "@routes/studentRoutes.jsx";
 
 const mainRoutes = {
     handle: {
@@ -32,4 +33,4 @@ const mainRoutes = {
     ],
 };
 
-export const appRoutes = [mainRoutes, userRoutes,roleRoutes];
+export const appRoutes = [mainRoutes, userRoutes,roleRoutes,studentRoutes];
