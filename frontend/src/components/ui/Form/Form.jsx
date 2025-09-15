@@ -3,17 +3,22 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import useForm from "@hooks/useForm.js";
+import {useMemo} from "react";
 // import DatePicker from '@ui/DatePicker/DatePicker.jsx'
 
 export default function Form({fields, id, title, btnText = "إضافة", onFormSubmit, serverErrors, isModal = false}) {
     const isSectioned = fields.length > 0 && fields[0].hasOwnProperty('fields');
 
-    const allFields = isSectioned ? fields.flatMap(section => section.fields) : fields;
+    const allFields = useMemo(
+        () => isSectioned ? fields.flatMap(section => section.fields) : fields,
+        [fields]
+    );
 
-    const initialValues = allFields.reduce((acc, field) => {
-        acc[field.name] = field.value ?? (field.multiple ? [] : "");
-        return acc;
-    }, {});
+    const initialValues = useMemo(() =>
+        allFields.reduce((acc, field) => {
+            acc[field.name] = field.value ?? (field.multiple ? [] : "");
+            return acc;
+        }, {}), [allFields]);
 
     const {
         formData, errors, touched, handleChange, handleBlur, handleSubmit
