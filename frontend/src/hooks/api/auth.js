@@ -25,12 +25,13 @@ export const useLogout = () => {
             await axiosClient.post("/logout");
         },
         onSuccess: () => {
-            queryClient.setQueryData(["currentUser"], null);
+            queryClient.invalidateQueries({
+                queryKey: ["currentUser"]
+            });
         },
         onError: (error) => {
             console.error("Logout failed on server:", error);
 
-            queryClient.setQueryData(["currentUser"], null);
         }
     });
 };
