@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('guardians', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string("nid")->unique();
             $table->string('edu');
             $table->string('job');
             $table->string('phone_number')->unique();

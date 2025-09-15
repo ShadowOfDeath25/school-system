@@ -20,7 +20,6 @@ return new class extends Migration {
             $table->string('nid')->unique();
             $table->enum('gender', ['male', 'female']);
             $table->text('birth_address');
-            $table->enum('language', ["لغات", 'عربي']);
             $table->enum('religion', ['مسلم', "مسيحي"]);
             $table->bigInteger('classroom_id')->unsigned()->nullable();
             $table->foreign('classroom_id')->references('id')->on('classrooms');

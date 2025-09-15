@@ -39,7 +39,7 @@ class StudentController extends Controller
             $guardianIds = [];
             foreach ($guardianData as $guardian) {
                 $newOrFoundGuardian = Guardian::firstOrCreate(
-                    ['nid' => $guardian['nid']],
+                    ['phone_number' => $guardian['phone_number']],
                     $guardian
                 );
                 $guardianIds[] = $newOrFoundGuardian->id;
