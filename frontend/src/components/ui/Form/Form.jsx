@@ -1,139 +1,71 @@
 import InputField from "@ui/InputField/InputField.jsx";
 import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
-import {useCallback, useEffect, useState} from "react";
+import RadioField from "@ui/RadioField/RadioField.jsx";
+import useForm from "@hooks/useForm.js";
+// import DatePicker from '@ui/DatePicker/DatePicker.jsx'
 
-export default function Form({fields,id, title, btnText = "إضافة", onFormSubmit, serverErrors, isModal = false}) {
-    const [formData, setFormData] = useState(() =>
-        fields.reduce((acc, field) => {
-            acc[field.name] = field.value ?? "";
-            return acc;
-        }, {})
-    );
+export default function Form({fields, id, title, btnText = "إضافة", onFormSubmit, serverErrors, isModal = false}) {
+    const isSectioned = fields.length > 0 && fields[0].hasOwnProperty('fields');
 
-    const [validity, setValidity] = useState(() =>
-        fields.reduce((acc, field) => {
-            acc[field.name] = undefined;
-            return acc;
-        }, {})
-    );
+    const allFields = isSectioned ? fields.flatMap(section => section.fields) : fields;
 
-    useEffect(() => {
-        if (serverErrors && Object.keys(serverErrors).length > 0) {
-            const newValidity = {};
-            for (const fieldName in serverErrors) {
-                if (formData.hasOwnProperty(fieldName)) {
-                    newValidity[fieldName] = false;
-                }
-            }
-            setValidity(prev => ({...prev, ...newValidity}));
+    const initialValues = allFields.reduce((acc, field) => {
+        acc[field.name] = field.value ?? (field.multiple ? [] : "");
+        return acc;
+    }, {});
 
-
-            setFormData(prev => ({
-                ...prev,
-                password: "",
-                password_confirmation: ""
-            }));
-        }
-    }, [serverErrors]);
-
-    const handleChange = useCallback((e) => {
-        const {name, value} = e.target;
-        setFormData((prev) => ({...prev, [name]: value}));
-
-
-        if (name === 'password' && validity.password_confirmation !== undefined) {
-            const confirmField = fields.find(f => f.name === 'password_confirmation');
-            if (confirmField?.validator) {
-                const isConfirmValid = confirmField.validator(value, formData.password_confirmation);
-                setValidity(prevValidity => ({...prevValidity, password_confirmation: isConfirmValid}));
-            }
-        }
-
-    }, [fields, formData, validity]);
-
-    const handleBlur = useCallback((e) => {
-        const {name, value} = e.target;
-        const field = fields.find(f => f.name === name);
-        if (!field) return;
-
-
-        if (!field.validator) {
-            setValidity((prev) => ({...prev, [name]: true}));
-            return;
-        }
-
-        let isValid;
-        if (field.name === "password_confirmation") {
-            isValid = field.validator(formData.password, value);
-        } else {
-            isValid = field.validator(value);
-        }
-        setValidity((prev) => ({...prev, [name]: isValid}));
-    }, [fields, formData]);
-
-    const onSubmit = (e) => {
-        e.preventDefault();
-
-        const newValidity = {};
-        let isFormValid = true;
-        for (const field of fields) {
-            let isValid = true;
-            if (field.validator) {
-                if (field.name === 'password_confirmation') {
-                    isValid = field.validator(formData.password, formData[field.name]);
-                } else {
-                    isValid = field.validator(formData[field.name]);
-                }
-            }
-            newValidity[field.name] = isValid;
-            if (!isValid) {
-                isFormValid = false;
-            }
-        }
-
-        setValidity(newValidity);
-        if (isFormValid) {
-            if (onFormSubmit) {
-                onFormSubmit(formData);
-            }
-        } else {
-            console.log("Form is invalid, please check the errors.");
-        }
-    }
-
-
-    const isFormInvalid = Object.values(validity).some(v => v === false);
-    const hasEmptyFields = fields.some(field => {
-        const isRequired = field.required !== false;
-        return isRequired && formData[field.name] === '';
+    const {
+        formData, errors, touched, handleChange, handleBlur, handleSubmit
+    } = useForm({
+        initialValues, fields: allFields, onSubmit: onFormSubmit, serverErrors
     });
-    const isButtonDisabled = isFormInvalid || hasEmptyFields;
 
-    return (
+    const hasEmptyRequiredFields = allFields.some(field => {
+        if (field.required === false) return false;
+        const value = formData[field.name];
+        if (Array.isArray(value)) {
+            return value.length === 0;
+        }
+        return value === '' || value === null || value === undefined;
+    });
 
-        <form className={`${isModal ? styles.modalForm : styles.form}`} id={id} onSubmit={onSubmit}>
-            {title && <h3>{title}</h3>}
-            <div className={`${isModal ? styles.modalInputs : styles.formInputs} `}>
-                {fields.map((field) => {
-                    const serverErrorForField = serverErrors?.[field.name]?.[0];
-                    const commonProps = {
-                        ...field,
-                        value: formData[field.name],
-                        handleChange: handleChange,
-                        handleBlur: handleBlur,
-                        error: serverErrorForField || field.error,
-                        isValid: validity[field.name],
-                        isModal: isModal
-                    };
-                    if (field.type === 'select') {
-                        return <SelectField key={field.id || field.name} {...commonProps} />;
-                    }
+    const isFormInvalid = Object.values(errors).some(error => error);
+    const isButtonDisabled = isFormInvalid || hasEmptyRequiredFields;
 
-                    return <InputField key={field.id || field.name} {...commonProps} />;
-                })}
+    const renderField = (field) => {
+        const fieldError = errors[field.name];
+        const isTouched = touched[field.name];
+        const commonProps = {
+            ...field,
+            value: formData[field.name],
+            handleChange: handleChange,
+            handleBlur: handleBlur,
+            error: fieldError,
+            isValid: isTouched ? !fieldError : undefined,
+            isModal: isModal
+        };
+        switch (field.type) {
+            case 'select':
+                return <SelectField key={field.id || field.name} {...commonProps} />;
+            case 'radio':
+                return <RadioField key={field.id || field.name} {...commonProps} />;
+            default:
+                return <InputField key={field.id || field.name} {...commonProps} />;
+        }
+
+    };
+
+    return (<form className={`${isModal ? styles.modalForm : styles.form}`} id={id} onSubmit={handleSubmit}>
+        {title && <h3 className={styles.formTitle}>{title}</h3>}
+        {isSectioned ? (fields.map((section, index) => (<div key={index} className={styles.formSection}>
+            {section.title && <h4 className={styles.sectionTitle}>{section.title}</h4>}
+            <div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
+                {section.fields.map(renderField)}
             </div>
-            {!isModal && <button type="submit" disabled={isButtonDisabled}>{btnText}</button>}
-        </form>
-    );
+        </div>))) : (<div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
+            {fields.map(renderField)}
+        </div>)}
+        {!isModal && <button type="submit" disabled={isButtonDisabled}>{btnText}</button>}
+    </form>);
 }
