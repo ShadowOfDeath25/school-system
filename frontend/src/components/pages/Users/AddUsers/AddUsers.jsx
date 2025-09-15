@@ -83,12 +83,13 @@ export default function AddUser() {
     if (isLoading) {
         return <LoadingScreen/>
     }
-    const onFormSubmit = (data) => {
+    const onFormSubmit = (data, formActions) => {
         setServerErrors(null);
         mutate(data, {
             onSuccess: () => {
                 showSnackbar("تم إضافة المستخدم بنجاح");
                 setServerErrors(null);
+                formActions.resetForm();
             }
         });
     }

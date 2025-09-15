@@ -5,6 +5,12 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
     const [errors, setErrors] = useState({});
     const [touched, setTouched] = useState({});
 
+    const resetForm = useCallback(() => {
+        setFormData(initialValues);
+        setErrors({});
+        setTouched({});
+    }, [initialValues]);
+
     useEffect(() => {
         if (serverErrors && Object.keys(serverErrors).length > 0) {
             const newErrors = {};
@@ -82,13 +88,13 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
         setErrors(newErrors);
 
         if (isFormValid) {
-            onSubmit(formData);
+            onSubmit(formData, { resetForm });
         } else {
             console.log("Form is invalid, please check the errors.");
         }
     };
 
-    return {formData, errors, touched, handleChange, handleBlur, handleSubmit};
+    return {formData, errors, touched, handleChange, handleBlur, handleSubmit, resetForm};
 };
 
 export default useForm;

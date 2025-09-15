@@ -177,12 +177,13 @@ export default function AddStudents() {
         normalizedData.guardians = [fatherData, motherData]
         return normalizedData;
     }
-    const onFormSubmit = (data) => {
+    const onFormSubmit = (data, formActions) => {
         setServerErrors(undefined);
         creationMutation.mutate(normalizeData(data), {
             onSuccess: () => {
                 showSnackbar("تم إضافة الطالب بنجاح");
                 setServerErrors(undefined);
+                formActions.resetForm();
             },
             onError: (error) => {
                 showSnackbar("حدث خطأ أثناء إضافة الطالب", "error");
