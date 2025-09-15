@@ -7,11 +7,13 @@ html, body, #root {
     min-height: 100vh;
 
 }
-::selection{
 
-    color: black;
-    background-color: var(--secondary-color);
+::selection {
+
+    color: black !important;
+    background-color: var(--secondary-color) !important;
 }
+
 * {
     margin: 0;
     padding: 0;
@@ -57,13 +59,14 @@ textarea {
 ul {
     list-style-position: inside;
 }
-.serverError{
+
+.serverError {
 
     height: 40vh;
     width: 100%;
     color: var(--primary-text-color);
     display: flex;
-    align-items:center;
+    align-items: center;
     justify-content: center;
     background-color: var(--primary-color);
     border-top: var(--container-border);
