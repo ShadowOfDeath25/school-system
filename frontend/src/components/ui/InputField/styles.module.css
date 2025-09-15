@@ -1,7 +1,7 @@
 /* Todo: Fix show password button position */
 .inputWrapper {
     width: 100%;
-    font-size: 16px;
+
 
     display: flex;
     flex-direction: row;
@@ -14,7 +14,7 @@
     padding: 10px;
     border: 1px solid var(--secondary-color);
     border-radius: 5px;
-    font-size: 16px;
+
     margin-bottom: 5px;
 
     &:focus {
@@ -51,7 +51,7 @@
 .inputWrapper div {
     display: flex;
     flex-direction: column;
-    width: 40%;
+    width: 60%;
     position: relative;
 }
 

@@ -1,38 +1,66 @@
 .formInputs {
     width: 100%;
-    min-height: 300px;
+    min-height: 100px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem 20%;
     box-sizing: border-box;
     flex-wrap: wrap;
+    margin-bottom: 30px;
+
 }
-.modalForm{
+.formSection{
+    width: 100%;
+    color: var(--primary-text-color);
+    padding-bottom: 20px;
+}
+.formSection:not(:first-of-type){
+    border-top: 2px solid var(--secondary-color);
+    & .sectionTitle{
+        margin-top: 20px;
+    }
+}
+.formTitle {
+    color: var(--primary-text-color);
+    align-self: flex-start;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+.sectionTitle{
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+
+.modalForm {
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
 }
-.modalInputs{
+
+.modalInputs {
     height: 100%;
     display: flex;
     flex-direction: column;
     gap: 30px;
 
 }
-.modalForm .inputWrapper{
+
+.modalForm .inputWrapper {
     flex-direction: column;
 }
+
 .form {
     box-shadow: var(--container-box-shadow);
     display: flex;
     padding: 20px;
-    gap: 50px;
     background-color: var(--primary-color);
     border-top: var(--container-border);
     flex-direction: column;
     align-items: center;
 }
+
 
 .form button[type=submit] {
     font-size: 16px;
@@ -63,6 +91,7 @@
         grid-template-columns: repeat(1, 1fr);
 
     }
+
     .modalInputs {
         gap: 10px;
     }
