@@ -24,7 +24,7 @@ class StoreGuardianRequest extends FormRequest
         return [
             'name' => ['required', 'string'],
             'gender' => ['required', 'in:male,female'],
-            'phone_number' => ['required', 'string', 'regex:/^(?:\+20)?1[0125][0-9]{8}$/', 'unique:student_parents,phone_number'],
+            'phone_number' => ['required', 'string', 'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/', 'unique:student_parents,phone_number'],
             'edu' => ['required', 'string'],
             'student_id' => ['required', 'exists:students,id'],
             'job' => ['required', 'string'],
