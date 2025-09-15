@@ -76,11 +76,10 @@ export default function AddUser() {
             required: true,
             multiple: true,
             error: "الرجاء اختيار صلاحية",
-            validator: (value) => value !== "",
+            validator: (value) => value.length > 0,
             options: normalizedRoles
-
         }
-    ]
+    ];
     if (isLoading) {
         return <LoadingScreen/>
     }
@@ -96,7 +95,7 @@ export default function AddUser() {
 
     return (
         <Page>
-            <Form fields={fields} onFormSubmit={onFormSubmit} serverErrors={serverErrors}/>
+            <Form fields={fields} onFormSubmit={onFormSubmit} serverErrors={serverErrors} />
             <div className={styles.instructions}>
                 <h3>تعليمات كلمة المرور:</h3>
                 <span>يجب ان تحتوي كلمة المرور علي الاقل علي كلٍ من:</span>
