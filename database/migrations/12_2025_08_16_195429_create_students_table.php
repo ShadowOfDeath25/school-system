@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->enum('gender', ['male', 'female']);
             $table->text('birth_address');
             $table->enum('religion', ['مسلم', "مسيحي"]);
+            $table->string("note")->nullable();
             $table->bigInteger('classroom_id')->unsigned()->nullable();
             $table->foreign('classroom_id')->references('id')->on('classrooms');
             $table->timestamps();

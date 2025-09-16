@@ -16,7 +16,7 @@ class Student extends Model
         'nid',
         'birth_date',
         'birth_address',
-        'language',
+        "note",
         'gender',
         'religion',
         'nationality',
