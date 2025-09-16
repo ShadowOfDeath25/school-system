@@ -7,6 +7,58 @@ import styles from './styles.module.css'
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 
+const fields = [
+    {
+        name: "email",
+        placeholder: "البريد الإلكتروني",
+        type: "text",
+        validator: validator.users.email,
+        label: 'البريد الإلكتروني',
+        required: true,
+        id: 'email',
+        error: 'البريد الإلكتروني غير صالح'
+    },
+    {
+        name: "name",
+        placeholder: "الاسم",
+        type: "text",
+        label: 'الاسم',
+        required: true,
+        id: 'name'
+    },
+    {
+        name: "password",
+        placeholder: "كلمة المرور",
+        type: "password",
+        validator: validator.users.password,
+        label: 'كلمة المرور',
+        required: true,
+        id: 'password',
+        error: 'كلمة المرور غير صالحه'
+    },
+    {
+        name: "password_confirmation",
+        placeholder: 'تأكيد كلمة المرور',
+        type: "password",
+        label: 'تأكيد كلمة المرور',
+        id: 'password_confirmation',
+        required: true,
+        error: 'كلمتان المرور غير متطابقتان',
+        validator: validator.users.confirmPassword,
+    },
+    {
+        name: "role",
+        type: "select",
+        label: "الصلاحية",
+        placeholder: "اختر صلاحية ...",
+        id: "role",
+        required: true,
+        multiple: true,
+        error: "الرجاء اختيار صلاحية",
+        validator: (value) => value.length > 0,
+        options: normalizedRoles
+    }
+];
 
 export default function AddUser() {
     const {mutate, isError, error} = useCreate("users");
@@ -28,58 +80,7 @@ export default function AddUser() {
         return {value: role?.name, label: role?.name}
     })
 
-    const fields = [
-        {
-            name: "email",
-            placeholder: "البريد الإلكتروني",
-            type: "text",
-            validator: validator.users.email,
-            label: 'البريد الإلكتروني',
-            required: true,
-            id: 'email',
-            error: 'البريد الإلكتروني غير صالح'
-        },
-        {
-            name: "name",
-            placeholder: "الاسم",
-            type: "text",
-            label: 'الاسم',
-            required: true,
-            id: 'name'
-        },
-        {
-            name: "password",
-            placeholder: "كلمة المرور",
-            type: "password",
-            validator: validator.users.password,
-            label: 'كلمة المرور',
-            required: true,
-            id: 'password',
-            error: 'كلمة المرور غير صالحه'
-        },
-        {
-            name: "password_confirmation",
-            placeholder: 'تأكيد كلمة المرور',
-            type: "password",
-            label: 'تأكيد كلمة المرور',
-            id: 'password_confirmation',
-            required: true,
-            error: 'كلمتان المرور غير متطابقتان',
-            validator: validator.users.confirmPassword,
-        },
-        {
-            name: "role",
-            type: "select",
-            label: "الصلاحية",
-            placeholder: "اختر صلاحية ...",
-            id: "role",
-            required: true,
-            multiple: true,
-            error: "الرجاء اختيار صلاحية",
-            validator: (value) => value.length > 0,
-            options: normalizedRoles
-        }
-    ];
+
     if (isLoading) {
         return <LoadingScreen/>
     }
@@ -96,7 +97,7 @@ export default function AddUser() {
 
     return (
         <Page>
-            <Form fields={fields} onFormSubmit={onFormSubmit} serverErrors={serverErrors} />
+            <Form fields={fields} onFormSubmit={onFormSubmit} serverErrors={serverErrors}/>
             <div className={styles.instructions}>
                 <h3>تعليمات كلمة المرور:</h3>
                 <span>يجب ان تحتوي كلمة المرور علي الاقل علي كلٍ من:</span>

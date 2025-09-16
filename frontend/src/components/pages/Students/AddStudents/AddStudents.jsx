@@ -77,6 +77,18 @@ const fields = [
                     {label: "مسلم", value: "مسلم"},
                     {label: "مسيحي", value: "مسيحي"}
                 ]
+            },
+            {
+                name: "note",
+                type: "select",
+                label: "علامة مميزة",
+                options: [
+                    {label: "لا يوجد", value: null},
+                    {label: "ابناء عاملين", value: "ابناء عاملين"},
+                    {label: "دمج", value: "دمج"},
+                    {label: "يتيم", value: "يتيم"}
+                ],
+                placeholder: "لا يوجد"
             }
         ]
 
