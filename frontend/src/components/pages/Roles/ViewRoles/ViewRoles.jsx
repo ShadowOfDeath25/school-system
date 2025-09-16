@@ -57,7 +57,6 @@ export default function ViewRoles() {
                         payload.permissions.push(...value);
                     }
                 }
-                console.log(payload);
                 updateMutation.mutate({...payload, id: item.id}, {
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
