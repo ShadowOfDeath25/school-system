@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Exceptions\AuthorizationException;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -55,7 +56,7 @@ trait HasCRUD
             return ($this->resource)::collection($data);
         }
 
-        return response()->json($data);
+        return JsonResource::collection($data);
     }
 
     /**
