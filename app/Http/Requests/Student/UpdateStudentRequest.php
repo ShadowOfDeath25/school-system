@@ -25,7 +25,7 @@ class UpdateStudentRequest extends FormRequest
             'gender' => ['sometimes', 'string', Rule::in(['female', 'male'])],
             'religion' => ['sometimes', 'string', Rule::in(["مسيحي", 'مسلم'])],
             'nationality' => ['sometimes', "string"],
-            'note' => ['sometimes', 'string', Rule::in(["ابناء عاملين", "دمح", "يتيم"])],
+            'note' => ['sometimes', 'string', "nullable", Rule::in(["ابناء عاملين", "دمح", "يتيم"])],
             'classroom_id' => ['sometimes', "numeric", "exists:classrooms,id"],
             'guardians' => ['sometimes', 'array'],
             'guardians.*.name' => ['required', 'string', 'max:255'],
