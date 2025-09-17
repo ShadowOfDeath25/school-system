@@ -24,7 +24,7 @@ Route::post("/logout", AuthController::class . "@logout")->name("logout")->middl
 Route::apiResource("books", BookController::class)->withFilters();
 Route::apiResource('buses', BusController::class);
 Route::apiResource('parents', GuardianController::class);
-Route::apiResource('students', StudentController::class);
+Route::apiResource('students', StudentController::class)->withFilters();
 Route::apiResource('payments', PaymentController::class);
 Route::apiResource('incomes', IncomeController::class);
 Route::apiResource('classrooms', ClassroomController::class);
