@@ -4,7 +4,7 @@ import AddUser from "@pages/Users/AddUsers/AddUsers.jsx";
 
 
 
-export const userRoutes = {
+export const users = {
     path: 'users',
     handle: {
         sidebar: {

@@ -1,9 +1,9 @@
 import React from 'react';
 import App from '/src/App.jsx'
 import Test from '@ui/Test.jsx';
-import { userRoutes } from '@routes/userRoutes.jsx';
-import {roleRoutes} from "@routes/roleRoutes.jsx";
-import {studentRoutes} from "@routes/studentRoutes.jsx";
+import { users } from '@routes/users.jsx';
+import {roles} from "@routes/roles.jsx";
+import {students} from "@routes/students.jsx";
 
 const mainRoutes = {
     handle: {
@@ -33,4 +33,4 @@ const mainRoutes = {
     ],
 };
 
-export const appRoutes = [mainRoutes, userRoutes,roleRoutes,studentRoutes];
+export const appRoutes = [mainRoutes, users,roles,students];

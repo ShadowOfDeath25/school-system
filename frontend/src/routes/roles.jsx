@@ -1,7 +1,7 @@
 import ViewRoles from "@pages/Roles/ViewRoles/ViewRoles.jsx";
 import AddRoles from "@pages/Roles/AddRoles/AddRoles.jsx";
 
-export const roleRoutes =
+export const roles =
     {
         path: "roles",
         handle: {
