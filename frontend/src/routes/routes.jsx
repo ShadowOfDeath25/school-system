@@ -1,10 +1,10 @@
 import React from 'react';
 import App from '/src/App.jsx'
 import Test from '@ui/Test.jsx';
-import { users } from '@routes/users.jsx';
-import {roles} from "@routes/roles.jsx";
-import {students} from "@routes/students.jsx";
-
+import usersRoutes from '@routes/users.jsx';
+import rolesRoutes from "@routes/roles.jsx";
+import studentsRoutes from "@routes/students.jsx";
+import classroomsRoutes from "@routes/classrooms.jsx"
 const mainRoutes = {
     handle: {
         sidebar: {
@@ -14,7 +14,7 @@ const mainRoutes = {
     children: [
         {
             index: true,
-            element: <App />,
+            element: <App/>,
             handle: {
                 sidebar: {
                     title: 'App',
@@ -23,7 +23,7 @@ const mainRoutes = {
         },
         {
             path: 'test',
-            element: <Test />,
+            element: <Test/>,
             handle: {
                 sidebar: {
                     title: 'Test',
@@ -33,4 +33,4 @@ const mainRoutes = {
     ],
 };
 
-export const appRoutes = [mainRoutes, users,roles,students];
+export const appRoutes = [mainRoutes, usersRoutes, rolesRoutes, studentsRoutes,classroomsRoutes];

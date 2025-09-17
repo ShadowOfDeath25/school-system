@@ -1,7 +1,7 @@
 import AddStudents from "@pages/Students/AddStudents/AddStudents.jsx";
 import ViewStudents from "@pages/Students/ViewStudents/ViewStudents.jsx";
 
-export const students = {
+const routes = {
     path: "students",
     handle: {
         sidebar: {
@@ -32,3 +32,4 @@ export const students = {
         }
     ]
 }
+export default routes;

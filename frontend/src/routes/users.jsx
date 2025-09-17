@@ -2,9 +2,7 @@ import React from 'react';
 import ViewUsers from "@pages/Users/ViewUsers/ViewUsers.jsx";
 import AddUser from "@pages/Users/AddUsers/AddUsers.jsx";
 
-
-
-export const users = {
+const routes = {
     path: 'users',
     handle: {
         sidebar: {
@@ -36,3 +34,4 @@ export const users = {
 
     ]
 };
+export default routes;
