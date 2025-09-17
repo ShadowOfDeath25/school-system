@@ -5,39 +5,7 @@ import Table from "@ui/Table/Table.jsx";
 import {validator} from "@hooks/useValidator.js";
 import {useGetAll} from "@hooks/api/useCrud.js";
 
-const fields = [
-    {
-        name: "email",
-        placeholder: "البريد الإلكتروني",
-        type: "text",
-        validator: validator.users.email,
-        label: 'البريد الإلكتروني',
-        required: true,
-        id: 'email',
-        error: 'البريد الإلكتروني غير صالح'
-    },
-    {
-        name: "name",
-        placeholder: "الاسم",
-        type: "text",
-        label: 'الاسم',
-        required: true,
-        id: 'name'
-    },
-    {
-        name: "role",
-        type: "select",
-        label: "الصلاحيات",
-        placeholder: "اختر صلاحية ...",
-        id: "role",
-        required: true,
-        multiple:true,
-        error: "الرجاء اختيار صلاحية",
-        validator: (value) => value !== "",
-        options: normalizedRoles
 
-    }
-]
 export default function ViewUsers() {
     const {data: roles, isLoading} = useGetAll("roles")
     const normalizedRoles = roles?.data.map((role) => {
@@ -47,6 +15,39 @@ export default function ViewUsers() {
     const onSubmit = (filters) => {
         setFilters(filters);
     }
+    const fields = [
+        {
+            name: "email",
+            placeholder: "البريد الإلكتروني",
+            type: "text",
+            validator: validator.users.email,
+            label: 'البريد الإلكتروني',
+            required: true,
+            id: 'email',
+            error: 'البريد الإلكتروني غير صالح'
+        },
+        {
+            name: "name",
+            placeholder: "الاسم",
+            type: "text",
+            label: 'الاسم',
+            required: true,
+            id: 'name'
+        },
+        {
+            name: "role",
+            type: "select",
+            label: "الصلاحيات",
+            placeholder: "اختر صلاحية ...",
+            id: "role",
+            required: true,
+            multiple:true,
+            error: "الرجاء اختيار صلاحية",
+            validator: (value) => value !== "",
+            options: normalizedRoles
+
+        }
+    ]
 
 
     return (

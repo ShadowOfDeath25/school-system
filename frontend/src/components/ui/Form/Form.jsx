@@ -4,7 +4,7 @@ import styles from './styles.module.css'
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import useForm from "@hooks/useForm.js";
 import {useMemo} from "react";
-// import DatePicker from '@ui/DatePicker/DatePicker.jsx'
+
 
 export default function Form({fields, id, title, btnText = "إضافة", onFormSubmit, serverErrors, isModal = false}) {
     const isSectioned = fields.length > 0 && fields[0].hasOwnProperty('fields');
@@ -27,7 +27,7 @@ export default function Form({fields, id, title, btnText = "إضافة", onFormS
     });
 
     const hasEmptyRequiredFields = allFields.some(field => {
-        if (field.required === false) return false;
+        if (!field.required) return false;
         const value = formData[field.name];
         if (Array.isArray(value)) {
             return value.length === 0;
