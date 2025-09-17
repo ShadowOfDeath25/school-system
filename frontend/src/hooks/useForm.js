@@ -93,8 +93,26 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
             console.log("Form is invalid, please check the errors.");
         }
     };
+    const setFieldValue = useCallback((name, value) => {
+        setFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+        // When a field's value is set programmatically (e.g., a reset),
+        // clear any existing error and touched state for it.
+        setErrors(prev => {
+            const newErrors = {...prev};
+            delete newErrors[name];
+            return newErrors;
+        });
+        setTouched(prev => {
+            const newTouched = {...prev};
+            delete newTouched[name];
+            return newTouched;
+        });
+    }, []);
 
-    return {formData, errors, touched, handleChange, handleBlur, handleSubmit, resetForm};
+    return {formData, errors, touched, handleChange, handleBlur, handleSubmit, resetForm, setFieldValue};
 };
 
 export default useForm;

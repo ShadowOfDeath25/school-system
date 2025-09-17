@@ -3,7 +3,7 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import useForm from "@hooks/useForm.js";
-import {useMemo} from "react";
+import {useMemo, useEffect, useRef} from "react";
 
 
 export default function Form({fields, id, title, btnText = "إضافة", onFormSubmit, serverErrors, isModal = false}) {
@@ -21,10 +21,35 @@ export default function Form({fields, id, title, btnText = "إضافة", onFormS
         }, {}), [allFields]);
 
     const {
-        formData, errors, touched, handleChange, handleBlur, handleSubmit
+        formData, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue
     } = useForm({
         initialValues, fields: allFields, onSubmit: onFormSubmit, serverErrors
     });
+
+    const prevFormDataRef = useRef(formData);
+    useEffect(() => {
+        const prevFormData = prevFormDataRef.current;
+        allFields.forEach(field => {
+            if (field.type === 'select' && typeof field.options === 'function') {
+                const newOptions = field.options(formData);
+                const oldOptions = field.options(prevFormData);
+
+                if (JSON.stringify(newOptions) !== JSON.stringify(oldOptions)) {
+                    const currentValue = formData[field.name];
+                    const hasValue = Array.isArray(currentValue) ? currentValue.length > 0 : !!currentValue;
+
+                    if (hasValue) {
+                        const valueExists = newOptions.some(opt => opt.value === currentValue);
+                        if (!valueExists) {
+                            setFieldValue(field.name, field.multiple ? [] : '');
+                        }
+                    }
+                }
+            }
+        });
+
+        prevFormDataRef.current = formData;
+    }, [formData, allFields, setFieldValue]);
 
     const hasEmptyRequiredFields = allFields.some(field => {
         if (!field.required) return false;
@@ -48,7 +73,9 @@ export default function Form({fields, id, title, btnText = "إضافة", onFormS
             handleBlur: handleBlur,
             error: fieldError,
             isValid: isTouched ? !fieldError : undefined,
-            isModal: isModal
+            isModal: isModal,
+            options: typeof field.options === 'function' ? field.options(formData) : field.options,
+            disabled: typeof field.disabled === 'function' ? field.disabled(formData) : field.disabled,
         };
         switch (field.type) {
             case 'select':
