@@ -6,25 +6,24 @@ import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
 import {useQueryClient} from "@tanstack/react-query";
 
-const fields = [
-    {
-        name: "name",
-        label: "اسم الرتبة",
-        type: "text",
-        required: true,
-        placeholder: "اسم الرتبة",
-
-    }
-]
 export default function ViewRoles() {
     const {data: permissions} = useGetAll("permissions");
     const {t} = useTranslation();
     const {showEditModal, hideEditModal} = useEditModal();
     const {showSnackbar} = useSnackbar();
     const queryClient = useQueryClient();
-    const data = queryClient.getQueriesData({queryKey: ["roles"], type: "active"})[1]?.data;
+    const data = queryClient.getQueriesData({queryKey: ["roles"], type: "active"})[0]?.[1];
     const updateMutation = useUpdate("roles");
+    const fields = [
+        {
+            name: "name",
+            label: "اسم الرتبة",
+            type: "text",
+            required: true,
+            placeholder: "اسم الرتبة",
 
+        }
+    ]
     fields.push(...Object.keys(permissions || {})?.map((key) => {
         return {
             name: key,
@@ -40,9 +39,10 @@ export default function ViewRoles() {
     const handleEdit = (item) => {
         const originalItem = data?.data?.find(d => d.id === item.id);
         let permissions = {}
-        console.log(item);
-        for (let [key, value] of Object.entries(originalItem.permissions)) {
-            permissions[key] = value.map(action => t(action))
+        console.log(data);
+        console.log(originalItem)
+        for (let [key, value] of Object.entries(originalItem?.permissions)) {
+            permissions[key] = value.map(action => `${action} ${key}`)
         }
         originalItem.permissions = permissions;
 

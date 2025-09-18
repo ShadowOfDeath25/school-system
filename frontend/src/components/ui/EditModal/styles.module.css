@@ -3,6 +3,7 @@
     color: var(--primary-text-color);
     width: fit-content;
     min-width: 30vw;
+    box-sizing: border-box;
     border-radius: 20px;
 }
 
