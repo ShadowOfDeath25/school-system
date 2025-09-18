@@ -6,16 +6,7 @@ import {useTranslation} from "react-i18next";
 import Form from "@ui/Form/Form.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
-const fields = [
-    {
-        name: "name",
-        label: "اسم الرتبة",
-        type: "text",
-        required: true,
-        placeholder: "اسم الرتبة",
 
-    }
-]
 export default function AddRoles() {
     const {data: permissions, isLoading, isError, error} = useGetAll("permissions");
     const {i18n, t} = useTranslation();
@@ -23,7 +14,16 @@ export default function AddRoles() {
     const {showSnackbar} = useSnackbar()
     const creationMutation = useCreate("roles");
 
+    const fields = [
+        {
+            name: "name",
+            label: "اسم الرتبة",
+            type: "text",
+            required: true,
+            placeholder: "اسم الرتبة",
 
+        }
+    ]
     fields.push(...Object.keys(permissions || {})?.map((key) => {
         return {
             name: key,
