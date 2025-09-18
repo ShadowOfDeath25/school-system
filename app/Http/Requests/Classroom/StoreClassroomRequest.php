@@ -23,12 +23,11 @@ class StoreClassroomRequest extends FormRequest
     {
         return [
             'language' => ["required", "string", "max:255"],
-            'phase' => ["required", "string", "max:255"],
-            'edu_year' => ["required", "integer"] ,
-            'class_number' => ["required", "integer"],
-            'actual_capacity' => ["required", "integer"],
+            'level' => ["required", "string", "max:255"],
+            'grade' => ["required", "integer"] ,
+            'leader'=>["nullable","string"],
+            'actual_capacity' => ["sometimes", "integer"],
             'max_capacity' => ["required", "integer"],
-
         ];
     }
 }

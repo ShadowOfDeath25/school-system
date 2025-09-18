@@ -13,6 +13,7 @@ export default function SelectField({
                                         placeholder,
                                         options = [],
                                         multiple = false,
+                                        disabled = false,
                                     }) {
     const isInvalid = isValid === false;
 
@@ -46,6 +47,7 @@ export default function SelectField({
                     onBlur={handleBlur}
                     multiple={multiple}
                     error={isInvalid}
+                    disabled={disabled}
                     displayEmpty={!!placeholder}
                     variant={"filled"}
                     dir={"rtl"}

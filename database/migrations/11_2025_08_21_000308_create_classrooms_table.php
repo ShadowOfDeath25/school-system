@@ -14,13 +14,12 @@ return new class extends Migration
         Schema::create('classrooms', function (Blueprint $table) {
             $table->id();
             $table->string('language');
-            $table->string('phase');
-            $table->integer('edu_year');
+            $table->string('level');
+            $table->integer('grade');
             $table->integer('class_number');
-            $table->integer('actual_capacity');
+            $table->integer('actual_capacity')->nullable();
             $table->integer('max_capacity');
-
-
+            $table->string('leader')->nullable();
             $table->timestamps();
         });
     }

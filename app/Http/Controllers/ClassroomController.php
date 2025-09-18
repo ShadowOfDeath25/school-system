@@ -16,5 +16,19 @@ class ClassroomController extends Controller
     protected string $storeRequest = StoreClassroomRequest::class;
     protected string $updateRequest = UpdateClassroomRequest::class;
 
+    public function store(StoreClassroomRequest $request)
+    {
+        $this->authorizeAction("create");
+        $data = $request->validated();
+        $classroom = new Classroom($data);
+        $lastClassroom = Classroom::where("grade", $data['grade'])
+            ->where('level', $data['level'])
+            ->orderBy("id", "desc")
+            ->first();
+        $classroom->class_number = $lastClassroom ? $lastClassroom->class_number + 1 : 1;
+        $classroom->save();
+        return response()->json($classroom, 201);
+    }
+
 
 }

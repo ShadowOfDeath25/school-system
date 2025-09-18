@@ -9,8 +9,8 @@ class Classroom extends Model
 
     protected $fillable = [
         'language',
-        'phase',
-        'edu_year',
+        'level',
+        'grade',
         'class_number',
         'actual_capacity',
         'max_capacity',
