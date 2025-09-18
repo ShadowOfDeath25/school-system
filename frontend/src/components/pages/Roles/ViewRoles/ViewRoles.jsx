@@ -53,7 +53,6 @@ export default function ViewRoles() {
                 let payload = {name: formData.name, permissions: []}
                 for (let [key, value] of Object.entries(formData)) {
                     if (key !== "name" && value !== "" && typeof value === "object") {
-
                         payload.permissions.push(...value);
                     }
                 }
