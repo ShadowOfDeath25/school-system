@@ -30,7 +30,7 @@ export default function SelectField({
 
     return (
         <div className={styles.inputWrapper}>
-            <label HtmlFor={id}>{label}</label>
+            <label htmlFor={id}>{label}</label>
             <div className={styles.selectContainer}>
                 <Select
                     sx={{
