@@ -59,8 +59,8 @@ export default function SelectField({
                         </MenuItem>
                     )}
                     {options.map((option) => (
-                        <MenuItem key={option.value} value={option.value} disabled={option.disabled === true}>
-                            {option.label}
+                        <MenuItem key={option.value || option } value={option.value || option} disabled={option.disabled || false}>
+                            {option.label || option}
                         </MenuItem>
                     ))}
                 </Select>
