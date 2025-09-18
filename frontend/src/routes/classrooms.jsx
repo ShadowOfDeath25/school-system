@@ -1,20 +1,32 @@
 import AddClassrooms from "@pages/Classrooms/AddClassrooms/AddClassrooms.jsx";
+import ViewClassrooms from "@pages/Classrooms/ViewClassrooms/ViewClassrooms.jsx";
 
 const routes = {
     path: "classrooms",
     handle: {
-        sidebar:{
+        sidebar: {
             header: "الفصول",
             name: "classrooms",
         }
     },
     children: [
         {
-            path:'add',
-            element: <AddClassrooms/>,
-            handle:{
+            index: true,
+            element: <ViewClassrooms/>,
+            handle: {
                 sidebar:{
-                    title:"اضافة فصل",
+                    title: "عرض الفصول",
+                    action: "view classrooms"
+                }
+            }
+
+        },
+        {
+            path: 'add',
+            element: <AddClassrooms/>,
+            handle: {
+                sidebar: {
+                    title: "اضافة فصل",
                     action: "create classrooms"
                 }
             }
