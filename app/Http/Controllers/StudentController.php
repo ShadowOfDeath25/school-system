@@ -5,20 +5,26 @@ namespace App\Http\Controllers;
 use App\Exceptions\AuthorizationException;
 use App\Http\Requests\Student\StoreStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
+use App\Http\Resources\StudentResource;
 use App\Models\Guardian;
 use App\Models\Student;
 use App\Traits\HasCRUD;
+use App\Traits\HasFilters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class StudentController extends Controller
 {
-    use HasCRUD;
+    use HasCRUD, HasFilters;
 
     protected string $model = Student::class;
     protected string $storeRequest = StoreStudentRequest::class;
     protected string $updateRequest = UpdateStudentRequest::class;
+    protected string $resource = StudentResource::class;
+    protected array $filterable = [
+
+    ];
 
     /**
      * @throws \Throwable
@@ -34,7 +40,8 @@ class StudentController extends Controller
         $studentData = $validated;
 
         $student = DB::transaction(function () use ($studentData, $guardianData) {
-            $student = Student::create($studentData);
+            $student = new Student($studentData);
+            $student->save();
 
             $guardianIds = [];
             foreach ($guardianData as $guardian) {

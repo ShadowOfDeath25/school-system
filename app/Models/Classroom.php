@@ -14,6 +14,7 @@ class Classroom extends Model
         'class_number',
         'actual_capacity',
         'max_capacity',
+        'academic_year'
     ];
 
     public function students()
