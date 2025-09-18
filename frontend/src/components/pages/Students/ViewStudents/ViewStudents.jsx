@@ -3,7 +3,7 @@ import Filters from "@ui/Filters/Filters.jsx";
 import {useState} from "react";
 import Table from "@ui/Table/Table.jsx";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
-import {validator} from "@hooks/useValidator.js";
+import {validator} from "@utils/validator.js";
 import {useUpdate} from "@hooks/api/useCrud.js";
 
 const fields = [

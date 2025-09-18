@@ -1,6 +1,6 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {validator} from "@hooks/useValidator.js";
+import {validator} from "@utils/validator.js";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";

@@ -3,6 +3,7 @@ import Form from "@ui/Form/Form.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
+import {getAcademicYears} from "@utils/academicYear.js";
 // Todo: add classroom place
 
 const gradeOptionsByLevel = {
@@ -50,6 +51,14 @@ const fields = [
                     {label: "عربي", value: "عربي"},
                     {label: "لغات", value: "لغات"}
                 ]
+            },
+            {
+                name: "academic_year",
+                label: "العام الدراسي",
+                placeholder: "اختر العام الدراسي",
+                type: "select",
+                required: true,
+                options: getAcademicYears()
             },
             {
                 name: "max_capacity",

@@ -2,7 +2,7 @@ import Page from "@ui/Page/Page.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import {useState} from "react";
 import Table from "@ui/Table/Table.jsx";
-import {validator} from "@hooks/useValidator.js";
+import {validator} from "@utils/validator.js";
 import {useGetAll} from "@hooks/api/useCrud.js";
 
 
