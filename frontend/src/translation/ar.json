@@ -20,5 +20,13 @@
     "buses": "الاوتوبيسات",
     "permission": "{{action}} {{resource}}",
     "permissions": "الصلاحيات",
-    "id": "#"
+    "id": "#",
+    "academic_year": "العام الدراسي",
+    "level": "المرحلة",
+    "occupancy": "نسبة الاشغال",
+    "capacity" : "الطاقة الفعلية",
+    "max_capacity": "الطاقة الاستيعابية",
+    "language": "اللغة",
+    "grade": "الصف"
+
 }

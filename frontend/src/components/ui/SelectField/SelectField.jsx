@@ -34,10 +34,10 @@ export default function SelectField({
             <div className={styles.selectContainer}>
                 <Select
                     sx={{
-                        borderRadius:"5px",
-                        "&:before": { borderBottom: "none"},
-                        "&:after": { borderBottom: "none" },
-                        "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
+                        borderRadius: "5px",
+                        "&:before": {borderBottom: "none"},
+                        "&:after": {borderBottom: "none"},
+                        "&:hover:not(.Mui-disabled):before": {borderBottom: "none"},
                     }}
                     className={styles.selectField}
                     id={id}
@@ -59,8 +59,11 @@ export default function SelectField({
                         </MenuItem>
                     )}
                     {options.map((option) => (
-                        <MenuItem key={option.value || option } value={option.value || option} disabled={option.disabled || false}>
-                            {option.label || option}
+                        <MenuItem
+                            key={option.value === undefined ? option : option.value}
+                            value={option.value === undefined ? option : option.value}
+                            disabled={option.disabled ?? false}>
+                            {option.label ?? option}
                         </MenuItem>
                     ))}
                 </Select>

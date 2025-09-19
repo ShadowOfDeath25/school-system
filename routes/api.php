@@ -19,22 +19,25 @@ use Illuminate\Support\Facades\Route;
 Route::get("/user", AuthCOntroller::class . "@user")->name("user");
 
 Route::post("/login", AuthController::class . "@login")->name("login");
-Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
+Route::middleware("auth:sanctum")->group(function () {
 
-Route::apiResource("books", BookController::class)->withFilters();
-Route::apiResource('buses', BusController::class);
-Route::apiResource('parents', GuardianController::class);
-Route::apiResource('students', StudentController::class)->withFilters();
-Route::apiResource('payments', PaymentController::class);
-Route::apiResource('incomes', IncomeController::class);
-Route::apiResource('classrooms', ClassroomController::class);
-Route::apiResource('subjects', SubjectController::class);
-Route::apiResource('expenses', ExpensesController::class);
-Route::apiResource('roles', RoleController::class);
-Route::apiResource('users', UserController::class)->withFilters();
+    Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
+    Route::apiResource('buses', BusController::class)->withFilters();
+    Route::apiResource("books", BookController::class)->withFilters();
+    Route::apiResource('parents', GuardianController::class)->withFilters();
+    Route::apiResource('students', StudentController::class)->withFilters();
 
-Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
-Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
-Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
+    Route::apiResource('payments', PaymentController::class)->withFilters();
+    Route::apiResource('incomes', IncomeController::class)->withFilters();
+    Route::apiResource('classrooms', ClassroomController::class)->withFilters();
+    Route::apiResource('subjects', SubjectController::class)->withFilters();
+    Route::apiResource('expenses', ExpensesController::class)->withFilters();
+    Route::apiResource('roles', RoleController::class)->withFilters();
+    Route::apiResource('users', UserController::class)->withFilters();
 
-Route::get("/permissions",[PermissionController::class ,'index']);
+    Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
+    Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
+    Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
+
+    Route::get("/permissions", [PermissionController::class, 'index']);
+});

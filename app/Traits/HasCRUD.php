@@ -42,10 +42,11 @@ trait HasCRUD
             foreach ($this->filterable as $filterKey) {
                 if ($request->has($filterKey)) {
                     $value = $request->input($filterKey);
+                    $filterValues = is_array($value) ? $value : [$value];
                     if (in_array($filterKey, $tableColumns)) {
-                        $query->whereIn($filterKey, $value);
+                        $query->whereIn($filterKey, $filterValues);
                     } elseif (method_exists($modelInstance, $filterKey)) {
-                        $query->whereHas($filterKey, fn($q) => $q->whereIn('name', $value));
+                        $query->whereHas($filterKey, fn($q) => $q->whereIn('name', $filterValues));
                     }
                 }
             }

@@ -69,6 +69,6 @@ ul {
     align-items: center;
     justify-content: center;
     background-color: var(--primary-color);
-    border-top: var(--container-border);
-    box-shadow: var(--container-box-shadow);
+    /*border-top: var(--container-border);*/
+    /*box-shadow: var(--container-box-shadow);*/
 }
