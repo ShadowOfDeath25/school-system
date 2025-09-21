@@ -61,4 +61,7 @@ Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->nam
 
 Route::get("/permissions",[PermissionController::class ,'index']);
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
