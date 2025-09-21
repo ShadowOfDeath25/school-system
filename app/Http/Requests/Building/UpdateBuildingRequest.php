@@ -24,7 +24,7 @@ class UpdateBuildingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+             'name' => ['string', 'max:255'],
         ];
     }
 }
