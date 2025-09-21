@@ -56,7 +56,6 @@ export default function ViewUsers() {
                 <Filters
                     resource={"users"}
                     onSubmit={onSubmit}
-                    fields={["roles"]}
                 />
                 <Table
                     resource={"users"}
