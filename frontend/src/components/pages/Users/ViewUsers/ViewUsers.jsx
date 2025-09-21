@@ -41,7 +41,7 @@ export default function ViewUsers() {
             placeholder: "اختر صلاحية ...",
             id: "role",
             required: true,
-            multiple:true,
+            multiple: true,
             error: "الرجاء اختيار صلاحية",
             validator: (value) => value !== "",
             options: normalizedRoles
