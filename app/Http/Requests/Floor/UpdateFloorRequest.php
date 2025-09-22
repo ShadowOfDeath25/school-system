@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Building;
+namespace App\Http\Requests\Floor;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBuildingRequest extends FormRequest
+class UpdateFloorRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class StoreBuildingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            
+            'name' => ['string', 'max:255'],
+            'building_id' => ['exists:buildings,id'],
         ];
     }
 }

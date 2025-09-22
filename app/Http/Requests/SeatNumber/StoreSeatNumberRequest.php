@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Building;
+namespace App\Http\Requests\SeatNumber;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBuildingRequest extends FormRequest
+class StoreSeatNumberRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,11 @@ class StoreBuildingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            
+            //
+            'level' => ['required', 'string', 'max:255'],
+            'grade' => ['required', 'string', 'max:255'],
+            'starts_at' => ['required', 'date'],
+            'ends_at' => ['required', 'date'],
         ];
     }
 }

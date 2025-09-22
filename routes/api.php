@@ -21,7 +21,7 @@ Route::get("/user", AuthCOntroller::class . "@user")->name("user");
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::middleware("auth:sanctum")->group(function () {
 
-<<<<<<< Updated upstream
+//<<<<<<< Updated upstream
     Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
     Route::apiResource('buses', BusController::class)->withFilters();
     Route::apiResource("books", BookController::class)->withFilters();
@@ -42,7 +42,7 @@ Route::middleware("auth:sanctum")->group(function () {
 
     Route::get("/permissions", [PermissionController::class, 'index']);
 });
-=======
+//=======
 Route::apiResource("books", BookController::class)->withFilters();
 Route::apiResource('buses', BusController::class);
 Route::apiResource('parents', GuardianController::class);
@@ -55,13 +55,19 @@ Route::apiResource('expenses', ExpensesController::class);
 Route::apiResource('roles', RoleController::class);
 Route::apiResource('users', UserController::class)->withFilters();
 Route::apiResource('buildings', BuildingController::class);
+Route::apiResource('floors', FloorController::class);
+Route::apiResource('exam-halls', ExamHallController::class);
+Route::apiResource('bank-accounts', BankAccountController::class);
+Route::apiResource('secret-numbers', SecretNumberController::class);
+Route::apiResource('exams', ExamController::class);
+Route::apiResource('seat-numbers', SeatNumberController::class);
 Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
 Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
 Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
 
 Route::get("/permissions",[PermissionController::class ,'index']);
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+//<<<<<<< Updated upstream
+//>>>>>>> Stashed changes
+//=======
+//>>>>>>> Stashed changes

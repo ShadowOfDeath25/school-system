@@ -9,12 +9,11 @@ class UpdateBuildingRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+      public function authorize(): bool
     {
-        return [
-            'name' => ['string', 'max:255'],
-            ];
+        return true;
     }
+
 
     /**
      * Get the validation rules that apply to the request.
