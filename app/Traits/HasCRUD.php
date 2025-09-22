@@ -3,12 +3,27 @@
 namespace App\Traits;
 
 use App\Exceptions\AuthorizationException;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Schema;
 
 trait HasCRUD
 {
+
+
+    public function getQuery(): Builder
+    {
+
+        if (method_exists($this, 'query')) {
+            return $this->query();
+        }
+        if (property_exists($this, 'relationsToLoad')) {
+            return ($this->model)::query()->with($this->relationsToLoad);
+        }
+        return ($this->model)::query();
+
+    }
 
 
     /**
@@ -16,11 +31,12 @@ trait HasCRUD
      * @throws AuthorizationException
      */
 
+
     public function index(Request $request)
     {
 
         $this->authorizeAction("view");
-        $query = ($this->model)::query();
+        $query = $this->getQuery();
 
 
         if ($request->filled('search')) {
@@ -87,7 +103,7 @@ trait HasCRUD
     public function show(string $id)
     {
         $this->authorizeAction("view");
-        $record = ($this->model)::findOrFail($id);
+        $record = $this->getQuery()->findOrFail($id);
 
         return isset($this->resource)
             ? new $this->resource($record)
