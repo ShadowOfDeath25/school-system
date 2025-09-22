@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Subject extends Model
 {
     protected $fillable = [
-        'subject_name',
+        'name',
         'max_degree',
         'phase',
-        'term',
+        'semester',
         'language',
         'academic_year',
         'added_to_total',

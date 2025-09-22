@@ -22,13 +22,13 @@ class UpdateSubjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'subject_name' => [ 'string', 'max:255'],
+            'name' => [ 'string', 'max:255'],
             'max_degree' => [ 'numeric'],
             'phase' => ['string', 'max:50'],
-            'term' => [ 'string', 'max:50'],
+            'semester' => [ 'string', 'max:50'],
             'language' => ['string', 'max:50'],
             'academic_year' => ['integer',],
-            'added_to_total' => ['string', Rule::in(['نعم ', 'لا'])],
+            'added_to_total' => ['boolean'],
         ];
     }
 }
