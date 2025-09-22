@@ -8,11 +8,12 @@ use App\Http\Resources\ClassroomResource;
 use App\Models\Classroom;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
+use Illuminate\Database\Eloquent\Builder;
 
 
 class ClassroomController extends Controller
 {
-    use HasCRUD,HasFilters;
+    use HasCRUD, HasFilters;
 
     protected string $model = Classroom::class;
     protected string $storeRequest = StoreClassroomRequest::class;
@@ -24,6 +25,16 @@ class ClassroomController extends Controller
         'language',
         'grade'
     ];
+    protected array $relationsToLoad = ['students'];
+
+
+    protected function query(): Builder
+    {
+        return $this->model::query()
+            ->withCount('students')
+            ->with($this->relationsToLoad);
+    }
+
     public function store(StoreClassroomRequest $request)
     {
         $this->authorizeAction("create");
@@ -37,7 +48,8 @@ class ClassroomController extends Controller
             ->first();
         $classroom->class_number = $lastClassroom ? $lastClassroom->class_number + 1 : 1;
         $classroom->save();
-        return response()->json($classroom, 201);
+
+        return response()->json(ClassroomResource::make($classroom), 201);
     }
 
 
