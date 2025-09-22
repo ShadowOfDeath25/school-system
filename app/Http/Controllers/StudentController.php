@@ -6,13 +6,16 @@ use App\Exceptions\AuthorizationException;
 use App\Http\Requests\Student\StoreStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Resources\StudentResource;
+use App\Models\Classroom;
 use App\Models\Guardian;
 use App\Models\Student;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
 {
@@ -25,15 +28,14 @@ class StudentController extends Controller
     protected array $filterable = [
 
     ];
+    protected array $relationsToLoad = ['classroom', 'guardians'];
 
-    /**
-     * @throws \Throwable
-     * @throws AuthorizationException
-     */
+
+
+
     public function store(StoreStudentRequest $request): JsonResponse
     {
         $this->authorizeAction("create");
-
         $validated = $request->validated();
 
         $guardianData = Arr::pull($validated, 'guardians', []);
@@ -59,7 +61,8 @@ class StudentController extends Controller
             return $student;
         });
 
-        return response()->json($student->load('guardians'), 201);
+
+        return (new $this->resource($student->load($this->relationsToLoad)))->response()->setStatusCode(201);
     }
 
     public function update(UpdateStudentRequest $request, Student $student): JsonResponse
@@ -67,18 +70,39 @@ class StudentController extends Controller
         $this->authorizeAction("update");
 
         $validated = $request->validated();
-        $guardianData = Arr::pull($validated, 'guardians');
-        $studentData = $validated;
 
-        DB::transaction(function () use ($student, $studentData, $guardianData, $request) {
-            $student->update($studentData);
+        DB::transaction(function () use ($student, $validated, $request) {
 
+            if ($request->has('classroom_id')) {
+                $newClassroomId = $validated['classroom_id'] ?? null;
+                $oldClassroomId = $student->classroom_id;
+                if ($newClassroomId !== $oldClassroomId && $newClassroomId) {
+                    $newClassroom = Classroom::withCount('students')->findOrFail($newClassroomId);
+                    if ($newClassroom->students_count >= $newClassroom->max_capacity) {
+                        throw ValidationException::withMessages([
+                            'classroom_id' => ['The selected classroom is full.'],
+                        ]);
+                    }
+                }
+            }
+            $guardianData = Arr::pull($validated, 'guardians');
+            $student->update($validated);
             if ($request->has('guardians')) {
-                $guardianIds = collect($guardianData)->map(fn($guardian) => Guardian::firstOrCreate(['nid' => $guardian['nid']], $guardian)->id);
+                $guardianIds = collect($guardianData)->map(function ($guardian) {
+                    if (empty($guardian['phone_number'])) {
+                        return null;
+                    }
+                    return Guardian::firstOrCreate(
+                        ['phone_number' => $guardian['phone_number']],
+                        $guardian
+                    )->id;
+                })->filter();
                 $student->guardians()->sync($guardianIds);
             }
         });
 
-        return response()->json($student->load('guardians'));
+
+        return new $this->resource($student->load($this->relationsToLoad));
     }
+
 }
