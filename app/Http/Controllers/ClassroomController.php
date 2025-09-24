@@ -32,7 +32,12 @@ class ClassroomController extends Controller
     {
         return $this->model::query()
             ->withCount('students')
-            ->with($this->relationsToLoad);
+            ->with($this->relationsToLoad)
+            ->orderBy('academic_year','desc')
+            ->orderBy('language')
+            ->orderBy('level')
+            ->orderBy('grade')
+            ->orderBy('class_number');
     }
 
     public function store(StoreClassroomRequest $request)
