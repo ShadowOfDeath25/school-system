@@ -68,7 +68,12 @@ trait HasCRUD
             }
         }
 
-        $data = $query->paginate(30)->withQueryString();
+        if ($request->boolean('all')) {
+            $data = $query->get();
+        } else {
+            $data = $query->paginate($request->input('per_page', 30))->withQueryString();
+        }
+        
         if (property_exists($this, "resource")) {
             return ($this->resource)::collection($data);
         }
