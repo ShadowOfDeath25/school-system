@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\income;
+use App\Http\Requests\Income\StoreIncomeRequest;
+use App\Models\Income;
 use Illuminate\Http\Request;
 use App\Traits\HasCRUD;
 
 class IncomeController extends Controller
 {
     use hasCRUD;
-    protected string $model = income::class;
-    protected string $updateRequest = \App\Http\Requests\Income\StoreIncomeRequest::class;
-    protected string $storeRequest = \App\Http\Requests\Income\StoreIncomeRequest::class;
+    protected string $model = Income::class;
+    protected string $updateRequest = StoreIncomeRequest::class;
+    protected string $storeRequest = StoreIncomeRequest::class;
 
 }
