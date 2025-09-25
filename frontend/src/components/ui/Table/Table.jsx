@@ -106,7 +106,7 @@ export default function Table({resource, fields = [], filters = null, editFields
                         hideEditModal();
                     },
                     onError: (error) => {
-                        showSnackbar("حدث خطأ اثناء تحديث العنصر")
+                        showSnackbar("حدث خطأ اثناء تحديث العنصر","error")
                     }
                 });
             },
