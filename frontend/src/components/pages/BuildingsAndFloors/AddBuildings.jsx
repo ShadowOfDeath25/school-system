@@ -4,7 +4,7 @@ import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
 
-export default function AddBuilding() {
+export default function AddBuildings() {
     const {showSnackbar} = useSnackbar();
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate("buildings",);
