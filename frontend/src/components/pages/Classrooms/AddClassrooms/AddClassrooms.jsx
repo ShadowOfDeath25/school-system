@@ -93,7 +93,6 @@ export default function AddClassrooms() {
 
     const onFormSubmit = (data, formActions) => {
         setServerErrors(null);
-        console.log(data);
         creationMutation.mutate(data, {
             onSuccess: () => {
                 showSnackbar("تم إضافة الفصل بنجاح");
