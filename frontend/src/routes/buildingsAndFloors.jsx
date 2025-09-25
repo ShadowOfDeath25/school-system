@@ -1,4 +1,6 @@
-import AddBuilding from "@pages/BuildingsAndFloors/AddBuilding/AddBuilding.jsx";
+import AddBuildings from "@pages/BuildingsAndFloors/AddBuildings.jsx";
+import ViewBuildings from "@pages/BuildingsAndFloors/ViewBuildings.jsx";
+// import AddBuildings from "@pages/BuildingsAndFloors/AddBuildings/AddBuildings.jsx";
 
 const routes = {
     path: 'buildingsAndFloors',
@@ -10,15 +12,26 @@ const routes = {
     },
     children: [
         {
-            path:'add-building',
-            element: <AddBuilding/>,
-            handle:{
+            path: 'view-buildings',
+            element: <ViewBuildings/>,
+            handle: {
                 sidebar:{
-                    title:"اضافة مبني",
-                    action:"create building"
+                    title:"المباني",
+                    action: "view buildings"
+                }
+            }
+        },
+        {
+            path: 'add-buildings',
+            element: <AddBuildings/>,
+            handle: {
+                sidebar: {
+                    title: "اضافة مبني",
+                    action: "create buildings"
                 }
             }
         }
+
     ]
 }
 export default routes;

@@ -1,5 +1,5 @@
 import React from 'react';
-import ViewUsers from "@pages/Users/ViewUsers/ViewUsers.jsx";
+import ViewUsers from "@pages/Users/ViewUsers.jsx";
 import AddUser from "@pages/Users/AddUsers/AddUsers.jsx";
 
 const routes = {

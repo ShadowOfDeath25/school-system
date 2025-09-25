@@ -1,5 +1,5 @@
-import AddStudents from "@pages/Students/AddStudents/AddStudents.jsx";
-import ViewStudents from "@pages/Students/ViewStudents/ViewStudents.jsx";
+import AddStudents from "@pages/Students/AddStudents.jsx";
+import ViewStudents from "@pages/Students/ViewStudents.jsx";
 
 const routes = {
     path: "students",

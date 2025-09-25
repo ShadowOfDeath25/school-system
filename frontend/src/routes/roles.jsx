@@ -1,5 +1,5 @@
-import ViewRoles from "@pages/Roles/ViewRoles/ViewRoles.jsx";
-import AddRoles from "@pages/Roles/AddRoles/AddRoles.jsx";
+import ViewRoles from "@pages/Roles/ViewRoles.jsx";
+import AddRoles from "@pages/Roles/AddRoles.jsx";
 
 const routes =
     {

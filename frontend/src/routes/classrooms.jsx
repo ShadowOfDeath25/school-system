@@ -1,5 +1,5 @@
-import AddClassrooms from "@pages/Classrooms/AddClassrooms/AddClassrooms.jsx";
-import ViewClassrooms from "@pages/Classrooms/ViewClassrooms/ViewClassrooms.jsx";
+import AddClassrooms from "@pages/Classrooms/AddClassrooms.jsx";
+import ViewClassrooms from "@pages/Classrooms/ViewClassrooms.jsx";
 
 const routes = {
     path: "classrooms",
