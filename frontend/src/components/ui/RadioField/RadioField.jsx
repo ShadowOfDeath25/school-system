@@ -20,10 +20,10 @@ export default function RadioField({
                 className={styles.radioGroup}
             >
                 {options.map((option) => (<FormControlLabel
-                    key={option.value}
-                    value={option.value}
+                    key={option.value === undefined ? option : option.value}
+                    value={option.value === undefined ? option : option.value}
                     control={<Radio/>}
-                    label={option.label}
+                    label={option.label || option}
                     disabled={option.disabled === true}
                 />))}
             </RadioGroup>
