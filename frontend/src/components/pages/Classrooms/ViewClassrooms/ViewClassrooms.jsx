@@ -35,6 +35,41 @@ export default function ViewClassrooms() {
 
         }
     ]
+    const fields = [
+        {
+            name: "name"
+        },
+        {
+            name: "academic_year"
+        },
+        {
+            name: "language"
+        },
+        {
+            name: "max_capacity"
+        },
+        {
+            name: "capacity",
+        },
+        {
+            name: "occupancy"
+        },
+    ]
+    const editFields = [
+        {
+            name: 'max_capacity',
+            label: "الطاقة الإستيعابية",
+            type: "number",
+            placeholder:"الطاقة الإستيعابية"
+        },
+        {
+            name: "language",
+            type: "radio",
+            options: ['لغات', 'عربي'],
+            label: 'اللغة'
+        }
+    ]
+
 
     return (
         <>
@@ -47,6 +82,8 @@ export default function ViewClassrooms() {
                 <Table
                     resource={"classrooms"}
                     filters={filters}
+                    fields={fields}
+                    editFields={editFields}
                 />
 
 
