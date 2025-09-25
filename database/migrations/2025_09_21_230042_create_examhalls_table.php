@@ -20,7 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('floor_id');
             $table->foreign('floor_id')->references('id')->on('floors');
             $table->unsignedBigInteger('building_id');
-            $table->foreign('building_id')->references('id')->on('building');
+            $table->foreign('building_id')->references('id')->on('buildings');
             $table->string('semester');
             $table->string('number');
             $table->string('academic_year');
