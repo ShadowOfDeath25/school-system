@@ -1,5 +1,7 @@
 import AddBuildings from "@pages/BuildingsAndFloors/AddBuildings.jsx";
 import ViewBuildings from "@pages/BuildingsAndFloors/ViewBuildings.jsx";
+import AddFloors from "@pages/BuildingsAndFloors/AddFloors.jsx";
+import ViewFloors from "@pages/BuildingsAndFloors/ViewFloors.jsx";
 // import AddBuildings from "@pages/BuildingsAndFloors/AddBuildings/AddBuildings.jsx";
 
 const routes = {
@@ -15,8 +17,8 @@ const routes = {
             path: 'view-buildings',
             element: <ViewBuildings/>,
             handle: {
-                sidebar:{
-                    title:"المباني",
+                sidebar: {
+                    title: "المباني",
                     action: "view buildings"
                 }
             }
@@ -28,6 +30,26 @@ const routes = {
                 sidebar: {
                     title: "اضافة مبني",
                     action: "create buildings"
+                }
+            }
+        },
+        {
+            path: 'view-floors',
+            element: <ViewFloors/>,
+            handle: {
+                sidebar: {
+                    title: "الأدوار",
+                    action: "view floors"
+                }
+            }
+        },
+        {
+            path: 'add-floors',
+            element: <AddFloors/>,
+            handle: {
+                sidebar: {
+                    title: "اضافة دور",
+                    action: "create floors"
                 }
             }
         }
