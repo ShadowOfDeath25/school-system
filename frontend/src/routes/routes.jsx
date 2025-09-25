@@ -5,6 +5,8 @@ import usersRoutes from '@routes/users.jsx';
 import rolesRoutes from "@routes/roles.jsx";
 import studentsRoutes from "@routes/students.jsx";
 import classroomsRoutes from "@routes/classrooms.jsx"
+import buildingAndFloorsRoutes from '@routes/buildingsAndFloors.jsx'
+
 const mainRoutes = {
     handle: {
         sidebar: {
@@ -33,4 +35,11 @@ const mainRoutes = {
     ],
 };
 
-export const appRoutes = [mainRoutes, usersRoutes, rolesRoutes, studentsRoutes,classroomsRoutes];
+export const appRoutes = [
+    mainRoutes,
+    usersRoutes,
+    rolesRoutes,
+    studentsRoutes,
+    classroomsRoutes,
+    buildingAndFloorsRoutes
+];

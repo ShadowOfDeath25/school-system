@@ -28,7 +28,7 @@ Route::get("/user", AuthCOntroller::class . "@user")->name("user");
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::middleware("auth:sanctum")->group(function () {
 
-//<<<<<<< Updated upstream
+
     Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
     Route::apiResource('buses', BusController::class)->withFilters();
     Route::apiResource("books", BookController::class)->withFilters();
