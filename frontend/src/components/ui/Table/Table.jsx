@@ -11,7 +11,14 @@ import TableToolbar from "./TableToolbar.jsx";
 import TablePresenter from "./TablePresenter.jsx";
 import TablePagination from "./TablePagination.jsx";
 
-export default function Table({resource, fields = [], filters = null, editFields = fields, handleEdit}) {
+export default function Table({
+                                  resource,
+                                  fields = [],
+                                  filters = null,
+                                  editFields = fields,
+                                  handleEdit,
+                                  editable = true
+                              }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
@@ -57,14 +64,9 @@ export default function Table({resource, fields = [], filters = null, editFields
                     return {...role, permissions: [t('all_permissions', 'All Permissions')]};
                 }
 
-                const translatedPermissions = Object.entries(role.permissions).flatMap(([resourceName, actions]) =>
-                    actions.map(action =>
-                        t("permission", {
-                            action: t(action),
-                            resource: t(resourceName)
-                        })
-                    )
-                );
+                const translatedPermissions = Object.entries(role.permissions).flatMap(([resourceName, actions]) => actions.map(action => t("permission", {
+                    action: t(action), resource: t(resourceName)
+                })));
                 return {...role, permissions: translatedPermissions};
             }
             return role;
@@ -97,56 +99,46 @@ export default function Table({resource, fields = [], filters = null, editFields
     const handleEditClick = (item) => {
 
         showEditModal({
-            fields: editFields,
-            item: item,
-            onSave: (formData) => {
+            fields: editFields, item: item, onSave: (formData) => {
                 updateMutation.mutate({...formData, id: item.id}, {
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
                         hideEditModal();
-                    },
-                    onError: (error) => {
-                        showSnackbar("حدث خطأ اثناء تحديث العنصر","error")
+                    }, onError: (error) => {
+                        showSnackbar("حدث خطأ اثناء تحديث العنصر", "error")
                     }
                 });
-            },
-            isLoading: updateMutation.isLoading,
-            serverErrors: updateMutation.error?.response?.data?.errors,
+            }, isLoading: updateMutation.isLoading, serverErrors: updateMutation.error?.response?.data?.errors,
         });
     };
 
 
-    const userCanEdit = user?.role.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
+    const userCanEdit = editable && user?.role.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
     const userCanDelete = user?.role.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
 
     if (isLoading || userIsLoading) {
-        return (
-            <div className={styles.wrapper}>
+        return (<div className={styles.wrapper}>
                 <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} disabled={true}/>
                 <div className={styles.tableContainer}>
                     <LoadingScreen/>
                 </div>
-            </div>
-        );
+            </div>);
     }
 
     if (isError || !data || tableData.length === 0) {
-        return (
-            <div className={styles.wrapper}>
+        return (<div className={styles.wrapper}>
                 <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
                 <div className={styles.tableContainer}
                      style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                     <h3 className={"serverError"}>{isError ? "حدث خطأ أثناء جلب البيانات" : "لا يوجد بيانات للعرض"}</h3>
                 </div>
-            </div>
-        );
+            </div>);
     }
 
     const fieldNames = fields.map(field => field.name).filter(field => field !== 'password' && field !== 'password_confirmation');
     const columnKeys = fields.length > 0 ? fieldNames : (tableData.length > 0 ? Object.keys(tableData[0]) : []);
 
-    return (
-        <div className={styles.wrapper}>
+    return (<div className={styles.wrapper}>
             <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
             <div className={styles.tableContainer}>
                 <TablePresenter
@@ -160,6 +152,5 @@ export default function Table({resource, fields = [], filters = null, editFields
                 />
             </div>
             <TablePagination links={data.meta.links} onPageChange={handlePageChange}/>
-        </div>
-    );
+        </div>);
 }
