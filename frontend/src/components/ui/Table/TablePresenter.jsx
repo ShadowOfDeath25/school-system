@@ -24,7 +24,11 @@ export default function TablePresenter({
         <table className={styles.table}>
             <thead>
                 <tr>
-                    {columnKeys.map(key => (<th key={key} className={styles.cell}>{t(key) || key}</th>))}
+                    {columnKeys.map(key => (key !== "id" &&
+                        <th key={key} className={styles.cell}>
+                            {t(key) || key}
+                        </th>
+                    ))}
                     {userCanEdit && <th className={`${styles.actionCell} ${styles.cell}`}>تعديل</th>}
                     {userCanDelete && <th className={`${styles.actionCell} ${styles.cell}`}>حذف</th>}
                 </tr>
@@ -33,6 +37,7 @@ export default function TablePresenter({
                 {data.map((row) => (
                     <tr key={row.id} className={styles.row}>
                         {columnKeys.map((key) => (
+                            key !== 'id' &&
                             <td key={`${row.id}-${key}`} className={styles.cell}>
                                 {Array.isArray(row[key]) ? row[key].join(" ، ") : row[key]}
                             </td>
