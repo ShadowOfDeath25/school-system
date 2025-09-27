@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('language');
             $table->string('level');
+            $table->string('name');
             $table->integer('grade');
             $table->integer('class_number');
             $table->integer('actual_capacity')->nullable();

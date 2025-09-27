@@ -8,7 +8,7 @@ export default function ViewBuildings() {
             <Table
                 resource={'buildings'}
                 editable={false}
-                fields={[{name: "name"}]}
+                fields={[{name: "name"}, {name: "floors_count"}]}
             >
 
             </Table>

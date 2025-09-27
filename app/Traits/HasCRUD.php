@@ -51,18 +51,23 @@ trait HasCRUD
                 }
             });
         }
-        if (property_exists($this, 'filterable') && is_array($this->filterable) && !empty($this->filterable)) {
+        if (property_exists($this, 'filterable') && !empty($this->filterable)) {
             $modelInstance = new $this->model;
             $tableColumns = Schema::getColumnListing($modelInstance->getTable());
-
             foreach ($this->filterable as $filterKey) {
+
                 if ($request->has($filterKey)) {
                     $value = $request->input($filterKey);
+
                     $filterValues = is_array($value) ? $value : [$value];
                     if (in_array($filterKey, $tableColumns)) {
-                        $query->whereIn($filterKey, $filterValues);
+                        $value === "null"  ?
+                            $query->whereNull($filterKey) :
+                            $query->whereIn($filterKey, $filterValues);
                     } elseif (method_exists($modelInstance, $filterKey)) {
-                        $query->whereHas($filterKey, fn($q) => $q->whereIn('name', $filterValues));
+                        $value === "null" ?
+                            $query->whereDoesntHave($filterKey) :
+                            $query->whereHas($filterKey, fn($q) => $q->whereIn('name', $filterValues));
                     }
                 }
             }
@@ -73,7 +78,7 @@ trait HasCRUD
         } else {
             $data = $query->paginate($request->input('per_page', 30))->withQueryString();
         }
-        
+
         if (property_exists($this, "resource")) {
             return ($this->resource)::collection($data);
         }

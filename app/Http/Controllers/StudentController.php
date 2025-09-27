@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\AuthorizationException;
 use App\Http\Requests\Student\StoreStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Resources\StudentResource;
@@ -11,22 +10,26 @@ use App\Models\Guardian;
 use App\Models\Student;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\ResourceResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
 {
-    use HasCRUD, HasFilters;
+    use HasCRUD {
+        index as baseIndex;
+    }
+    use HasFilters;
 
     protected string $model = Student::class;
     protected string $storeRequest = StoreStudentRequest::class;
     protected string $updateRequest = UpdateStudentRequest::class;
     protected string $resource = StudentResource::class;
     protected array $filterable = [
-
+        'classroom', 'level'
     ];
     protected array $relationsToLoad = ['classroom', 'guardians'];
 
@@ -65,7 +68,7 @@ class StudentController extends Controller
         return (new $this->resource($student->load($this->relationsToLoad)))->response()->setStatusCode(201);
     }
 
-    public function update(UpdateStudentRequest $request, Student $student): JsonResponse
+    public function update(UpdateStudentRequest $request, Student $student): StudentResource
     {
         $this->authorizeAction("update");
 

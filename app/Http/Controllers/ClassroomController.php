@@ -33,7 +33,7 @@ class ClassroomController extends Controller
         return $this->model::query()
             ->withCount('students')
             ->with($this->relationsToLoad)
-            ->orderBy('academic_year','desc')
+            ->orderBy('academic_year', 'desc')
             ->orderBy('language')
             ->orderBy('level')
             ->orderBy('grade')
@@ -49,9 +49,9 @@ class ClassroomController extends Controller
             ->where('level', $data['level'])
             ->where('academic_year', $data['academic_year'])
             ->where('language', $data['language'])
-            ->orderBy("id", "desc")
-            ->first();
+            ->max('class_number');
         $classroom->class_number = $lastClassroom ? $lastClassroom->class_number + 1 : 1;
+        $classroom->name = $data['grade'] . '/' . $classroom->class_number.' '.$data['level'];
         $classroom->save();
 
         return response()->json(ClassroomResource::make($classroom), 201);

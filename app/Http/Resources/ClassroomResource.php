@@ -23,7 +23,7 @@ class ClassroomResource extends JsonResource
         }
         return [
             'id' => $this->id,
-            'name' => "{$this->grade}/{$this->class_number} {$this->level}",
+            'name' => $this->name,
             'academic_year' => $this->academic_year,
             'max_capacity' => $this->max_capacity,
             'language' => $this->language,

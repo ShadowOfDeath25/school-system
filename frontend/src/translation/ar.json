@@ -28,5 +28,10 @@
     "max_capacity": "الطاقة الاستيعابية",
     "language": "اللغة",
     "grade": "الصف",
-    "building": "المبني"
+    "building": "المبني",
+    "floors_count": "عدد الادوار",
+    "classroom": "الفصل",
+    "nid": "الرقم القومي",
+    "father": "الأب",
+    "mother": "الأم"
 }
