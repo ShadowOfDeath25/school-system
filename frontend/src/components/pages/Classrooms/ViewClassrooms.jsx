@@ -28,6 +28,7 @@ export default function ViewClassrooms() {
         {
             name: "grade",
             type: 'select',
+            multiple:true,
             options: (level) => gradeOptionsByLevel[level] || [],
             dependency: "level",
             label: 'الصف',
