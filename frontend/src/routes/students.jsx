@@ -1,5 +1,6 @@
 import AddStudents from "@pages/Students/AddStudents.jsx";
 import ViewStudents from "@pages/Students/ViewStudents.jsx";
+import NotEnrolled from "@pages/Students/NotEnrolled.jsx";
 
 const routes = {
     path: "students",
@@ -27,6 +28,16 @@ const routes = {
                 sidebar: {
                     title: "إضافة تلميذ",
                     action: "create students"
+                }
+            }
+        },
+        {
+            path: "not-enrolled",
+            element: <NotEnrolled/>,
+            handle: {
+                sidebar: {
+                    title: "الغير مقيدون بفصول",
+                    action: "update students"
                 }
             }
         }

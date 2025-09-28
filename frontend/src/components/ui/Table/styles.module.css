@@ -101,6 +101,7 @@
 
 .actionCell {
     text-align: center !important;
+    padding: 10px;
 }
 
 .pagination {

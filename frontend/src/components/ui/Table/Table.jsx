@@ -17,7 +17,9 @@ export default function Table({
                                   filters = null,
                                   editFields = fields,
                                   handleEdit,
-                                  editable = true
+                                  editable = true,
+                                  params = {},
+                                  children
                               }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +50,10 @@ export default function Table({
     }, [filters]);
 
     const {data, isLoading, isError} = useGetAll(resource, {
-        page: currentPage, search: debouncedSearchTerm, ...filters
+        page: currentPage,
+        search: debouncedSearchTerm,
+        ...filters,
+        ...params
     });
 
     const tableData = useMemo(() => {
@@ -118,27 +123,33 @@ export default function Table({
 
     if (isLoading || userIsLoading) {
         return (<div className={styles.wrapper}>
-                <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} disabled={true}/>
-                <div className={styles.tableContainer}>
-                    <LoadingScreen/>
-                </div>
-            </div>);
+            <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} disabled={true}/>
+            <div className={styles.tableContainer}>
+                <LoadingScreen/>
+            </div>
+        </div>);
     }
 
     if (isError || !data || tableData.length === 0) {
         return (<div className={styles.wrapper}>
-                <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-                <div className={styles.tableContainer}
-                     style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                    <h3 className={"serverError"}>{isError ? "حدث خطأ أثناء جلب البيانات" : "لا يوجد بيانات للعرض"}</h3>
-                </div>
-            </div>);
+            <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+            <div className={styles.tableContainer}
+                 style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                <h3 className={"serverError"}>{isError ? "حدث خطأ أثناء جلب البيانات" : "لا يوجد بيانات للعرض"}</h3>
+            </div>
+        </div>);
     }
 
     const fieldNames = fields.map(field => field.name).filter(field => field !== 'password' && field !== 'password_confirmation');
-    const columnKeys = fields.length > 0 ? fieldNames : (tableData.length > 0 ? Object.keys(tableData[0]) : []);
+    let columnKeys = fields.length > 0 ? fieldNames : (tableData.length > 0 ? Object.keys(tableData[0]) : []);
 
-    return (<div className={styles.wrapper}>
+    if (children) {
+        const childrenArray = Array.isArray(children) ? children : [children];
+        columnKeys = [...columnKeys, ...childrenArray.map(child => child.header)];
+    }
+
+    return (
+        <div className={styles.wrapper}>
             <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
             <div className={styles.tableContainer}>
                 <TablePresenter
@@ -149,8 +160,11 @@ export default function Table({
                     userCanDelete={userCanDelete}
                     onEditClick={handleEdit ?? handleEditClick}
                     onDeleteClick={handleRowDelete}
-                />
+                >
+                    {children}
+                </TablePresenter>
             </div>
             <TablePagination links={data.meta.links} onPageChange={handlePageChange}/>
-        </div>);
+        </div>
+    );
 }

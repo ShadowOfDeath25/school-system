@@ -10,7 +10,8 @@ export default function TablePresenter({
                                            userCanEdit,
                                            userCanDelete,
                                            onEditClick,
-                                           onDeleteClick
+                                           onDeleteClick,
+                                           children = []
                                        }) {
     if (data.length === 0) {
         return (
@@ -19,16 +20,19 @@ export default function TablePresenter({
             </div>
         );
     }
-
+    const childrenArray = children ? Array.isArray(children) ? children : [children] : [];
+    const childHeaders = new Set(childrenArray.map(child => child.header));
     return (
         <table className={styles.table}>
             <thead>
                 <tr>
                     {columnKeys.map(key => (key !== "id" &&
+                        !childHeaders.has(key) &&
                         <th key={key} className={styles.cell}>
                             {t(key) || key}
                         </th>
                     ))}
+                    {childrenArray.map(child => (<th key={child.header} className={styles.actionCell}>{child.header}</th>))}
                     {userCanEdit && <th className={`${styles.actionCell} ${styles.cell}`}>تعديل</th>}
                     {userCanDelete && <th className={`${styles.actionCell} ${styles.cell}`}>حذف</th>}
                 </tr>
@@ -37,11 +41,24 @@ export default function TablePresenter({
                 {data.map((row) => (
                     <tr key={row.id} className={styles.row}>
                         {columnKeys.map((key) => (
-                            key !== 'id' &&
+                            key !== 'id' && !childHeaders.has(key) &&
                             <td key={`${row.id}-${key}`} className={styles.cell}>
                                 {Array.isArray(row[key]) ? row[key].join(" ، ") : row[key]}
                             </td>
                         ))}
+                        {
+                            childrenArray.map((child, index) => {
+                                if (typeof child.content === 'function') {
+                                    return <td key={`additionalColumn-${index}`} className={styles.actionCell}>
+                                        {child.content(row)}
+                                    </td>
+                                } else {
+                                    return <td key={`additionalColumn-${index}`} className={styles.actionCell}>
+                                        {child.content}
+                                    </td>
+                                }
+                            })
+                        }
                         {userCanEdit && row.name !== "Super Admin" &&
                             <td className={styles.actionCell}>
                                 <IconButton onClick={() => onEditClick(row)}>
