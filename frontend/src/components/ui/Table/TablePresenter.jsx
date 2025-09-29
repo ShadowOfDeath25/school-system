@@ -1,6 +1,7 @@
 import styles from './styles.module.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import {get} from 'lodash';
 import IconButton from "@mui/material/IconButton";
 
 export default function TablePresenter({
@@ -11,7 +12,8 @@ export default function TablePresenter({
                                            userCanDelete,
                                            onEditClick,
                                            onDeleteClick,
-                                           children = []
+                                           children = [],
+                                           fields
                                        }) {
     if (data.length === 0) {
         return (
@@ -32,18 +34,22 @@ export default function TablePresenter({
                             {t(key) || key}
                         </th>
                     ))}
-                    {childrenArray.map(child => (<th key={child.header} className={styles.actionCell}>{child.header}</th>))}
+                    {childrenArray.map(child => (
+                        <th key={child.header} className={styles.actionCell}>{child.header}</th>))}
                     {userCanEdit && <th className={`${styles.actionCell} ${styles.cell}`}>تعديل</th>}
                     {userCanDelete && <th className={`${styles.actionCell} ${styles.cell}`}>حذف</th>}
                 </tr>
             </thead>
             <tbody>
                 {data.map((row) => (
-                    <tr key={row.id} className={styles.row}>
+                    <tr key={row.id || row.name} className={styles.row}>
                         {columnKeys.map((key) => (
                             key !== 'id' && !childHeaders.has(key) &&
                             <td key={`${row.id}-${key}`} className={styles.cell}>
-                                {Array.isArray(row[key]) ? row[key].join(" ، ") : row[key]}
+                                {(() => {
+                                    const field = fields.find(f => f.name === key);
+                                    return field?.render ? field.render(row) : (Array.isArray(get(row, key)) ? get(row, key).join(', ') : get(row, key));
+                                })()}
                             </td>
                         ))}
                         {

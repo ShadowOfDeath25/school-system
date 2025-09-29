@@ -11,8 +11,6 @@ use App\Models\Student;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceResponse;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -29,11 +27,9 @@ class StudentController extends Controller
     protected string $updateRequest = UpdateStudentRequest::class;
     protected string $resource = StudentResource::class;
     protected array $filterable = [
-        'classroom', 'level'
+        'classroom', 'classroom.level','classroom.academic_year'
     ];
     protected array $relationsToLoad = ['classroom', 'guardians'];
-
-
 
 
     public function store(StoreStudentRequest $request): JsonResponse

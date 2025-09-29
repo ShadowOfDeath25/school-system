@@ -29,6 +29,8 @@ class ClassroomResource extends JsonResource
             'language' => $this->language,
             'capacity' => $studentCount,
             'occupancy' => $occupancy,
+            'grade'=>$this->grade,
+            'level'=>$this->level,
             'students' => $this->whenLoaded('students', function () {
                 return $this->students->map(fn($student) => [
                     'name' => $student->name_in_arabic,

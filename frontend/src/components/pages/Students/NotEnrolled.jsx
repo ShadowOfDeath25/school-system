@@ -22,7 +22,7 @@ export default function NotEnrolled() {
             }],
             item: student,
             onSave: (payload) => {
-                mutation.mutate({clasroom_id: payload.classroom, id: student.id}, {
+                mutation.mutate({classroom_id: payload.classroom, id: student.id}, {
                     onSuccess: () => {
                         showSnackbar('تم الحاق الطالب بالفصل بنجاح')
                         hideEditModal();
@@ -55,6 +55,7 @@ export default function NotEnrolled() {
                     params={{classroom: "null"}}
                     children={enrollButton}
                     editable={false}
+                    fields={[{name: "name_in_arabic"}, {name: "birth_date"}, {name: "nid"}]}
                 >
 
                 </Table>

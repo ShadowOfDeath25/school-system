@@ -54,14 +54,31 @@ trait HasCRUD
         if (property_exists($this, 'filterable') && !empty($this->filterable)) {
             $modelInstance = new $this->model;
             $tableColumns = Schema::getColumnListing($modelInstance->getTable());
+
             foreach ($this->filterable as $filterKey) {
 
-                if ($request->has($filterKey)) {
-                    $value = $request->input($filterKey);
+                if (str_contains($filterKey, '.')) {
+                    [$relation, $column] = explode('.', $filterKey, 2);
 
+                    $requestKey = str_replace('.', '_', $filterKey);
+
+                    if ($request->has($requestKey) && method_exists($modelInstance, $relation)) {
+                        $value = $request->input($requestKey);
+                        $filterValues = is_array($value) ? $value : [$value];
+
+                        $query->whereHas($relation, function (Builder $q) use ($column, $filterValues, $value) {
+                            $value === "null" ?
+                                $q->whereNull($column) :
+                                $q->whereIn($column, $filterValues);
+                        });
+                    }
+
+                } elseif ($request->has($filterKey)) {
+                    $value = $request->input($filterKey);
                     $filterValues = is_array($value) ? $value : [$value];
+
                     if (in_array($filterKey, $tableColumns)) {
-                        $value === "null"  ?
+                        $value === "null" ?
                             $query->whereNull($filterKey) :
                             $query->whereIn($filterKey, $filterValues);
                     } elseif (method_exists($modelInstance, $filterKey)) {
@@ -71,6 +88,7 @@ trait HasCRUD
                     }
                 }
             }
+
         }
 
         if ($request->boolean('all')) {

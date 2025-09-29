@@ -5,12 +5,24 @@ import {useMemo} from "react";
 
 export default function EditModal({open, onCancel, fields, item, onSave, isLoading, serverErrors}) {
 
-
     const fieldsWithValues = useMemo(() => {
         if (!item) return fields;
+
+        const isSectioned = fields.length > 0 && fields[0].hasOwnProperty('fields');
+
+        if (isSectioned) {
+            return fields.map(section => ({
+                ...section,
+                fields: section.fields.map(field => ({
+                    ...field,
+                    value: item[field.name] ?? field.value ?? ''
+                }))
+            }));
+        }
+
         return fields.map(field => ({
             ...field,
-            value: item[field.name] ?? field.value ?? item.permissions?.[field.name]??''
+            value: item[field.name] ?? field.value ?? item.permissions?.[field.name] ?? ''
         }));
     }, [fields, item]);
 

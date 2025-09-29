@@ -11,7 +11,7 @@ export default function Filters({onSubmit, resource, fields = []}) {
     const {data: fieldsData, isLoading} = useFilters(resource);
     const [filters, setFilters] = useState({});
 
-    const {t, i18n} = useTranslation();
+    const {t} = useTranslation();
     const handleChange = (event) => {
         const {name, value} = event.target;
 
@@ -20,7 +20,7 @@ export default function Filters({onSubmit, resource, fields = []}) {
             [name]: value
         }));
     };
-    
+
 
     const handleReset = () => {
         setFilters({});
@@ -35,8 +35,8 @@ export default function Filters({onSubmit, resource, fields = []}) {
             ...field,
             value: filters[field.name],
             handleChange: handleChange,
-            options: typeof field.options === 'function' ? field.options(filters[field.dependency]) : field.options,
-            disabled: typeof field.disabled === 'function' ? field.disabled(filters[field.dependency]) : field.disabled,
+            options: typeof field.options === 'function' ? (Array.isArray(field.dependency) ? field.options(field.dependency.map(d => filters[d])) : field.options(filters[field.dependency])) : field.options,
+            disabled: typeof field.disabled === 'function' ? (Array.isArray(field.dependency) ? field.disabled(field.dependency.map(d => filters[d])) : field.disabled(filters[field.dependency])) : field.disabled,
         };
         switch (field.type) {
             case 'select':

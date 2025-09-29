@@ -33,5 +33,12 @@
     "classroom": "الفصل",
     "nid": "الرقم القومي",
     "father": "الأب",
-    "mother": "الأم"
+    "mother": "الأم",
+    "note": "علامة مميزة",
+    "name_in_arabic": "الاسم باللغة العربية",
+    "mother_name": "اسم الام",
+    "father_name": "اسم الأب",
+    "birth_date": "تاريخ الميلاد",
+    "classroom.level": "المرحلة",
+    "classroom.academic_year": "العام الدراسي"
 }

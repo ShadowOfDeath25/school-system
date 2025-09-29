@@ -19,20 +19,33 @@ class StudentResource extends JsonResource
             $classroom_name = "{$this->classroom->grade}/{$this->classroom->class_number} {$this->classroom->level}";
         }
 
-        $father_name = null;
-        $mother_name = null;
+        $father = null;
+        $mother = null;
         if ($this->relationLoaded('guardians')) {
-            $father_name = $this->guardians->get(0)?->name;
-            $mother_name = $this->guardians->get(1)?->name;
+            $father = $this->guardians->get(0);
+            $mother = $this->guardians->get(1);
         }
 
         return [
             "id" => $this->id,
-            "name" => $this->name_in_arabic,
+            "name_in_arabic" => $this->name_in_arabic,
             "nid" => $this->nid,
-            "father" => $father_name,
-            'mother' => $mother_name,
-            "classroom" => $classroom_name
+            "father_name" => $father->name,
+            "mother_name" => $mother->name,
+            "father_edu" => $father->edu,
+            "father_job" => $father->job,
+            "father_phone_number" => $father->phone_number,
+            "mother_edu" => $mother->edu,
+            "mother_phone_number" => $mother->phone_number,
+            "mother_job" => $mother->job,
+            "classroom" => $classroom_name,
+            'note' => $this->note,
+            "nationality" => $this->nationality,
+            "name_in_english" => $this->name_in_english,
+            "gender" => $this->gender,
+            "religion" => $this->religion,
+            "birth_date" => $this->birth_date,
+            "birth_address" => $this->birth_address
         ];
     }
 }

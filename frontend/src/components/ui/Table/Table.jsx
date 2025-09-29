@@ -109,7 +109,7 @@ export default function Table({
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
                         hideEditModal();
-                    }, onError: (error) => {
+                    }, onError: () => {
                         showSnackbar("حدث خطأ اثناء تحديث العنصر", "error")
                     }
                 });
@@ -159,6 +159,7 @@ export default function Table({
                     userCanEdit={userCanEdit}
                     userCanDelete={userCanDelete}
                     onEditClick={handleEdit ?? handleEditClick}
+                    fields={fields}
                     onDeleteClick={handleRowDelete}
                 >
                     {children}
