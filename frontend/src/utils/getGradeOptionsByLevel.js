@@ -18,5 +18,5 @@ export const getGradeOptionsByLevel = (FormData) => {
             {label: "الثالث", value: 3},
         ],
     };
-    return gradeOptionsByLevel[FormData.level];
+    return gradeOptionsByLevel[FormData?.level] || [];
 }

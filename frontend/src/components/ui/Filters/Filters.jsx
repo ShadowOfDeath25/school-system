@@ -7,7 +7,7 @@ import {useTranslation} from "react-i18next";
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import InputField from "@ui/InputField/InputField.jsx";
 
-export default function Filters({onSubmit, resource, fields = []}) {
+export default function Filters({onSubmit, resource, fields = [], additionalFields = []}) {
     const {data: fieldsData, isLoading} = useFilters(resource);
     const [filters, setFilters] = useState({});
 
@@ -35,8 +35,18 @@ export default function Filters({onSubmit, resource, fields = []}) {
             ...field,
             value: filters[field.name],
             handleChange: handleChange,
-            options: typeof field.options === 'function' ? (Array.isArray(field.dependency) ? field.options(field.dependency.map(d => filters[d])) : field.options(filters[field.dependency])) : field.options,
-            disabled: typeof field.disabled === 'function' ? (Array.isArray(field.dependency) ? field.disabled(field.dependency.map(d => filters[d])) : field.disabled(filters[field.dependency])) : field.disabled,
+            options: typeof field.options === 'function'
+                ? field.dependency
+                    ? Array.isArray(field.dependency)
+                        ? field.options(field.dependency.map(d => filters[d]))
+                        : field.options(filters[field.dependency])
+                    : field.options(filters)
+                : field.options,
+            disabled: typeof field.disabled === 'function'
+                ? field.dependency
+                    ? field.disabled(Array.isArray(field.dependency) ? field.dependency.map(d => filters[d]) : filters[field.dependency])
+                    : field.disabled(filters)
+                : field.disabled,
         };
         switch (field.type) {
             case 'select':
@@ -49,29 +59,30 @@ export default function Filters({onSubmit, resource, fields = []}) {
 
     }
 
-    const propFieldNames = new Set(fields.map(f => f.name));
+    const allCustomFields = [...fields, ...additionalFields];
+    const customFieldNames = new Set(allCustomFields.map(f => f.name));
+
+    const finalFields = [
+        ...Object.keys(fieldsData || {})
+            .filter(fieldName => !customFieldNames.has(fieldName))
+            .map(fieldName => ({
+                name: fieldName,
+                label: t(fieldName),
+                id: fieldName,
+                type: 'select',
+                multiple: true,
+                options: fieldsData[fieldName],
+                placeholder: `اختر ${t(fieldName)}`
+            })),
+        ...allCustomFields
+    ];
 
     return (
         <div className={styles.container}>
             <h3>خيارات العرض</h3>
             {isLoading ? <LoadingScreen/> :
                 <div className={styles.filtersContainer}>
-                    {Object.keys(fieldsData || {})
-                        .filter(fieldName => !propFieldNames.has(fieldName))
-                        .map(field => (
-                            <SelectField
-                                key={field}
-                                name={field}
-                                label={t(field)}
-                                id={field}
-                                multiple={true}
-                                options={fieldsData[field]}
-                                placeholder={`اختر ${t(field)}`}
-                                handleChange={handleChange}
-                                value={filters[field] || []}
-                            />
-                        ))}
-                    {fields.map(renderField)}
+                    {finalFields.map(renderField)}
                 </div>
             }
             <div className={styles.actions}>

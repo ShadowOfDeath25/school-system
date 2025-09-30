@@ -74,8 +74,18 @@ export default function Form({fields, id, title, btnText = "إضافة", onFormS
             error: fieldError,
             isValid: isTouched ? !fieldError : undefined,
             isModal: isModal,
-            options: typeof field.options === 'function' ? field.options(formData) : field.options,
-            disabled: typeof field.disabled === 'function' ? field.disabled(formData) : field.disabled,
+            options: typeof field.options === 'function'
+                ? field.dependency
+                    ? Array.isArray(field.dependency)
+                        ? field.options(field.dependency.map(d => formData[d]))
+                        : field.options(formData[field.dependency])
+                    : field.options(formData)
+                : field.options,
+            disabled: typeof field.disabled === 'function'
+                ? field.dependency
+                    ? field.disabled(Array.isArray(field.dependency) ? field.dependency.map(d => formData[d]) : formData[field.dependency])
+                    : field.disabled(formData)
+                : field.disabled,
         };
         switch (field.type) {
             case 'select':
