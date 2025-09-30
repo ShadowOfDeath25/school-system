@@ -1,4 +1,5 @@
 import AddSubject from "@pages/Subjects/AddSubject.jsx";
+import ViewSubjects from "@pages/Subjects/ViewSubjects.jsx";
 
 const routes = {
     path: 'subjects',
@@ -9,6 +10,16 @@ const routes = {
         }
     },
     children: [
+        {
+            index: true,
+            element: <ViewSubjects/>,
+            handle:{
+                sidebar: {
+                    title: "المواد",
+                    action: "view subjects"
+                }
+            }
+        },
         {
             path: 'add',
             element: <AddSubject/>,

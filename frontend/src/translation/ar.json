@@ -40,5 +40,11 @@
     "father_name": "اسم الأب",
     "birth_date": "تاريخ الميلاد",
     "classroom.level": "المرحلة",
-    "classroom.academic_year": "العام الدراسي"
+    "classroom.academic_year": "العام الدراسي",
+    "semester": "الفصل الدراسي",
+    "type": "النوع",
+    "min_marks": "الدرجة الصغري",
+    "max_marks": "الدرجة العظمي",
+    "added_to_report": "تضاف للكشف",
+    "added_to_total": "تضاف للمجموع"
 }
