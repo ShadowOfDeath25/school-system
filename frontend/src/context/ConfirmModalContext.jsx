@@ -3,7 +3,7 @@ import {createContext, useCallback, useContext, useState} from "react";
 import ConfirmModal from "@ui/ConfirmModal/ConfirmModal.jsx";
 
 const ConfirmModalContext = createContext(null)
-export const useModal = () => {
+export const useConfirmModal = () => {
     const context = useContext(ConfirmModalContext);
     if (!context) {
         throw new Error('useModal must be used within a ConfirmModalProvider');

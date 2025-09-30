@@ -3,7 +3,7 @@ import {useEffect, useMemo, useState} from "react";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import {useDelete, useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useCurrentUser} from "@hooks/api/auth.js";
-import {useModal} from "@contexts/ConfirmModalContext.jsx";
+import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useTranslation} from "react-i18next";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
@@ -25,7 +25,7 @@ export default function Table({
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const {data: user, isLoading: userIsLoading} = useCurrentUser();
-    const {confirm} = useModal();
+    const {confirm} = useConfirmModal();
     const {showSnackbar} = useSnackbar();
     const {t} = useTranslation();
     const {showEditModal, hideEditModal} = useEditModal();
