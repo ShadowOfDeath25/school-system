@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->integer('class_number');
             $table->integer('actual_capacity')->nullable();
             $table->integer('max_capacity');
-            $table->foreignIdFor(Floor::class);
+            $table->foreignIdFor(Floor::class)->constrained()->cascadeOnDelete();
             $table->string('leader')->nullable();
             $table->string('academic_year');
             $table->timestamps();

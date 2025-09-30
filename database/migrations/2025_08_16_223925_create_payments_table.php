@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Student;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,8 +17,7 @@ return new class extends Migration {
             $table->enum('language', ['عربي', 'لغات']);
             $table->string("type");
             $table->decimal('value', 10,2);
-            $table->bigInteger('student_id')->unsigned();
-            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
             $table->string('level');
             $table->timestamps();
         });

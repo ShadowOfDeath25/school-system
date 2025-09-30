@@ -11,19 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('examhalls', function (Blueprint $table) {
+        Schema::create('secret_numbers', function (Blueprint $table) {
             $table->id();
-            $table->string('language');
             $table->string('grade');
-            $table->string('level');
-            $table->string('capacity');
-            $table->unsignedBigInteger('floor_id');
-            $table->foreign('floor_id')->references('id')->on('floors');
-            $table->unsignedBigInteger('building_id');
-            $table->foreign('building_id')->references('id')->on('buildings');
-            $table->string('semester');
-            $table->string('number');
+            $table->string('group_number');
+            $table->string('group_capacity');
             $table->string('academic_year');
+            $table->string('language');
+            $table->string('level');
             $table->date('starts_at');
             $table->date('ends_at');
             $table->timestamps();
@@ -35,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('examhalls');
+        Schema::dropIfExists('secretnumbers');
     }
 };

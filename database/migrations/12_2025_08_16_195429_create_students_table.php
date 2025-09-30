@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Classroom;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,8 +23,7 @@ return new class extends Migration {
             $table->text('birth_address');
             $table->enum('religion', ['مسلم', "مسيحي"]);
             $table->string("note")->nullable();
-            $table->bigInteger('classroom_id')->unsigned()->nullable();
-            $table->foreign('classroom_id')->references('id')->on('classrooms');
+            $table->foreignIdFor(Classroom::class)->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

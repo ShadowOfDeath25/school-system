@@ -11,16 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('secretnumbers', function (Blueprint $table) {
+        Schema::create('bank_accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('grade');
-            $table->string('group_number');
-            $table->string('group_capacity');
+            $table->string('document_number')->unique();
+            $table->string('notes');
+            $table->string('type');
+            $table->string('manager_name');
             $table->string('academic_year');
-            $table->string('language');
-            $table->string('level');
-            $table->date('starts_at');
-            $table->date('ends_at');
+            $table->decimal('value', 15, 2);
+            $table->date('date');
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('secretnumbers');
+        Schema::dropIfExists('bankaccounts');
     }
 };

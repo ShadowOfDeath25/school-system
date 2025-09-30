@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Guardian;
+use App\Models\Student;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,11 +14,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('guardian_student', function (Blueprint $table) {
-            $table->id();
-            $table->bigInteger('guardian_id')->unsigned();
-            $table->foreign('guardian_id')->references('id')->on('guardians');
-            $table->bigInteger("student_id")->unsigned();
-            $table->foreign("student_id")->references("id")->on("students");
+            $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Guardian::class)->constrained()->cascadeOnDelete();
+            $table->primary(['student_id', 'guardian_id']);
             $table->timestamps();
         });
     }
