@@ -24,11 +24,12 @@ class StoreClassroomRequest extends FormRequest
         return [
             'language' => ["required", "string", "max:255"],
             'level' => ["required", "string", "max:255"],
-            'grade' => ["required", "integer"] ,
-            'leader'=>["nullable","string"],
-            'academic_year'=>['string','regex:/^\d{4}\/\d{4}$/','required'],
+            'grade' => ["required", "integer"],
+            'leader' => ["nullable", "string"],
+            'academic_year' => ['string', 'regex:/^\d{4}\/\d{4}$/', 'required'],
             'actual_capacity' => ["sometimes", "integer"],
             'max_capacity' => ["required", "integer"],
+            'floor_id' => ["required", "integer", "exists:floors,id"]
         ];
     }
 }

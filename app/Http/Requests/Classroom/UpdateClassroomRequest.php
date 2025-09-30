@@ -22,12 +22,13 @@ class UpdateClassroomRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'language' => [ "string", "max:255"],
+            'language' => ["string", "max:255"],
             'phase' => ["string", "max:255"],
             'edu_year' => ["integer"],
-            'class_number' => [ "integer"],
+            'class_number' => ["integer"],
             'actual_capacity' => ["integer"],
             'max_capacity' => ["integer"],
+            'floor_id' => ["integer", "exists:floors,id"]
         ];
     }
 }

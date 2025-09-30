@@ -15,12 +15,14 @@ class Classroom extends Model
         'class_number',
         'actual_capacity',
         'max_capacity',
-        'academic_year'
+        'academic_year',
+        'floor_id',
+        'leader'
     ];
 
     public function students(): HasMany|Classroom
     {
-        return $this->hasMany(Student::class,'classroom_id');
+        return $this->hasMany(Student::class, 'classroom_id');
     }
 
 
