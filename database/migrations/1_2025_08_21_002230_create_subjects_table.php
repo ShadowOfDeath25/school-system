@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->decimal('max_degree');
-            $table->string('phase');
+            $table->integer('max_marks');
+            $table->integer('min_marks');
+            $table->string('level');
+            $table->string('grade');
             $table->string('semester');
             $table->string('language');
             $table->string('academic_year');
+            $table->string('type');
             $table->boolean('added_to_total');
+            $table->boolean('added_to_report');
             $table->timestamps();
         });
     }

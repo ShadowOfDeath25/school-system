@@ -6,7 +6,7 @@ import rolesRoutes from "@routes/roles.jsx";
 import studentsRoutes from "@routes/students.jsx";
 import classroomsRoutes from "@routes/classrooms.jsx"
 import buildingAndFloorsRoutes from '@routes/buildingsAndFloors.jsx'
-
+import subjectsRoutes from '@routes/subjects.jsx'
 const mainRoutes = {
     handle: {
         sidebar: {
@@ -41,5 +41,6 @@ export const appRoutes = [
     rolesRoutes,
     studentsRoutes,
     classroomsRoutes,
-    buildingAndFloorsRoutes
+    buildingAndFloorsRoutes,
+    subjectsRoutes
 ];

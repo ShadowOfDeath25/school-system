@@ -9,12 +9,16 @@ class Subject extends Model
 {
     protected $fillable = [
         'name',
-        'max_degree',
-        'phase',
+        'max_marks',
+        'min_marks',
+        'grade',
+        'type',
+        'level',
         'semester',
         'language',
         'academic_year',
         'added_to_total',
+        'added_to_report'
     ];
 
     public function books(): HasMany

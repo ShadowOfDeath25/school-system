@@ -94,8 +94,8 @@ export default function Table({
             deleteMutation.mutate(id, {
                 onSuccess: () => {
                     showSnackbar("تم حذف العنصر بنجاح")
-                }, onError: () => {
-                    showSnackbar("حدث خطأ أثناء حذف العنصر", "error")
+                }, onError: (error) => {
+                    showSnackbar(`حدث خطأ أثناء حذف العنصر: ${error.response.data.message}`, "error")
                 }
             });
         }

@@ -22,13 +22,17 @@ class UpdateSubjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [ 'string', 'max:255'],
-            'max_degree' => [ 'numeric'],
-            'phase' => ['string', 'max:50'],
-            'semester' => [ 'string', 'max:50'],
+            'name' => ['string', 'max:255'],
+            'max_marks' => ['integer'],
+            'min_marks' => ['integer'],
+            'level' => ['string', 'max:50'],
+            'semester' => ['string', 'max:50'],
             'language' => ['string', 'max:50'],
-            'academic_year' => ['integer',],
-            'added_to_total' => ['boolean'],
+            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'added_to_total' => ["integer",'min:0', 'max:1'],
+            'added_to_report' => ["integer",'min:0', 'max:1'],
+            'type' => ['string'],
+            'grade' => ['integer']
         ];
     }
 }
