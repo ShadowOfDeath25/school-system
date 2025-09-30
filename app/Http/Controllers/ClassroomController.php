@@ -44,13 +44,23 @@ class ClassroomController extends Controller
     {
         $this->authorizeAction("create");
         $data = $request->validated();
-        $classroom = new Classroom($data);
-        $lastClassroom = Classroom::where("grade", $data['grade'])
+
+        $existingClassNumbers = Classroom::where("grade", $data['grade'])
             ->where('level', $data['level'])
             ->where('academic_year', $data['academic_year'])
             ->where('language', $data['language'])
-            ->max('class_number');
-        $classroom->class_number = $lastClassroom ? $lastClassroom->class_number + 1 : 1;
+            ->pluck('class_number')
+            ->sort()
+            ->all();
+
+        $newClassNumber = 1;
+        foreach ($existingClassNumbers as $number) {
+            if ($number != $newClassNumber) break;
+            $newClassNumber++;
+        }
+
+        $classroom = new Classroom($data);
+        $classroom->class_number = $newClassNumber;
         $classroom->name = $data['grade'] . '/' . $classroom->class_number.' '.$data['level'];
         $classroom->save();
 
