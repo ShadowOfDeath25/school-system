@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Guardian extends Model
 {
+    use HasFactory;
 
     protected $fillable = [
         'name',
@@ -18,7 +19,7 @@ class Guardian extends Model
         'nid',
     ];
 
-    public function students():belongsToMany
+    public function students(): belongsToMany
     {
         return $this->belongsToMany(Student::class);
     }

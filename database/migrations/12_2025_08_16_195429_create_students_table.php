@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->text('birth_address');
             $table->enum('religion', ['مسلم', "مسيحي"]);
             $table->string("note")->nullable();
-            $table->foreignIdFor(Classroom::class)->constrained()->nullOnDelete();
+            $table->foreignIdFor(Classroom::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

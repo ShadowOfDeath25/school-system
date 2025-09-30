@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->string('name');
             $table->integer('grade');
             $table->integer('class_number');
-            $table->integer('actual_capacity')->nullable();
             $table->integer('max_capacity');
             $table->foreignIdFor(Floor::class)->constrained()->cascadeOnDelete();
             $table->string('leader')->nullable();
