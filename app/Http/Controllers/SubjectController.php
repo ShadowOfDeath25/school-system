@@ -12,7 +12,7 @@ class SubjectController extends Controller
     use HasCRUD;
 
     protected array $filterable = [
-        'a  cademic_year',
+        'academic_year',
         'language',
         'level',
         'grade',
