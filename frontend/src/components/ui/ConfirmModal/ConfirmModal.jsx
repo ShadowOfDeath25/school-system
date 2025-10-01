@@ -2,7 +2,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogContentText} from "@
 import styles from './styles.module.css';
 import WarningIcon from '@mui/icons-material/Warning'
 
-export default function ConfirmModal({open, onConfirm, onCancel, message}) {
+export default function ConfirmModal({open, onConfirm, onCancel, message,warning}) {
     return (
         <Dialog
             open={open}
@@ -14,6 +14,7 @@ export default function ConfirmModal({open, onConfirm, onCancel, message}) {
                 <DialogContentText id="confirmation-dialog-description" className={styles.msg}>
                     {message}
                 </DialogContentText>
+                <DialogContentText className={styles.warning}>{warning}</DialogContentText>
             </DialogContent>
             <DialogActions className={styles.actions}>
                 <Button onClick={onCancel} sx={{color: 'var(--primary-text-color)'}}>إلغاء</Button>

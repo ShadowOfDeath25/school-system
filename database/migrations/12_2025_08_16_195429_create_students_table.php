@@ -23,6 +23,9 @@ return new class extends Migration {
             $table->text('birth_address');
             $table->enum('religion', ['مسلم', "مسيحي"]);
             $table->string("note")->nullable();
+            $table->string('status');
+            $table->boolean('withdrawn')->nullable();
+            $table->string('reg_number')->nullable();
             $table->foreignIdFor(Classroom::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });

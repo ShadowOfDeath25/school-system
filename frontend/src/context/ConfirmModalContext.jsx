@@ -13,12 +13,12 @@ export const useConfirmModal = () => {
 
 export function ConfirmModalProvider({children}) {
     const [modal, setModal] = useState({
-        open: false, msg: '', type: 'info',
+        open: false, msg: '', type: 'info',warning:'',
     });
     const [confirmationState, setConfirmationState] = useState(null);
 
-    const showModal = useCallback((msg, type = 'warning') => {
-        setModal({open: true, msg, type});
+    const showModal = useCallback((msg, type = 'warning',warning) => {
+        setModal({open: true, msg, type,warning});
     }, []);
 
     const confirm = useCallback((options) => {
@@ -58,6 +58,7 @@ export function ConfirmModalProvider({children}) {
                     onConfirm={handleConfirm}
                     onCancel={handleCancel}
                     message={confirmationState.message}
+                    warning={confirmationState.warning}
                 />
             )}
         </ConfirmModalContext.Provider>

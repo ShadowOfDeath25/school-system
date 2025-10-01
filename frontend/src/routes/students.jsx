@@ -1,6 +1,7 @@
 import AddStudents from "@pages/Students/AddStudents.jsx";
 import ViewStudents from "@pages/Students/ViewStudents.jsx";
 import NotEnrolled from "@pages/Students/NotEnrolled.jsx";
+import Withdrawn from "@pages/Students/Withdrawn.jsx";
 
 const routes = {
     path: "students",
@@ -37,6 +38,16 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "الغير مقيدون بفصول",
+                    action: "update students"
+                }
+            }
+        },
+        {
+            path: "withdrawn",
+            element: <Withdrawn/>,
+            handle: {
+                sidebar: {
+                    title: "تلاميذ تم سحب ملفاتهم",
                     action: "update students"
                 }
             }

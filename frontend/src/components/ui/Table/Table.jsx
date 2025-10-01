@@ -90,7 +90,7 @@ export default function Table({
     };
 
     const handleRowDelete = async (id) => {
-        const confirmed = await confirm({message: "هل أنت متأكد من حذف هذا العنصر؟"})
+        const confirmed = await confirm({message: "هل أنت متأكد من حذف هذا العنصر؟",warning:'حذف هذا العنصر قد يؤدي لحذف كل العناصر المرتبطة به'})
         if (confirmed) {
             deleteMutation.mutate(id, {
                 onSuccess: () => {

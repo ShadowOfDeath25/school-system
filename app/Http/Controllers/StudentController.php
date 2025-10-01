@@ -11,6 +11,7 @@ use App\Models\Student;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -27,10 +28,36 @@ class StudentController extends Controller
     protected string $updateRequest = UpdateStudentRequest::class;
     protected string $resource = StudentResource::class;
     protected array $filterable = [
-        'classroom', 'classroom.level','classroom.academic_year'
+        'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade'
+    ];
+    protected array $searchable=[
+        'name_in_arabic','name_in_english'
     ];
     protected array $relationsToLoad = ['classroom', 'guardians'];
 
+    public function index(Request $request)
+    {
+        if ($request->has('withdrawn')) {
+            return StudentResource::collection(
+                Student::query()
+                    ->with($this->relationsToLoad)
+                    ->where('withdrawn', true)
+                    ->paginate($request->input('per_page', 30))
+                    ->withQueryString()
+            );
+        }
+        return $this->baseIndex($request);
+    }
+
+    public function query()
+    {
+        return Student::query()
+            ->with($this->relationsToLoad)
+            ->where(function ($q) {
+                $q->where('withdrawn', false)
+                    ->orWhereNull('withdrawn');
+            });
+    }
 
     public function store(StoreStudentRequest $request): JsonResponse
     {
@@ -76,7 +103,11 @@ class StudentController extends Controller
                 $newClassroomId = $validated['classroom_id'] ?? null;
                 $oldClassroomId = $student->classroom_id;
                 if ($newClassroomId !== $oldClassroomId && $newClassroomId) {
-                    $newClassroom = Classroom::withCount('students')->findOrFail($newClassroomId);
+                    $newClassroom = Classroom::withCount(['students' => function ($query) {
+                        $query->where('withdrawn', false)
+                            ->orWhereNull('withdrawn');
+                    }])
+                        ->findOrFail($newClassroomId);
                     if ($newClassroom->students_count >= $newClassroom->max_capacity) {
                         throw ValidationException::withMessages([
                             'classroom_id' => ['The selected classroom is full.'],

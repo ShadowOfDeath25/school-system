@@ -28,6 +28,7 @@ class StudentResource extends JsonResource
 
         return [
             "id" => $this->id,
+            'reg_number' => $this->reg_number,
             "name_in_arabic" => $this->name_in_arabic,
             "nid" => $this->nid,
             "father_name" => $father->name ?? "غير مسجل",
@@ -40,6 +41,8 @@ class StudentResource extends JsonResource
             "mother_job" => $mother->job ?? "غير مسجل",
             "classroom" => $classroom_name,
             'note' => $this->note,
+            'status' => $this->status,
+            'withdrawn' => $this->withdrawn ? 'نعم' : 'لا',
             "nationality" => $this->nationality,
             "name_in_english" => $this->name_in_english,
             "gender" => $this->gender,

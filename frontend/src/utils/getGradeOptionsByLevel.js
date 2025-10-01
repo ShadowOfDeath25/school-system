@@ -1,4 +1,4 @@
-export const getGradeOptionsByLevel = (FormData) => {
+export const getGradeOptionsByLevel = (arg) => {
     const gradeOptionsByLevel = {
         "رياض اطفال": [
             {label: "الأول", value: 1},
@@ -18,5 +18,12 @@ export const getGradeOptionsByLevel = (FormData) => {
             {label: "الثالث", value: 3},
         ],
     };
-    return gradeOptionsByLevel[FormData?.level] || [];
+
+    let level;
+    if (typeof arg === 'string') {
+        level = arg;
+    } else if (typeof arg === 'object' && arg !== null) {
+        level = arg.level;
+    }
+    return gradeOptionsByLevel[level] || [];
 }

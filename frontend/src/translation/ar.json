@@ -46,5 +46,7 @@
     "min_marks": "الدرجة الصغري",
     "max_marks": "الدرجة العظمي",
     "added_to_report": "تضاف للكشف",
-    "added_to_total": "تضاف للمجموع"
+    "added_to_total": "تضاف للمجموع",
+    "reg_number": "رقم القيد",
+    "status": "حالة القيد"
 }

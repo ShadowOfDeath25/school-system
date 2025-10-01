@@ -31,7 +31,10 @@ export default function TablePresenter({
                     {columnKeys.map(key => (key !== "id" &&
                         !childHeaders.has(key) &&
                         <th key={key} className={styles.cell}>
-                            {t(key) || key}
+                            {(() => {
+                                const field = fields.find(f => f.name === key);
+                                return field?.label || field?.header || t(key) || key;
+                            })()}
                         </th>
                     ))}
                     {childrenArray.map(child => (

@@ -6,7 +6,7 @@
     border-radius: 20px;
 }
 
-.msg, .title {
+.msg, .warning , .title {
     font-weight: bold !important;
     color: var(--primary-text-color) !important;
 }
@@ -18,7 +18,7 @@
 .content {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 15px;
     align-items: center;
 
 }
@@ -30,13 +30,20 @@
 }
 
 .msg {
-    font-size: 2rem !important;
+    font-size: 1.5rem !important;
+}
+
+.warning {
+    /*margin-top: 20px !important;*/
+    font-size: 1rem !important
+
 }
 
 .actions {
     display: flex;
     gap: 20px;
     padding: 20px !important;
+
     & button {
         font-size: 1.2rem !important;
         font-weight: bold !important;
@@ -48,15 +55,19 @@
     :global(.modalContent .MuiPaper-root) {
         width: 70vw;
     }
-    .warningIcon{
+
+    .warningIcon {
         font-size: 100px !important;
     }
-    .msg{
+
+    .msg {
         font-size: 1.2rem !important;
     }
-    .actions{
+
+    .actions {
         gap: 10px;
     }
+
     .actions button {
         font-size: .8rem !important;
     }
