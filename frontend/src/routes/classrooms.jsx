@@ -14,8 +14,8 @@ const routes = {
             index: true,
             element: <ViewClassrooms/>,
             handle: {
-                sidebar:{
-                    title: "عرض الفصول",
+                sidebar: {
+                    title: "الفصول",
                     action: "view classrooms"
                 }
             }
