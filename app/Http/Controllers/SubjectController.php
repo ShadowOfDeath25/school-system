@@ -9,6 +9,7 @@ use App\Models\subject;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SubjectController extends Controller
 {
@@ -33,12 +34,12 @@ class SubjectController extends Controller
     public function index(Request $request)
     {
         if ($request->has('types')) {
-            return SubjectResource::collection(
-                $this->getQuery()
-                    ->distinct('type')->
-                    paginate($request->
-                    input('per_page', 30))
-                    ->withQueryString());
+            return JsonResource::collection(
+                Subject::query()
+                    ->select('type')
+                    ->distinct()
+                    ->paginate($request->input('per_page', 30))->withQueryString()
+            );
         } else {
             return $this->baseIndex($request);
         }

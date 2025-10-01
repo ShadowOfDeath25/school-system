@@ -18,6 +18,7 @@ export default function Table({
                                   editFields = fields,
                                   handleEdit,
                                   editable = true,
+                                  deletable = true,
                                   params = {},
                                   children
                               }) {
@@ -119,7 +120,7 @@ export default function Table({
 
 
     const userCanEdit = editable && user?.role.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
-    const userCanDelete = user?.role.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
+    const userCanDelete = deletable && user?.role.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
 
     if (isLoading || userIsLoading) {
         return (<div className={styles.wrapper}>
