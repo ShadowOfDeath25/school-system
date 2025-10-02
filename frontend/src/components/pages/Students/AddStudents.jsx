@@ -4,6 +4,7 @@ import {validator} from "@utils/validator.js";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
+import {STUDENTS} from "@constants/students.js";
 
 const fields = [
     {
@@ -65,7 +66,7 @@ const fields = [
                 id: "gender",
                 label: "النوع",
                 required: true,
-                options: [{label: "ذكر", value: "male"}, {label: "أنثى", value: "female"}],
+                options: STUDENTS.GENDERS,
                 error: "الرجاء اختيار النوع"
             },
             {
@@ -73,21 +74,13 @@ const fields = [
                 type: "radio",
                 id: "religion",
                 label: "الديانة",
-                options: [
-                    {label: "مسلم", value: "مسلم"},
-                    {label: "مسيحي", value: "مسيحي"}
-                ]
+                options: STUDENTS.RELIGIONS
             },
             {
                 name: "note",
                 type: "select",
                 label: "علامة مميزة",
-                options: [
-                    {label: "لا يوجد", value: null},
-                    {label: "ابناء عاملين", value: "ابناء عاملين"},
-                    {label: "دمج", value: "دمج"},
-                    {label: "يتيم", value: "يتيم"}
-                ],
+                options: STUDENTS.NOTES,
                 placeholder: "لا يوجد"
             }
         ]

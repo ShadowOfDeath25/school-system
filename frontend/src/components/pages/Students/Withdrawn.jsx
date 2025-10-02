@@ -7,6 +7,8 @@ import {useState} from "react";
 import {Button} from "@mui/material";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import {CLASSROOMS} from "@constants/classrooms.js";
+import {getAcademicYears} from "@utils/getAcademicYears.js";
 
 export default function Withdrawn() {
     const {data: classrooms} = useGetAll('classrooms', {all: 'true'});
@@ -18,7 +20,7 @@ export default function Withdrawn() {
         {
             name: "classroom.level",
             type: "select",
-            options: ["رياض اطفال", "ابتدائي", "اعدادي"],
+            options: CLASSROOMS.LEVELS,
             label: "المرحلة",
             placeholder: "اختر المرحلة"
         },
@@ -69,7 +71,7 @@ export default function Withdrawn() {
                     name: "language",
                     type: "select",
                     label: "اللغة",
-                    options: ["عربي", "لغات"],
+                    options: CLASSROOMS.LANGUAGES,
                     required: true,
                     placeholder: "اختر اللغة"
                 },

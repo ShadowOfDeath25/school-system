@@ -5,6 +5,8 @@ import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
+import {CLASSROOMS} from "@constants/classrooms.js";
+import {SUBJECTS} from "@constants/subjects.js";
 
 export default function AddSubjects() {
     const [serverErrors, setServerErrors] = useState();
@@ -24,7 +26,7 @@ export default function AddSubjects() {
             name: "semester",
             type: "select",
             label: "الفصل الدراسي",
-            options: ['الاول', 'الثاني', "طوال العام"],
+            options: SUBJECTS.SEMESTERS,
             required: true,
             placeholder: "اختر الفصل الدراسي"
         },
@@ -32,7 +34,7 @@ export default function AddSubjects() {
             name: "language",
             type: 'select',
             label: "اللغة",
-            options: ["عربي", "لغات"],
+            options: CLASSROOMS.LANGUAGES,
             required: true,
             placeholder: "اختر اللغة"
         },
@@ -40,7 +42,7 @@ export default function AddSubjects() {
             name: "level",
             type: "select",
             label: "المرحلة",
-            options: ['رياض اطفال', "ابتدائي", "اعدادي"],
+            options: CLASSROOMS.LEVELS,
             required: true,
             placeholder: "اختر مرحلة"
         },

@@ -9,6 +9,7 @@ import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
 import {Button} from '@mui/material'
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
+import {CLASSROOMS} from "@constants/classrooms.js";
 
 export default function ViewStudents() {
     const [tableFilters, setTableFilters] = useState(null);
@@ -191,7 +192,7 @@ export default function ViewStudents() {
         {
             name: "classroom.level",
             type: "select",
-            options: ["رياض اطفال", "ابتدائي", "اعدادي"],
+            options: CLASSROOMS.LEVELS,
             label: "المرحلة",
             placeholder: "اختر المرحلة"
         },
@@ -221,7 +222,7 @@ export default function ViewStudents() {
             },
             options: (values) => {
                 let [grade, level] = values;
-                return [...new Set(classrooms?.data?.filter(classroom => classroom.grade === grade?.[0] && classroom.level === level).map(classroom => classroom.name))]
+                return [...new Set(classrooms?.data?.filter(classroom => classroom.grade === grade && classroom.level === level).map(classroom => classroom.name))]
             },
 
             dependency: ["classroom.grade", "classroom.level"]

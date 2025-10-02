@@ -47,7 +47,6 @@ export default function AddRoles() {
             onError: (mutationError) => {
                 setServerErrors(mutationError.response.data.errors);
                 showSnackbar("حدث خطأ اثناء اضافة الرتبة", "error")
-                console.log(mutationError)
             }
         })
     }

@@ -4,27 +4,9 @@ import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
+import {CLASSROOMS} from "@constants/classrooms.js";
+import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
 
-
-const gradeOptionsByLevel = {
-    "رياض اطفال": [
-        {label: "الأول", value: 1},
-        {label: "الثاني", value: 2},
-    ],
-    "ابتدائي": [
-        {label: "الاول", value: 1},
-        {label: "الثاني", value: 2},
-        {label: "الثالث", value: 3},
-        {label: "الرابع", value: 4},
-        {label: "الخامس", value: 5},
-        {label: "السادس", value: 6},
-    ],
-    "اعدادي": [
-        {label: "الأول", value: 1},
-        {label: "الثاني", value: 2},
-        {label: "الثالث", value: 3},
-    ],
-};
 
 export default function AddClassrooms() {
     const creationMutation = useCreate("classrooms");
@@ -40,11 +22,7 @@ export default function AddClassrooms() {
                     placeholder: "اختر مرحلة",
                     type: "select",
                     required: true,
-                    options: [
-                        {label: "رياض اطفال", value: "رياض اطفال"},
-                        {label: "ابتدائي", value: "ابتدائي"},
-                        {label: "اعدادي", value: "اعدادي"},
-                    ]
+                    options: CLASSROOMS.LEVELS
                 },
                 {
                     name: "language",
@@ -52,10 +30,7 @@ export default function AddClassrooms() {
                     placeholder: "اختر اللغة",
                     type: "radio",
                     required: true,
-                    options: [
-                        {label: "عربي", value: "عربي"},
-                        {label: "لغات", value: "لغات"}
-                    ]
+                    options: CLASSROOMS.LANGUAGES
                 },
                 {
                     name: "academic_year",
@@ -78,7 +53,7 @@ export default function AddClassrooms() {
                     label: "الصف",
                     type: "select",
                     required: true,
-                    options: (formData) => gradeOptionsByLevel[formData.level] || [],
+                    options: getGradeOptionsByLevel,
                     disabled: (formData) => !formData.level,
                 },
                 {
