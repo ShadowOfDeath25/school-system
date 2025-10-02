@@ -1,4 +1,4 @@
-import AddSubject from "@pages/Subjects/AddSubject.jsx";
+import AddSubjects from "@pages/Subjects/AddSubjects.jsx";
 import ViewSubjects from "@pages/Subjects/ViewSubjects.jsx";
 import SubjectTypes from "@pages/Subjects/SubjectTypes.jsx";
 
@@ -6,7 +6,7 @@ const routes = {
     path: 'subjects',
     handle: {
         sidebar: {
-            header: 'المواد',
+            header: 'المواد الدراسية',
             name: 'subjects'
         }
     },
@@ -16,14 +16,14 @@ const routes = {
             element: <ViewSubjects/>,
             handle: {
                 sidebar: {
-                    title: "المواد",
+                    title: "المواد الدراسية",
                     action: "view subjects"
                 }
             }
         },
         {
             path: 'add',
-            element: <AddSubject/>,
+            element: <AddSubjects/>,
             handle: {
                 sidebar: {
                     title: "اضافة مادة",
