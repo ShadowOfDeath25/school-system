@@ -3,7 +3,7 @@ import Form from "@ui/Form/Form.jsx";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {useAcademicYears} from "@hooks/useAcademicYears.js";
+import {getAcademicYears} from "@utils/getAcademicYears.js";
 
 
 const gradeOptionsByLevel = {
@@ -63,7 +63,7 @@ export default function AddClassrooms() {
                     placeholder: "اختر العام الدراسي",
                     type: "select",
                     required: true,
-                    options: useAcademicYears()
+                    options: getAcademicYears()
                 },
                 {
                     name: "max_capacity",

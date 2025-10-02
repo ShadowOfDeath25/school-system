@@ -61,7 +61,7 @@ export default function Withdrawn() {
                     name: 'academic_year',
                     type: 'select',
                     label: 'السنة الدراسية',
-                    options: useAcademicYears(),
+                    options: getAcademicYears(),
                     placeholder: "اختر السنة الدراسية",
                     required: true
                 },

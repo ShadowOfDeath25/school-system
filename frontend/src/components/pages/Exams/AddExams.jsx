@@ -1,6 +1,6 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {useAcademicYears} from "@hooks/useAcademicYears.js";
+import {getAcademicYears} from "@utils/getAcademicYears.js";
 import {CLASSROOMS} from "@constants/classrooms.js";
 import {SUBJECTS} from "@constants/subjects.js";
 import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
@@ -28,7 +28,7 @@ export default function AddExams() {
             name: "academic_year",
             label: "العام الدراسي",
             type: "select",
-            options: useAcademicYears(),
+            options: getAcademicYears(),
             required: true,
             placeholder: "اختر العام الدراسي"
         }, {

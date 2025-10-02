@@ -3,7 +3,7 @@ import Form from "@ui/Form/Form.jsx";
 import {useState} from "react";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useAcademicYears} from "@hooks/useAcademicYears.js";
+import {getAcademicYears} from "@utils/getAcademicYears.js";
 import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
 
 export default function AddSubjects() {
@@ -16,7 +16,7 @@ export default function AddSubjects() {
             name: "academic_year",
             type: "select",
             label: "العام الدراسي",
-            options: useAcademicYears(),
+            options: getAcademicYears(),
             required: true,
             placeholder: "اختر العام الدراسي"
         },

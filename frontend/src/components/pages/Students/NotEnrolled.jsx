@@ -4,7 +4,7 @@ import {Button} from "@mui/material";
 import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useAcademicYears} from "@hooks/useAcademicYears.js";
+import {getAcademicYears} from "@utils/getAcademicYears.js";
 
 export default function NotEnrolled() {
     const mutation = useUpdate('students', {all: true});
@@ -19,7 +19,7 @@ export default function NotEnrolled() {
                     name: 'academic_year',
                     type: 'select',
                     label: 'السنة الدراسية',
-                    options: useAcademicYears(),
+                    options: getAcademicYears(),
                     placeholder: "اختر السنة الدراسية",
                     required: true
                 },
