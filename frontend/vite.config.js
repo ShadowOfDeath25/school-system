@@ -17,7 +17,8 @@ export default defineConfig({
             '@routes':path.resolve(__dirname,'src/routes'),
             '@utils':path.resolve(__dirname,'src/utils'),
             '@fonts': path.resolve(__dirname,'src/assets/fonts'),
-            '@reports':path.resolve(__dirname,'src/components/reports')
+            '@reports':path.resolve(__dirname,'src/components/reports'),
+            '@constants':path.resolve(__dirname,'src/constants')
         },
     },
 })
