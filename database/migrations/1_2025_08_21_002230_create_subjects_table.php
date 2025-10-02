@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('max_marks');
             $table->integer('min_marks');
             $table->string('level');
-            $table->string('grade');
+            $table->integer('grade');
             $table->string('semester');
             $table->string('language');
             $table->string('academic_year');

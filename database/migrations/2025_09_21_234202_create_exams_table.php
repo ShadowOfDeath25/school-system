@@ -21,9 +21,9 @@ return new class extends Migration {
             $table->date('date');
             $table->string('type');
             $table->string('language');
-            $table->date('duration_in_hours');
-            $table->decimal('max_mark');
-            $table->decimal('min_mark');
+            $table->decimal('duration_in_hours');
+            $table->integer('max_marks');
+            $table->integer('min_marks');
             $table->timestamps();
         });
     }
