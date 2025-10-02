@@ -22,20 +22,20 @@ class StoreExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+
             'name' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
             'language' => ['required', 'string', 'max:255'],
             'level' => ['required', 'string', 'max:255'],
-            'duration_in_hours' => ['required', 'date'],
-            'max_mark' => ['required', 'numeric'],
-            'min_mark' => ['required', 'numeric'],
+            'duration_in_hours' => ['required', 'numeric'],
+            'max_marks' => ['required', 'integer'],
+            'min_marks' => ['required', 'integer'],
             'type' => ['required', 'string', 'max:255'],
             'academic_year' => ['required', 'string', 'max:255'],
-            'grade' => ['required', 'string', 'max:255'],
-            'subject_id' => ['required', 'string', 'max:255', 'unique:exams,subject_id'],
-            
+            'grade' => ['required', 'integer'],
+            'subject_id' => ['required', 'integer', 'exists:subjects,id'],
+
         ];
-        
+
     }
 }

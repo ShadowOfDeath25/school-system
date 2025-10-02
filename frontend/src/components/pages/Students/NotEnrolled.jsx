@@ -7,7 +7,7 @@ import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useAcademicYears} from "@hooks/useAcademicYears.js";
 
 export default function NotEnrolled() {
-    const mutation = useUpdate('students');
+    const mutation = useUpdate('students', {all: true});
     const {showEditModal, hideEditModal} = useEditModal();
     const {showSnackbar} = useSnackbar();
     const {data: classrooms} = useGetAll('classrooms');

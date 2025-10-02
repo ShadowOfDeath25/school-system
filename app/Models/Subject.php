@@ -21,9 +21,15 @@ class Subject extends Model
         'added_to_report'
     ];
 
+
     public function books(): HasMany
     {
         return $this->hasMany(Book::class);
+    }
+
+    public function exams(): HasMany
+    {
+        return $this->hasMany(Exam::class);
     }
 
 

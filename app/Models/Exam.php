@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Exam extends Model
 {
@@ -17,8 +17,16 @@ class Exam extends Model
         'level',
         'type',
         'language',
-        'max_mark',
-        'min_mark',
+        'semester',
+        'max_marks',
+        'min_marks',
         'subject_id',
     ];
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+
 }

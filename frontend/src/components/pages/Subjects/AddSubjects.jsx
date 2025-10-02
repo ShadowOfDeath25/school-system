@@ -6,7 +6,7 @@ import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useAcademicYears} from "@hooks/useAcademicYears.js";
 import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
 
-export default function AddSubject() {
+export default function AddSubjects() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('subjects');
     const {showSnackbar} = useSnackbar();
@@ -51,7 +51,7 @@ export default function AddSubject() {
             placeholder: "اختر الفرقة",
             dependency: 'level',
             options: getGradeOptionsByLevel,
-            disabled: (formData) => !formData.level,
+            disabled: (value) => !value,
             required: true
         },
         {
