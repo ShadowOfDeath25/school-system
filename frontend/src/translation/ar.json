@@ -48,5 +48,7 @@
     "added_to_report": "تضاف للكشف",
     "added_to_total": "تضاف للمجموع",
     "reg_number": "رقم القيد",
-    "status": "حالة القيد"
+    "status": "حالة القيد",
+    "subject.name": "اسم المادة",
+    "subject.type": "نوع المادة"
 }

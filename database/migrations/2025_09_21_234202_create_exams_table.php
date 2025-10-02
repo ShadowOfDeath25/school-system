@@ -18,8 +18,9 @@ return new class extends Migration {
             $table->string('grade');
             $table->string('level');
             $table->string('name');
-            $table->date('date');
+            $table->dateTime('date');
             $table->string('type');
+            $table->string('semester');
             $table->string('language');
             $table->decimal('duration_in_hours');
             $table->integer('max_marks');

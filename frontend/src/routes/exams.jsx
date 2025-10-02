@@ -1,4 +1,5 @@
 import AddExams from "@pages/Exams/AddExams.jsx";
+import ViewExams from "@pages/Exams/ViewExams.jsx";
 
 const routes = {
     path: "exams",
@@ -9,6 +10,16 @@ const routes = {
         }
     },
     children: [
+        {
+            index: true,
+            element: <ViewExams/>,
+            handle: {
+                sidebar: {
+                    title: "الاختبارات",
+                    action: "view exams"
+                }
+            }
+        },
         {
             path: "add",
             element: <AddExams/>,

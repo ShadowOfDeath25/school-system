@@ -103,9 +103,12 @@ export default function Table({
     };
 
     const handleEditClick = (item) => {
+        const modalFields = editFields.filter(field => field.editable !== false);
 
         showEditModal({
-            fields: editFields, item: item, onSave: (formData) => {
+            fields: modalFields,
+            item: item,
+            onSave: (formData) => {
                 updateMutation.mutate({...formData, id: item.id}, {
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
@@ -141,7 +144,9 @@ export default function Table({
         </div>);
     }
 
-    const fieldNames = fields.map(field => field.name).filter(field => field !== 'password' && field !== 'password_confirmation');
+    const fieldNames = fields
+        .filter(field => field.viewable !== false && field.name !== 'password' && field.name !== 'password_confirmation')
+        .map(field => field.name);
     let columnKeys = fields.length > 0 ? fieldNames : (tableData.length > 0 ? Object.keys(tableData[0]) : []);
 
     if (children) {

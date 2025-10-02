@@ -22,18 +22,18 @@ class UpdateExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+
             'name' => ['string', 'max:255'],
             'date' => ['date'],
             'language' => ['string', 'max:255'],
             'level' => ['string', 'max:255'],
-            'duration_in_hours' => ['date'],
-            'max_mark' => ['numeric'],
-            'min_mark' => ['numeric'],
+            'duration_in_hours' => ['numeric'],
+            'max_marks' => ['numeric'],
+            'min_marks' => ['numeric'],
             'type' => ['string', 'max:255'],
             'academic_year' => ['string', 'max:255'],
             'grade' => ['string', 'max:255'],
-            'subject_id' => ['string', 'max:255'],
+            'subject_id' => ['string', 'max:255', 'exists:subjects,id'],
         ];
     }
 }
