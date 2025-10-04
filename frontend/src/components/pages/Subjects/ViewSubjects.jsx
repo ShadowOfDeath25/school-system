@@ -1,9 +1,9 @@
 import Page from "@ui/Page/Page.jsx";
 import Table from "@ui/Table/Table.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
-import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
+
 import {useState} from "react";
-import {CLASSROOMS} from "@constants/classrooms.js";
+import {classroomHelper} from "@utils/classroomHelper.js";
 
 
 export default function ViewSubjects() {
@@ -15,15 +15,15 @@ export default function ViewSubjects() {
             type: "select",
             label: "المرحلة",
             placeholder: "اختر المرحلة",
-            options: CLASSROOMS.LEVELS
+            options: classroomHelper.LEVELS
         },
         {
             name: "grade",
             type: "select",
             label: "الصف",
             placeholder: "اختر الصف",
-            options: getGradeOptionsByLevel,
-            disabled: (currentFilters) => !currentFilters?.level
+            options: classroomHelper.getGradeOptionsByLevel,
+            disabled: (currentFilters) => !currentFilters?.LEVEL
         }
     ]
     return (
@@ -42,7 +42,7 @@ export default function ViewSubjects() {
                         {name: "semester", editable: false},
                         {
                             name: "max_marks",
-                            
+
                             type: "number",
                             required: true,
                             label: "الدرجة الكبري",

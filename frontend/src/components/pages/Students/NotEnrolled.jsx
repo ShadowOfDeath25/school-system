@@ -39,7 +39,7 @@ export default function NotEnrolled() {
                     required: true,
                     dependency: ["academic_year", 'language'],
                     disabled: (values) => values.some(value => !value),
-                    options: (value) => classrooms?.data.filter(classroom => classroom.academic_year === value[0] && classroom.language === value[1])
+                    options: (value) => classrooms?.data.filter(classroom => classroom.ACADEMIC_YEAR === value[0] && classroom.LANGUAGE === value[1])
                         .map(classroom => ({label: classroom.name, value: classroom.id}))
 
                 }

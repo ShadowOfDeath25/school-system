@@ -1,9 +1,7 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {getAcademicYears} from "@utils/getAcademicYears.js";
-import {CLASSROOMS} from "@constants/classrooms.js";
+import {classroomHelper} from "@utils/classroomHelper.js";
 import {SUBJECTS} from "@constants/subjects.js";
-import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {value} from "loadsh/seq.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
@@ -24,46 +22,19 @@ export default function AddExams() {
             placeholder: "اسم الاختبار",
             required: true,
         },
-        {
-            name: "academic_year",
-            label: "العام الدراسي",
-            type: "select",
-            options: getAcademicYears(),
-            required: true,
-            placeholder: "اختر العام الدراسي"
-        }, {
+        classroomHelper.FIELDS.ACADEMIC_YEAR,
+         {
             name: "semester",
             label: "الفصل الدراسي",
             type: "select",
             required: true,
             placeholder: "اختر الفصل الدراسي",
             options: SUBJECTS.SEMESTERS
-        }, {
-            name: 'language',
-            label: 'اللغة',
-            type: 'select',
-            required: true,
-            placeholder: "اختر اللغة",
-            options: CLASSROOMS.LANGUAGES
         },
-
+        classroomHelper.FIELDS.LANGUAGE,
+        classroomHelper.FIELDS.LEVEL,
+        classroomHelper.FIELDS.GRADE,
         {
-            name: "level",
-            label: "المرحلة",
-            type: "select",
-            required: true,
-            placeholder: "اختر مرحلة",
-            options: CLASSROOMS.LEVELS
-        }, {
-            name: "grade",
-            label: 'الصف',
-            type: "select",
-            placeholder: "اختر الصف",
-            options: getGradeOptionsByLevel,
-            dependency: 'level',
-            disabled: (value) => !value,
-            required: true
-        }, {
             name: "subject.type",
             label: "نوع المادة",
             type: "select",
@@ -82,10 +53,10 @@ export default function AddExams() {
                 subjects?.data ? subjects?.data
                     .filter(
                         subject => subject.type === values[0]
-                            && subject.academic_year === values[1]
-                            && subject.grade === values[2]
-                            && subject.level === values[3]
-                            && subject.language === values[4]
+                            && subject.ACADEMIC_YEAR === values[1]
+                            && subject.GRADE === values[2]
+                            && subject.LEVEL === values[3]
+                            && subject.LANGUAGE === values[4]
                     ).map(subject => ({label: subject.name, value: subject.id})) : [],
             disabled: (values) => values.some(value => !value)
         },

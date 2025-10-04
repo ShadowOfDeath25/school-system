@@ -2,12 +2,11 @@ import Page from "@ui/Page/Page.jsx";
 import Table from "@ui/Table/Table.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
-import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
 import {useState} from "react";
 import {Button} from "@mui/material";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {CLASSROOMS} from "@constants/classrooms.js";
+import {classroomHelper} from "@utils/classroomHelper.js";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 
 export default function Withdrawn() {
@@ -20,7 +19,7 @@ export default function Withdrawn() {
         {
             name: "classroom.level",
             type: "select",
-            options: CLASSROOMS.LEVELS,
+            options: classroomHelper.LEVELS,
             label: "المرحلة",
             placeholder: "اختر المرحلة"
         },
@@ -28,7 +27,7 @@ export default function Withdrawn() {
             name: "classroom.grade",
             type: 'select',
             dependency: "classroom.level",
-            options: getGradeOptionsByLevel,
+            options: classroomHelper.getGradeOptionsByLevel,
             disabled: (values) => !values,
             label: 'الصف',
             placeholder: 'اختر الصف'
@@ -50,7 +49,7 @@ export default function Withdrawn() {
             },
             options: (values) => {
                 let [grade, level] = values;
-                return [...new Set(classrooms?.data?.filter(classroom => classroom.grade === grade?.[0] && classroom.level === level).map(classroom => classroom.name))]
+                return [...new Set(classrooms?.data?.filter(classroom => classroom.GRADE === grade?.[0] && classroom.LEVEL === level).map(classroom => classroom.name))]
             },
 
             dependency: ["classroom.grade", "classroom.level"]
@@ -71,7 +70,7 @@ export default function Withdrawn() {
                     name: "language",
                     type: "select",
                     label: "اللغة",
-                    options: CLASSROOMS.LANGUAGES,
+                    options: classroomHelper.LANGUAGES,
                     required: true,
                     placeholder: "اختر اللغة"
                 },
@@ -83,7 +82,7 @@ export default function Withdrawn() {
                     required: true,
                     dependency: ["academic_year", 'language'],
                     disabled: (values) => values.some(value => !value),
-                    options: (value) => classrooms?.data.filter(classroom => classroom.academic_year === value[0] && classroom.language === value[1])
+                    options: (value) => classrooms?.data.filter(classroom => classroom.ACADEMIC_YEAR === value[0] && classroom.LANGUAGE === value[1])
                         .map(classroom => ({label: classroom.name, value: classroom.id}))
 
                 }
@@ -116,7 +115,7 @@ export default function Withdrawn() {
         <Page>
             <Filters
                 resource={"students"}
-                onSubmit={(filters) => setFilters(prev => ({withdrawn: true, ...filters}))}
+                onSubmit={(filters) => setFilters({withdrawn: true, ...filters})}
                 fields={filterFields}
             />
             <Table

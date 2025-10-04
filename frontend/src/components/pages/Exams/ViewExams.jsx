@@ -2,8 +2,8 @@ import Page from "@ui/Page/Page.jsx";
 import Table from "@ui/Table/Table.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import {useState} from "react";
-import {getGradeOptionsByLevel} from "@utils/getGradeOptionsByLevel.js";
-import {CLASSROOMS} from "@constants/classrooms.js";
+
+import {classroomHelper} from "@utils/classroomHelper.js";
 
 export default function ViewExams() {
     const [filters, setFilters] = useState();
@@ -19,7 +19,7 @@ export default function ViewExams() {
                         label: "المرحلة",
                         type: "select",
                         placeholder: "اختر المرحلة",
-                        options: CLASSROOMS.LEVELS
+                        options: classroomHelper.LEVELS
                     },
                     {
                         name: "grade",
@@ -27,7 +27,7 @@ export default function ViewExams() {
                         label: "الصف",
                         dependency: 'level',
                         placeholder: "اختر الصف",
-                        options: getGradeOptionsByLevel,
+                        options: classroomHelper.getGradeOptionsByLevel,
                         disabled: (value) => !value
                     },
                 ]}
