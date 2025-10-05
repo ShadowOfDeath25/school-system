@@ -3,7 +3,7 @@ import Form from "@ui/Form/Form.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {StudentHelper} from "@utils/StudentHelper.js";
+import {StudentHelper} from "@utils/helpers/StudentHelper.js";
 
 export default function AddStudents() {
     const creationMutation = useCreate("students");

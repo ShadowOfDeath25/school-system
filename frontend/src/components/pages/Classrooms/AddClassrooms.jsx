@@ -3,7 +3,7 @@ import Form from "@ui/Form/Form.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {ClassroomHelper} from "@utils/ClassroomHelper.js";
+import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
 
 
 

@@ -1,29 +1,22 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@utils/ClassroomHelper.js";
-import {SubjectHelper} from "@utils/SubjectHelper.js";
+import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
+import {SubjectHelper} from "@utils/helpers/SubjectHelper.js";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {value} from "loadsh/seq.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {ExamHelper} from "@utils/examHelper.js";
+import {ExamHelper} from "@utils/helpers/examHelper.js";
 
 export default function AddExams() {
     const {data: subjects} = useGetAll('subjects', {all: true})
     const mutation = useCreate('exams');
     const {showSnackbar} = useSnackbar();
-    console.log(subjects?.data)
     const [serverErrors, setServerErrors] = useState(null);
     const fields = [
-        {
-            name: "name",
-            label: "اسم الاختبار",
-            type: "text",
-            placeholder: "اسم الاختبار",
-            required: true,
-        },
+        ExamHelper.FIELDS.NAME,
         ClassroomHelper.FIELDS.ACADEMIC_YEAR,
-         {
+        {
             name: "semester",
             label: "الفصل الدراسي",
             type: "select",
@@ -35,11 +28,7 @@ export default function AddExams() {
         ClassroomHelper.FIELDS.LEVEL,
         ClassroomHelper.FIELDS.GRADE,
         {
-            name: "subject.type",
-            label: "نوع المادة",
-            type: "select",
-            placeholder: "اختر نوع المادة",
-            required: true,
+            ...SubjectHelper.FIELDS.TYPE,
             options: subjects?.data ? [...new Set(subjects.data.map(subject => subject.type))] : []
         },
         {
@@ -60,40 +49,13 @@ export default function AddExams() {
                     ).map(subject => ({label: subject.name, value: subject.id})) : [],
             disabled: (values) => values.some(value => !value)
         },
-        {
-            name: "type",
-            label: "نوع الاختبار",
-            type: "select",
-            required: true,
-            options: ExamHelper.TYPES
-        },
-        {
-            name: "date",
-            label: "موعد الاختبار",
-            type: "datetime-local",
-            required: true,
-        },
-        {
-            name: "duration_in_hours",
-            label: "المدة بالساعات",
-            type: "number",
-            required: true,
-        },
-        {
-            name: "min_marks",
-            label: "الدرجة الصغري",
-            type: "number",
-            placeholder: 'الدرجة الصغري',
-            required: true,
-        },
-        {
-            name: "max_marks",
-            label: "الدرجة العظمي",
-            type: "number",
-            placeholder: 'الدرجة العظمي',
-            required: true,
-        },
+        ExamHelper.FIELDS.TYPE,
+        ExamHelper.FIELDS.DATE,
+        ExamHelper.FIELDS.DURATION_IN_HOURS,
+        ExamHelper.FIELDS.MIN_MARKS,
+        ExamHelper.FIELDS.MAX_MARKS,
     ]
+
 
     const onSubmit = (data) => {
         setServerErrors(null);

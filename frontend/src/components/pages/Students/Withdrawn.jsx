@@ -6,7 +6,7 @@ import {useState} from "react";
 import {Button} from "@mui/material";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {ClassroomHelper} from "@utils/ClassroomHelper.js";
+import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 
 export default function Withdrawn() {

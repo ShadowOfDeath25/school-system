@@ -3,7 +3,7 @@ import Table from "@ui/Table/Table.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import {useState} from "react";
 
-import {ClassroomHelper} from "@utils/ClassroomHelper.js";
+import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
 
 export default function ViewExams() {
     const [filters, setFilters] = useState();

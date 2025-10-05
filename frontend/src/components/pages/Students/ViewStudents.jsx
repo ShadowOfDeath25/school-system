@@ -6,8 +6,8 @@ import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {Button} from '@mui/material'
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
-import {ClassroomHelper} from "@utils/ClassroomHelper.js";
-import {StudentHelper} from "@utils/StudentHelper.js";
+import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
+import {StudentHelper} from "@utils/helpers/StudentHelper.js";
 
 export default function ViewStudents() {
     const [tableFilters, setTableFilters] = useState(null);
@@ -71,7 +71,7 @@ export default function ViewStudents() {
                 onSuccess: () => {
                     showSnackbar("تم سحب ملف الطالب بنجاح")
                 },
-                onError: (error) => {
+                onError: () => {
                     showSnackbar("حدث خطأ أثناء سحب الملف", "error")
                 }
             })

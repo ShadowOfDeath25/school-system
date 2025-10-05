@@ -1,30 +1,16 @@
 import Page from "@ui/Page/Page.jsx";
 import Table from "@ui/Table/Table.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
-
 import {useState} from "react";
-import {ClassroomHelper} from "@utils/ClassroomHelper.js";
+import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
 
 
 export default function ViewSubjects() {
     const [filters, setFilters] = useState({});
 
     const filterFields = [
-        {
-            name: "level",
-            type: "select",
-            label: "المرحلة",
-            placeholder: "اختر المرحلة",
-            options: ClassroomHelper.LEVELS
-        },
-        {
-            name: "grade",
-            type: "select",
-            label: "الصف",
-            placeholder: "اختر الصف",
-            options: ClassroomHelper.getGradeOptionsByLevel,
-            disabled: (currentFilters) => !currentFilters?.LEVEL
-        }
+        ClassroomHelper.FIELDS.LEVEL,
+        ClassroomHelper.FIELDS.GRADE
     ]
     return (
         <>

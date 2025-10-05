@@ -12,13 +12,15 @@ export default defineConfig({
             '@hooks': path.resolve(__dirname, 'src/hooks'),
             '@guards': path.resolve(__dirname, 'src/components/guards'),
             '@layouts': path.resolve(__dirname, 'src/components/layouts'),
-            '@features': path.resolve(__dirname,'src/features'),
-            '@contexts': path.resolve(__dirname,'src/context'),
-            '@routes':path.resolve(__dirname,'src/routes'),
-            '@utils':path.resolve(__dirname,'src/utils'),
-            '@fonts': path.resolve(__dirname,'src/assets/fonts'),
-            '@reports':path.resolve(__dirname,'src/components/reports'),
-            '@constants':path.resolve(__dirname,'src/constants')
+            '@features': path.resolve(__dirname, 'src/features'),
+            '@contexts': path.resolve(__dirname, 'src/context'),
+            '@routes': path.resolve(__dirname, 'src/routes'),
+            '@utils': path.resolve(__dirname, 'src/utils'),
+            '@fonts': path.resolve(__dirname, 'src/assets/fonts'),
+            '@reports': path.resolve(__dirname, 'src/components/reports'),
+            '@constants': path.resolve(__dirname, 'src/utils/constants'),
+            '@helpers': path.resolve(__dirname, 'src/utils/helpers')
+
         },
     },
 })
