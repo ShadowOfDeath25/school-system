@@ -3,7 +3,7 @@ import Form from "@ui/Form/Form.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {classroomHelper} from "@utils/classroomHelper.js";
+import {ClassroomHelper} from "@utils/ClassroomHelper.js";
 
 
 
@@ -34,7 +34,7 @@ export default function AddClassrooms() {
     return (
         <Page>
             <Form
-                fields={classroomHelper.getAllFields().filter(field=>field.name!=='classroom')}
+                fields={ClassroomHelper.getAllFields().filter(field=>field.name!=='classroom')}
                 onFormSubmit={onFormSubmit}
                 serverErrors={serverErrors}
             />

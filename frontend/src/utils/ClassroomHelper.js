@@ -69,7 +69,7 @@ const FIELDS = {
         label: "الصف",
         type: "select",
         required: true,
-        options: (value) => classroomHelper.getGradeOptionsByLevel(value),
+        options: (value) => ClassroomHelper.getGradeOptionsByLevel(value),
         disabled: (value) => !value,
         dependency: 'level'
     },
@@ -93,7 +93,7 @@ const FIELDS = {
     }
 };
 
-export const classroomHelper = {
+export const ClassroomHelper = {
     LEVELS,
     LANGUAGES,
     GRADES,

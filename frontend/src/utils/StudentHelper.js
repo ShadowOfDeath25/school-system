@@ -98,7 +98,7 @@ const FIELDS = {
         }
     }
 }
-export const studentHelper = {
+export const StudentHelper = {
     NATIONALITIES,
     GENDERS,
     RELIGIONS,
@@ -108,15 +108,15 @@ export const studentHelper = {
         return [
             {
                 title: "بيانات التلميذ",
-                fields: Object.values(studentHelper.FIELDS.STUDENT)
+                fields: Object.values(StudentHelper.FIELDS.STUDENT)
             },
             {
                 title: "بيانات الاب",
-                fields: Object.values(studentHelper.FIELDS.FATHER)
+                fields: Object.values(StudentHelper.FIELDS.FATHER)
             },
             {
                 title: "بيانات الام",
-                fields: Object.values(studentHelper.FIELDS.MOTHER)
+                fields: Object.values(StudentHelper.FIELDS.MOTHER)
             }
         ]
     }

@@ -3,7 +3,7 @@ import Form from "@ui/Form/Form.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {studentHelper} from "@utils/studentHelper.js";
+import {StudentHelper} from "@utils/StudentHelper.js";
 
 export default function AddStudents() {
     const creationMutation = useCreate("students");
@@ -47,7 +47,7 @@ export default function AddStudents() {
     return (
         <Page>
             <Form
-                fields={studentHelper.getAllFields()}
+                fields={StudentHelper.getAllFields()}
                 serverErrors={serverErrors}
                 onFormSubmit={onFormSubmit}
             />

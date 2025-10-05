@@ -6,7 +6,7 @@ import {useState} from "react";
 import {Button} from "@mui/material";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {classroomHelper} from "@utils/classroomHelper.js";
+import {ClassroomHelper} from "@utils/ClassroomHelper.js";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 
 export default function Withdrawn() {
@@ -19,7 +19,7 @@ export default function Withdrawn() {
         {
             name: "classroom.level",
             type: "select",
-            options: classroomHelper.LEVELS,
+            options: ClassroomHelper.LEVELS,
             label: "المرحلة",
             placeholder: "اختر المرحلة"
         },
@@ -27,7 +27,7 @@ export default function Withdrawn() {
             name: "classroom.grade",
             type: 'select',
             dependency: "classroom.level",
-            options: classroomHelper.getGradeOptionsByLevel,
+            options: ClassroomHelper.getGradeOptionsByLevel,
             disabled: (values) => !values,
             label: 'الصف',
             placeholder: 'اختر الصف'
@@ -70,7 +70,7 @@ export default function Withdrawn() {
                     name: "language",
                     type: "select",
                     label: "اللغة",
-                    options: classroomHelper.LANGUAGES,
+                    options: ClassroomHelper.LANGUAGES,
                     required: true,
                     placeholder: "اختر اللغة"
                 },

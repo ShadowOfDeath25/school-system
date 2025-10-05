@@ -1,4 +1,4 @@
-export const SUBJECTS = {
+export const SubjectHelper = {
     SEMESTERS: [
         'الاول',
         'الثاني',
