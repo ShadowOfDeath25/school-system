@@ -6,8 +6,8 @@ import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {Button} from '@mui/material'
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
-import {classroomHelper} from "@utils/classroomHelper.js";
-import {studentHelper} from "@utils/studentHelper.js";
+import {ClassroomHelper} from "@utils/classroomHelper.js";
+import {StudentHelper} from "@utils/studentHelper.js";
 
 export default function ViewStudents() {
     const [tableFilters, setTableFilters] = useState(null);
@@ -44,16 +44,16 @@ export default function ViewStudents() {
 
     const filterFields = [
         {
-            ...classroomHelper.FIELDS.LEVEL,
+            ...ClassroomHelper.FIELDS.LEVEL,
             name: "classroom.level",
         },
         {
-            ...classroomHelper.FIELDS.GRADE,
+            ...ClassroomHelper.FIELDS.GRADE,
             name: "classroom.grade",
             dependency: "classroom.level",
         },
         {
-            ...classroomHelper.FIELDS.CLASSROOM,
+            ...ClassroomHelper.FIELDS.CLASSROOM,
             options: (values) => {
                 let [grade, level] = values;
                 if (!grade || !level || !classrooms?.data) return [];
@@ -98,7 +98,7 @@ export default function ViewStudents() {
                 resource={"students"}
                 filters={tableFilters}
                 fields={fields}
-                editFields={studentHelper.getAllFields()}
+                editFields={StudentHelper.getAllFields()}
             >
                 {enrollButton}
             </Table>

@@ -5,7 +5,7 @@ import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 
-import {classroomHelper} from "@utils/classroomHelper.js";
+import {ClassroomHelper} from "@utils/classroomHelper.js";
 import {SUBJECTS} from "@constants/subjects.js";
 
 export default function AddSubjects() {
@@ -34,7 +34,7 @@ export default function AddSubjects() {
             name: "language",
             type: 'select',
             label: "اللغة",
-            options: classroomHelper.LANGUAGES,
+            options: ClassroomHelper.LANGUAGES,
             required: true,
             placeholder: "اختر اللغة"
         },
@@ -42,7 +42,7 @@ export default function AddSubjects() {
             name: "level",
             type: "select",
             label: "المرحلة",
-            options: classroomHelper.LEVELS,
+            options: ClassroomHelper.LEVELS,
             required: true,
             placeholder: "اختر مرحلة"
         },
@@ -52,7 +52,7 @@ export default function AddSubjects() {
             label: "الفرقة",
             placeholder: "اختر الفرقة",
             dependency: 'level',
-            options: classroomHelper.getGradeOptionsByLevel,
+            options: ClassroomHelper.getGradeOptionsByLevel,
             disabled: (value) => !value,
             required: true
         },

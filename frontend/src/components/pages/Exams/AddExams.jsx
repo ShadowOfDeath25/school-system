@@ -1,12 +1,12 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {classroomHelper} from "@utils/classroomHelper.js";
+import {ClassroomHelper} from "@utils/classroomHelper.js";
 import {SUBJECTS} from "@constants/subjects.js";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {value} from "loadsh/seq.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {EXAMS} from "@constants/exams.js";
+import {ExamHelper} from "@utils/examHelper.js";
 
 export default function AddExams() {
     const {data: subjects} = useGetAll('subjects', {all: true})
@@ -22,7 +22,7 @@ export default function AddExams() {
             placeholder: "اسم الاختبار",
             required: true,
         },
-        classroomHelper.FIELDS.ACADEMIC_YEAR,
+        ClassroomHelper.FIELDS.ACADEMIC_YEAR,
          {
             name: "semester",
             label: "الفصل الدراسي",
@@ -31,9 +31,9 @@ export default function AddExams() {
             placeholder: "اختر الفصل الدراسي",
             options: SUBJECTS.SEMESTERS
         },
-        classroomHelper.FIELDS.LANGUAGE,
-        classroomHelper.FIELDS.LEVEL,
-        classroomHelper.FIELDS.GRADE,
+        ClassroomHelper.FIELDS.LANGUAGE,
+        ClassroomHelper.FIELDS.LEVEL,
+        ClassroomHelper.FIELDS.GRADE,
         {
             name: "subject.type",
             label: "نوع المادة",
@@ -65,7 +65,7 @@ export default function AddExams() {
             label: "نوع الاختبار",
             type: "select",
             required: true,
-            options: EXAMS.TYPES
+            options: ExamHelper.TYPES
         },
         {
             name: "date",

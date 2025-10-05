@@ -3,13 +3,13 @@ import Table from "@ui/Table/Table.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import {useState} from "react";
 
-import {classroomHelper} from "@utils/classroomHelper.js";
+import {ClassroomHelper} from "@utils/classroomHelper.js";
 
 export default function ViewClassrooms() {
     const [filters, setFilters] = useState({});
     const filterFields = [
-        classroomHelper.FIELDS.LEVEL,
-        classroomHelper.FIELDS.GRADE
+        ClassroomHelper.FIELDS.LEVEL,
+        ClassroomHelper.FIELDS.GRADE
     ]
     const fields = [
         {
@@ -24,7 +24,7 @@ export default function ViewClassrooms() {
             name: "language",
             type: "select",
             required: true,
-            options: classroomHelper.LANGUAGES,
+            options: ClassroomHelper.LANGUAGES,
             label: "اللغة",
             placeholder: "اختر اللغة"
         },
