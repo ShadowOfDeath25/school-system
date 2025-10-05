@@ -98,8 +98,26 @@ const FIELDS = {
         }
     }
 }
-export const StudentHelper = {
-    NATIONALITIES, GENDERS, RELIGIONS, NOTES, FIELDS, getAllFields: () => {
-        return Object.values(this.FIELDS)
+export const studentHelper = {
+    NATIONALITIES,
+    GENDERS,
+    RELIGIONS,
+    NOTES,
+    FIELDS,
+    getAllFields: () => {
+        return [
+            {
+                title: "بيانات التلميذ",
+                fields: Object.values(studentHelper.FIELDS.STUDENT)
+            },
+            {
+                title: "بيانات الاب",
+                fields: Object.values(studentHelper.FIELDS.FATHER)
+            },
+            {
+                title: "بيانات الام",
+                fields: Object.values(studentHelper.FIELDS.MOTHER)
+            }
+        ]
     }
 }

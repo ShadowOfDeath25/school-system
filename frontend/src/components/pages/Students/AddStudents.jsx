@@ -3,27 +3,13 @@ import Form from "@ui/Form/Form.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {StudentHelper} from "@utils/studentHelper.js";
-
-const fields = [
-    {
-        title: "بيانات التلميذ",
-        fields: Object.values(StudentHelper.FIELDS.STUDENT)
-    },
-    {
-        title: "بيانات الأب",
-        fields: Object.values(StudentHelper.FIELDS.STUDENT)
-    },
-    {
-        title: "بيانات الأم",
-        fields: Object.values(StudentHelper.FIELDS.MOTHER)
-    }
-];
+import {studentHelper} from "@utils/studentHelper.js";
 
 export default function AddStudents() {
     const creationMutation = useCreate("students");
     const {showSnackbar} = useSnackbar();
     const [serverErrors, setServerErrors] = useState();
+
     const normalizeData = (data) => {
         const normalizedData = {}
         const fatherData = {}
@@ -42,6 +28,7 @@ export default function AddStudents() {
         normalizedData.guardians = [fatherData, motherData]
         return normalizedData;
     }
+
     const onFormSubmit = (data, formActions) => {
         setServerErrors(undefined);
         creationMutation.mutate(normalizeData(data), {
@@ -60,7 +47,7 @@ export default function AddStudents() {
     return (
         <Page>
             <Form
-                fields={fields}
+                fields={studentHelper.getAllFields()}
                 serverErrors={serverErrors}
                 onFormSubmit={onFormSubmit}
             />

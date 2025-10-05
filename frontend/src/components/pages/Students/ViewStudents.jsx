@@ -7,7 +7,7 @@ import {Button} from '@mui/material'
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
 import {classroomHelper} from "@utils/classroomHelper.js";
-import {StudentHelper} from "@utils/studentHelper.js";
+import {studentHelper} from "@utils/studentHelper.js";
 
 export default function ViewStudents() {
     const [tableFilters, setTableFilters] = useState(null);
@@ -41,21 +41,6 @@ export default function ViewStudents() {
     ]
     const {showSnackbar} = useSnackbar();
     const {confirm} = useConfirmModal();
-    const editFields = [
-        {
-            title: "بيانات التلميذ",
-            fields: Object.values(StudentHelper.FIELDS.STUDENT),
-        },
-        {
-            title: "بيانات الأب",
-            fields: Object.values(StudentHelper.FIELDS.FATHER),
-        },
-        {
-            title: "بيانات الأم",
-            fields: Object.values(StudentHelper.FIELDS.MOTHER),
-        }
-    ]
-
 
     const filterFields = [
         {
@@ -63,13 +48,9 @@ export default function ViewStudents() {
             name: "classroom.level",
         },
         {
+            ...classroomHelper.FIELDS.GRADE,
             name: "classroom.grade",
-            type: 'select',
             dependency: "classroom.level",
-            options: classroomHelper.getGradeOptionsByLevel,
-            disabled: (values) => !values,
-            label: 'الصف',
-            placeholder: 'اختر الصف'
         },
         {
             ...classroomHelper.FIELDS.CLASSROOM,
@@ -117,7 +98,7 @@ export default function ViewStudents() {
                 resource={"students"}
                 filters={tableFilters}
                 fields={fields}
-                editFields={editFields}
+                editFields={studentHelper.getAllFields()}
             >
                 {enrollButton}
             </Table>
