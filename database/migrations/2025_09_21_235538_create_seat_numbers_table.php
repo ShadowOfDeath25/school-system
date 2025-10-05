@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('level');
             $table->string('grade');
-            $table->date('starts_at');
-            $table->date('ends_at');
+            $table->string('academic_year');
+            $table->string('language');
+            $table->integer('starts_at');
+            $table->integer('ends_at');
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('seatnumbers');
+        Schema::dropIfExists('seat_numbers');
     }
 };

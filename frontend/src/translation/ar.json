@@ -50,5 +50,7 @@
     "reg_number": "رقم القيد",
     "status": "حالة القيد",
     "subject.name": "اسم المادة",
-    "subject.type": "نوع المادة"
+    "subject.type": "نوع المادة",
+    "starts_at": "تبدأ من",
+    "ends_at": "تنتهي عند"
 }

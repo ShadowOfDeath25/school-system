@@ -22,11 +22,12 @@ class StoreSeatNumberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'level' => ['required', 'string', 'max:255'],
-            'grade' => ['required', 'string', 'max:255'],
-            'starts_at' => ['required', 'date'],
-            'ends_at' => ['required', 'date'],
+            'level' => ['required', 'string', 'max:255', 'in:ابتدائي,رياض اطفال,اعدادي'],
+            'grade' => ['required', 'integer', 'max:255'],
+            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'language' => ['required', 'string', 'max:255', 'in:عربي,لغات'],
+            'starts_at' => ['required', 'numeric'],
+            'ends_at' => ['required', 'numeric'],
         ];
     }
 }

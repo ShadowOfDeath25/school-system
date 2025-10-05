@@ -63,6 +63,7 @@ export default function AddUser() {
             label: 'تأكيد كلمة المرور',
             id: 'password_confirmation',
             required: true,
+            dependency: "password",
             error: 'كلمتان المرور غير متطابقتان',
             validator: validator.users.confirmPassword,
         },

@@ -20,5 +20,11 @@ export const validator = {
             return /^(?:\+20|0)?1[0125][0-9]{8}$/.test(phone_number)
         }
 
+    },
+    seatNumbers: {
+        ends_at: (ends_at, starts_at) => {
+            return Number(ends_at) > Number(starts_at)
+        }
+
     }
 }

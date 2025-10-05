@@ -1,4 +1,4 @@
-import {useState, useCallback, useEffect} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
     const [formData, setFormData] = useState(initialValues);
@@ -35,9 +35,12 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
         const field = fields.find(f => f.name === name);
         if (!field?.validator) return null;
 
-        const isValid = name === 'password_confirmation'
-            ? field.validator(currentFormData.password, value)
-            : field.validator(value);
+        const dependencies = Array.isArray(field.dependency)
+            ? field.dependency
+            : (field.dependency ? [field.dependency] : []);
+
+        const dependencyValues = dependencies.map(depName => currentFormData[depName]);
+        const isValid = field.validator(value, ...dependencyValues);
 
         return isValid ? null : (field.error || 'Invalid field');
     }, [fields]);
@@ -88,7 +91,7 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
         setErrors(newErrors);
 
         if (isFormValid) {
-            onSubmit(formData, { resetForm });
+            onSubmit(formData, {resetForm});
         } else {
             console.log("Form is invalid, please check the errors.");
         }

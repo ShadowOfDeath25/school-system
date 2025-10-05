@@ -48,7 +48,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('bank-accounts', BankAccountController::class);
     Route::apiResource('secret-numbers', SecretNumberController::class);
     Route::apiResource('exams', ExamController::class)->withFilters();
-    Route::apiResource('seat-numbers', SeatNumberController::class);
+    Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();
 
 
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
