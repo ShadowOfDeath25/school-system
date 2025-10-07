@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             FloorSeeder::class,
             ClassroomSeeder::class,
             StudentSeeder::class,
-            SeatNumberSeeder::class
+            SeatNumberSeeder::class,
+            SecretNumberSeeder::class
         ]);
 
     }

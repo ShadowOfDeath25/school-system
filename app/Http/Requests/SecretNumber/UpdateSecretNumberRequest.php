@@ -22,16 +22,16 @@ class UpdateSecretNumberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'grade' => [ 'string', 'max:255'],
-            'group_number' => [ 'string', 'max:255'],
-            'group_capacity' => [ 'string', 'max:255'],
-            'academic_year' => [ 'string', 'max:255'],
-            'language' => [ 'string', 'max:255'],
-            'level' => [ 'string', 'max:255'],
-            'starts_at' => [ 'date'],
-            'ends_at' => [ 'date'],
-            
+            'grade' => ['integer'],
+            'group_number' => ['numeric', 'max:255'],
+            'group_capacity' => ['integer', 'max:255'],
+            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'language' => ['string', 'max:255', 'in:عربي,لغات'],
+            'level' => ['string', 'max:255'],
+            'starts_at' => ['numeric'],
+            'ends_at' => ['numeric', 'gt:starts_at'],
+            'semester' => ['string', 'in:الأول,الثاني,طوال العام']
+
         ];
     }
 }

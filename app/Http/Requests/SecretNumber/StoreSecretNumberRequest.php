@@ -22,15 +22,15 @@ class StoreSecretNumberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'grade' => ['required', 'string', 'max:255'],
-            'group_number' => ['required', 'string', 'max:255'],
-            'group_capacity' => ['required', 'string', 'max:255'],
-            'academic_year' => ['required', 'string', 'max:255'],
-            'language' => ['required', 'string', 'max:255'],
+            'grade' => ['required', 'integer'],
+            'group_number' => ['numeric', 'max:255'],
+            'group_capacity' => ['required', 'integer', 'max:255'],
+            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'language' => ['required', 'string', 'max:255', 'in:عربي,لغات'],
             'level' => ['required', 'string', 'max:255'],
-            'starts_at' => ['required', 'date'],
-            'ends_at' => ['required', 'date'],
+            'starts_at' => ['required', 'numeric'],
+            'ends_at' => ['required', 'numeric', 'gt:starts_at'],
+            'semester' => ['required', 'string', 'in:الاول,الثاني,طوال العام']
         ];
     }
 }

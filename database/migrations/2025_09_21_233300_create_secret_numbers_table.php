@@ -17,10 +17,11 @@ return new class extends Migration
             $table->string('group_number');
             $table->string('group_capacity');
             $table->string('academic_year');
+            $table->string('semester');
             $table->string('language');
             $table->string('level');
-            $table->date('starts_at');
-            $table->date('ends_at');
+            $table->string('starts_at');
+            $table->string('ends_at');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('secretnumbers');
+        Schema::dropIfExists('secret_numbers');
     }
 };

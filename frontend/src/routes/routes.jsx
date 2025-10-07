@@ -9,6 +9,7 @@ import buildingAndFloorsRoutes from '@routes/buildingsAndFloors.jsx'
 import subjectsRoutes from '@routes/subjects.jsx'
 import examsRoutes from '@routes/exams.jsx'
 import seatNumbersRoutes from '@routes/seatNumbers.jsx'
+import secretNumbersRoutes from '@routes/secretNumbers.jsx'
 
 const mainRoutes = {
     handle: {
@@ -47,5 +48,6 @@ export const appRoutes = [
     buildingAndFloorsRoutes,
     subjectsRoutes,
     examsRoutes,
-    seatNumbersRoutes
+    seatNumbersRoutes,
+    secretNumbersRoutes
 ];

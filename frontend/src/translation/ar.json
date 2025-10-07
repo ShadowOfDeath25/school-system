@@ -52,5 +52,7 @@
     "subject.name": "اسم المادة",
     "subject.type": "نوع المادة",
     "starts_at": "تبدأ من",
-    "ends_at": "تنتهي عند"
+    "ends_at": "تنتهي عند",
+    "group_number": "رقم المجموعة",
+    "group_capacity": "طاقة المجموعة"
 }
