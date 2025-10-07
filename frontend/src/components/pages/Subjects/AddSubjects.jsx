@@ -1,7 +1,7 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
 import {useState} from "react";
-import {useCreate} from "@hooks/api/useCrud.js";
+import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
 
@@ -12,7 +12,7 @@ export default function AddSubjects() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('subjects');
     const {showSnackbar} = useSnackbar();
-
+    const {data: types} = useGetAll('subject-types', {all: true})
     const fields = [
         ClassroomHelper.FIELDS.ACADEMIC_YEAR,
         SubjectHelper.FIELDS.SEMESTER,
@@ -21,10 +21,11 @@ export default function AddSubjects() {
         ClassroomHelper.FIELDS.GRADE,
         {
             name: "type",
-            type: "text",
+            type: "select",
             label: "نوع المادة",
             placeholder: "نوع المادة",
-            required: true
+            required: true,
+            options: types?.data?.map(type => ({value: type.name, label: type.name}))
         },
         SubjectHelper.FIELDS.NAME,
         SubjectHelper.FIELDS.MAX_MARKS,

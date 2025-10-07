@@ -1,13 +1,13 @@
-import Table from "@ui/Table/Table.jsx";
 import Page from "@ui/Page/Page.jsx";
-import Form from "@ui/Form/Form.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import {useState} from "react";
+import Form from "@ui/Form/Form.jsx";
+import Table from "@ui/Table/Table.jsx";
 
-export default function SubjectTypes() {
+export default function ExpenseTypes() {
     const {showSnackbar} = useSnackbar();
-    const mutation = useCreate('subject-types')
+    const mutation = useCreate('expense-types')
     const [serverErrors, setServerErrors] = useState();
     const onSubmit = (data, options) => {
         mutation.mutate(data, {
@@ -40,7 +40,7 @@ export default function SubjectTypes() {
                 onFormSubmit={onSubmit}
             />
             <Table
-                resource={"subject-types"}
+                resource={"expense-types"}
                 editable={false}
                 fields={[{name:"name",label:"النوع"}]}
             />

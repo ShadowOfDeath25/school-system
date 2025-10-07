@@ -9,6 +9,7 @@ use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExamHallController;
 use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\ExpenseTypeController;
 use App\Http\Controllers\FloorController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\SeatNumberController;
 use App\Http\Controllers\SecretNumberController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\SubjectTypeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,7 +51,8 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('secret-numbers', SecretNumberController::class)->withFilters();
     Route::apiResource('exams', ExamController::class)->withFilters();
     Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();
-
+    Route::apiResource('subject-types', SubjectTypeController::class);
+    Route::apiResource('expense-types', ExpenseTypeController::class);
 
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
     Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");

@@ -101,8 +101,6 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
             ...prevData,
             [name]: value
         }));
-        // When a field's value is set programmatically (e.g., a reset),
-        // clear any existing error and touched state for it.
         setErrors(prev => {
             const newErrors = {...prev};
             delete newErrors[name];
