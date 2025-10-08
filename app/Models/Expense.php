@@ -10,7 +10,8 @@ class Expense extends Model
     protected $fillable = [
         'description',
         'value',
-        'expense_date',
+        'type',
         'academic_year',
+        'date'
     ];
 }

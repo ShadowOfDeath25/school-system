@@ -22,10 +22,11 @@ class StoreExpensesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
             'value' => ['required', 'numeric'],
-            'expense_date' => ['required', 'date'],
-            'academic_year' => ['required', 'integer'],
+            'date' => ['required', 'date'],
+            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'type' => ['required', 'exists:expense_types,name']
         ];
     }
 }

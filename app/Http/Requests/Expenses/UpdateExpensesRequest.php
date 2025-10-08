@@ -22,10 +22,11 @@ class UpdateExpensesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => ['string', 'max:255'],
+            'description' => ['string'],
             'value' => ['numeric'],
-            'expense_date' => ['date'],
-            'academic_year' => ['integer'],
+            'date' => ['date'],
+            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'type' => ['exists:expense_types,name']
         ];
     }
 }
