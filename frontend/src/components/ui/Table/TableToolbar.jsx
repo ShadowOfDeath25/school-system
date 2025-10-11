@@ -2,7 +2,13 @@ import styles from './styles.module.css';
 import SearchIcon from '@mui/icons-material/Search';
 import {MenuItem, Select} from "@mui/material";
 
-export default function TableToolbar({searchTerm, setSearchTerm, perPage=localStorage.getItem("per_page"), setPerPage, disabled = false}) {
+export default function TableToolbar({
+                                         searchTerm,
+                                         setSearchTerm,
+                                         perPage = localStorage.getItem("per_page"),
+                                         setPerPage,
+                                         disabled = false
+                                     }) {
     const handlePerPageChange = (e) => {
         setPerPage(e.target.value)
         localStorage.setItem('per_page', e.target.value)
