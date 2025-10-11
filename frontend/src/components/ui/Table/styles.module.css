@@ -17,9 +17,7 @@
 }
 
 .perPage {
-    display: flex;
-    color: var(--primary-text-color);
-    gap: 50px;
+    width: 2ch;
 
 }
 
@@ -52,8 +50,9 @@
     &:focus {
         outline: var(--color-focus) solid 2px;
         border-color: transparent;
-
-
+    }
+    &:hover{
+        border-color: white;
     }
 }
 

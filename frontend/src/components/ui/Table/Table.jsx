@@ -24,7 +24,7 @@ export default function Table({
                               }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
-    const [perPage, setPerPage] = useState(30);
+    const [perPage, setPerPage] = useState(localStorage.getItem('per_page') ?? 30);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const {data: user, isLoading: userIsLoading} = useCurrentUser();
     const {confirm} = useConfirmModal();
