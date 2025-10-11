@@ -11,9 +11,15 @@
 
 .toolbar {
     min-height: 60px;
-
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.perPage {
+    display: flex;
+    color: var(--primary-text-color);
+    gap: 50px;
 
 }
 
@@ -138,7 +144,16 @@
         overflow-x: scroll;
     }
 
+    .toolbar {
+        gap: 20px;
+    }
+
+    .perPage {
+        width: 20%;
+
+    }
+
     .searchContainer {
-        width: 100%;
+        width: 80%;
     }
 }

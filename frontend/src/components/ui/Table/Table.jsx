@@ -24,6 +24,7 @@ export default function Table({
                               }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
+    const [perPage, setPerPage] = useState(30);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
     const {data: user, isLoading: userIsLoading} = useCurrentUser();
     const {confirm} = useConfirmModal();
@@ -53,6 +54,7 @@ export default function Table({
     const {data, isLoading, isError} = useGetAll(resource, {
         page: currentPage,
         search: debouncedSearchTerm,
+        per_page: perPage,
         ...filters,
         ...params
     });
@@ -90,7 +92,10 @@ export default function Table({
     };
 
     const handleRowDelete = async (id) => {
-        const confirmed = await confirm({message: "هل أنت متأكد من حذف هذا العنصر؟",warning:'حذف هذا العنصر قد يؤدي لحذف كل العناصر المرتبطة به'})
+        const confirmed = await confirm({
+            message: "هل أنت متأكد من حذف هذا العنصر؟",
+            warning: 'حذف هذا العنصر قد يؤدي لحذف كل العناصر المرتبطة به'
+        })
         if (confirmed) {
             deleteMutation.mutate(id, {
                 onSuccess: () => {
@@ -156,7 +161,12 @@ export default function Table({
 
     return (
         <div className={styles.wrapper}>
-            <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+            <TableToolbar
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
+                perPage={perPage}
+                setPerPage={setPerPage}
+            />
             <div className={styles.tableContainer}>
                 <TablePresenter
                     data={tableData}
