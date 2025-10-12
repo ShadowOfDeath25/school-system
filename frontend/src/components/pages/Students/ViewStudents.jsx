@@ -77,7 +77,7 @@ export default function ViewStudents() {
             })
         }
     }
-    const enrollButton = {
+    const withdrawButton = {
         header: "سحب الملف", content: (student) => <Button
             onClick={() => handleWithdraw(student)}
             variant={"contained"}
@@ -100,7 +100,7 @@ export default function ViewStudents() {
                 fields={fields}
                 editFields={StudentHelper.getAllFields()}
             >
-                {enrollButton}
+                {withdrawButton}
             </Table>
         </Page>
     );
