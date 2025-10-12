@@ -7,7 +7,6 @@ import {Button} from "@mui/material";
 import {useEditModal} from "@contexts/EditModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
-import {getAcademicYears} from "@utils/getAcademicYears.js";
 
 export default function Withdrawn() {
     const {data: classrooms} = useGetAll('classrooms', {all: 'true'});
@@ -58,31 +57,19 @@ export default function Withdrawn() {
     const handleEnroll = (student) => {
         showEditModal({
             fields: [
-                {
-                    name: 'academic_year',
-                    type: 'select',
-                    label: 'السنة الدراسية',
-                    options: getAcademicYears(),
-                    placeholder: "اختر السنة الدراسية",
-                    required: true
-                },
-                {
-                    name: "language",
-                    type: "select",
-                    label: "اللغة",
-                    options: ClassroomHelper.LANGUAGES,
-                    required: true,
-                    placeholder: "اختر اللغة"
-                },
+                ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+                ClassroomHelper.FIELDS.LANGUAGE,
+                ClassroomHelper.FIELDS.LEVEL,
+                ClassroomHelper.FIELDS.GRADE,
                 {
                     name: "classroom",
                     type: "select",
                     label: "الفصل",
                     placeholder: 'اختر فصل',
                     required: true,
-                    dependency: ["academic_year", 'language'],
+                    dependency: ["academic_year", 'language', 'level', 'grade'],
                     disabled: (values) => values.some(value => !value),
-                    options: (value) => classrooms?.data.filter(classroom => classroom.ACADEMIC_YEAR === value[0] && classroom.LANGUAGE === value[1])
+                    options: (value) => classrooms?.data.filter(classroom => classroom.academic_year === value[0] && classroom.language === value[1] && classroom.level === value[2] && classroom.grade === value[3])
                         .map(classroom => ({label: classroom.name, value: classroom.id}))
 
                 }
