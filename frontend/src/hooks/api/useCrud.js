@@ -14,11 +14,12 @@ export const useCreate = (resource, options = {}) => {
         },
     })
 }
-export const useGetAll = (resource, params = {}) => {
+export const useGetAll = (resource, params = {},options={}) => {
     return useQuery({
         queryKey: [resource, params],
         queryFn: () => axiosClient.get(`/${resource}`, {params}).then(res => res.data),
-        keepPreviousData: true
+        keepPreviousData: true,
+        ...options
     })
 }
 export const useFilters = (resource) => {

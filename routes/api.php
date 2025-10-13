@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookPurchaseController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\ClassroomController;
@@ -53,6 +54,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();
     Route::apiResource('subject-types', SubjectTypeController::class);
     Route::apiResource('expense-types', ExpenseTypeController::class);
+    Route::apiResource('book-purchases',BookPurchaseController::class);
 
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
     Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");

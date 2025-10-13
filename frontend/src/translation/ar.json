@@ -54,5 +54,9 @@
     "starts_at": "تبدأ من",
     "ends_at": "تنتهي عند",
     "group_number": "رقم المجموعة",
-    "group_capacity": "طاقة المجموعة"
+    "group_capacity": "طاقة المجموعة",
+    "price": "السعر",
+    "imported_quantity": "الكمية الواردة",
+    "available_quantity": "الكمية المتاحة",
+    "bought_quantity": "الكمية المنصرفة"
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Book extends Model
 {
@@ -15,13 +16,19 @@ class Book extends Model
         'price',
         'level',
         'subject_id',
-        'year',
+        'grade',
+        'type',
+        'language'
     ];
 
     public function subject(): BelongsTo
     {
-        return $this->belongsTo(Subject::class,'subject_id',"id");
+        return $this->belongsTo(Subject::class, 'subject_id', "id");
     }
 
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(BookPurchase::class, 'book_id', 'id');
+    }
 
 }

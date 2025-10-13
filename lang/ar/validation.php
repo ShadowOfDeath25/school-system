@@ -151,7 +151,7 @@ return [
     'string' => 'يجب أن يكون حقل :attribute نصًا.',
     'timezone' => 'يجب أن يكون حقل :attribute نطاقًا زمنيًا صحيحًا.',
     'ulid' => 'حقل :attribute يجب أن يكون بصيغة ULID سليمة.',
-    'unique' => 'قيمة حقل :attribute مُستخدمة من قبل.',
+    'unique' => 'هذا العنصر موجود بالفعل',
     'uploaded' => 'فشل في تحميل الـ :attribute.',
     'uppercase' => 'يجب أن يحتوي الحقل :attribute على حروف كبيرة.',
     'url' => 'صيغة رابط حقل :attribute غير صحيحة.',

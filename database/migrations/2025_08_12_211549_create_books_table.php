@@ -13,12 +13,14 @@ return new class extends Migration {
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Subject::class)->constrained()->cascadeOnDelete();
+            $table->string('type');
+            $table->foreignIdFor(Subject::class)->nullable()->constrained()->cascadeOnDelete();
             $table->string("level");
             $table->integer("imported_quantity");
-            $table->integer("available_quantity");
-            $table->integer("year");
-            $table->enum("semester", ["الأول", "الثاني"]);
+            $table->integer("available_quantity")->nullable();
+            $table->integer("grade");
+            $table->string('semester');
+            $table->string('language');
             $table->string("academic_year");
             $table->decimal("price", 10, 2);
             $table->timestamps();

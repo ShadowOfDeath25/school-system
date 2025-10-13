@@ -6,7 +6,17 @@ import useForm from "@hooks/useForm.js";
 import {useMemo, useEffect, useRef} from "react";
 
 
-export default function Form({fields, id, title, btnText = "إضافة", onFormSubmit, serverErrors, isModal = false}) {
+export default function Form({
+                                 fields,
+                                 id,
+                                 title,
+                                 btnText = "إضافة",
+                                 onFormSubmit,
+                                 serverErrors,
+                                 isModal = false,
+                                 values: externalValues,
+                                 setValues: setExternalValues
+                             }) {
     const isSectioned = fields.length > 0 && fields[0].hasOwnProperty('fields');
 
     const allFields = useMemo(
@@ -20,11 +30,29 @@ export default function Form({fields, id, title, btnText = "إضافة", onFormS
             return acc;
         }, {}), [allFields]);
 
-    const {
-        formData, errors, touched, handleChange, handleBlur, handleSubmit, setFieldValue
-    } = useForm({
+    const internalForm = useForm({
         initialValues, fields: allFields, onSubmit: onFormSubmit, serverErrors
     });
+
+    const isControlled = externalValues !== undefined && setExternalValues !== undefined;
+
+    const formData = isControlled ? externalValues : internalForm.formData;
+    const errors = isControlled ? {} : internalForm.errors; // Assuming no validation for controlled filter form
+    const touched = isControlled ? {} : internalForm.touched;
+    const handleBlur = isControlled ? () => {
+    } : internalForm.handleBlur;
+    const handleSubmit = isControlled ? (e) => {
+        e.preventDefault();
+        if (onFormSubmit) {
+            onFormSubmit(formData);
+        }
+    } : internalForm.handleSubmit;
+    const setFieldValue = isControlled ? (name, value) => setExternalValues(prev => ({...prev, [name]: value})) : internalForm.setFieldValue;
+
+    const handleChange = isControlled ? (e) => {
+        const {name, value} = e.target;
+        setExternalValues(prev => ({...prev, [name]: value}));
+    } : internalForm.handleChange;
 
     const prevFormDataRef = useRef(formData);
     useEffect(() => {
@@ -61,7 +89,7 @@ export default function Form({fields, id, title, btnText = "إضافة", onFormS
     });
 
     const isFormInvalid = Object.values(errors).some(error => error);
-    const isButtonDisabled = isFormInvalid || hasEmptyRequiredFields;
+    const isButtonDisabled = (isControlled ? hasEmptyRequiredFields : (isFormInvalid || hasEmptyRequiredFields));
 
     const renderField = (field) => {
         const fieldError = errors[field.name];
@@ -105,9 +133,9 @@ export default function Form({fields, id, title, btnText = "إضافة", onFormS
             <div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
                 {section.fields.map(renderField)}
             </div>
-        </div>))) : (<div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
+        </div>))) : (<div className={`${isModal ? styles.modalInputs : styles.formInputs} ${!btnText ? styles.noButton : ''}`}>
             {fields.map(renderField)}
         </div>)}
-        {!isModal && <button type="submit" disabled={isButtonDisabled}>{btnText}</button>}
+        {!isModal && btnText && <button type="submit" disabled={isButtonDisabled}>{btnText}</button>}
     </form>);
 }

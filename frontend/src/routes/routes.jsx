@@ -11,6 +11,7 @@ import examsRoutes from '@routes/exams.jsx'
 import seatNumbersRoutes from '@routes/seatNumbers.jsx'
 import secretNumbersRoutes from '@routes/secretNumbers.jsx'
 import expensesRoutes from '@routes/expenses.jsx'
+import booksRoutes from '@routes/books.jsx'
 
 const mainRoutes = {
     handle: {
@@ -51,5 +52,6 @@ export const appRoutes = [
     examsRoutes,
     seatNumbersRoutes,
     secretNumbersRoutes,
-    expensesRoutes
+    expensesRoutes,
+    booksRoutes
 ];
