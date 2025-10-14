@@ -24,6 +24,9 @@ class UniformPurchaseController extends Controller
     protected array $filterable = [
         'uniform.academic_year', 'uniform.type'
     ];
+    protected array $searchable = [
+        'student_name',
+    ];
     protected array $relationsToLoad = [
         'uniform'
     ];

@@ -33,6 +33,9 @@ class BookPurchaseController extends Controller
         "book.level",
         "book.grade",
     ];
+    protected array $searchable = [
+        'student_name',
+    ];
 
     public function store(StoreBookPurchaseRequest $request)
     {

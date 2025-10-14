@@ -23,10 +23,12 @@ class StoreUniformRequest extends FormRequest
     {
         return [
             'type' => ['required', "string"],
-            'size' => ['required', "string", 'in:xs,s,m,l,xl,xxl,xxxl'],
+            'size' => ['required', "string"],
+            'academic_year' => ['required', 'string', 'regex:/^\d{4}\/\d{4}$/'],
             'imported_quantity' => ['required', 'integer'],
-            'available_quantity' => ['required', 'integer'],
-            'price' => ['required', 'numeric']
+            'available_quantity' => ['required', 'integer', "lte:imported_quantity", "min:1"],
+            'buy_price' => ['required', 'numeric'],
+            'sell_price' => ['required', 'numeric']
         ];
     }
 }

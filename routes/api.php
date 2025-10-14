@@ -22,6 +22,8 @@ use App\Http\Controllers\SecretNumberController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SubjectTypeController;
+use App\Http\Controllers\UniformController;
+use App\Http\Controllers\UniformPurchaseController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,7 +56,9 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();
     Route::apiResource('subject-types', SubjectTypeController::class);
     Route::apiResource('expense-types', ExpenseTypeController::class);
-    Route::apiResource('book-purchases',BookPurchaseController::class)->withFilters();
+    Route::apiResource('book-purchases', BookPurchaseController::class)->withFilters();
+    Route::apiResource('uniform-purchases', UniformPurchaseController::class)->withFilters();
+    Route::apiResource('uniforms', UniformController::class)->withFilters();
 
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
     Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");

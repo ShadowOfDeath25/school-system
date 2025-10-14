@@ -24,7 +24,7 @@ class UpdateBookRequest extends FormRequest
         return [
             'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
             'imported_quantity' => ["integer"],
-            'available_quantity' => ["integer"],
+            'available_quantity' => ["integer", "lte:imported_quantity", "min:1"],
             'semester' => ["string"],
             'price' => ["numeric"],
             'level' => ["string"],

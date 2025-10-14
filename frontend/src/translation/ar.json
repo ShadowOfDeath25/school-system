@@ -61,5 +61,8 @@
     "bought_quantity": "الكمية المنصرفة",
     "quantity": "الكمية",
     "total_price": "السعر الاجمالي",
-    "student_name": "اسم الطالب"
+    "student_name": "اسم الطالب",
+    "sell_price": "سعر البيع",
+    "buy_price": "سعر الشراء",
+    "size": "المقاس"
 }

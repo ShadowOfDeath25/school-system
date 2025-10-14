@@ -10,9 +10,11 @@ class Uniform extends Model
     protected $fillable = [
         'type',
         'size',
+        'academic_year',
         'imported_quantity',
         'available_quantity',
-        'price',
+        'buy_price',
+        'sell_price',
     ];
 
 }
