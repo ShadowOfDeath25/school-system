@@ -22,7 +22,7 @@ class UpdateBookPurchaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quantity' => ['integer'],
+            'quantity' => ['integer', "min:1"],
             'book_id' => ['exists:books,id'],
             'student_name' => ['string']
         ];

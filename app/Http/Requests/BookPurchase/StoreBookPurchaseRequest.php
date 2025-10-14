@@ -22,7 +22,7 @@ class StoreBookPurchaseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'quantity' => ['required', 'integer'],
+            'quantity' => ['required', 'integer',"min:1"],
             'book_id' => ['required', 'exists:books,id'],
             'student_name' => ['required', 'string']
         ];
