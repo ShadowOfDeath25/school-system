@@ -43,7 +43,7 @@ class BookPurchaseController extends Controller
         if ($book->available_quantity < $data['quantity']) {
             return response()->json(["message" => $book->available_quantity === 0 ? "نفذت كمية هذه النسخة" : 'هذه الكمية غير متاحة'], 409);
         }
-        $book->available_quantity -= 1;
+        $book->available_quantity -= $data['quantity'];
         $book->save();
         return $this->baseStore($request);
 
