@@ -1,6 +1,7 @@
 import AddBooks from "@pages/Books/AddBooks.jsx";
 import ViewBooks from "@pages/Books/ViewBooks.jsx";
 import BuyBooks from "@pages/Books/BuyBooks.jsx";
+import ViewBookPurchases from "@pages/Books/ViewBookPurchases.jsx";
 
 const routes = {
     path: 'books',
@@ -38,6 +39,16 @@ const routes = {
                 sidebar: {
                     title: 'اضافة نسخة',
                     action: 'create books'
+                }
+            }
+        },
+        {
+            path: 'purchases',
+            element: <ViewBookPurchases/>,
+            handle: {
+                sidebar: {
+                    title: "منصرف الكتب",
+                    action: 'view book-purchases'
                 }
             }
         }

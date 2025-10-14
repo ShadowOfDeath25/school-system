@@ -7,10 +7,12 @@ import {useState} from "react";
 import {StudentHelper} from "@helpers/StudentHelper.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
+const initialFormValues = {
+    academic_year: "", level: "", grade: "", semester: "", type: "", student_name: "", quantity: ""
+};
+
 export default function BuyBooks() {
-    const [formValues, setFormValues] = useState({
-        academic_year: "", level: "", grade: "", semester: "", type: "", student_name: "", quantity: ""
-    });
+    const [formValues, setFormValues] = useState(initialFormValues);
     const {academic_year, level, grade, semester} = formValues;
     const mutation = useCreate('book-purchases')
     const canFetchTypes = !!(academic_year && level && grade && semester);
@@ -27,8 +29,9 @@ export default function BuyBooks() {
         }, {
             onSuccess: () => {
                 showSnackbar("تم صرف الكتب بنجاح")
-            }, onError: () => {
-                showSnackbar("حدث خطأ اثناء صرف الكتب", "error")
+                setFormValues(initialFormValues);
+            }, onError: (error) => {
+                showSnackbar(error.response.data.message, "error")
             }
         });
 
@@ -53,6 +56,7 @@ export default function BuyBooks() {
                     name: "quantity", type: "number", required: true, label: "الكمية", placeholder: "الكمية"
                 }]}
                 onFormSubmit={onSubmit}
+                btnText="صرف"
             />
         </Page>
     </>);

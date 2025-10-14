@@ -54,7 +54,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();
     Route::apiResource('subject-types', SubjectTypeController::class);
     Route::apiResource('expense-types', ExpenseTypeController::class);
-    Route::apiResource('book-purchases',BookPurchaseController::class);
+    Route::apiResource('book-purchases',BookPurchaseController::class)->withFilters();
 
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
     Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");

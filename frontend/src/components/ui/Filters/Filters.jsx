@@ -7,7 +7,7 @@ import {useTranslation} from "react-i18next";
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import InputField from "@ui/InputField/InputField.jsx";
 
-export default function Filters({onSubmit, resource, fields = [], additionalFields = []}) {
+export default function Filters({onSubmit, resource, fields = [], additionalFields = [], labels: labels = {}}) {
     const {data: fieldsData, isLoading} = useFilters(resource);
     const [filters, setFilters] = useState({});
 
@@ -65,15 +65,18 @@ export default function Filters({onSubmit, resource, fields = [], additionalFiel
     const finalFields = [
         ...Object.keys(fieldsData || {})
             .filter(fieldName => !customFieldNames.has(fieldName))
-            .map(fieldName => ({
-                name: fieldName,
-                label: t(fieldName),
-                id: fieldName,
-                type: 'select',
-                multiple: true,
-                options: fieldsData[fieldName],
-                placeholder: `اختر ${t(fieldName)}`
-            })),
+            .map(fieldName => {
+                const label = t(labels[fieldName]) || t(fieldName);
+                return {
+                    name: fieldName,
+                    label: label,
+                    id: fieldName,
+                    type: 'select',
+                    multiple: true,
+                    options: fieldsData[fieldName],
+                    placeholder: `اختر ${label}`
+                };
+            }),
         ...allCustomFields
     ];
 

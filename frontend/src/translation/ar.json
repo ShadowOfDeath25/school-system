@@ -58,5 +58,8 @@
     "price": "السعر",
     "imported_quantity": "الكمية الواردة",
     "available_quantity": "الكمية المتاحة",
-    "bought_quantity": "الكمية المنصرفة"
+    "bought_quantity": "الكمية المنصرفة",
+    "quantity": "الكمية",
+    "total_price": "السعر الاجمالي",
+    "student_name": "اسم الطالب"
 }
