@@ -29,7 +29,7 @@ class UpdateBookRequest extends FormRequest
             'price' => ["numeric"],
             'level' => ["string"],
             'subject_id' => ["sometimes", "integer", "exists:subjects,id"],
-            'grade' => ["integer"],
+            'grade' => ["string"],
             'type' => ["string", 'unique:books,type'],
             'language' => ['string', 'in:لغات,عربي']
         ];

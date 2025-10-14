@@ -29,7 +29,7 @@ class StoreBookRequest extends FormRequest
             'price' => ["numeric", "required"],
             'level' => ["string", "required",],
             'subject_id' => ["sometimes", "integer", "exists:subjects,id"],
-            'grade' => ["required", "integer"],
+            'grade' => ["required", "string"],
             'type' => ["string", 'required', 'unique:books,type'],
             'language' => ['required', 'string', 'in:لغات,عربي']
         ];

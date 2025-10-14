@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string("level");
             $table->integer("imported_quantity");
             $table->integer("available_quantity")->nullable();
-            $table->integer("grade");
+            $table->string("grade");
             $table->string('semester');
             $table->string('language');
             $table->string("academic_year");
