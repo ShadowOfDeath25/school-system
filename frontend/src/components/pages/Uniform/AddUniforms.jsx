@@ -39,7 +39,7 @@ export default function AddUniforms() {
                         UniformHelper.FIELDS.BUY_PRICE,
                         UniformHelper.FIELDS.IMPORTED_QUANTITY,
                         UniformHelper.FIELDS.SIZE,
-
+                        UniformHelper.FIELDS.PIECE
                     ]}
                     onFormSubmit={handleSubmit}
                 />

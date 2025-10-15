@@ -5,6 +5,7 @@ import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 import {StudentHelper} from "@helpers/StudentHelper.js";
+import {UniformHelper} from "@helpers/UniformHelper.js";
 
 const initialFormValues = {
     academic_year: ""
@@ -53,7 +54,11 @@ export default function BuyUniforms() {
                     ...StudentHelper.FIELDS.STUDENT.NAME_IN_ARABIC, name: 'student_name', label: 'اسم الطالب'
                 }, {
                     name: "quantity", type: "number", required: true, label: "الكمية", placeholder: "الكمية"
-                }]}
+                },
+                    UniformHelper.FIELDS.PIECE
+                ]
+
+                }
                 onFormSubmit={onSubmit}
                 btnText="صرف"
             />

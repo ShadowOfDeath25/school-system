@@ -24,11 +24,12 @@ class UpdateUniformRequest extends FormRequest
         return [
             'type' => ["string"],
             'size' => ["string"],
-            'academic_year'=>['string','regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['string', 'regex:/^\d{4}\/\d{4}$/'],
             'imported_quantity' => ['integer'],
             'available_quantity' => ['integer'],
             'sell_price' => ['numeric', "min:1"],
             'buy_price' => ['numeric', "min:1"],
+            'piece' => ['string']
         ];
     }
 }

@@ -28,7 +28,8 @@ class StoreUniformRequest extends FormRequest
             'imported_quantity' => ['required', 'integer'],
             'available_quantity' => ['required', 'integer', "lte:imported_quantity", "min:1"],
             'buy_price' => ['required', 'numeric'],
-            'sell_price' => ['required', 'numeric']
+            'sell_price' => ['required', 'numeric'],
+            'piece' => ['required', 'string']
         ];
     }
 }
