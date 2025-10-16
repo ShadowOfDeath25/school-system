@@ -16,7 +16,7 @@ const FIELDS = {
         name: "imported_quantity", label: "الكمية الواردة", type: "number", required: true, placeholder: "السعر"
     },
     PIECE: {
-        name: "PIECE", label: "القطعة", type: "text", required: true, placeholder: "القطعة"
+        name: "piece", label: "القطعة", type: "text", required: true, placeholder: "القطعة"
     }
 }
 export const UniformHelper = {

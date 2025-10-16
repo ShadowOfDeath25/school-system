@@ -24,20 +24,20 @@ class BookController extends Controller
     protected string $updateRequest = UpdateBookRequest::class;
     protected string $resource = BookResource::class;
 
-    public function update(UpdateBookRequest $request, Book $book)
+    public function update(UpdateBookRequest $request, Book $uniform)
     {
         $data = $request->validated();
-        $original_imported_quantity = $book->imported_quantity;
+        $original_imported_quantity = $uniform->imported_quantity;
 
 
-        $book->fill($data);
+        $uniform->fill($data);
 
-        if ($book->imported_quantity > $original_imported_quantity) {
-            $quantity_increase = $book->imported_quantity - $original_imported_quantity;
-            $book->available_quantity += $quantity_increase;
+        if ($uniform->imported_quantity > $original_imported_quantity) {
+            $quantity_increase = $uniform->imported_quantity - $original_imported_quantity;
+            $uniform->available_quantity += $quantity_increase;
         }
-        $book->save();
+        $uniform->save();
 
-        return BookResource::make($book);
+        return BookResource::make($uniform);
     }
 }

@@ -8,10 +8,14 @@ use App\Http\Resources\UniformResource;
 use App\Models\Uniform;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
+use Illuminate\Http\Request;
 
 class UniformController extends Controller
 {
-    use HasCRUD, HasFilters;
+    use HasCRUD {
+        index as baseIndex;
+    }
+    use HasFilters;
 
     protected array $filterable = [
         'type', 'academic_year'
@@ -24,21 +28,31 @@ class UniformController extends Controller
     protected string $updateRequest = UpdateUniformRequest::class;
     protected string $resource = UniformResource::class;
 
-    public function update(UpdateUniformRequest $request, Uniform $book)
+    public function update(UpdateUniformRequest $request, Uniform $uniform)
     {
         $data = $request->validated();
-        $original_imported_quantity = $book->imported_quantity;
+        $original_imported_quantity = $uniform->imported_quantity;
 
 
-        $book->fill($data);
+        $uniform->fill($data);
 
-        if ($book->imported_quantity > $original_imported_quantity) {
-            $quantity_increase = $book->imported_quantity - $original_imported_quantity;
-            $book->available_quantity += $quantity_increase;
+        if ($uniform->imported_quantity > $original_imported_quantity) {
+            $quantity_increase = $uniform->imported_quantity - $original_imported_quantity;
+            $uniform->available_quantity += $quantity_increase;
         }
-        $book->save();
+        $uniform->save();
 
-        return UniformResource::make($book);
+        return UniformResource::make($uniform);
     }
 
+    public function index(Request $request)
+    {
+        $data = $this->baseIndex($request);
+        $types = Uniform::where('academic_year', $request->get('academic_year'))
+            ->distinct()
+            ->pluck('type');
+        $data->additional(['types' => $types]);
+        return $data;
+
+    }
 }

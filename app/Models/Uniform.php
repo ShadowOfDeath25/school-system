@@ -13,6 +13,7 @@ class Uniform extends Model
         'academic_year',
         'imported_quantity',
         'available_quantity',
+        'piece',
         'buy_price',
         'sell_price',
     ];

@@ -21,7 +21,8 @@ class UniformResource extends JsonResource
             'imported_quantity' => $this->imported_quantity,
             'buy_price' => $this->buy_price,
             'sell_price' => $this->sell_price,
-            'total_price' => $this->buy_price * $this->imported_quantity
+            'total_price' => $this->buy_price * $this->imported_quantity,
+            'piece' => $this->piece
         ];
     }
 }

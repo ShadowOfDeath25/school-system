@@ -8,7 +8,11 @@ import {StudentHelper} from "@helpers/StudentHelper.js";
 import {UniformHelper} from "@helpers/UniformHelper.js";
 
 const initialFormValues = {
-    academic_year: ""
+    academic_year: "",
+    type: "",
+    student_name: "",
+    quantity: "",
+    piece: ""
 };
 
 export default function BuyUniforms() {
@@ -25,7 +29,7 @@ export default function BuyUniforms() {
 
     const onSubmit = (data) => {
         mutation.mutate({
-            uniform_id: data.type, student_name: data.student_name, quantity: data.quantity
+            uniform_id: data.piece, student_name: data.student_name, quantity: data.quantity
         }, {
             onSuccess: () => {
                 showSnackbar("تم صرف الزي بنجاح")
@@ -41,21 +45,33 @@ export default function BuyUniforms() {
             <Form
                 values={formValues}
                 setValues={setFormValues}
-                fields={[ClassroomHelper.FIELDS.ACADEMIC_YEAR, {
-                    name: 'type',
-                    label: 'نوع الزي',
-                    id: 'type',
-                    type: 'select',
-                    placeholder: 'اختر النسخة',
-                    options: uniforms?.data?.map(record => ({label: record.type, value: record.id})),
-                    disabled: !canFetchTypes || isLoadingTypes,
-                    required: true
-                }, {
-                    ...StudentHelper.FIELDS.STUDENT.NAME_IN_ARABIC, name: 'student_name', label: 'اسم الطالب'
-                }, {
-                    name: "quantity", type: "number", required: true, label: "الكمية", placeholder: "الكمية"
-                },
-                    UniformHelper.FIELDS.PIECE
+                fields={[
+                    ClassroomHelper.FIELDS.ACADEMIC_YEAR, {
+                        name: 'type',
+                        label: 'نوع الزي',
+                        id: 'type',
+                        type: 'select',
+                        placeholder: 'اختر النسخة',
+                        options: uniforms?.types,
+                        disabled: !canFetchTypes || isLoadingTypes,
+                        required: true
+                    },
+                    {
+                        ...UniformHelper.FIELDS.PIECE,
+                        type: "select",
+                        options: uniforms?.data?.filter(record => record.type === formValues.type)?.map(record => ({
+                            label: record.piece,
+                            value: record.id
+                        })),
+                        dependency: "type",
+                        disabled: !formValues.type
+                    },
+                    {
+                        ...StudentHelper.FIELDS.STUDENT.NAME_IN_ARABIC, name: 'student_name', label: 'اسم الطالب'
+                    }, {
+                        name: "quantity", type: "number", required: true, label: "الكمية", placeholder: "الكمية"
+                    },
+
                 ]
 
                 }
