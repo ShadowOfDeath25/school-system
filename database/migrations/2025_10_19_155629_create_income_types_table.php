@@ -10,13 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('incomes', function (Blueprint $table) {
+        Schema::create('income_types', function (Blueprint $table) {
             $table->id();
-            $table->string('academic_year')->index();
-            $table->string('type')->index();
-            $table->decimal('value', 10, 2);
-            $table->text("description")->nullable();
-            $table->date('date');
+            $table->string("name");
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('incomes');
+        Schema::dropIfExists('income_types');
     }
 };

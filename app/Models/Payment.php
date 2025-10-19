@@ -14,7 +14,7 @@ class Payment extends Model
         "value",
         "student_id",
         "level"
-        ];
+    ];
 
     public function student(): BelongsTo
     {

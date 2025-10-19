@@ -13,12 +13,13 @@ return new class extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('academic_year');
-            $table->enum('language', ['عربي', 'لغات']);
-            $table->string("type");
-            $table->decimal('value', 10,2);
+            $table->string('academic_year')->index();
+            $table->string('language');
+            $table->string("type")->index();
+            $table->decimal('value', 10, 2);
             $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
-            $table->string('level');
+            $table->string('level')->index();
+            $table->integer('grade');
             $table->timestamps();
         });
     }

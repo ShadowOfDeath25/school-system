@@ -13,6 +13,7 @@ import secretNumbersRoutes from '@routes/secretNumbers.jsx'
 import expensesRoutes from '@routes/expenses.jsx'
 import booksRoutes from '@routes/books.jsx'
 import uniformsRoutes from '@routes/uniforms.jsx'
+import incomesRoutes from '@routes/incomes.jsx'
 
 const mainRoutes = {
     handle: {
@@ -56,4 +57,5 @@ export const appRoutes = [
     expensesRoutes,
     booksRoutes,
     uniformsRoutes,
+    incomesRoutes
 ];
