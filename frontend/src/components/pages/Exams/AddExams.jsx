@@ -6,7 +6,7 @@ import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {value} from "loadsh/seq.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useState} from "react";
-import {ExamHelper} from "@utils/helpers/examHelper.js";
+import {ExamHelper} from "@helpers/ExamHelper.js";
 
 export default function AddExams() {
     const {data: subjects} = useGetAll('subjects', {all: true})

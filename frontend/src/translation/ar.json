@@ -64,5 +64,10 @@
     "student_name": "اسم الطالب",
     "sell_price": "سعر البيع",
     "buy_price": "سعر الشراء",
-    "size": "المقاس"
+    "size": "المقاس",
+    "doc_no": "رقم المستند",
+    "value": "القيمة",
+    "description": "البيان",
+    "date": "التاريخ",
+    "formatted_date": "التاريخ"
 }

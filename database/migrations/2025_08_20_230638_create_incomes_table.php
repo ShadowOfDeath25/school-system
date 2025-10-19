@@ -14,8 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->string('academic_year')->index();
             $table->string('type')->index();
-            $table->decimal('value', 10, 2);
             $table->text("description")->nullable();
+            $table->decimal('value', 10, 2);
             $table->date('date');
             $table->timestamps();
         });

@@ -22,12 +22,11 @@ class UpdateIncomeRequest extends FormRequest
     public function rules(): array
     {
         return [
-             "type" => [
-                "string",
-                "max:255" ],
-            "value" => [
-                "numeric",
-                "decimal:10,2" ],
+            "type" => ["string", 'exists:income_types,name', "max:255"],
+            "value" => ["numeric"],
+            "description" => ["string"],
+            "date" => ['date'],
+            "academic_year" => ['string', "regex:/^\d{4}\/\d{4}$/"]
         ];
     }
 }

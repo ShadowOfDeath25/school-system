@@ -22,19 +22,11 @@ class StoreIncomeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "type" => [
-                "required",
-                "string",
-                "max:255"
-            ],
-            "value" => [
-                "required",
-                "numeric",
-                "decimal:10,2"
-            ],
-            "description" => [
-                "string",
-            ]
+            "type" => ["required", "string", 'exists:income_types,name', "max:255"],
+            "value" => ["required", "numeric"],
+            "description" => ["sometimes", "string"],
+            "date" => ['required', 'date'],
+            "academic_year" => ['string', 'required', "regex:/^\d{4}\/\d{4}$/"]
         ];
     }
 }
