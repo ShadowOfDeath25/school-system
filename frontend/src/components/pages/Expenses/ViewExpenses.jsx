@@ -23,6 +23,10 @@ export default function ViewExpenses() {
                             label: "رقم المستند",
                         },
                         {
+                            name:"value",
+                            label:"القيمة"
+                        },
+                        {
                             name: "formatted_date",
                             label: "التاريخ"
                         },
