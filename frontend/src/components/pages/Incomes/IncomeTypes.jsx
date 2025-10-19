@@ -26,7 +26,7 @@ export default function IncomeTypes() {
             <Page>
                 <Form
                     fields={[{
-                        name: "name", type: "text", required: true, label: "النوع"
+                        placeholder: "النوع", name: "name", type: "text", required: true, label: "النوع"
                     }]}
                     btnText={"إضافة"}
                     onFormSubmit={onSubmit}
