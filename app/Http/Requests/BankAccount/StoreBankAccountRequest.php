@@ -22,15 +22,12 @@ class StoreBankAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-            'document_number' => ['required', 'string', 'max:255'],
             'notes' => ['required', 'string'],
             'type' => ['required', 'string', 'max:255'],
             'manager_name' => ['required', 'string', 'max:255'],
-            'academic_year' => ['required', 'string', 'max:255'],
+            'academic_year' => ['required', 'string', 'regex:/^\d{4}\/\d{4}$/'],
             'value' => ['required', 'numeric'],
             'date' => ['required', 'date'],
-
         ];
     }
 }

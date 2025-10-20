@@ -69,5 +69,7 @@
     "value": "القيمة",
     "description": "البيان",
     "date": "التاريخ",
-    "formatted_date": "التاريخ"
+    "formatted_date": "التاريخ",
+    "manager_name": "اسم المسئول",
+    "notes": "ملاحظات"
 }

@@ -51,7 +51,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('buildings', BuildingController::class);
     Route::apiResource('floors', FloorController::class);
     Route::apiResource('exam-halls', ExamHallController::class);
-    Route::apiResource('bank-accounts', BankAccountController::class);
+    Route::apiResource('bank-accounts', BankAccountController::class)->withFilters();
     Route::apiResource('secret-numbers', SecretNumberController::class)->withFilters();
     Route::apiResource('exams', ExamController::class)->withFilters();
     Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();

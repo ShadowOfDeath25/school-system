@@ -22,13 +22,12 @@ class UpdateBankAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'document_number' => [ 'string', 'max:255'],
-            'notes' => [ 'string'],
-            'type' => [ 'string', 'max:255'],
+            'notes' => ['string'],
+            'type' => ['string', 'max:255'],
             'manager_name' => ['string', 'max:255'],
-            'academic_year' => [ 'string', 'max:255'],
+            'academic_year' => ['string', 'regex:/^\d{4}\/\d{4}$/'],
             'value' => ['numeric'],
-            'date' => [ 'date'],
+            'date' => ['date']
         ];
     }
 }
