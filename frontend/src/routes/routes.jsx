@@ -15,6 +15,7 @@ import booksRoutes from '@routes/books.jsx'
 import uniformsRoutes from '@routes/uniforms.jsx'
 import incomesRoutes from '@routes/incomes.jsx'
 import bankAccountsRoutes from '@routes/bankAccounts.jsx'
+import busesRoutes from "@routes/buses.jsx";
 
 const mainRoutes = {
     handle: {
@@ -59,5 +60,6 @@ export const appRoutes = [
     booksRoutes,
     uniformsRoutes,
     incomesRoutes,
-    bankAccountsRoutes
+    bankAccountsRoutes,
+    busesRoutes
 ];

@@ -71,5 +71,7 @@
     "date": "التاريخ",
     "formatted_date": "التاريخ",
     "manager_name": "اسم المسئول",
-    "notes": "ملاحظات"
+    "notes": "ملاحظات",
+    "neighborhood": "المنطقة",
+    "city": "المدينة"
 }

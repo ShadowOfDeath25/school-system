@@ -10,15 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('buses', function (Blueprint $table) {
+        Schema::create('stations', function (Blueprint $table) {
             $table->id();
             $table->string('academic_year');
-            $table->integer("number");
-            $table->string('license_plate')->unique();
-            $table->string('driver_name');
-            $table->string('supervisor_name');
-            $table->integer('capacity');
-            $table->text('route');
+            $table->string('city');
+            $table->string('neighborhood');
+            $table->decimal('value', 10, 2)->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('buses');
+        Schema::dropIfExists('stations');
     }
 };

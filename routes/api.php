@@ -20,6 +20,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SeatNumberController;
 use App\Http\Controllers\SecretNumberController;
+use App\Http\Controllers\StationController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SubjectTypeController;
@@ -40,7 +41,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource("books", BookController::class)->withFilters();
     Route::apiResource('parents', GuardianController::class)->withFilters();
     Route::apiResource('students', StudentController::class)->withFilters();
-
+    Route::apiResource('stations', StationController::class);
     Route::apiResource('payments', PaymentController::class)->withFilters();
     Route::apiResource('incomes', IncomeController::class)->withFilters();
     Route::apiResource('classrooms', ClassroomController::class)->withFilters();
