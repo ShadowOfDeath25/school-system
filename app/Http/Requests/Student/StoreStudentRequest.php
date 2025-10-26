@@ -20,6 +20,8 @@ class StoreStudentRequest extends FormRequest
             'nid' => ['required', 'string', 'regex:/^[0-9]{14}$/', 'unique:students,nid'],
             'birth_date' => ['required', 'date'],
             'birth_address' => ['required', 'string'],
+            'language' => ['required', 'string', 'in:عربي,لغات'],
+            'status' => ['string', 'required'],
             'gender' => ['required', 'string', Rule::in(['female', 'male'])],
             'religion' => ['required', 'string', Rule::in(["مسيحي", 'مسلم'])],
             'nationality' => ["string", "required"],

@@ -1,0 +1,38 @@
+.container {
+    width: 50%;
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    border-top: var(--container-border);
+    box-shadow: var(--container-box-shadow);
+    padding: 10px;
+}
+
+.title {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.container table {
+    width: 100%;
+    border-spacing: 15px;
+}
+
+.container tr:first-child td:last-child {
+
+    text-align: center;
+}
+
+.container tr {
+    margin: 10px;
+}
+
+.label {
+    color: var(--ternary-text-color)
+}
+
+.container td {
+    min-height: 100px;
+    padding: 10px;
+
+}
+

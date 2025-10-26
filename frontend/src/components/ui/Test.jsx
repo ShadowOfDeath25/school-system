@@ -1,20 +1,20 @@
 import {useGetAll} from "@hooks/api/useCrud.js";
-import ClassroomsReport from '@reports/ClassroomsReport.jsx'
-import {Button} from "@mui/material";
-
-import {useRef} from "react";
+import StudentData from "@ui/StudentData/StudentData.jsx";
+import Page from "@ui/Page/Page.jsx";
 
 export default function Test() {
-    const {data, isLoading} = useGetAll("students", {classroom: "null"});
-    const ref = useRef(null)
+    const {data, isLoading} = useGetAll("students");
 
-    // const handlePrint = useReactToPrint({
-    //     contentRef:ref
-    // })
     return (
         <>
-            <Button onClick={handlePrint}>Generate report</Button>
+
+            {!isLoading && <Page>
+                <StudentData
+                    student={data?.data[0]}
+                />
+            </Page>}
 
         </>
+
     );
 }

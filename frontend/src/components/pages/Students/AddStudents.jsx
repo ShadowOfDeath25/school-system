@@ -25,7 +25,9 @@ export default function AddStudents() {
         }
         fatherData.gender = "male";
         motherData.gender = "female";
-        normalizedData.guardians = [fatherData, motherData]
+        normalizedData.guardians = [fatherData, motherData];
+        normalizedData.status = "مستجد";
+        console.log(normalizedData)
         return normalizedData;
     }
 

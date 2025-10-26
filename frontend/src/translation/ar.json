@@ -73,5 +73,6 @@
     "manager_name": "اسم المسئول",
     "notes": "ملاحظات",
     "neighborhood": "المنطقة",
-    "city": "المدينة"
+    "city": "المدينة",
+    "classroom.name": "الفصل"
 }

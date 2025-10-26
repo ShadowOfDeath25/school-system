@@ -31,7 +31,7 @@ export default function ViewStudents() {
             label: 'حالة القيد'
         },
         {
-            name: "classroom",
+            name: "classroom.name",
             label: "الفصل"
         },
         {

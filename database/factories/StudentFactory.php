@@ -20,7 +20,9 @@ class StudentFactory extends Factory
     public function definition(): array
     {
         $gender = $this->faker->randomElement(['male', 'female']);
-
+        $language = $this->faker->randomElement(['عربي', 'لغات']);
+        $academicYear = $this->faker->randomElement(['2024/2025', '2026/2026']);
+        $classroom = Classroom::where('language', $language)->where('academic_year', $academicYear)->inRandomOrder()->first()?->id;
         return [
             'name_in_arabic' => fake('ar_EG')->name($gender),
             'name_in_english' => fake('en_EG')->name($gender),
@@ -34,7 +36,8 @@ class StudentFactory extends Factory
             'reg_number' => fake()->numerify('#######'),
             'withdrawn' => fake()->randomElement([true, false]),
             'status' => fake()->randomElement(['مستجد', "باقي"]),
-            'classroom_id' => fake()->randomElement([null, Classroom::query()->inRandomOrder()->first()?->id, Classroom::query()->inRandomOrder()->first()?->id])
+            'classroom_id' => fake()->randomElement([null, $classroom, $classroom, $classroom]),
+            'language' => $language,
         ];
     }
 

@@ -26,10 +26,13 @@ class StudentResource extends JsonResource
             $mother = $this->guardians->get(1);
         }
 
+
         return [
             "id" => $this->id,
+            'language' => $this->language,
             'reg_number' => $this->reg_number,
             "name_in_arabic" => $this->name_in_arabic,
+            'academic_year' => $this->classroom->academic_year ?? "غير مقيد",
             "nid" => $this->nid,
             "father_name" => $father->name ?? "غير مسجل",
             "mother_name" => $mother->name ?? "غير مسجل",
@@ -39,8 +42,7 @@ class StudentResource extends JsonResource
             "mother_edu" => $mother->edu ?? "غير مسجل",
             "mother_phone_number" => $mother->phone_number ?? "غير مسجل",
             "mother_job" => $mother->job ?? "غير مسجل",
-            "classroom" => $classroom_name,
-            'note' => $this->note,
+            'note' => $this->note ?? "لا يوجد",
             'status' => $this->status,
             'withdrawn' => $this->withdrawn ? 'نعم' : 'لا',
             "nationality" => $this->nationality,
@@ -48,7 +50,14 @@ class StudentResource extends JsonResource
             "gender" => $this->gender,
             "religion" => $this->religion,
             "birth_date" => $this->birth_date,
-            "birth_address" => $this->birth_address
+            "birth_address" => $this->birth_address,
+            "joined_at" => $this->created_at->format('Y/m/d'),
+            'classroom' => $this->classroom ??
+                [
+                    "name" => "غير مقيد",
+                    "grade" => "غير مقيد",
+                    "level" => "غير مقيد"
+                ]
         ];
     }
 }

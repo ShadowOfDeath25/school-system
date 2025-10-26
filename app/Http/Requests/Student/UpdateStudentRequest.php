@@ -22,6 +22,7 @@ class UpdateStudentRequest extends FormRequest
             'nid' => ['sometimes', 'string', 'regex:/^[0-9]{14}$/', Rule::unique('students')->ignore($studentId)],
             'birth_date' => ['sometimes', 'date'],
             'birth_address' => ['sometimes', 'string'],
+            'language' => ['string', 'in:عربي,لغات'],
             'gender' => ['sometimes', 'string', Rule::in(['female', 'male'])],
             'religion' => ['sometimes', 'string', Rule::in(["مسيحي", 'مسلم'])],
             'nationality' => ['sometimes', "string"],

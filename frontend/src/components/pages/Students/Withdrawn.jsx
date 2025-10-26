@@ -108,7 +108,7 @@ export default function Withdrawn() {
             <Table
                 resource={"students"}
                 filters={filters}
-                fields={[{name: "reg_number"}, {name: "name_in_arabic", label: "الاسم"}, {name: "classroom"}]}
+                fields={[{name: "reg_number"}, {name: "name_in_arabic", label: "الاسم"}, {name: "classroom.name"}]}
                 children={enrollButton}
                 editable={false}
             />

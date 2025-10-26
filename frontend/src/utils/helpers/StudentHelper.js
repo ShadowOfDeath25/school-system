@@ -1,4 +1,5 @@
 import {validator} from "@utils/validator.js";
+import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 
 const NATIONALITIES = ['مصري', 'اجنبي']
 const GENDERS = [{label: "ذكر", value: "male"}, {label: "انثي", value: "female"}]
@@ -61,6 +62,14 @@ const FIELDS = {
             name: "religion", type: "radio", id: "religion", label: "الديانة", options: RELIGIONS
         }, NOTE: {
             name: "note", type: "select", label: "علامة مميزة", options: NOTES, placeholder: "لا يوجد"
+        },
+        LANGUAGE: {
+            name: "language",
+            label: "اللغة",
+            placeholder: "اختر اللغة",
+            type: "radio",
+            required: true,
+            options: ClassroomHelper.LANGUAGES
         }
     }, FATHER: {
         NAME: {

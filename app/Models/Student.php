@@ -24,8 +24,8 @@ class Student extends Model
         'classroom_id',
         'withdrawn',
         'reg_number',
-        'status'
-
+        'status',
+        'language',
     ];
 
     public function classroom()
