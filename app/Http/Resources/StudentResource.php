@@ -57,7 +57,8 @@ class StudentResource extends JsonResource
                     "name" => "غير مقيد",
                     "grade" => "غير مقيد",
                     "level" => "غير مقيد"
-                ]
+                ],
+            "has_siblings" => $this->has_siblings ? 'نعم' : "لا"
         ];
     }
 }

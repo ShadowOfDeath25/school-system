@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -41,5 +42,24 @@ class Student extends Model
     public function guardians(): BelongsToMany
     {
         return $this->belongsToMany(Guardian::class);
+    }
+
+    protected function hasSiblings(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if (!$this->relationLoaded('guardians')) {
+                    return false;
+                }
+                $guardianIds = $this->guardians->pluck('id');
+                if ($guardianIds->isEmpty()) {
+                    return false;
+                }
+
+                return GuardianStudent::whereIn('guardian_id', $guardianIds)
+                    ->where('student_id', '!=', $this->id)
+                    ->exists();
+            }
+        );
     }
 }

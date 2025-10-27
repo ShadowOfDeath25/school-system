@@ -39,7 +39,7 @@ export default function StudentData({student}) {
                         </tr>
                         <tr>
                             <td className={styles.label}>اشقاء</td>
-                            <td>TBD</td>
+                            <td>{student.has_siblings}</td>
                             <td className={styles.label}>علامة مميزة</td>
                             <td>{student.note}</td>
                         </tr>
