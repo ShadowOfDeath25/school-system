@@ -10,12 +10,17 @@ export default function Test() {
         <>
 
             {!isLoading && <Page>
-                <StudentData
-                    student={data?.data[0]}
-                />
-                <StudentPayments
-                    student={data?.data[0]}
-                />
+                <div style={{
+                    display: "flex",
+                    gap: "3%"
+                }}>
+                    <StudentData
+                        student={data?.data[0]}
+                    />
+                    <StudentPayments
+                        student={data?.data[0]}
+                    />
+                </div>
             </Page>}
 
         </>

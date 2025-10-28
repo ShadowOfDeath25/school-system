@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Database\Factories\SeatNumberFactory;
 use Illuminate\Database\Seeder;
+
+// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,7 +22,8 @@ class DatabaseSeeder extends Seeder
             ClassroomSeeder::class,
             StudentSeeder::class,
             SeatNumberSeeder::class,
-            SecretNumberSeeder::class
+            SecretNumberSeeder::class,
+            PaymentValueSeeder::class,
         ]);
 
     }
