@@ -6,4 +6,18 @@
     box-shadow: var(--container-box-shadow);
     padding: 20px;
     display: flex;
+    flex-direction: column;
+}
+
+.tabsWrapper {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 30px;
+
+    & span {
+        color: var(--ternary-text-color);
+        font-weight: bold;
+        font-size: 20px;
+    }
 }
