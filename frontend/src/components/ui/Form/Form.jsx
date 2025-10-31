@@ -3,7 +3,7 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import useForm from "@hooks/useForm.js";
-import {useMemo, useEffect, useRef} from "react";
+import {useEffect, useMemo, useRef} from "react";
 
 
 export default function Form({
@@ -47,7 +47,10 @@ export default function Form({
             onFormSubmit(formData);
         }
     } : internalForm.handleSubmit;
-    const setFieldValue = isControlled ? (name, value) => setExternalValues(prev => ({...prev, [name]: value})) : internalForm.setFieldValue;
+    const setFieldValue = isControlled ? (name, value) => setExternalValues(prev => ({
+        ...prev,
+        [name]: value
+    })) : internalForm.setFieldValue;
 
     const handleChange = isControlled ? (e) => {
         const {name, value} = e.target;
@@ -126,16 +129,35 @@ export default function Form({
 
     };
 
-    return (<form className={`${isModal ? styles.modalForm : styles.form}`} id={id} onSubmit={handleSubmit}>
-        {title && <h3 className={styles.formTitle}>{title}</h3>}
-        {isSectioned ? (fields.map((section, index) => (<div key={index} className={styles.formSection}>
-            {section.title && <h4 className={styles.sectionTitle}>{section.title}</h4>}
-            <div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
-                {section.fields.map(renderField)}
-            </div>
-        </div>))) : (<div className={`${isModal ? styles.modalInputs : styles.formInputs} ${!btnText ? styles.noButton : ''}`}>
-            {fields.map(renderField)}
-        </div>)}
-        {!isModal && btnText && <button type="submit" disabled={isButtonDisabled}>{btnText}</button>}
-    </form>);
+    return (
+        <form
+            className={`${isModal ? styles.modalForm : styles.form}`}
+            id={id}
+            onSubmit={handleSubmit}
+        >
+            {title && <h3 className={styles.formTitle}>{title}</h3>}
+            {isSectioned ? (fields.map((section, index) => (
+                    <div
+                        key={index}
+                        className={styles.formSection}
+                    >
+                        {
+                            section.title &&
+                            <h4 className={styles.sectionTitle}>
+                                {section.title}
+                            </h4>
+                        }
+                        <div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
+                            {section.fields.map(renderField)}
+                        </div>
+                    </div>
+                ))) :
+                (
+                    <div className={`${isModal ? styles.modalInputs : styles.formInputs} ${!btnText ? styles.noButton : ''}`}>
+                        {fields.map(renderField)}
+                    </div>
+                )
+            }
+            {!isModal && btnText && <button type="submit" disabled={isButtonDisabled}>{btnText}</button>}
+        </form>);
 }
