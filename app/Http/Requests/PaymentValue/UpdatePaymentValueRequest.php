@@ -22,12 +22,12 @@ class UpdatePaymentValueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['sometimes', 'regex:/^\d{4}\/\d{4}$/'],
             "level" => ['sometimes', 'string'],
             "language" => ['sometimes', 'string', 'in:لغات,عربي'],
             "grade" => ['sometimes', 'integer'],
-            "value" => ['required', 'numeric'],
-            "type" => ['string', 'required']
+            "value" => ['sometimes', 'numeric'],
+            "type" => ['string', 'sometimes']
         ];
     }
 }

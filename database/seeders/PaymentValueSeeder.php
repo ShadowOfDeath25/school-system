@@ -14,7 +14,7 @@ class PaymentValueSeeder extends Seeder
      */
     public function run(): void
     {
-        PaymentValue::query()->truncate(); // Clear the table first
+        PaymentValue::query()->truncate();
 
 
         $currentYear = now()->year;
@@ -25,32 +25,32 @@ class PaymentValueSeeder extends Seeder
 
         $gradeSpecificData = [
             'رياض اطفال' => [
-                'grades' => [1, 2],
+                'grades' => ['الاول', "الثاني"],
                 'values' => [
-                    ['type' => 'tuition', 'language' => 'عربي', 'value' => 3000],
-                    ['type' => 'tuition', 'language' => 'لغات', 'value' => 5000],
-                    ['type' => 'administrative', 'language' => 'لغات', 'value' => 250],
-                    ['type' => 'administrative', 'language' => 'عربي', 'value' => 250],
+                    ['type' => 'المصروفات الدراسية', 'language' => 'عربي', 'value' => 3000],
+                    ['type' => 'المصروفات الدراسية', 'language' => 'لغات', 'value' => 5000],
+                    ['type' => 'المصروفات الادارية', 'language' => 'لغات', 'value' => 250],
+                    ['type' => 'المصروفات الادارية', 'language' => 'عربي', 'value' => 250],
 
                 ]
             ],
             'ابتدائي' => [
-                'grades' => [1, 2, 3, 4, 5, 6],
+                'grades' => ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس"],
                 'values' => [
-                    ['type' => 'tuition', 'language' => 'عربي', 'value' => 4000],
-                    ['type' => 'tuition', 'language' => 'لغات', 'value' => 6000],
-                    ['type' => 'administrative', 'language' => 'لغات', 'value' => 250],
-                    ['type' => 'administrative', 'language' => 'عربي', 'value' => 250],
+                    ['type' => 'المصروفات الدراسية', 'language' => 'عربي', 'value' => 4000],
+                    ['type' => 'المصروفات الدراسية', 'language' => 'لغات', 'value' => 6000],
+                    ['type' => 'المصروفات الادارية', 'language' => 'لغات', 'value' => 250],
+                    ['type' => 'المصروفات الادارية', 'language' => 'عربي', 'value' => 250],
 
                 ]
             ],
             'اعدادي' => [
-                'grades' => [1, 2, 3],
+                'grades' => ["الأول", "الثاني", "الثالث"],
                 'values' => [
-                    ['type' => 'tuition', 'language' => 'عربي', 'value' => 5000],
-                    ['type' => 'tuition', 'language' => 'لغات', 'value' => 7000],
-                    ['type' => 'administrative', 'language' => 'لغات', 'value' => 250],
-                    ['type' => 'administrative', 'language' => 'عربي', 'value' => 250],
+                    ['type' => 'المصروفات الدراسية', 'language' => 'عربي', 'value' => 5000],
+                    ['type' => 'المصروفات الدراسية', 'language' => 'لغات', 'value' => 7000],
+                    ['type' => 'المصروفات الادارية', 'language' => 'لغات', 'value' => 250],
+                    ['type' => 'المصروفات الادارية', 'language' => 'عربي', 'value' => 250],
 
                 ]
             ]
@@ -58,10 +58,8 @@ class PaymentValueSeeder extends Seeder
 
 
         $generalFees = [
-            ['type' => 'bus_fees', 'value' => 1500],
+            ['type' => 'مصروفات السيارة', 'value' => 1500],
         ];
-
-
         foreach ($academicYears as $academicYear) {
 
             foreach ($gradeSpecificData as $level => $levelData) {

@@ -1,4 +1,4 @@
-import PaymentValues from '@pages/Payments/PaymentValues.jsx'
+import PaymentValues from "@pages/Payments/PaymentValues.jsx";
 
 const routes = {
     path: "payments",
