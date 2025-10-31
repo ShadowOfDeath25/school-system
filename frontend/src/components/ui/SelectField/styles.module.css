@@ -12,7 +12,13 @@
     display: flex;
     flex-direction: column;
     width: 60%;
+
 }
+
+.inputWrapper.noLabel > div {
+    width: 100%;
+}
+
 
 .inputWrapper label {
     color: var(--primary-text-color);
@@ -25,19 +31,22 @@
     box-sizing: border-box;
     background-color: white !important;
     position: relative;
+
     &:focus {
         outline: 3px solid var(--color-focus)
     }
 }
 
-:global( .Mui-focused){
+:global( .Mui-focused) {
     outline: 3px solid var(--color-focus) !important;
 }
-:global(.MuiSelect-select ){
+
+:global(.MuiSelect-select ) {
     padding: 10px 32px 10px 10px !important;
 
 }
-:global(.Mui-selected){
+
+:global(.Mui-selected) {
     background-color: var(--secondary-color) !important;
 }
 
@@ -74,9 +83,10 @@
         margin-bottom: 20px;
     }
 
-    .inputWrapper select{
+    .inputWrapper select {
         width: 100%;
     }
+
     .inputWrapper > div {
         width: 100%;
 

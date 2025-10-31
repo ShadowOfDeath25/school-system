@@ -29,8 +29,8 @@ export default function SelectField({
 
 
     return (
-        <div className={styles.inputWrapper}>
-            <label htmlFor={id}>{label}</label>
+        <div className={`${styles.inputWrapper} ${label ? '' : styles.noLabel}`}>
+            {label && <label htmlFor={id}>{label}</label>}
             <div className={styles.selectContainer}>
                 <Select
                     sx={{
