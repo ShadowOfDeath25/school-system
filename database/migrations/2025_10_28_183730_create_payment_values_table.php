@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->string('academic_year');
             $table->string("language")->nullable();
-            $table->string("grade")->nullable();
             $table->string("level")->nullable();
             $table->decimal("value", 10, 2);
             $table->string('type');

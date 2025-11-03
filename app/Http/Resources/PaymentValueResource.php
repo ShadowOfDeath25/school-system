@@ -19,8 +19,8 @@ class PaymentValueResource extends JsonResource
             'id' => $this->id,
             'type' => $this->type,
             'language' => $this->language,
+
             'level' => $this->level,
-            'grade' => $this->grade,
             'academic_year' => $this->academic_year,
             'value' => $this->value,
         ];

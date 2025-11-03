@@ -13,9 +13,14 @@ class BookPurchase extends Model
         'student_name'
     ];
 
+
     public function book(): BelongsTo
     {
         return $this->belongsTo(Book::class);
+    }
+    public function student():BelongsTo
+    {
+        return $this->belongsTo(Student::class);
     }
 
 }

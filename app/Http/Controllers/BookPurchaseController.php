@@ -23,7 +23,7 @@ class BookPurchaseController extends Controller
     protected string $updateRequest = UpdateBookPurchaseRequest::class;
     protected string $resource = BookPurchaseResource::class;
     protected array $relationsToLoad = [
-        'book'
+        'book', 'student'
     ];
     protected array $filterable = [
         'book.academic_year',
@@ -34,7 +34,7 @@ class BookPurchaseController extends Controller
         "book.grade",
     ];
     protected array $searchable = [
-        'student_name',
+        'student.name_in_arabic',
     ];
 
     public function store(StoreBookPurchaseRequest $request)

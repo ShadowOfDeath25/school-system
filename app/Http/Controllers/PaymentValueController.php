@@ -12,7 +12,10 @@ use Illuminate\Http\Request;
 
 class PaymentValueController extends Controller
 {
-    use HasCRUD, HasFilters;
+    use HasCRUD {
+        store as baseStore;
+    }
+    use HasFilters;
 
     protected string $model = PaymentValue::class;
     protected string $storeRequest = StorePaymentValueRequest::class;
@@ -25,6 +28,20 @@ class PaymentValueController extends Controller
         'academic_year', 'type', 'grade', 'language', 'level'
     ];
 
+    public function store(StorePaymentValueRequest $request)
+    {
+        $data = $request->validated();
+        $q = PaymentValue::query();
+        foreach ($data as $key => $value) {
+            if ($key !== 'value') {
+                $q->where($key, '=', $value);
+            }
+        }
+        if ($q->exists()) {
+            return response()->json(['message' => 'هذا العنصر موجود بالفعل'], 409);
+        }
+        return $this->baseStore($request);
+    }
 
     public function createNewYearValues(Request $request)
     {

@@ -2,6 +2,7 @@ import Page from "@ui/Page/Page.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import Table from "@ui/Table/Table.jsx";
 import {useState} from "react";
+import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 
 export default function PaymentValues() {
     const [filters, setFilters] = useState();
@@ -11,6 +12,9 @@ export default function PaymentValues() {
             <Filters
                 resource={'payment-values'}
                 onSubmit={(filters) => setFilters(filters)}
+                additionalFields={[
+                    ClassroomHelper.FIELDS.LEVEL,
+                ]}
             />
             <Table
                 resource={'payment-values'}

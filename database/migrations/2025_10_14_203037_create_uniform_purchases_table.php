@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Student;
+use App\Models\Uniform;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,9 +14,10 @@ return new class extends Migration {
     {
         Schema::create('uniform_purchases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('uniform_id')->constrained()->cascadeOnDelete();
-            $table->string('student_name');
+            $table->foreignIdFor(Uniform::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
             $table->unsignedInteger('quantity');
+            $table->decimal('paid', 10, 2)->nullable();
             $table->timestamps();
         });
     }
