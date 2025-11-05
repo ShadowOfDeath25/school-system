@@ -17,8 +17,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "المصروفات",
-                    action: "view expenses"
-                }
+                },
+                action: "view expenses"
             }
         },
         {
@@ -27,8 +27,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة حركة مصروفات",
-                    action: "add expenses"
-                }
+                },
+                action: "add expenses"
             }
         },
         {
@@ -37,8 +37,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "أنواع المصروفات",
-                    action: "view expense-types"
-                }
+                },
+                action: "view expense-types"
             }
         }
     ]

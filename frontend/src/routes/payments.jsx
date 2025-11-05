@@ -1,5 +1,6 @@
 import PaymentValues from "@pages/Payments/PaymentValues.jsx";
 import AddPayments from "@pages/Payments/AddPayments.jsx";
+import Exemptions from "@pages/Payments/Exemptions.jsx";
 
 const routes = {
     path: "payments",
@@ -16,8 +17,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة مدفوعات",
-                    action: "add payment-values"
-                }
+                },
+                action: "add payment-values"
             }
         },
         {
@@ -26,8 +27,16 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "قيم المدفوعات",
-                    action: "update payment-values"
-                }
+                },
+                action: "update payment-values"
+            }
+        },
+        {
+            path: "exemptions",
+            element: <Exemptions/>,
+            handle: {
+                sidebar: {},
+                action: "create exemption"
             }
         }
     ]

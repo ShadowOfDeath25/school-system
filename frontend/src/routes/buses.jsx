@@ -15,8 +15,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "المحطات",
-                    action: "view stations"
-                }
+                },
+                action: "view stations"
             }
         }
     ]

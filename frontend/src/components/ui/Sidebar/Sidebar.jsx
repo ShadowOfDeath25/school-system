@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import {useQueryClient} from "@tanstack/react-query";
 
+
 export default function Sidebar({isOpen, setIsOpen}) {
     const queryClient = useQueryClient();
     const user = queryClient.getQueryData(["currentUser"]);
@@ -53,7 +54,7 @@ export default function Sidebar({isOpen, setIsOpen}) {
                 onChange={handleChange(item.panel)}
             >
                 {
-                    item.links.filter((link) => user.role.includes("Super Admin") || user.permissions.includes(link.action)).map((link, index) =>
+                    item.links.filter((link) => user.role.includes("Super Admin") || user.permissions.contains(link.action)).map((link, index) =>
                         <SidebarLink
                             key={index}
                             setSideBarIsOpen={setIsOpen}

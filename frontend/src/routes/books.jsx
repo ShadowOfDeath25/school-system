@@ -18,8 +18,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "واردات الكتب",
-                    action: "view books"
-                }
+                },
+                action: "view books"
             }
         },
         {
@@ -28,8 +28,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "صرف الكتب",
-                    action: 'create book-purchases'
                 },
+                action: 'create book-purchases'
             }
         },
         {
@@ -38,8 +38,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: 'اضافة نسخة',
-                    action: 'create books'
-                }
+                },
+                action: 'create books'
             }
         },
         {
@@ -48,8 +48,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "منصرف الكتب",
-                    action: 'view book-purchases'
-                }
+                },
+                action: 'view book-purchases'
             }
         }
 

@@ -17,8 +17,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "ارقام الجلوس",
-                    action: "view seat-numbers"
-                }
+                },
+                action: "view seat-numbers"
             }
         },
         {
@@ -27,8 +27,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة ارقام الجلوس",
-                    action: "create seat-numbers"
-                }
+                },
+                action: "create seat-numbers"
             }
         }
     ]

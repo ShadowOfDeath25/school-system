@@ -16,8 +16,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "الاختبارات",
-                    action: "view exams"
-                }
+                },
+                action: "view exams"
             }
         },
         {
@@ -26,8 +26,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة اختبار",
-                    action: "create exams"
-                }
+                },
+                action: "create exams"
             }
         },
 

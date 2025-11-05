@@ -17,8 +17,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "المواد الدراسية",
-                    action: "view subjects"
-                }
+                },
+                action: "view subjects"
             }
         },
         {
@@ -27,8 +27,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة مادة",
-                    action: "create subject"
-                }
+                },
+                action: "create subject"
             }
         },
         {
@@ -37,8 +37,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "انواع المواد",
-                    action: "view subjects"
-                }
+                },
+                action: "view subjects"
             }
         }
     ]

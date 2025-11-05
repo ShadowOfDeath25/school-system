@@ -16,8 +16,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "الفصول",
-                    action: "view classrooms"
-                }
+                },
+                action: "view classrooms"
             }
 
         },
@@ -27,8 +27,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة فصل",
-                    action: "create classrooms"
-                }
+                },
+                action: "create classrooms"
             }
         }
     ]

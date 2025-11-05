@@ -17,8 +17,8 @@ const routes =
                 handle: {
                     sidebar: {
                         title: "الرتب",
-                        action: "view roles"
-                    }
+                    },
+                    action: "view roles"
                 }
             },
             {
@@ -27,13 +27,12 @@ const routes =
                 handle: {
                     sidebar: {
                         title: "اضافة رتبة",
-                        action: "create roles"
-                    }
+                    },
+                    action: "create roles"
                 }
             }
         ]
     }
-
 
 
 export default routes;

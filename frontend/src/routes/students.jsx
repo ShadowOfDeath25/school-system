@@ -18,8 +18,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "التلاميذ",
-                    action: "view students"
-                }
+                },
+                action: "view students"
             }
         },
         {
@@ -28,8 +28,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "إضافة تلميذ",
-                    action: "create students"
-                }
+                },
+                action: "create students"
             }
         },
         {
@@ -38,8 +38,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "الغير مقيدون بفصول",
-                    action: "update students"
-                }
+                },
+                action: "update students"
             }
         },
         {
@@ -48,8 +48,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "تلاميذ تم سحب ملفاتهم",
-                    action: "update students"
-                }
+                },
+                action: "update students"
             }
         }
     ]

@@ -16,8 +16,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "الحسابات البنكية",
-                    action: "view bank-accounts"
-                }
+                },
+                action: "view bank-accounts"
             }
         },
         {
@@ -26,8 +26,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة حركة",
-                    action: "create bank-accounts"
-                }
+                },
+                action: "create bank-accounts"
             }
         }
     ]

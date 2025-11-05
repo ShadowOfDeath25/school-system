@@ -16,8 +16,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "الرقم السري",
-                    action: "view secret-numbers"
-                }
+                },
+                action: "view secret-numbers"
             }
         },
         {
@@ -26,8 +26,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة رقم سري",
-                    action: "add secret-numbers"
-                }
+                },
+                action: "add secret-numbers"
             }
         }
     ]

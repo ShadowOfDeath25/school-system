@@ -17,8 +17,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "عرض الأيرادات",
-                    action: "view incomes"
-                }
+                },
+                action: "view incomes"
             }
         },
         {
@@ -27,8 +27,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة حركة ايرادات",
-                    action: "create incomes"
-                }
+                },
+                action: "create incomes"
             }
         },
         {
@@ -37,8 +37,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "أنواع الأيرادات",
-                    action: "create income-types"
-                }
+                },
+                action: "create income-types"
             }
         }
     ]

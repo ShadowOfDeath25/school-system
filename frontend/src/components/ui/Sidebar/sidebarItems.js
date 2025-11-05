@@ -26,7 +26,7 @@ const generateSidebarItems = (routeConfig) => {
                     panel.links.push({
                         title: childRoute.handle.sidebar.title,
                         to: to.replace(/\/+/g, '/'),
-                        action: childRoute.handle.sidebar.action
+                        action: childRoute.handle.action
                     });
                 }
             });

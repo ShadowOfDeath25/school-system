@@ -19,8 +19,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "المباني",
-                    action: "view buildings"
-                }
+                },
+                action: "view buildings"
             }
         },
         {
@@ -29,8 +29,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة مبني",
-                    action: "create buildings"
-                }
+                },
+                action: "create buildings"
             }
         },
         {
@@ -39,8 +39,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "الأدوار",
-                    action: "view floors"
-                }
+                },
+                action: "view floors"
             }
         },
         {
@@ -49,8 +49,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "اضافة دور",
-                    action: "create floors"
-                }
+                },
+                action: "create floors"
             }
         }
 

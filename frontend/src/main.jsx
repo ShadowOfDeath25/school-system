@@ -9,7 +9,7 @@ import {SnackbarProvider} from '@contexts/SnackbarContext.jsx'
 import {ConfirmModalProvider} from "@contexts/ConfirmModalContext.jsx";
 import './i18n'
 import {EditModalProvider} from "@contexts/EditModalContext.jsx";
-
+import '@utils/arrayExtensions.js'
 const queryClient = new QueryClient();
 window.__TANSTACK_QUERY_CLIENT__ = queryClient;
 createRoot(document.getElementById('root')).render(
