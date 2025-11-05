@@ -11,7 +11,7 @@ class StoreExemptionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreExemptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'type' => ['required', 'string'],
+            'value' => ['required', 'decimal']
         ];
     }
 }

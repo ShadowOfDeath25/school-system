@@ -13,7 +13,6 @@ return new class extends Migration {
     {
         Schema::create('exemptions', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
             $table->decimal("value", 10, 2);
             $table->string("type");
             $table->timestamps();

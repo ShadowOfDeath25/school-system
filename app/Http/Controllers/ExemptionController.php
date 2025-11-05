@@ -14,4 +14,5 @@ class ExemptionController extends Controller
     protected string $model = Exemption::class;
     protected string $storeRequest = StoreExemptionRequest::class;
     protected string $updateRequest = UpdateExemptionRequest::class;
+    protected array $searchable = ['type', 'value'];
 }

@@ -35,7 +35,9 @@ const routes = {
             path: "exemptions",
             element: <Exemptions/>,
             handle: {
-                sidebar: {},
+                sidebar: {
+                    title: "الاعفائات"
+                },
                 action: "create exemption"
             }
         }

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             SeatNumberSeeder::class,
             SecretNumberSeeder::class,
             PaymentValueSeeder::class,
+            ExemptionSeeder::class,
         ]);
 
     }

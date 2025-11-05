@@ -9,6 +9,7 @@ use App\Http\Controllers\BusController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExamHallController;
+use App\Http\Controllers\ExemptionController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ExpenseTypeController;
 use App\Http\Controllers\FloorController;
@@ -63,7 +64,8 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('uniform-purchases', UniformPurchaseController::class)->withFilters();
     Route::apiResource('uniforms', UniformController::class)->withFilters();
     Route::apiResource('income-types', IncomeTypeController::class);
-    Route::apiResource('payment-values',PaymentValueController::class)->withFilters();
+    Route::apiResource('payment-values', PaymentValueController::class)->withFilters();
+    Route::apiResource('exemptions', ExemptionController::class);
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
     Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
     Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
