@@ -17,8 +17,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: 'عرض المستخدمين',
-                    action: 'view users',
-                }
+                },
+                action: 'view users',
             }
         },
         {
@@ -27,8 +27,8 @@ const routes = {
             handle: {
                 sidebar: {
                     title: 'اضافة مستخدم',
-                    action: 'create users',
-                }
+                },
+                action: 'create users',
             }
         },
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\AuthorizationException;
 use App\Http\Requests\Roles\StoreRoleRequest;
 use App\Http\Requests\Roles\UpdateRoleRequest;
 use App\Http\Resources\RoleResource;
@@ -24,11 +23,12 @@ class RoleController extends Controller
         $this->authorizeAction("create");
         $data = $request->validated();
         $role = new Role([
-            'name' => $data["name"]
+            'name' => $data["name"],
+            'guard_name' => 'web'
         ]);
         if ($request->has('permissions')) {
             foreach ($data["permissions"] as $permission) {
-                $role->givePermissionTo(Permission::findOrCreate($permission));
+                $role->givePermissionTo(Permission::findOrCreate($permission, 'web'));
             }
         }
         $role->save();
@@ -45,7 +45,7 @@ class RoleController extends Controller
         }
         $role->save();
 
-        return response()->json(["role"=>$role]);
+        return response()->json(["role" => $role]);
     }
 
 

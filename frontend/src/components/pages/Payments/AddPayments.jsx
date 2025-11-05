@@ -36,7 +36,7 @@ export default function AddPayments() {
                                 name: "type",
                                 label: "النوع",
                                 type: "select",
-                                options: ['مصاريف ادارية', 'مصاريف مدرسية', 'مصاريف السيارة'],
+                                options: ['مصروفات ادارية', 'مصروفات مدرسية', 'مصروفات السيارة'],
                                 placeholder: 'اختر النوع',
                                 required: true,
                             },
