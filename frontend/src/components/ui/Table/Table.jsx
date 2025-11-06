@@ -20,7 +20,8 @@ export default function Table({
                                   editable = true,
                                   deletable = true,
                                   params = {},
-                                  children
+                                  children,
+                                  onClick = null
                               }) {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState("");
@@ -177,6 +178,7 @@ export default function Table({
                     onEditClick={handleEdit ?? handleEditClick}
                     fields={fields}
                     onDeleteClick={handleRowDelete}
+                    onClick={onClick}
                 >
                     {children}
                 </TablePresenter>

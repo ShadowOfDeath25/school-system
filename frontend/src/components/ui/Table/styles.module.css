@@ -102,7 +102,10 @@
     border-bottom: 2px solid var(--secondary-color)
 
 }
-
+.clickable:hover{
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+}
 
 .table tbody tr {
     border-bottom: 2px solid rgba(191, 161, 92, 0.24);

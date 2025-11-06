@@ -13,7 +13,8 @@ export default function TablePresenter({
                                            onEditClick,
                                            onDeleteClick,
                                            children = [],
-                                           fields
+                                           fields,
+                                           onClick = null
                                        }) {
     if (data.length === 0) {
         return (
@@ -45,7 +46,11 @@ export default function TablePresenter({
             </thead>
             <tbody>
                 {data.map((row) => (
-                    <tr key={row.id || row.name} className={styles.row}>
+                    <tr
+                        key={row.id || row.name}
+                        className={onClick !== null ? styles.clickable : ''}
+                        onClick={typeof onClick === 'function' ? () => onClick(row) : null}
+                    >
                         {columnKeys.map((key) => (
                             key !== 'id' && !childHeaders.has(key) &&
                             <td key={`${row.id}-${key}`} className={styles.cell}>
