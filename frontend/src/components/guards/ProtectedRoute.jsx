@@ -7,7 +7,7 @@ export default function ProtectedRoute() {
     const matches = useMatches();
     const currentRoute = matches[matches.length - 1];
     const requiredPermission = currentRoute.handle?.action;
-    console.log(requiredPermission)
+
     if (isLoading) {
         return <LoadingScreen/>;
     }
