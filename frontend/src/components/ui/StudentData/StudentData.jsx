@@ -1,7 +1,9 @@
 import styles from './styles.module.css'
+import SelectField from "@ui/SelectField/SelectField.jsx";
+import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 
-export default function StudentData({student}) {
-    console.log(student)
+export default function StudentData({student, academicYear, setAcademicYear}) {
+
     return (
         <>
             <div className={styles.container}>
@@ -21,7 +23,13 @@ export default function StudentData({student}) {
                         </tr>
                         <tr>
                             <td className={styles.label}>العام الدراسي</td>
-                            <td>{student.academic_year}</td>
+                            <td>
+                                <SelectField
+                                    options={ClassroomHelper.FIELDS.ACADEMIC_YEAR.options}
+                                    value={academicYear}
+                                    handleChange={(e) => setAcademicYear(e.target.value)}
+                                />
+                            </td>
                             <td className={styles.label}>اللغة</td>
                             <td>{student.language}</td>
                         </tr>
@@ -33,7 +41,7 @@ export default function StudentData({student}) {
                         </tr>
                         <tr>
                             <td className={styles.label}>الفصل المدرسي</td>
-                            <td>{student.classroom.name.slice(0, 4)}</td>
+                            <td>{student.classroom.name}</td>
                             <td className={styles.label}>حالة القيد</td>
                             <td>{student.status}</td>
                         </tr>
