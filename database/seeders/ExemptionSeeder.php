@@ -16,6 +16,7 @@ class ExemptionSeeder extends Seeder
             "دمج" => '1000',
             "ابناء عاملين" => '1000',
             "يتيم" => '1000',
+            "توأم" => '1000'
         ];
         foreach ($items as $key => $value) {
             Exemption::create([

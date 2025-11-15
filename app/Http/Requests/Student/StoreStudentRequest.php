@@ -25,7 +25,7 @@ class StoreStudentRequest extends FormRequest
             'gender' => ['required', 'string', Rule::in(['female', 'male'])],
             'religion' => ['required', 'string', Rule::in(["مسيحي", 'مسلم'])],
             'nationality' => ["string", "required"],
-            'note' => ['nullable', Rule::in(["ابناء عاملين", "دمح", "يتيم", null])],
+            'note' => ['nullable', Rule::in(["ابناء عاملين", "توأم", "دمج", "يتيم", null])],
             'classroom_id' => ["numeric", "exists:classrooms,id"],
             'guardians' => ['sometimes', 'array'],
             'guardians.*.name' => ['required', 'string', 'max:255'],

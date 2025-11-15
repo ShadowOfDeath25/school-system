@@ -1,0 +1,5 @@
+.detailsWrapper {
+    display: flex;
+    gap: 3%;
+    max-width: 100%;
+}

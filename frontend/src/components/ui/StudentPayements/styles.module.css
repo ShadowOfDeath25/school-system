@@ -6,11 +6,24 @@
     box-shadow: var(--container-box-shadow);
     padding: 10px;
 }
+
 .title {
     margin-bottom: 20px;
     font-size: 24px;
 }
+
 .container table {
     width: 100%;
     border-spacing: 15px;
+
 }
+
+.container td {
+    padding-block: 10px;
+    text-align: center;
+}
+
+.label {
+    color: var(--ternary-text-color)
+}
+

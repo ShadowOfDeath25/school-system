@@ -18,4 +18,9 @@ class UniformPurchase extends Model
     {
         return $this->belongsTo(Uniform::class);
     }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
 }
