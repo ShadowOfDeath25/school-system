@@ -26,3 +26,7 @@ src/components/ui/Test.jsx
 
 *storybook.log
 storybook-static
+
+# environment variables
+.env
+.env.production
