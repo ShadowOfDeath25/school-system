@@ -55,22 +55,35 @@ export const useStudentPayments = (student, academicYear) => {
                 }, 0)
             }
         })
+    const required = {
+        ...requiredPayments,
+        books: bookFees,
+        uniform: uniformFees
+    }
 
-
+    const totalRequired = PaymentHelper.getTotal(required)
+    const totalPaid = PaymentHelper.getTotal(paidPayments);
+    const remaining = {
+        [PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE]:
+            requiredPayments?.[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE] - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE] ?? 0),
+        [PaymentHelper.PAYMENT_TYPES.TUITION]:
+            requiredPayments?.[PaymentHelper.PAYMENT_TYPES.TUITION] - (exemptions ?? 0) - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.TUITION] ?? 0),
+        [PaymentHelper.PAYMENT_TYPES.BOOKS]: bookFees - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.BOOKS] ?? 0),
+        [PaymentHelper.PAYMENT_TYPES.UNIFORM]: uniformFees - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.UNIFORM] ?? 0)
+    }
+    const totalRemaining = PaymentHelper.getTotal(remaining)
     return {
         required: {
-            ...requiredPayments,
-            books: bookFees,
-            uniform: uniformFees
+            ...required,
+            total: totalRequired
         },
-        paid: paidPayments,
+        paid: {
+            ...paidPayments,
+            total: totalPaid
+        },
         remaining: {
-            [PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE]:
-                requiredPayments?.[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE] - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE] ?? 0),
-            [PaymentHelper.PAYMENT_TYPES.TUITION]:
-                requiredPayments?.[PaymentHelper.PAYMENT_TYPES.TUITION] - (exemptions ?? 0) - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.TUITION] ?? 0),
-            [PaymentHelper.PAYMENT_TYPES.BOOKS]: bookFees - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.BOOKS] ?? 0),
-            [PaymentHelper.PAYMENT_TYPES.UNIFORM]: uniformFees - (paidPayments?.[PaymentHelper.PAYMENT_TYPES.UNIFORM] ?? 0)
+            ...remaining,
+            total: totalRemaining
         },
         exemptions,
         isLoading: isLoadingRequired || isLoadingBooks || isLoadingUniforms || isLoadingExemptions || isLoadingPaid

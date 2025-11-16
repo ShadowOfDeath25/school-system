@@ -1,62 +1,11 @@
 import styles from './styles.module.css'
-import {useGetAll} from "@hooks/api/useCrud.js";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
-import {PaymentHelper} from "@helpers/PaymentHelper.js";
-import {useMemo} from "react";
 import {useStudentPayments} from "@hooks/api/useStudentPayments.js";
+import {PaymentHelper} from "@helpers/PaymentHelper.js";
 
 export default function StudentPayments({student, academicYear}) {
-
-    const {data: requiredPayments, isLoading: isLoadingRequired} = useGetAll('payment-values', {
-        level: student.classroom.level, academicYear, language: student.language
-    }, {
-        select: PaymentHelper.transformQueryData,
-    })
-
-    const {
-        data: bookPayments, isLoading: isLoadingBooks
-    } = useGetAll('book-purchases', {student_id: student.id}, {
-        select: PaymentHelper.transformQueryData
-    })
-    console.log("student payment data: ", useStudentPayments(student, academicYear));
-
-    const {
-        data: uniformPayments, isLoading: isLoadingUniform
-    } = useGetAll('uniform-purchases', {student_id: student.id}, {
-        select: PaymentHelper.transformQueryData
-    })
-
-
-    const {data: paidPayments, isLoading: isLoadingPaid} = useGetAll('payments', {student_id: student.id}, {
-        select: PaymentHelper.transformQueryData
-    })
-
-    const {
-        data: exemptions, isLoading: isLoadingExemptions
-    } = useGetAll('exemptions', {type: student.note}, {
-        disabled: student.note !== "لا يوجد"
-    })
-
-
-    const totalExemptions = exemptions?.data?.reduce((acc, curr) => {
-        acc += Number(curr.value)
-        return acc
-    }, 0) || 0;
-
-    console.log("books: ", bookPayments);
-    console.log("uniforms: ", uniformPayments);
-
-    const diff = useMemo(() => {
-        if (!requiredPayments || !paidPayments) return {};
-        const value = {};
-        Object.keys(requiredPayments).forEach(item => {
-            value[item] = paidPayments[item] ? requiredPayments[item] - paidPayments[item] : requiredPayments[item];
-        })
-        return value;
-    }, [requiredPayments, paidPayments]);
-
-    const Loading = isLoadingUniform || isLoadingPaid || isLoadingBooks || isLoadingRequired || isLoadingExemptions
-    if (Loading) {
+    const fees  = useStudentPayments(student, academicYear);
+    if (fees.isLoading) {
         return (<div className={styles.container}>
             <LoadingScreen/>
         </div>)
@@ -80,57 +29,60 @@ export default function StudentPayments({student, academicYear}) {
                     <tr>
                         <td className={styles.label}>المصروفات الادارية</td>
                         <td>
-                            {isNaN(requiredPayments['مصروفات ادارية']) ? "-" : requiredPayments['مصروفات ادارية']}
+                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
                         </td>
                         <td>
-                            {isNaN(paidPayments['مصروفات ادارية']) ? "-" : paidPayments['مصروفات ادارية']}
+                            {PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
                         </td>
                         <td>-</td>
                         <td>
-                            {isNaN(diff['مصروفات ادارية']) ? '-' : diff['مصروفات ادارية']}
+                            {PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
                         </td>
                     </tr>
                     <tr>
                         <td className={styles.label}>المصروفات الدراسية</td>
                         <td>
-                            {isNaN(requiredPayments['مصروفات دراسية']) ? "-" : requiredPayments['مصروفات دراسية']}
+                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.TUITION])}
                         </td>
                         <td>
-                            {isNaN(paidPayments['مصروفات دراسية']) ? "-" : paidPayments['مصروفات دراسية']}
+                            {PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.TUITION])}
                         </td>
-                        <td>{totalExemptions === 0 ? '-' : totalExemptions}</td>
+                        <td>{fees.exemptions}</td>
                         <td>
-                            {isNaN(diff['مصروفات دراسية']) ? '-' : diff['مصروفات دراسية'] - totalExemptions}
+                            {PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.TUITION])}
                         </td>
 
                     </tr>
                     <tr>
                         <td className={styles.label}>مصروفات الكتب</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
+                        <td>
+                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.BOOKS])}
+                        </td>
+                        <td>{PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.BOOKS])}</td>
+                        <td>-</td>
+                        <td>{PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.BOOKS])}</td>
                     </tr>
                     <tr>
-                        <td className={styles.label}>المصاريف الادارية</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
+                        <td className={styles.label}>مصروفات الزي</td>
+                        <td>
+                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.UNIFORM])}
+                        </td>
+                        <td>{PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
+                        <td>-</td>
+                        <td>{PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
                     </tr>
                     <tr>
-                        <td className={styles.label}>المصاريف الادارية</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                    </tr>
-                    <tr>
-                        <td className={styles.label}>المصاريف الادارية</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
-                        <td>TBD</td>
+                        <td className={styles.label}>الإجمالي</td>
+                        <td>
+                            {PaymentHelper.formatCurrency(fees.required.total)}
+                        </td>
+                        <td>
+                            {PaymentHelper.formatCurrency(fees.paid.total)}
+                        </td>
+                        <td>{PaymentHelper.formatCurrency(fees.exemptions)}</td>
+                        <td>
+                            {PaymentHelper.formatCurrency(fees.remaining.total)}
+                        </td>
                     </tr>
                 </tbody>
 
