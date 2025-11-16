@@ -1,6 +1,8 @@
 import PaymentValues from "@pages/Payments/PaymentValues.jsx";
 import AddPayments from "@pages/Payments/AddPayments.jsx";
 import Exemptions from "@pages/Payments/Exemptions.jsx";
+import BookPayments from "@pages/Payments/BookPayments.jsx";
+import PaymentsPage from "@pages/Payments/PaymentsPage.jsx";
 
 const routes = {
     path: "payments",
@@ -39,6 +41,25 @@ const routes = {
                     title: "الاعفائات"
                 },
                 action: "create exemption"
+            }
+        },
+        {
+            path: "books",
+            element: <PaymentsPage route={'/payments/books/details'}/>,
+            handle: {
+                sidebar: {
+                    title: "مدفوعات الكتب"
+                },
+                action: "update book-purchases",
+            },
+
+        },
+        {
+            path:"books/details",
+            element:<BookPayments/>,
+            handle:{
+                action: "update book-purchases",
+                title:"حركة مصروفات الكتب"
             }
         }
     ]

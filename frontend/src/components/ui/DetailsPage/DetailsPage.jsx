@@ -5,10 +5,10 @@ import {useState} from "react";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 import styles from './styles.module.css'
 
-export default function DetailsPage({student, children}) {
+export default function DetailsPage({student, children,breadcrumbsLinks}) {
     const [academicYear, setAcademicYear] = useState(getAcademicYears()[0]);
     return (<>
-        <Page>
+        <Page breadcrumbsLinks={breadcrumbsLinks}>
             <div className={styles.detailsWrapper}>
                 <StudentData
                     student={student}

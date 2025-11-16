@@ -74,5 +74,6 @@
     "notes": "ملاحظات",
     "neighborhood": "المنطقة",
     "city": "المدينة",
-    "classroom.name": "الفصل"
+    "classroom.name": "الفصل",
+    "classroom.grade": "الصف"
 }
