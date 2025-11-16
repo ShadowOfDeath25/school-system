@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 
 export default function Page({children, breadcrumbsLinks}) {
     const matches = useMatches()
-    const breadcrumbs =
+    const breadcrumbs =breadcrumbsLinks?
         [
             ...breadcrumbsLinks,
             <Link
@@ -19,7 +19,7 @@ export default function Page({children, breadcrumbsLinks}) {
                 }
             </Link>
         ]
-        ??
+        :
         matches.filter((match) => match.handle).map((match) => {
             return <Link
                 className={styles.breadcrumbLink}
