@@ -32,6 +32,7 @@ class BookPurchaseController extends Controller
         "book.type",
         "book.level",
         "book.grade",
+        'student_id'
     ];
     protected array $searchable = [
         'student.name_in_arabic',

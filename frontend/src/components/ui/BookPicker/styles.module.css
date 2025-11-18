@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-color);
+    border-top: var(--container-border);
+    width: 49%;
+    box-shadow: var(--container-box-shadow);
+    padding: 10px;
+}
+.container table th{
+    color: var(--ternary-text-color);
+    font-weight: normal;
+}
