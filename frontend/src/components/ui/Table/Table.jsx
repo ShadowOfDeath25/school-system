@@ -6,7 +6,7 @@ import {useCurrentUser} from "@hooks/api/auth.js";
 import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useTranslation} from "react-i18next";
-import {useEditModal} from "@contexts/EditModalContext.jsx";
+import {useInputModal} from "@contexts/InputModalContext.jsx";
 import TableToolbar from "./TableToolbar.jsx";
 import TablePresenter from "./TablePresenter.jsx";
 import TablePagination from "./TablePagination.jsx";
@@ -31,7 +31,7 @@ export default function Table({
     const {confirm} = useConfirmModal();
     const {showSnackbar} = useSnackbar();
     const {t} = useTranslation();
-    const {showEditModal, hideEditModal} = useEditModal();
+    const {showEditModal, hideEditModal} = useInputModal();
 
     const updateMutation = useUpdate(resource);
 

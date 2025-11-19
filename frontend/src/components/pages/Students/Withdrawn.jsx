@@ -4,7 +4,7 @@ import Filters from "@ui/Filters/Filters.jsx";
 import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useState} from "react";
 import {Button} from "@mui/material";
-import {useEditModal} from "@contexts/EditModalContext.jsx";
+import {useInputModal} from "@contexts/InputModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
 
@@ -12,7 +12,7 @@ export default function Withdrawn() {
     const {data: classrooms} = useGetAll('classrooms', {all: 'true'});
     const [filters, setFilters] = useState();
     const mutation = useUpdate('students');
-    const {showEditModal, hideEditModal} = useEditModal();
+    const {showEditModal, hideEditModal} = useInputModal();
     const {showSnackbar} = useSnackbar();
     const filterFields = [
         {

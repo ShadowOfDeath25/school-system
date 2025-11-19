@@ -3,13 +3,13 @@ import Table from "@ui/Table/Table.jsx";
 import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useTranslation} from "react-i18next";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useEditModal} from "@contexts/EditModalContext.jsx";
+import {useInputModal} from "@contexts/InputModalContext.jsx";
 import {useQueryClient} from "@tanstack/react-query";
 
 export default function ViewRoles() {
     const {data: permissions} = useGetAll("permissions");
     const {t} = useTranslation();
-    const {showEditModal, hideEditModal} = useEditModal();
+    const {showEditModal, hideEditModal} = useInputModal();
     const {showSnackbar} = useSnackbar();
     const queryClient = useQueryClient();
     const data = queryClient.getQueriesData({queryKey: ["roles"], type: "active"})[0]?.[1];

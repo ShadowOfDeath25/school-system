@@ -3,7 +3,7 @@ import styles from './styles.module.css';
 import Form from "@ui/Form/Form.jsx";
 import {useMemo} from "react";
 
-export default function EditModal({open, onCancel, fields, item, onSave, isLoading, serverErrors}) {
+export default function InputModal({open, onCancel, fields, item, onSave, isLoading, serverErrors}) {
 
     const fieldsWithValues = useMemo(() => {
         if (!item) return fields;

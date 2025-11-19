@@ -2,14 +2,14 @@ import Page from "@ui/Page/Page.jsx";
 import Table from "@ui/Table/Table.jsx";
 import {Button} from "@mui/material";
 import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
-import {useEditModal} from "@contexts/EditModalContext.jsx";
+import {useInputModal} from "@contexts/InputModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 
 export default function NotEnrolled() {
     const mutation = useUpdate('students', {all: true});
-    const {showEditModal, hideEditModal} = useEditModal();
+    const {showEditModal, hideEditModal} = useInputModal();
     const {showSnackbar} = useSnackbar();
     const {data: classrooms} = useGetAll('classrooms');
 

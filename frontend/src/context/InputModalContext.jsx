@@ -1,16 +1,16 @@
 import {createContext, useContext, useState} from 'react';
-import EditModal from "@ui/EditModal/EditModal.jsx";
+import InputModal from "@ui/InputModal/InputModal.jsx";
 
-export const EditModalContext = createContext(null)
-export const useEditModal = () => {
-    const context = useContext(EditModalContext);
+export const InputModalContext = createContext(null)
+export const useInputModal = () => {
+    const context = useContext(InputModalContext);
     if (!context) {
         throw new Error('useEditModal must be used within a EditModalProvider');
     }
     return context;
 }
 
-export function EditModalProvider({children}) {
+export function InputModalProvider({children}) {
     const [modalConfig, setModalConfig] = useState({
         open: false,
         fields: [],
@@ -38,10 +38,10 @@ export function EditModalProvider({children}) {
 
 
     return (
-        <EditModalContext.Provider value={{showEditModal,hideEditModal}}>
+        <InputModalContext.Provider value={{showEditModal,hideEditModal}}>
             {children}
             {modalConfig.open &&
-                <EditModal
+                <InputModal
                     open={modalConfig.open}
                     onCancel={handleClose}
                     fields={modalConfig.fields}
@@ -52,6 +52,6 @@ export function EditModalProvider({children}) {
                 />
             }
 
-        </EditModalContext.Provider>
+        </InputModalContext.Provider>
     )
 }
