@@ -49,7 +49,7 @@ const FIELDS = {
             label: "الجنسية",
             required: true,
             placeholder: "الجنسية",
-            options: GENDERS
+            options: NATIONALITIES
         }, GENDER: {
             name: "gender",
             type: "radio",

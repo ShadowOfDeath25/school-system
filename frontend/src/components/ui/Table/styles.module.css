@@ -100,7 +100,6 @@
 .table th {
     text-align: start;
     border-bottom: 2px solid var(--secondary-color)
-
 }
 .clickable:hover{
     background-color: rgba(255, 255, 255, 0.2);

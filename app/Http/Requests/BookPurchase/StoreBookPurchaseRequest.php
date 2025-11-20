@@ -24,7 +24,7 @@ class StoreBookPurchaseRequest extends FormRequest
         return [
             'quantity' => ['required', 'integer',"min:1"],
             'book_id' => ['required', 'exists:books,id'],
-            'student_name' => ['required', 'string']
+            'student_id' => ['required', 'integer']
         ];
     }
 }

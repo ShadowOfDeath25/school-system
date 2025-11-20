@@ -10,7 +10,7 @@ class BookPurchase extends Model
     protected $fillable = [
         'quantity',
         'book_id',
-        'student_name'
+        'student_id'
     ];
 
 

@@ -26,7 +26,7 @@ class UpdateStudentRequest extends FormRequest
             'gender' => ['sometimes', 'string', Rule::in(['female', 'male'])],
             'religion' => ['sometimes', 'string', Rule::in(["مسيحي", 'مسلم'])],
             'nationality' => ['sometimes', "string"],
-            'note' => ['sometimes', 'string', "nullable", Rule::in(["ابناء عاملين", "توأم", "دمج", "يتيم"])],
+            'note' => ['sometimes', 'string', "nullable", Rule::in(["لا يوجد","ابناء عاملين", "توأم", "دمج", "يتيم"])],
             'status' => ['sometimes', 'string', Rule::in(['مستجد', 'باقي'])],
             'reg_number' => ['sometimes', 'string', 'numeric'],
             'withdrawn' => ['sometimes', 'boolean'],

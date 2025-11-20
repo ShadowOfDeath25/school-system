@@ -57,8 +57,8 @@ export const useStudentPayments = (student, academicYear) => {
         })
     const required = {
         ...requiredPayments,
-        books: bookFees,
-        uniform: uniformFees
+        [PaymentHelper.PAYMENT_TYPES.BOOKS]: bookFees,
+        [PaymentHelper.PAYMENT_TYPES.UNIFORM]: uniformFees
     }
 
     const totalRequired = PaymentHelper.getTotal(required)

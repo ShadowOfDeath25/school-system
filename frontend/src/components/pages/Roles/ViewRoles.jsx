@@ -39,8 +39,7 @@ export default function ViewRoles() {
     const handleEdit = (item) => {
         const originalItem = data?.data?.find(d => d.id === item.id);
         let permissions = {}
-        console.log(data);
-        console.log(originalItem)
+
         for (let [key, value] of Object.entries(originalItem?.permissions)) {
             permissions[key] = value.map(action => `${action} ${key}`)
         }

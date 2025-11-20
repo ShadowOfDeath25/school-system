@@ -31,7 +31,7 @@ export default function Table({
     const {confirm} = useConfirmModal();
     const {showSnackbar} = useSnackbar();
     const {t} = useTranslation();
-    const {showEditModal, hideEditModal} = useInputModal();
+    const {showInputModal,  hideInputModal} = useInputModal();
 
     const updateMutation = useUpdate(resource);
 
@@ -111,14 +111,15 @@ export default function Table({
     const handleEditClick = (item) => {
         const modalFields = editFields.filter(field => field.editable !== false);
 
-        showEditModal({
+        showInputModal({
             fields: modalFields,
             item: item,
             onSave: (formData) => {
+                console.log(formData)
                 updateMutation.mutate({...formData, id: item.id}, {
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
-                        hideEditModal();
+                        hideInputModal();
                     }, onError: () => {
                         showSnackbar("حدث خطأ اثناء تحديث العنصر", "error")
                     }
@@ -168,7 +169,7 @@ export default function Table({
                 perPage={perPage}
                 setPerPage={setPerPage}
             />
-            <div className={styles.tableContainer}>
+            <div className={styles. tableContainer}>
                 <TablePresenter
                     data={tableData}
                     columnKeys={columnKeys}

@@ -49,7 +49,7 @@ export function ConfirmModalProvider({children}) {
     };
 
     return (
-        <ConfirmModalContext.Provider value={{showEditModal: showModal, confirm}}>
+        <ConfirmModalContext.Provider value={{showInputModal: showModal, confirm}}>
             {children}
 
             {confirmationState && (
