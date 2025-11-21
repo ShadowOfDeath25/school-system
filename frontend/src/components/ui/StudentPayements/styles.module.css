@@ -1,10 +1,13 @@
 .container {
-    width: 50%;
+    width: 100%;
     background-color: var(--primary-color);
     color: var(--primary-text-color);
     border-top: var(--container-border);
     box-shadow: var(--container-box-shadow);
     padding: 10px;
+    overflow-x: auto;
+    overflow-y: auto;
+
 }
 
 .title {

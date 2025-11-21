@@ -2,7 +2,6 @@ import {useLocation} from "react-router";
 import DetailsPage from "@ui/DetailsPage/DetailsPage.jsx";
 import {Link, Navigate} from "react-router-dom";
 import style from '@ui/Page/style.module.css'
-import styles from './styles.module.css';
 import BookPicker from "@ui/BookPicker/BookPicker.jsx";
 import PaymentsTable from "@ui/PaymentsTable/PaymentsTable.jsx";
 import {PaymentHelper} from "@helpers/PaymentHelper.js";
@@ -27,16 +26,16 @@ export default function BookPayments() {
             academicYear={academicYear}
             setAcademicYear={setAcademicYear}
         >
-            <div className={styles.container}>
-                <PaymentsTable
-                    student={state.student}
-                    type={PaymentHelper.PAYMENT_TYPES.BOOKS}
-                    academicYear={academicYear}
-                />
-                <BookPicker
-                    student={state.student}
-                />
-            </div>
+
+            <PaymentsTable
+                student={state.student}
+                type={PaymentHelper.PAYMENT_TYPES.BOOKS}
+                academicYear={academicYear}
+            />
+            <BookPicker
+                student={state.student}
+            />
+
         </DetailsPage>
     );
 }

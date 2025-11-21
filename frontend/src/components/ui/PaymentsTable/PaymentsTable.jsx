@@ -108,7 +108,7 @@ export default function PaymentsTable({student, type, academicYear}) {
                 <table className={styles.table}>
                     <thead>
                         <tr>
-                            <th className={styles.cell}>رقم الايصال</th>
+                            <th key={'payment-id-header'} className={styles.cell}>رقم الايصال</th>
                             <th className={styles.cell}>التاريخ</th>
                             <th className={styles.cell}>القيمة</th>
                             <th className={styles.cell}>تعديل</th>
@@ -118,16 +118,16 @@ export default function PaymentsTable({student, type, academicYear}) {
                     <tbody>
                         {payments?.data?.map((payment) => {
                             return (
-                                <tr>
-                                    <td className={styles.cell}>{payment.id}</td>
-                                    <td className={styles.cell}>{payment.date.replaceAll('-', '/')}</td>
-                                    <td className={styles.cell}>{payment.value - 0}</td>
-                                    <td className={styles.cell}>
+                                <tr key={`payment-${payment.id}`}>
+                                    <td key={`payment-${payment.id}-id`} className={styles.cell}>{payment.id}</td>
+                                    <td key={`payment-${payment.id}-date`} className={styles.cell}>{payment.date.replaceAll('-', '/')}</td>
+                                    <td key={`payment-${payment.id}-value`} className={styles.cell}>{payment.value - 0}</td>
+                                    <td key={`payment-${payment.id}-edit`} className={styles.cell}>
                                         <IconButton onClick={() => handleEdit(payment)}>
                                             <EditIcon sx={{color: 'var(--color-focus)'}}/>
                                         </IconButton>
                                     </td>
-                                    <td className={styles.cell}>
+                                    <td key={`payment-invoice-${payment.id}`} className={styles.cell}>
                                         <Button variant="contained" color="primary">
                                             عرض الإيصال
                                         </Button>

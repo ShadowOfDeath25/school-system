@@ -31,7 +31,13 @@ export default function BookPicker({student, academicYear}) {
                     type: "number",
                     placeholder: "الكمية",
                     label: "الكمية",
-                    required: true
+                    min: 1,
+                    helperText: "الكمية المتاحة",
+                    required: true,
+                    handleChange: (e) => {
+                        console.log(e)
+                    }
+
                 }
             ],
             onSave: (formData) => {

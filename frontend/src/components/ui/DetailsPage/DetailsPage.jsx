@@ -17,8 +17,10 @@ export default function DetailsPage({student, children, breadcrumbsLinks, academ
                     student={student}
                     academicYear={academicYear}
                 />
+                {children}
             </div>
-            {children}
+
+
         </Page>
     </>);
 }

@@ -15,7 +15,10 @@ export default function InputField({
                                        handleBlur,
                                        isValid,
                                        isModal = false,
-                                       min = 0
+                                       min = 0,
+                                       helperText = "",
+                                       props = {}
+
                                    }) {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -41,7 +44,9 @@ export default function InputField({
                         dir="auto"
                         onBlur={handleBlur}
                         {...(type === "number") ? {min: min} : {}}
+                        {...{props}}
                     />
+                    {helperText &&<span className={styles.helperText}>{helperText}</span>}
                     {type === "password" &&
                         <IconButton
                             aria-label="toggle password visibility"

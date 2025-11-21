@@ -37,7 +37,7 @@ export default function Form({
     const isControlled = externalValues !== undefined && setExternalValues !== undefined;
 
     const formData = isControlled ? externalValues : internalForm.formData;
-    const errors = isControlled ? {} : internalForm.errors; // Assuming no validation for controlled filter form
+    const errors = isControlled ? {} : internalForm.errors;
     const touched = isControlled ? {} : internalForm.touched;
     const handleBlur = isControlled ? () => {
     } : internalForm.handleBlur;
@@ -100,7 +100,10 @@ export default function Form({
         const commonProps = {
             ...field,
             value: formData[field.name],
-            handleChange: handleChange,
+            handleChange: (e) => {
+                if (typeof field.handleChange === 'function') field.handleChange(e)
+                handleChange(e)
+            },
             handleBlur: handleBlur,
             error: fieldError,
             isValid: isTouched ? !fieldError : undefined,
@@ -153,7 +156,8 @@ export default function Form({
                     </div>
                 ))) :
                 (
-                    <div className={`${isModal ? styles.modalInputs : styles.formInputs} ${!btnText ? styles.noButton : ''}`}>
+                    <div
+                        className={`${isModal ? styles.modalInputs : styles.formInputs} ${!btnText ? styles.noButton : ''}`}>
                         {fields.map(renderField)}
                     </div>
                 )

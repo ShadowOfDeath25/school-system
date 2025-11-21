@@ -13,7 +13,8 @@ export default function InputModal({
                                        onSave,
                                        isLoading,
                                        serverErrors,
-                                       buttonText = "حفظ التغييرات"
+                                       buttonText = "حفظ التغييرات",
+
                                    }) {
     const {showSnackbar} = useSnackbar();
 
