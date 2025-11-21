@@ -1,6 +1,5 @@
 import {useInputModal} from "@contexts/InputModalContext.jsx";
 import styles from './styles.module.css'
-// import styles from '@ui/Table/styles.module.css'
 import {Button} from "@mui/material";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
@@ -14,7 +13,8 @@ export default function BookPicker({student, academicYear}) {
     });
     const {data: purchases, isLoading: isLoadingPurchases} = useGetAll('book-purchases', {student_id: student.id})
     const {showSnackbar} = useSnackbar();
-    console.log(purchases)
+
+
     const handleBookAddition = () => {
         showInputModal({
             fields: [
@@ -58,7 +58,11 @@ export default function BookPicker({student, academicYear}) {
     return (
         <div className={styles.container}>
             <div className={styles.tableContainer}>
-
+                {purchases?.data?.length === 0 && (
+                    <div className={styles.noData}>
+                        لا يوجد بيانات للعرض
+                    </div>
+                )}
                 <table className={styles.table}>
                     <thead>
                         <tr>
@@ -88,21 +92,19 @@ export default function BookPicker({student, academicYear}) {
                             )
                         })}
                     </tbody>
-                    <tfoot>
-                    </tfoot>
+
                 </table>
             </div>
-                <div className={styles.toolbar}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleBookAddition}
-                        sx={{width: "fit-content"}}
-                    >
-                        إضافة كتب
-                    </Button>
-                </div>
+            <div className={styles.toolbar}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleBookAddition}
+                    sx={{width: "fit-content"}}
+                >
+                    إضافة كتب
+                </Button>
+            </div>
         </div>
     );
 }
-

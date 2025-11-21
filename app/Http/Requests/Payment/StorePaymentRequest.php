@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Payment;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StorePaymentRequest extends FormRequest
 {
@@ -25,10 +24,10 @@ class StorePaymentRequest extends FormRequest
         return [
             'academic_year' => ["required", 'regex:/^\d{4}\/\d{4}$/'],
             'level' => ['required', 'string'],
-            'language' => ["required", "string", Rule::in(["لغات", "عربي"])],
             'type' => ["required", "string"],
             'student_id' => ["required", "numeric", "exists:students,id"],
-            'value' => ["required", "decimal:2"]
+            'date' => ["required", "date"],
+            'value' => ["required", "numeric", "min:1"]
         ];
     }
 }

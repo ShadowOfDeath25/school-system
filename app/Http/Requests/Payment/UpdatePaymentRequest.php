@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Payment;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdatePaymentRequest extends FormRequest
 {
@@ -23,12 +22,12 @@ class UpdatePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ["required", 'regex:/^\d{4}\/\d{4}$/'],
-            'level' => ['required', 'string'],
-            'language' => ["required", "string", Rule::in(["لغات", "عربي"])],
-            'type' => ["required", "string"],
-            'student_id' => ["required", "numeric", "exists:students,id"],
-            'value' => ["required", "decimal:2"]
+            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'level' => ['string'],
+            'type' => ["string"],
+            'student_id' => ["numeric", "exists:students,id"],
+            'date' => ["date"],
+            'value' => ["numeric"]
         ];
     }
 }

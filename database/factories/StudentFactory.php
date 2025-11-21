@@ -19,10 +19,21 @@ class StudentFactory extends Factory
      */
     public function definition(): array
     {
+        $gradesByLevel = [
+            'ابتدائي' => [1, 2, 3, 4, 5, 6],
+            'اعدادي' => [1, 2, 3],
+            'رياض أطفال' => [1, 2]
+        ];
         $gender = $this->faker->randomElement(['male', 'female']);
         $language = $this->faker->randomElement(['عربي', 'لغات']);
         $academicYear = $this->faker->randomElement(['2024/2025', '2026/2026']);
-        $classroom = Classroom::where('language', $language)->where('academic_year', $academicYear)->inRandomOrder()->first()?->id;
+        $level = $this->faker->randomElement(['رياض أطفال', 'اعدادي', 'ابتدائي']);
+        $grade = $this->faker->randomElement($gradesByLevel[$level]);
+        $classroom = Classroom::where('language', $language)
+            ->where('academic_year', $academicYear)
+            ->inRandomOrder()
+            ->first()?->id;
+
         return [
             'name_in_arabic' => fake('ar_EG')->name($gender),
             'name_in_english' => fake('en_EG')->name($gender),
@@ -30,6 +41,8 @@ class StudentFactory extends Factory
             'birth_date' => $this->faker->dateTimeBetween('-13 years', '-5 years'),
             'birth_address' => fake()->city(),
             'note' => $this->faker->optional(0.2)->randomElement([null, 'ابناء عاملين', 'دمج', 'يتيم']),
+            'level' => $level,
+            'grade'=>$grade,
             'gender' => $gender,
             'religion' => $this->faker->randomElement(['مسلم', 'مسيحي']),
             'nationality' => $this->faker->randomElement(['مصري', 'اجنبي']),

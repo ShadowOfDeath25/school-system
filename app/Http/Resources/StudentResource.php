@@ -52,6 +52,8 @@ class StudentResource extends JsonResource
             "birth_date" => $this->birth_date,
             "birth_address" => $this->birth_address,
             "joined_at" => $this->created_at->format('Y/m/d'),
+            "grade"=>$this->grade,
+            'level'=>$this->level,
             'classroom' => $this->classroom ??
                 [
                     "name" => "غير مقيد",

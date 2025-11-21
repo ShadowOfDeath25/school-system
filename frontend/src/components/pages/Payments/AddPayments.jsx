@@ -10,7 +10,7 @@ export default function AddPayments() {
     const mutation = useCreate('payment-values')
     const {showSnackbar} = useSnackbar()
     const onSubmit = (data, formActions) => {
-        console.log(data);
+
         mutation.mutate(data, {
             onSuccess: () => {
                 showSnackbar("تم اضافة العنصر بنجاح")

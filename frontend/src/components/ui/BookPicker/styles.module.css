@@ -70,7 +70,7 @@
     text-align: center;
 
 }
-.table tbody tr {
+.table tbody tr:not(.noData) {
     border-bottom: 2px solid rgba(191, 161, 92, 0.24);
 }
 .toolbar{
@@ -78,9 +78,17 @@
     padding: 10px;
 }
 
-
 .cell {
     padding: 10px;
     height: 62px;
+}
+.noData{
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--primary-text-color);
+    font-size: 26px;
+    font-weight: bold;
 
 }

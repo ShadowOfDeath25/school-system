@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('academic_year')->index();
             $table->string("type")->index();
             $table->decimal('value', 10, 2);
+            $table->date('date');
             $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
             $table->string('level')->index();
             $table->timestamps();

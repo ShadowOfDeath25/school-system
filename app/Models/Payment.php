@@ -9,11 +9,11 @@ class Payment extends Model
 {
     protected $fillable = [
         'academic_year',
-        'language',
         'type',
         "value",
         "student_id",
-        "level"
+        "level",
+        'date'
     ];
 
     public function student(): BelongsTo

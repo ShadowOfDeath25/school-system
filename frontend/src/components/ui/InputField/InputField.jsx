@@ -14,8 +14,8 @@ export default function InputField({
                                        handleChange,
                                        handleBlur,
                                        isValid,
-                                        isModal=false
-
+                                       isModal = false,
+                                       min = 0
                                    }) {
     const [showPassword, setShowPassword] = useState(false);
 
@@ -40,6 +40,7 @@ export default function InputField({
                         onChange={handleChange}
                         dir="auto"
                         onBlur={handleBlur}
+                        {...(type === "number") ? {min: min} : {}}
                     />
                     {type === "password" &&
                         <IconButton

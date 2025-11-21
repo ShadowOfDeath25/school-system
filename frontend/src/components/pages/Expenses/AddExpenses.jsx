@@ -33,6 +33,7 @@ export default function AddExpenses() {
                             {
                                 name: "type",
                                 type: "select",
+                                label: "نوع المصروف",
                                 placeholder: "نوع المصروف",
                                 options: types?.data?.map(type => type.name),
                                 required: true

@@ -32,6 +32,37 @@ export default function ViewBookPurchases() {
                 <Table
                     resource={'book-purchases'}
                     filters={filters}
+                    fields={[
+                        {
+                            name: "type",
+                            label: "النسخة"
+                        },
+                        {
+                            name:"level",
+                            label:"المرحلة"
+                        },
+                        {
+                            name:"grade",
+                            label:"الفرقة"
+                        },
+                        {
+                            name:"quantity",
+                            label:"الكمية"
+                        },
+                        {
+                            name:"price",
+                            label:"السعر"
+                        },
+                        {
+                            name:"total_price",
+                            label:"الاجمالي"
+                        },
+                        {
+                            name:"student_name",
+                            label:"اسم الطالب"
+                        },
+
+                    ]}
                     editable={false}
                     deletable={false}
                 />

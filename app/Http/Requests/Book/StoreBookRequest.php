@@ -23,7 +23,7 @@ class StoreBookRequest extends FormRequest
     {
         return [
             'academic_year' => ["required", 'regex:/^\d{4}\/\d{4}$/'],
-            'imported_quantity' => ["required", "integer"],
+            'imported_quantity' => ["required", "integer","min:1"],
             'available_quantity' => ["required", "integer", "lte:imported_quantity", "min:1"],
             'semester' => ["required", "string"],
             'price' => ["numeric", "required"],
