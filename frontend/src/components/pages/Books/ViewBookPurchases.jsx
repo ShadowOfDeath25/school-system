@@ -28,6 +28,7 @@ export default function ViewBookPurchases() {
                             name: "book.grade"
                         }
                     ]}
+                    removedFields={["student_id"]}
                 />
                 <Table
                     resource={'book-purchases'}

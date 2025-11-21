@@ -7,7 +7,7 @@ import {useTranslation} from "react-i18next";
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import InputField from "@ui/InputField/InputField.jsx";
 
-export default function Filters({onSubmit, resource, fields = [], additionalFields = [], labels: labels = {}}) {
+export default function Filters({onSubmit, resource, fields = [], additionalFields = [], labels: labels = {},removedFields=[]}) {
     const {data: fieldsData, isLoading} = useFilters(resource);
     const [filters, setFilters] = useState({});
 
@@ -31,6 +31,7 @@ export default function Filters({onSubmit, resource, fields = [], additionalFiel
         onSubmit(filters);
     };
     const renderField = (field) => {
+        if (removedFields.includes(field.name)) return;
         const commonProps = {
             ...field,
             value: filters[field.name],
