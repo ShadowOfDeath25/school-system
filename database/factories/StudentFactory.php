@@ -22,12 +22,12 @@ class StudentFactory extends Factory
         $gradesByLevel = [
             'ابتدائي' => [1, 2, 3, 4, 5, 6],
             'اعدادي' => [1, 2, 3],
-            'رياض أطفال' => [1, 2]
+            'رياض اطفال' => [1, 2]
         ];
         $gender = $this->faker->randomElement(['male', 'female']);
         $language = $this->faker->randomElement(['عربي', 'لغات']);
         $academicYear = $this->faker->randomElement(['2024/2025', '2026/2026']);
-        $level = $this->faker->randomElement(['رياض أطفال', 'اعدادي', 'ابتدائي']);
+        $level = $this->faker->randomElement(['رياض اطفال', 'اعدادي', 'ابتدائي']);
         $grade = $this->faker->randomElement($gradesByLevel[$level]);
         $classroom = Classroom::where('language', $language)
             ->where('academic_year', $academicYear)

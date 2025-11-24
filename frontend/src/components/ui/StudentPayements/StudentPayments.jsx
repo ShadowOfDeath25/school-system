@@ -1,16 +1,16 @@
 import styles from './styles.module.css'
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
-import {useStudentPayments} from "@hooks/api/useStudentPayments.js";
 import {PaymentHelper} from "@helpers/PaymentHelper.js";
+import {useGetAll} from "@hooks/api/useCrud.js";
 
 export default function StudentPayments({student, academicYear}) {
-    const fees  = useStudentPayments(student, academicYear);
-    if (fees.isLoading) {
+    const {data: fees, isLoading} = useGetAll(`students/${student.id}/payments`, {academic_year: academicYear});
+    if (isLoading) {
         return (<div className={styles.container}>
             <LoadingScreen/>
         </div>)
     }
-
+    console.log(fees)
     return (
 
         <div className={styles.container}>
@@ -29,59 +29,59 @@ export default function StudentPayments({student, academicYear}) {
                     <tr>
                         <td className={styles.label}>المصروفات الادارية</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
+                            {PaymentHelper.formatCurrency(fees?.required[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
                         </td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
+                            {PaymentHelper.formatCurrency(fees?.paid[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
                         </td>
                         <td>-</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
+                            {PaymentHelper.formatCurrency(fees?.remaining[PaymentHelper.PAYMENT_TYPES.ADMINISTRATIVE])}
                         </td>
                     </tr>
                     <tr>
                         <td className={styles.label}>المصروفات الدراسية</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.TUITION])}
+                            {PaymentHelper.formatCurrency(fees?.required[PaymentHelper.PAYMENT_TYPES.TUITION])}
                         </td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.TUITION])}
+                            {PaymentHelper.formatCurrency(fees?.paid?.[PaymentHelper.PAYMENT_TYPES.TUITION])}
                         </td>
-                        <td>{fees.exemptions}</td>
+                        <td>{fees?.exemptions?.exemptions}</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.TUITION])}
+                            {PaymentHelper.formatCurrency(fees?.remaining[PaymentHelper.PAYMENT_TYPES.TUITION])}
                         </td>
 
                     </tr>
                     <tr>
                         <td className={styles.label}>مصروفات الكتب</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.BOOKS])}
+                            {PaymentHelper.formatCurrency(fees?.required[PaymentHelper.PAYMENT_TYPES.BOOKS])}
                         </td>
-                        <td>{PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.BOOKS])}</td>
+                        <td>{PaymentHelper.formatCurrency(fees?.paid?.[PaymentHelper.PAYMENT_TYPES.BOOKS]) ?? "-"}</td>
                         <td>-</td>
-                        <td>{PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.BOOKS])}</td>
+                        <td>{PaymentHelper.formatCurrency(fees?.remaining[PaymentHelper.PAYMENT_TYPES.BOOKS])}</td>
                     </tr>
                     <tr>
                         <td className={styles.label}>مصروفات الزي</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.required[PaymentHelper.PAYMENT_TYPES.UNIFORM])}
+                            {PaymentHelper.formatCurrency(fees?.required[PaymentHelper.PAYMENT_TYPES.UNIFORM])}
                         </td>
-                        <td>{PaymentHelper.formatCurrency(fees.paid[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
+                        <td>{PaymentHelper.formatCurrency(fees?.paid?.[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
                         <td>-</td>
-                        <td>{PaymentHelper.formatCurrency(fees.remaining[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
+                        <td>{PaymentHelper.formatCurrency(fees?.remaining[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
                     </tr>
                     <tr>
                         <td className={styles.label}>الإجمالي</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.required.total)}
+                            {PaymentHelper.formatCurrency(fees?.total?.required)}
                         </td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.paid.total)}
+                            {PaymentHelper.formatCurrency(fees?.total?.paid)}
                         </td>
-                        <td>{PaymentHelper.formatCurrency(fees.exemptions)}</td>
+                        <td>{PaymentHelper.formatCurrency(fees?.total?.exemptions)}</td>
                         <td>
-                            {PaymentHelper.formatCurrency(fees.remaining.total)}
+                            {PaymentHelper.formatCurrency(fees?.total?.remaining)}
                         </td>
                     </tr>
                 </tbody>

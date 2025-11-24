@@ -60,6 +60,11 @@ class StudentController extends Controller
             });
     }
 
+    public function show(Student $student)
+    {
+        return $student->load($this->relationsToLoad);
+    }
+
     public function store(StoreStudentRequest $request): JsonResponse
     {
         $this->authorizeAction("create");
