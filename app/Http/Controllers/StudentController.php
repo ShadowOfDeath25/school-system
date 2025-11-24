@@ -8,6 +8,7 @@ use App\Http\Resources\StudentResource;
 use App\Models\Classroom;
 use App\Models\Guardian;
 use App\Models\Student;
+use App\Services\StudentPaymentsService;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
 use Illuminate\Http\JsonResponse;
@@ -30,8 +31,8 @@ class StudentController extends Controller
     protected array $filterable = [
         'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade'
     ];
-    protected array $searchable=[
-        'name_in_arabic','name_in_english'
+    protected array $searchable = [
+        'name_in_arabic', 'name_in_english'
     ];
     protected array $relationsToLoad = ['classroom', 'guardians'];
 
@@ -133,6 +134,16 @@ class StudentController extends Controller
 
 
         return new $this->resource($student->load($this->relationsToLoad));
+    }
+
+    public function getPayments(Request $request, Student $student)
+    {
+        $request->validate([
+            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'student' => ['exists:students,id']
+        ]);
+        $service = new StudentPaymentsService;
+        return response()->json($service->getStudentPayments($student, $request->input('academic_year')));
     }
 
 }

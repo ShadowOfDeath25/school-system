@@ -43,6 +43,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource("books", BookController::class)->withFilters();
     Route::apiResource('parents', GuardianController::class)->withFilters();
     Route::apiResource('students', StudentController::class)->withFilters();
+    Route::get("students/{student}/payments",[StudentController::class, 'getPayments']);
     Route::apiResource('stations', StationController::class);
     Route::apiResource('payments', PaymentController::class)->withFilters();
     Route::apiResource('incomes', IncomeController::class)->withFilters();
