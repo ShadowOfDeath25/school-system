@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->decimal("value", 10, 2);
             $table->string("type");
+            $table->foreignIdFor(Student::class)->nullable()->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

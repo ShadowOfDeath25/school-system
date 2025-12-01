@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string("level")->nullable();
             $table->decimal("value", 10, 2);
             $table->string('type');
+            $table->index(['language', 'level', 'academic_year'],'payment_values_language_level_academic_year_idx');
             $table->timestamps();
         });
     }

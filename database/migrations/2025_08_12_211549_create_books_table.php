@@ -14,7 +14,6 @@ return new class extends Migration {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->foreignIdFor(Subject::class)->nullable()->constrained()->cascadeOnDelete();
             $table->string("level");
             $table->integer("imported_quantity");
             $table->integer("available_quantity")->nullable();

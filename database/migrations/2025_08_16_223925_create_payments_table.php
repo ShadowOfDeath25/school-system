@@ -13,12 +13,13 @@ return new class extends Migration {
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('academic_year')->index();
-            $table->string("type")->index();
+            $table->string('academic_year');
+            $table->string("type");
             $table->decimal('value', 10, 2);
             $table->date('date');
             $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
-            $table->string('level')->index();
+            $table->string('level');
+            $table->index(['student_id','academic_year','level','type']);
             $table->timestamps();
         });
     }
