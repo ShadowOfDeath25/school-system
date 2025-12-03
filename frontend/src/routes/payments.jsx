@@ -3,6 +3,7 @@ import AddPayments from "@pages/Payments/AddPayments.jsx";
 import Exemptions from "@pages/Payments/Exemptions.jsx";
 import BookPayments from "@pages/Payments/BookPayments.jsx";
 import PaymentsPage from "@pages/Payments/PaymentsPage.jsx";
+import AdministrativePayments from "@pages/Payments/AdministrativePayments.jsx";
 
 const routes = {
     path: "payments",
@@ -55,11 +56,29 @@ const routes = {
 
         },
         {
-            path:"books/:id",
-            element:<BookPayments/>,
-            handle:{
+            path: "books/:id",
+            element: <BookPayments/>,
+            handle: {
                 action: "update book-purchases",
-                title:"حركة مصروفات الكتب"
+                title: "حركة مصروفات الكتب"
+            }
+        },
+        {
+            path: "administrative",
+            element: <PaymentsPage route={'/payments/administrative/:id'}/>,
+            handle: {
+                sidebar: {
+                    title: "المصروفات الادارية"
+                },
+                action: "update payments",
+            }
+        },
+        {
+            path: "administrative/:id",
+            element: <AdministrativePayments/>,
+            handle: {
+                action: "update payments",
+                title: "حركة المصروفات الادارية"
             }
         }
     ]

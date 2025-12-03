@@ -6,8 +6,9 @@ import {useInputModal} from "@contexts/InputModalContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
+import {useQueryClient} from "@tanstack/react-query";
 
-export default function PaymentsTable({student, type, academicYear,btnText="اضافة"}) {
+export default function PaymentsTable({student, type, academicYear, btnText = "اضافة"}) {
     const {data: payments, isLoading} = useGetAll('payments', {
         student_id: student.id, type: type, academic_year: academicYear
     })
@@ -15,6 +16,7 @@ export default function PaymentsTable({student, type, academicYear,btnText="اض
     const editMutation = useUpdate('payments');
     const {showInputModal, hideInputModal} = useInputModal();
     const {showSnackbar} = useSnackbar();
+    const queryClient = useQueryClient()
 
     if (isLoading) {
         return <div className={styles.container}>
@@ -53,6 +55,10 @@ export default function PaymentsTable({student, type, academicYear,btnText="اض
                     onSuccess: () => {
                         showSnackbar("تم إضافة العنصر بنجاح")
                         hideInputModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ["payments", student.id],
+                            exact: true
+                        })
                     },
                     onError: (error) => {
                         showSnackbar(error?.response?.data?.message ?? "حدث خطأ اثناء إضافة العنصر", "error")
@@ -88,6 +94,10 @@ export default function PaymentsTable({student, type, academicYear,btnText="اض
                     onSuccess: () => {
                         hideInputModal();
                         showSnackbar("تم تحديث العنصر بنجاح")
+                        queryClient.invalidateQueries({
+                            queryKey: ["payments", student.id],
+                            exact: true
+                        })
                     },
                     onError: (error) => {
                         showSnackbar(error?.response?.data?.message ?? "حدث خطأ اثناء تحديث العنصر", "error");
@@ -120,8 +130,10 @@ export default function PaymentsTable({student, type, academicYear,btnText="اض
                             return (
                                 <tr key={`payment-${payment.id}`}>
                                     <td key={`payment-${payment.id}-id`} className={styles.cell}>{payment.id}</td>
-                                    <td key={`payment-${payment.id}-date`} className={styles.cell}>{payment.date.replaceAll('-', '/')}</td>
-                                    <td key={`payment-${payment.id}-value`} className={styles.cell}>{payment.value - 0}</td>
+                                    <td key={`payment-${payment.id}-date`}
+                                        className={styles.cell}>{payment.date.replaceAll('-', '/')}</td>
+                                    <td key={`payment-${payment.id}-value`}
+                                        className={styles.cell}>{payment.value - 0}</td>
                                     <td key={`payment-${payment.id}-edit`} className={styles.cell}>
                                         <IconButton onClick={() => handleEdit(payment)}>
                                             <EditIcon sx={{color: 'var(--color-focus)'}}/>
