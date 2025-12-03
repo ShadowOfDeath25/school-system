@@ -45,7 +45,7 @@ const routes = {
         },
         {
             path: "books",
-            element: <PaymentsPage route={'/payments/books/details'}/>,
+            element: <PaymentsPage route={'/payments/books/:id'}/>,
             handle: {
                 sidebar: {
                     title: "مدفوعات الكتب"
@@ -55,7 +55,7 @@ const routes = {
 
         },
         {
-            path:"books/details",
+            path:"books/:id",
             element:<BookPayments/>,
             handle:{
                 action: "update book-purchases",
