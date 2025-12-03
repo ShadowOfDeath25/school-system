@@ -7,7 +7,7 @@ import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 
-export default function PaymentsTable({student, type, academicYear}) {
+export default function PaymentsTable({student, type, academicYear,btnText="اضافة"}) {
     const {data: payments, isLoading} = useGetAll('payments', {
         student_id: student.id, type: type, academic_year: academicYear
     })
@@ -143,7 +143,7 @@ export default function PaymentsTable({student, type, academicYear}) {
                     variant={"contained"}
                     onClick={handlePaymentAddition}
                 >
-                    إضافة حركة مصروفات الكتب
+                    {btnText}
                 </Button>
             </div>
         </div>
