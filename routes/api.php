@@ -35,6 +35,15 @@ use Illuminate\Support\Facades\Route;
 Route::get("/user", AuthCOntroller::class . "@user")->name("user");
 
 Route::post("/login", AuthController::class . "@login")->name("login");
+Route::get('/benchmark', function () {
+    $start = microtime(true);
+
+    $duration = microtime(true) - $start;
+
+    return response()->json([
+        'php_execution_time_ms' => $duration * 1000
+    ]);
+});
 Route::middleware("auth:sanctum")->group(function () {
 
 
