@@ -56,6 +56,7 @@ export default function BookPayments() {
             />
             <BookPicker
                 student={student}
+                academicYear={academicYear}
             />
         </DetailsPage>
     );
