@@ -14,10 +14,18 @@ export const useCreate = (resource, options = {}) => {
         },
     })
 }
-export const useGetAll = (resource, params = {},options={}) => {
+export const useGetAll = (resource, params = {}, options = {}) => {
     return useQuery({
         queryKey: [resource, params],
         queryFn: () => axiosClient.get(`/${resource}`, {params}).then(res => res.data),
+        keepPreviousData: true,
+        ...options
+    })
+}
+export const useGet = (resource, id, params = {}, options = {}) => {
+    return useQuery({
+        queryKey: [resource, id, params],
+        queryFn: () => axiosClient.get(`/${resource}/${id}`, {params}).then(res => res.data),
         keepPreviousData: true,
         ...options
     })
@@ -44,15 +52,15 @@ export const useFilters = (resource) => {
 
     })
 }
-export const useUpdate=(resource,options={})=>{
+export const useUpdate = (resource, options = {}) => {
     const queryClient = useQueryClient()
     return useMutation({
         ...options,
         mutationKey: [resource, "update"],
         mutationFn: (payload) => axiosClient.put(`/${resource}/${payload.id}`, payload),
-        onSuccess: (data,variables,context)=>{
+        onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({queryKey: [resource]})
-            options.onSuccess?.(data,variables,context)
+            options.onSuccess?.(data, variables, context)
         }
     })
 }

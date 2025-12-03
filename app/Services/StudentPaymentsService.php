@@ -17,7 +17,7 @@ class StudentPaymentsService
 
     public function getStudentPayments(Student $student, $academicYear)
     {
-        $start = microtime(true);
+
         $result = DB::query()->fromSub(function (Builder $q) use ($student, $academicYear) {
 
 
@@ -88,6 +88,13 @@ class StudentPaymentsService
                 });
             });
 
+
+        $result['paid'] = [
+            self::PAYMENT_TYPES['ADMINISTRATIVE'] => $result['paid'][self::PAYMENT_TYPES['ADMINISTRATIVE']] ?? 0,
+            self::PAYMENT_TYPES['TUITION'] => $result['paid'][self::PAYMENT_TYPES['TUITION']] ?? 0,
+            self::PAYMENT_TYPES['BOOKS'] => $result['paid'][self::PAYMENT_TYPES['BOOKS']] ?? 0,
+            self::PAYMENT_TYPES['UNIFORM'] => $result['paid'][self::PAYMENT_TYPES['UNIFORM']] ?? 0,
+        ];
 
         $result['remaining'] = [
             self::PAYMENT_TYPES['ADMINISTRATIVE'] => ($result['required'][self::PAYMENT_TYPES['ADMINISTRATIVE']] ?? 0) - ($result['paid'][self::PAYMENT_TYPES['ADMINISTRATIVE']] ?? 0),
