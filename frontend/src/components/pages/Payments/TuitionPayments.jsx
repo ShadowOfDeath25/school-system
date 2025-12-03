@@ -1,22 +1,18 @@
 import {useOutletContext} from "react-router";
-import BookPicker from "@ui/BookPicker/BookPicker.jsx";
 import PaymentsTable from "@ui/PaymentsTable/PaymentsTable.jsx";
 import {PaymentHelper} from "@helpers/PaymentHelper.js";
 
-export default function BookPayments() {
+export default function TuitionPayments() {
     const {student, academicYear} = useOutletContext()
-
     return (
         <>
             <PaymentsTable
                 student={student}
-                type={PaymentHelper.PAYMENT_TYPES.BOOKS}
                 academicYear={academicYear}
-            />
-            <BookPicker
-                student={student}
-                academicYear={academicYear}
+                type={PaymentHelper.PAYMENT_TYPES.TUITION}
+                btnText={"اضافة حركة مصروفات دراسية"}
             />
         </>
     );
 }
+

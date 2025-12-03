@@ -4,6 +4,10 @@ import Exemptions from "@pages/Payments/Exemptions.jsx";
 import BookPayments from "@pages/Payments/BookPayments.jsx";
 import PaymentsPage from "@pages/Payments/PaymentsPage.jsx";
 import AdministrativePayments from "@pages/Payments/AdministrativePayments.jsx";
+import StudentDetailsLayout from "@layouts/StudentDetailsLayout.jsx";
+import style from "@ui/Page/style.module.css";
+import {Link} from 'react-router-dom'
+import TuitionPayments from "@pages/Payments/TuitionPayments.jsx";
 
 const routes = {
     path: "payments",
@@ -46,7 +50,7 @@ const routes = {
         },
         {
             path: "books",
-            element: <PaymentsPage route={'/payments/books/:id'}/>,
+            element: <PaymentsPage route={'/payments/:id/books'}/>,
             handle: {
                 sidebar: {
                     title: "مدفوعات الكتب"
@@ -56,16 +60,8 @@ const routes = {
 
         },
         {
-            path: "books/:id",
-            element: <BookPayments/>,
-            handle: {
-                action: "update book-purchases",
-                title: "حركة مصروفات الكتب"
-            }
-        },
-        {
             path: "administrative",
-            element: <PaymentsPage route={'/payments/administrative/:id'}/>,
+            element: <PaymentsPage route={'/payments/:id/administrative'}/>,
             handle: {
                 sidebar: {
                     title: "المصروفات الادارية"
@@ -74,12 +70,66 @@ const routes = {
             }
         },
         {
-            path: "administrative/:id",
-            element: <AdministrativePayments/>,
+            path: "tuition",
+            element: <PaymentsPage route={'/payments/:id/tuition'}/>,
             handle: {
+                sidebar: {
+                    title: "المصروفات الدراسية"
+                },
                 action: "update payments",
-                title: "حركة المصروفات الادارية"
             }
+        },
+        {
+            path: ":id",
+            element: <StudentDetailsLayout/>,
+            handle: {
+                fallbackRedirect: "/payments",
+                breadcrumbs: () => [
+                    <Link className={style.breadcrumbLink} to={'/payments'}>مدفوعات التلاميذ</Link>
+                ]
+            },
+            children: [
+                {
+                    path: "administrative",
+                    element: <AdministrativePayments/>,
+                    handle: {
+                        action: "update payments",
+                        title: "حركة المصروفات الادارية",
+                        breadcrumbs: () => [
+                            <Link className={style.breadcrumbLink} to={'/payments/administrative'}>المصروفات
+                                الادارية</Link>
+                        ]
+                    }
+                },
+                {
+                    path: "books",
+                    element: <BookPayments/>,
+                    handle: {
+                        action: "update book-purchases",
+                        title: "حركة مصروفات الكتب",
+                        breadcrumbs: () => [
+                            <Link className={style.breadcrumbLink} to={'/payments/books'}>
+                                مصروفات الكتب
+                            </Link>
+                        ]
+
+                    }
+                },
+                {
+                    path: "tuition",
+                    element: <TuitionPayments/>,
+                    handle: {
+                        action: "update book-purchases",
+                        title: "حركة المصروفات الدراسية",
+                        breadcrumbs: () => [
+                            <Link className={style.breadcrumbLink} to={'/payments/books'}>
+                                المصروفات الدراسية
+                            </Link>
+                        ]
+
+                    }
+                }
+            ]
         }
     ]
 }
