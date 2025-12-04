@@ -3,7 +3,7 @@ import {useGet} from "@hooks/api/useCrud.js";
 import {useState} from "react";
 import {getAcademicYears} from "@utils/getAcademicYears.js";
 
-export function useStudentDetailsPage() {
+export function useStudentDetails() {
     const {state} = useLocation();
     const studentFromState = state?.student;
 

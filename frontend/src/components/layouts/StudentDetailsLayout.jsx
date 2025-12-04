@@ -1,10 +1,10 @@
-import {useStudentDetailsPage} from "@hooks/useStudentDetails.js";
+import {useStudentDetails} from "@hooks/useStudentDetails.js";
 import {Navigate, Outlet, useMatches} from "react-router-dom";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import DetailsPage from "@ui/DetailsPage/DetailsPage.jsx";
 
 export default function StudentDetailsLayout() {
-    const {student, isLoading, academicYear, setAcademicYear} = useStudentDetailsPage();
+    const {student, isLoading, academicYear, setAcademicYear} = useStudentDetails();
     const matches = useMatches();
     console.log(matches.filter(match=>Boolean(match?.handle?.breadcrumbs)))
 
