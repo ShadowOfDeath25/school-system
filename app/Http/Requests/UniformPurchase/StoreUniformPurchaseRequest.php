@@ -23,7 +23,7 @@ class StoreUniformPurchaseRequest extends FormRequest
     {
         return [
             'uniform_id' => ['required', "exists:uniforms,id"],
-            'student_name' => ['required', "string"],
+            'student_id' => ['required', "exists:students,id"],
             'quantity' => ['required', 'integer', 'min:1']
         ];
     }

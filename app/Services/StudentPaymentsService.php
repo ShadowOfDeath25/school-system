@@ -49,7 +49,7 @@ class StudentPaymentsService
                     ->join('uniforms', 'uniforms.id', '=', 'uniform_purchases.uniform_id')
                     ->where('uniform_purchases.student_id', $student->id)
                     ->select([
-                        DB::raw('SUM(sell_price) as value'),
+                        DB::raw('SUM(uniforms.sell_price * uniform_purchases.quantity) as value'),
                         DB::raw('"' . self::PAYMENT_TYPES['UNIFORM'] . '"' . ' as type'),
                         DB::raw('"required" as source')
                     ])

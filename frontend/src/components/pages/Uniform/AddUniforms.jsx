@@ -39,7 +39,8 @@ export default function AddUniforms() {
                         UniformHelper.FIELDS.BUY_PRICE,
                         UniformHelper.FIELDS.IMPORTED_QUANTITY,
                         UniformHelper.FIELDS.SIZE,
-                        UniformHelper.FIELDS.PIECE
+                        UniformHelper.FIELDS.PIECE,
+                        ClassroomHelper.FIELDS.GRADE
                     ]}
                     onFormSubmit={handleSubmit}
                 />
