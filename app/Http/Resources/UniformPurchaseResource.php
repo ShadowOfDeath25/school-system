@@ -20,7 +20,8 @@ class UniformPurchaseResource extends JsonResource
             'quantity' => $this->quantity,
             'price' => $this->uniform->sell_price,
             'total_price' => $this->uniform->sell_price * $this->quantity,
-            'student_name' => $this->student->name
+            'size'=>$this->uniform->size,
+            'student_name' => $this->student->name_in_arabic
         ];
     }
 }

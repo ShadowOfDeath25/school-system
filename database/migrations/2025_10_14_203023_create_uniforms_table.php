@@ -17,10 +17,11 @@ return new class extends Migration {
             $table->string('academic_year');
             $table->unsignedInteger('imported_quantity');
             $table->unsignedInteger('available_quantity');
+            $table->string("level");
             $table->string("piece");
             $table->decimal('buy_price', 8, 2);
             $table->decimal('sell_price', 8, 2);
-            $table->index(['academic_year', 'type']);
+            $table->index(['academic_year', 'type', 'level']);
             $table->timestamps();
         });
     }

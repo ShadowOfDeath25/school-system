@@ -22,13 +22,15 @@ class UniformPurchaseController extends Controller
     protected string $updateRequest = UpdateUniformPurchaseRequest::class;
     protected string $resource = UniformPurchaseResource::class;
     protected array $filterable = [
-        'uniform.academic_year', 'uniform.type'
+        'uniform.academic_year',
+        'uniform.type',
+        'student.id'
     ];
     protected array $searchable = [
         'student_name',
     ];
     protected array $relationsToLoad = [
-        'uniform','student'
+        'uniform', 'student'
     ];
 
     public function store(StoreUniformPurchaseRequest $request)
@@ -40,6 +42,7 @@ class UniformPurchaseController extends Controller
             return response()->json(["message" => $uniform->available_quantity === 0 ? "نفذ هذا الزي" : "هذه الكمية غير متاحة"], 409);
         }
         $uniform->available_quantity -= $data['quantity'];
+
         $uniform->save();
         return $this->baseStore($request);
     }

@@ -29,7 +29,8 @@ class UpdateUniformRequest extends FormRequest
             'available_quantity' => ['integer'],
             'sell_price' => ['numeric', "min:1"],
             'buy_price' => ['numeric', "min:1"],
-            'piece' => ['string']
+            'piece' => ['string'],
+            'level' => ['string', 'in:ابتدائي,اعدادي,رياض اطفال']
         ];
     }
 }

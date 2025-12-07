@@ -23,7 +23,7 @@ class UpdateUniformPurchaseRequest extends FormRequest
     {
         return [
             'uniform_id' => ["exists:uniforms,id"],
-            'student_name' => ["string"],
+            'student_id' => ["exists:students,id"],
             'quantity' => ['integer', 'min:1']
         ];
     }

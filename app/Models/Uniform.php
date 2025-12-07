@@ -16,6 +16,7 @@ class Uniform extends Model
         'piece',
         'buy_price',
         'sell_price',
+        'level'
     ];
 
 }

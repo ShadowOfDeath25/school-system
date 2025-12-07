@@ -9,7 +9,7 @@ class UniformPurchase extends Model
 {
     protected $fillable = [
         'uniform_id',
-        'student_name',
+        'student_id',
         'quantity',
     ];
 

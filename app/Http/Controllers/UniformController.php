@@ -18,7 +18,7 @@ class UniformController extends Controller
     use HasFilters;
 
     protected array $filterable = [
-        'type', 'academic_year'
+        'academic_year', 'type', 'level'
     ];
     protected array $searchable = [
         'type'
