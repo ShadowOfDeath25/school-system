@@ -8,6 +8,7 @@ import StudentDetailsLayout from "@layouts/StudentDetailsLayout.jsx";
 import style from "@ui/Page/style.module.css";
 import {Link} from 'react-router-dom'
 import TuitionPayments from "@pages/Payments/TuitionPayments.jsx";
+import UniformPayments from "@pages/Payments/UniformPayments.jsx";
 
 const routes = {
     path: "payments",
@@ -80,6 +81,16 @@ const routes = {
             }
         },
         {
+            path: "uniform",
+            element: <PaymentsPage route={'/payments/:id/uniforms'}/>,
+            handle: {
+                sidebar: {
+                    title: "مصروفات الزي"
+                },
+                action: ["update payments", "update uniform-purchases"],
+            }
+        },
+        {
             path: ":id",
             element: <StudentDetailsLayout/>,
             handle: {
@@ -119,11 +130,25 @@ const routes = {
                     path: "tuition",
                     element: <TuitionPayments/>,
                     handle: {
-                        action: "update book-purchases",
+                        action: ["update book-purchases","update payments"],
                         title: "حركة المصروفات الدراسية",
                         breadcrumbs: () => [
                             <Link className={style.breadcrumbLink} to={'/payments/books'}>
                                 المصروفات الدراسية
+                            </Link>
+                        ]
+
+                    }
+                },
+                {
+                    path: "uniforms",
+                    element: <UniformPayments/>,
+                    handle: {
+                        action: ["update uniform-purchases","update payments"],
+                        title: "حركة مصروفات الزي",
+                        breadcrumbs: () => [
+                            <Link className={style.breadcrumbLink} to={'/payments/uniforms'}>
+                                مصروفات الزي
                             </Link>
                         ]
 

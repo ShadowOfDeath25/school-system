@@ -4,6 +4,7 @@ import {Button} from "@mui/material";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
+import {useQueryClient} from "@tanstack/react-query";
 
 export default function BookPicker({student, academicYear}) {
     const {showInputModal, hideInputModal} = useInputModal()
@@ -13,7 +14,7 @@ export default function BookPicker({student, academicYear}) {
     });
     const {data: purchases, isLoading: isLoadingPurchases} = useGetAll('book-purchases', {student_id: student.id})
     const {showSnackbar} = useSnackbar();
-
+    const queryClient = useQueryClient();
 
     const handleBookAddition = () => {
         showInputModal({
@@ -45,6 +46,10 @@ export default function BookPicker({student, academicYear}) {
                     onSuccess: () => {
                         showSnackbar("تم اضافة العنصر بنجاح");
                         hideInputModal();
+                        queryClient.invalidateQueries({
+                            queryKey: ["payments", student.id],
+                            exact: true
+                        })
                     },
                     onError: (error) => {
                         showSnackbar(error?.response?.data?.message ?? "حدث خطأ اثناء اضافة العنصر", "error");
