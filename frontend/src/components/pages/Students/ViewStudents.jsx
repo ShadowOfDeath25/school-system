@@ -2,17 +2,13 @@ import Page from "@ui/Page/Page.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import {useState} from "react";
 import Table from "@ui/Table/Table.jsx";
-import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
-import {Button} from '@mui/material'
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
 import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
 import {StudentHelper} from "@utils/helpers/StudentHelper.js";
+import WithdrawButton from "@ui/WithdrawButton/WithdrawButton.jsx";
 
 export default function ViewStudents() {
     const [tableFilters, setTableFilters] = useState(null);
     const {data: classrooms} = useGetAll("classrooms", {all: "true"});
-    const mutation = useUpdate('students');
     const fields = [
         {
             name: "reg_number",
@@ -39,8 +35,7 @@ export default function ViewStudents() {
             label: "اللغة"
         }
     ]
-    const {showSnackbar} = useSnackbar();
-    const {confirm} = useConfirmModal();
+
 
     const filterFields = [
         {
@@ -63,29 +58,9 @@ export default function ViewStudents() {
         }
 
     ]
-    const handleWithdraw = async (student) => {
-        const confirmed = await confirm({message: "هل أنت متأكد من سحب ملف هذا الطالب ؟"})
-        if (confirmed) {
 
-            mutation.mutate({id: student.id, withdrawn: true}, {
-                onSuccess: () => {
-                    showSnackbar("تم سحب ملف الطالب بنجاح")
-                },
-                onError: () => {
-                    showSnackbar("حدث خطأ أثناء سحب الملف", "error")
-                }
-            })
-        }
-    }
     const withdrawButton = {
-        header: "سحب الملف", content: (student) => <Button
-            onClick={() => handleWithdraw(student)}
-            variant={"contained"}
-            sx={{backgroundColor: "var(--color-danger)"}}
-
-        >
-            سحب الملف
-        </Button>
+        header: "سحب الملف", content: <WithdrawButton/>
     }
     return (
         <Page>
