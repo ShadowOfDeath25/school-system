@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Student;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class StudentPaymentsService
@@ -12,10 +13,11 @@ class StudentPaymentsService
         'ADMINISTRATIVE' => 'مصروفات ادارية',
         'TUITION' => 'مصروفات دراسية',
         'BOOKS' => 'مصروفات الكتب',
-        'UNIFORM' => 'مصروفات الزي'
+        'UNIFORM' => 'مصروفات الزي',
+        'WITHDRAWAL' => 'مصروفات سحب الملف'
     ];
 
-    public function getStudentPayments(Student $student, $academicYear)
+    public function getStudentPayments(Student $student, $academicYear): Collection
     {
 
         $result = DB::query()->fromSub(function (Builder $q) use ($student, $academicYear) {
@@ -30,6 +32,9 @@ class StudentPaymentsService
                 ->where('language', $student->language)
                 ->where('level', $student->level)
                 ->where('academic_year', $academicYear);
+            if (!$student->withdrawn) {
+                $q->whereNot('type', '=', self::PAYMENT_TYPES['WITHDRAWAL']);
+            }
 
 
             $q->unionAll(
