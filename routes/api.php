@@ -12,6 +12,7 @@ use App\Http\Controllers\ExamHallController;
 use App\Http\Controllers\ExemptionController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ExpenseTypeController;
+use App\Http\Controllers\ExtraDueController;
 use App\Http\Controllers\FloorController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
@@ -75,6 +76,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('uniforms', UniformController::class)->withFilters();
     Route::apiResource('income-types', IncomeTypeController::class);
     Route::apiResource('payment-values', PaymentValueController::class)->withFilters();
+    Route::apiResource('extra-dues', ExtraDueController::class)->withFilters();
     Route::apiResource('exemptions', ExemptionController::class);
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
     Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
