@@ -9,6 +9,7 @@ import style from "@ui/Page/style.module.css";
 import {Link} from 'react-router-dom'
 import TuitionPayments from "@pages/Payments/TuitionPayments.jsx";
 import UniformPayments from "@pages/Payments/UniformPayments.jsx";
+import ExtraDues from "@pages/Payments/ExtraDues.jsx";
 
 const routes = {
     path: "payments",
@@ -91,6 +92,16 @@ const routes = {
             }
         },
         {
+            path: 'extra-dues',
+            element: <PaymentsPage route={'/payments/:id/extra-dues'}/>,
+            handle: {
+                sidebar: {
+                    title: "مستحقات اضافية"
+                },
+                action: ['create extra-dues', 'update extra-dues']
+            }
+        },
+        {
             path: ":id",
             element: <StudentDetailsLayout/>,
             handle: {
@@ -130,7 +141,7 @@ const routes = {
                     path: "tuition",
                     element: <TuitionPayments/>,
                     handle: {
-                        action: ["update book-purchases","update payments"],
+                        action: ["update book-purchases", "update payments"],
                         title: "حركة المصروفات الدراسية",
                         breadcrumbs: () => [
                             <Link className={style.breadcrumbLink} to={'/payments/books'}>
@@ -144,7 +155,7 @@ const routes = {
                     path: "uniforms",
                     element: <UniformPayments/>,
                     handle: {
-                        action: ["update uniform-purchases","update payments"],
+                        action: ["update uniform-purchases", "update payments"],
                         title: "حركة مصروفات الزي",
                         breadcrumbs: () => [
                             <Link className={style.breadcrumbLink} to={'/payments/uniforms'}>
@@ -153,6 +164,19 @@ const routes = {
                         ]
 
                     }
+                },
+                {
+                    path: "extra-dues",
+                    element: <ExtraDues/>,
+                    handle: {
+                        action: ['update extra-dues', 'create extra-dues'],
+                        title: "حركة المستحقات الاضافية",
+                        breadcrumbs: () => [
+                            <Link className={style.breadcrumbLink} to={'/payments/extra-dues'}>
+                                المستحقات الاضافية
+                            </Link>
+                        ]
+                    },
                 }
             ]
         }

@@ -1,5 +1,5 @@
 import {useUpdate} from "@hooks/api/useCrud.js";
-import {Button} from "@mui/material/esm";
+import {Button} from "@mui/material";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
 

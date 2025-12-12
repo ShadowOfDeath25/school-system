@@ -15,5 +15,7 @@ class ExtraDueController extends Controller
     protected string $model = ExtraDue::class;
     protected string $storeRequest = StoreExtraDueRequest::class;
     protected string $updateRequest = UpdateExtraDueRequest::class;
-
+    protected array $filterable = [
+        'student_id', 'academic_year'
+    ];
 }
