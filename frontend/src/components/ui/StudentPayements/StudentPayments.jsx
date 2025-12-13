@@ -4,8 +4,8 @@ import {PaymentHelper} from "@helpers/PaymentHelper.js";
 import {useGetAll} from "@hooks/api/useCrud.js";
 
 export default function StudentPayments({student, academicYear}) {
-    const {data: fees, isLoading} = useGetAll(`students/${student.id}/payments`, {academic_year: academicYear},{
-        queryKey: ['payments',student.id]
+    const {data: fees, isLoading} = useGetAll(`students/${student.id}/payments`, {academic_year: academicYear}, {
+        queryKey: ['payments', student.id]
     });
     if (isLoading) {
         return (<div className={styles.container}>
@@ -72,6 +72,15 @@ export default function StudentPayments({student, academicYear}) {
                         <td>{PaymentHelper.formatCurrency(fees?.paid?.[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
                         <td>-</td>
                         <td>{PaymentHelper.formatCurrency(fees?.remaining[PaymentHelper.PAYMENT_TYPES.UNIFORM])}</td>
+                    </tr>
+                    <tr>
+                        <td className={styles.label}>مستحقات اضافية</td>
+                        <td>
+                            {PaymentHelper.formatCurrency(fees?.required[PaymentHelper.PAYMENT_TYPES.EXTRA_DUES])}
+                        </td>
+                        <td>{PaymentHelper.formatCurrency(fees?.paid?.[PaymentHelper.PAYMENT_TYPES.EXTRA_DUES])}</td>
+                        <td>-</td>
+                        <td>{PaymentHelper.formatCurrency(fees?.remaining[PaymentHelper.PAYMENT_TYPES.EXTRA_DUES])}</td>
                     </tr>
                     <tr>
                         <td className={styles.label}>الإجمالي</td>

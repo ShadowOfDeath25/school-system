@@ -3,7 +3,8 @@ export const PaymentHelper = {
         ADMINISTRATIVE: "مصروفات ادارية",
         TUITION: "مصروفات دراسية",
         BOOKS: "مصروفات الكتب",
-        UNIFORM: "مصروفات الزي"
+        UNIFORM: "مصروفات الزي",
+        EXTRA_DUES: "مستحقات اضافية"
     },
     formatCurrency: (value) => isNaN(value) ? "-" : value,
     getTotal: (data) => {
