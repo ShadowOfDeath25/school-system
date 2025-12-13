@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Book;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreBookRequest extends FormRequest
 {
@@ -23,14 +24,14 @@ class StoreBookRequest extends FormRequest
     {
         return [
             'academic_year' => ["required", 'regex:/^\d{4}\/\d{4}$/'],
-            'imported_quantity' => ["required", "integer","min:1"],
+            'imported_quantity' => ["required", "integer", "min:1"],
             'available_quantity' => ["required", "integer", "lte:imported_quantity", "min:1"],
             'semester' => ["required", "string"],
             'price' => ["numeric", "required"],
             'level' => ["string", "required",],
             'subject_id' => ["sometimes", "integer", "exists:subjects,id"],
             'grade' => ["required", "integer"],
-            'type' => ["string", 'required', 'unique:books,type'],
+            'type' => ["string", 'required', Rule::unique('books', 'type')->where('academic_year', $this->academic_year)],
             'language' => ['required', 'string', 'in:لغات,عربي']
         ];
     }

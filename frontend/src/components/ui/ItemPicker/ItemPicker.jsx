@@ -13,15 +13,17 @@ import {useQueryClient} from "@tanstack/react-query";
  * @param {string|number} props.academicYear - Academic year
  * @param {Object} props.config - Configuration object
  * @param {string} props.config.purchaseEndpoint
- * @param {string} props.config.resourceName - Name of the resource (e.g., 'books', 'uniforms')
+ * @param {string} [props.config.resourceName] - Name of the resource (e.g., 'books', 'uniforms')
  * @param {string} props.config.buttonText - Text for the add button
  * @param {Array} props.config.columns - Array of column definitions [{key: string, label: string}]
  * @param {Array} [props.config.modalFields] - Optional custom modal fields. If not provided, defaults to item select + quantity
- * @param {Function} [props.config.formatItemOption] - Optional function to format item options (item => ({value, label}))
- * @param {Object} [props.config.itemParams] - Custom parameters for filtering the data [{param1:value1, param2:value2}]
- * @param {Object} [props.config.purchaseParams] - Custom parameters for filtering the Purchase data [{param1:value1, param2:value2}]
+ * @param {Function} props.config.formatItemOption - Optional function to format item options (item => ({value, label}))
+ * @param {Object} props.config.itemParams - Custom parameters for filtering the data {param1:value1, param2:value2}
+ * @param {Object} props.config.purchaseParams - Custom parameters for filtering the Purchase data [{param1:value1, param2:value2}]
  * @param {Boolean} [props.config.editable] - A boolean to specify if the records are editable or not
  * @param {Boolean} [props.config.deletable]- A boolean to specify if the records are deletable or not
+ * @param {Function} [props.config.columns.render] - A function to customize how each column is rendered
+ * @param {Array} [props.config.additionalModalFields] - An array of fields to be added on top of the default fields.
  */
 export default function ItemPicker({student, academicYear, config}) {
     const {showInputModal, hideInputModal} = useInputModal();
@@ -50,11 +52,29 @@ export default function ItemPicker({student, academicYear, config}) {
     });
 
     const formatItemOption = config.formatItemOption || defaultFormatItemOption;
-
+    const additionalModalFields = config.additionalModalFields ? config.additionalModalFields : []
 
     const handleItemAddition = () => {
         showInputModal({
-            fields: config.modalFields,
+            fields: config.modalFields ?? [
+                {
+                    name: config.resourceName.slice(0, -1) + "_id",
+                    type: "select",
+                    required: true,
+                    placeholder: "اختر النوع",
+                    label: "النوع",
+                    options: items?.data?.map(formatItemOption)
+                },
+                ...additionalModalFields,
+                {
+                    name: 'quantity',
+                    type: 'number',
+                    min: 1,
+                    label: "الكمية",
+                    placeholder: "الكمية",
+                    required: true,
+                },
+            ],
             onSave: (formData) => {
                 mutation.mutate({...formData, student_id: student.id, academic_year: academicYear}, {
                     onSuccess: () => {
