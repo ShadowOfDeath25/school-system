@@ -1,4 +1,4 @@
-import styles from '@ui/BookPicker/styles.module.css'
+import styles from '@ui/ItemPicker/styles.module.css'
 import {Button} from "@mui/material";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import {useCreate, useGetAll, useUpdate} from "@hooks/api/useCrud.js";

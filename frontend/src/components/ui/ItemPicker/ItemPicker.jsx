@@ -1,5 +1,5 @@
 import {useInputModal} from "@contexts/InputModalContext.jsx";
-import styles from '@ui/BookPicker/styles.module.css';
+import styles from '@ui/ItemPicker/styles.module.css';
 import {Button} from "@mui/material";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
