@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Exemption extends Model
 {
     protected $fillable = [
-
-        'value',
+        'student_id',
         'type',
+        'value',
     ];
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests\Exemption;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreExemptionRequest extends FormRequest
+class FilterExemptionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,8 @@ class StoreExemptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required', 'string'],
-            'value' => ['required', 'numeric'],
-            'student_id'=>['sometimes','integer','exists:students,id']
+            'student_id' => ['exists:students,id', 'integer', 'sometimes'],
+            'type' => ['sometimes', 'string', 'exists:exemptions,type']
         ];
     }
 }

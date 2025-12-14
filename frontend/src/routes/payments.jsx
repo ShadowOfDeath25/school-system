@@ -10,6 +10,7 @@ import {Link} from 'react-router-dom'
 import TuitionPayments from "@pages/Payments/TuitionPayments.jsx";
 import UniformPayments from "@pages/Payments/UniformPayments.jsx";
 import ExtraDues from "@pages/Payments/ExtraDues.jsx";
+import AddExemptions from "@pages/Payments/AddExemptions.jsx";
 
 const routes = {
     path: "payments",
@@ -41,13 +42,23 @@ const routes = {
             }
         },
         {
-            path: "exemptions",
+            path: "exemption-values",
             element: <Exemptions/>,
             handle: {
                 sidebar: {
-                    title: "الاعفائات"
+                    title: "قيم الاعفائات"
                 },
                 action: "create exemption"
+            }
+        },
+        {
+            path: 'exemptions',
+            element: <PaymentsPage route={'/payments/:id/exemptions'}/>,
+            handle:{
+                sidebar:{
+                    title:"الاعفائات"
+                },
+                action:'create exemption'
             }
         },
         {
@@ -177,6 +188,19 @@ const routes = {
                             </Link>
                         ]
                     },
+                },
+                {
+                    path: 'exemptions',
+                    element: <AddExemptions/>,
+                    handle: {
+                        action: ['create exemption'],
+                        title: "ادارة الاعفائات",
+                        breadcrumbs: () => [
+                            <Link to={'/payments/exemptions'} className={style.breadcrumbLink}>
+                                الاعفائات
+                            </Link>
+                        ]
+                    }
                 }
             ]
         }

@@ -74,6 +74,7 @@ class StudentPaymentsService
             $q->unionAll(
                 DB::table('exemptions')
                     ->where('type', $student->type)
+                    ->orWhere('student_id',$student->id)
                     ->select([
                         DB::raw('SUM(value) as value'),
                         DB::raw('"exemptions" as type'),
