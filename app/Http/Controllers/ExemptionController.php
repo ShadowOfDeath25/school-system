@@ -28,6 +28,13 @@ class ExemptionController extends Controller
     public function index(FilterExemptionRequest $request)
     {
         $data = $request->validated();
+        if ($request->boolean('globalOnly')) {
+
+            return JsonResource::collection(
+                Exemption::whereNull('student_id')
+                    ->paginate($request->input('per_page', 30))
+            );
+        }
 
         if (!empty($data['student_id'])) {
 
@@ -45,7 +52,7 @@ class ExemptionController extends Controller
             return $this->baseIndex($request);
         }
 
-        $result = $q->paginate($request->input('per_page', 30))->withQueryString();
+        $result = $q->get();
 
         return JsonResource::collection($result);
     }

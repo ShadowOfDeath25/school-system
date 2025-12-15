@@ -22,8 +22,9 @@ class FilterExemptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'student_id' => ['exists:students,id', 'integer', 'sometimes'],
-            'type' => ['sometimes', 'string', 'exists:exemptions,type']
+            'student_id' => ['exists:students,id', 'nullable', 'integer', 'sometimes'],
+            'type' => ['sometimes', 'string', 'exists:exemptions,type'],
+            'globalOnly' => ['sometimes', 'boolean']
         ];
     }
 }

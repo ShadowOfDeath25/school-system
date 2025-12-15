@@ -7,6 +7,7 @@ export default function Exemptions() {
             <Page>
                 <Table
                     resource={'exemptions'}
+                    params={{globalOnly: 1}}
                     deletable={false}
                     fields={[
                         {name: "type", editable: false},
