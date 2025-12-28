@@ -53,7 +53,6 @@ class PaymentValueSeeder extends Seeder
                 }
             }
             PaymentValue::create([
-                'academic_year' => $academicYear,
                 'type' => 'مصروفات سحب الملف',
                 'value' => 200
             ]);
