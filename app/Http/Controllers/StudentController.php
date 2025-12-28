@@ -47,6 +47,14 @@ class StudentController extends Controller
                     ->withQueryString()
             );
         }
+        if ($request->has('includeWithdrawn')){
+            return StudentResource::collection(
+                Student::query()
+                    ->with($this->relationsToLoad)
+                    ->paginate($request->input('per_page', 30))
+                    ->withQueryString()
+            );
+        }
         return $this->baseIndex($request);
     }
 

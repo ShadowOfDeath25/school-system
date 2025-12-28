@@ -10,8 +10,7 @@ export default function WithdrawButton({student, children}) {
     const handleWithdraw = async (student) => {
         const confirmed = await confirm({message: "هل أنت متأكد من سحب ملف هذا الطالب ؟"})
         if (confirmed) {
-
-            mutation.mutate({id: student.id, withdrawn: true}, {
+            mutation.mutate({id: student.id, withdrawn: true,status:"تم سحب ملفه"}, {
                 onSuccess: () => {
                     showSnackbar("تم سحب ملف الطالب بنجاح")
                 },

@@ -74,6 +74,7 @@ export default function PaymentsPage({route = ""}) {
                     editable={false}
                     deletable={false}
                     searchable={true}
+                    params={{includeWithdrawn: true}}
                     onClick={(student) => {
                         const newRoute = route.replace(":id", student.id);
                         navigate(newRoute, {state: {student: student}})
