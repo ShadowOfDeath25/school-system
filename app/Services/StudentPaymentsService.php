@@ -30,11 +30,22 @@ class StudentPaymentsService
                 DB::raw('"required" as source')
             )
                 ->from('payment_values')
-                ->where('language', $student->language)
-                ->where('level', $student->level)
-                ->where('academic_year', $academicYear);
+                ->where(function($q) use ($student) {
+                    $q->where(function($subQ) use ($student) {
+                        $subQ->where('language', $student->language)
+                             ->where('level', $student->level);
+                    })->orWhere(function($subQ) {
+                        $subQ->whereNull('language')
+                             ->whereNull('level');
+                    });
+                })
+                ->where(function($q) use ($academicYear){
+                    $q->where('academic_year','=',$academicYear)
+                        ->orWhereNull('academic_year');
+                });
+
             if (!$student->withdrawn) {
-                $q->whereNot('type', '=', self::PAYMENT_TYPES['WITHDRAWAL']);
+                $q->where('type', '!=', self::PAYMENT_TYPES['WITHDRAWAL']);
             }
 
             $q->unionAll(
@@ -110,6 +121,7 @@ class StudentPaymentsService
             self::PAYMENT_TYPES['TUITION'] => $result['paid'][self::PAYMENT_TYPES['TUITION']] ?? 0,
             self::PAYMENT_TYPES['BOOKS'] => $result['paid'][self::PAYMENT_TYPES['BOOKS']] ?? 0,
             self::PAYMENT_TYPES['UNIFORM'] => $result['paid'][self::PAYMENT_TYPES['UNIFORM']] ?? 0,
+            self::PAYMENT_TYPES['WITHDRAWAL'] => $result['paid'][self::PAYMENT_TYPES['WITHDRAWAL']] ?? 0,
             self::PAYMENT_TYPES['EXTRA-DUES'] => $result['paid'][self::PAYMENT_TYPES['EXTRA-DUES']] ?? 0,
         ];
 
@@ -118,6 +130,7 @@ class StudentPaymentsService
             self::PAYMENT_TYPES['TUITION'] => $result['required'][self::PAYMENT_TYPES['TUITION']] - ($result['exemptions']['exemptions'] ?? 0) - ($result['paid'][self::PAYMENT_TYPES['TUITION']] ?? 0),
             self::PAYMENT_TYPES['BOOKS'] => ($result['required'][self::PAYMENT_TYPES["BOOKS"]] ?? 0) - ($result['paid'][self::PAYMENT_TYPES['BOOKS']] ?? 0),
             self::PAYMENT_TYPES['UNIFORM'] => ($result['required'][self::PAYMENT_TYPES['UNIFORM']] ?? 0) - ($result['paid'][self::PAYMENT_TYPES['UNIFORM']] ?? 0),
+            self::PAYMENT_TYPES['WITHDRAWAL'] => ($result['required'][self::PAYMENT_TYPES['WITHDRAWAL']] ?? 0) - ($result['paid'][self::PAYMENT_TYPES['WITHDRAWAL']] ?? 0),
             self::PAYMENT_TYPES['EXTRA-DUES'] => ($result['required'][self::PAYMENT_TYPES['EXTRA-DUES']] ?? 0) - ($result['paid'][self::PAYMENT_TYPES['EXTRA-DUES']] ?? 0),
         ];
         $result['total'] = [

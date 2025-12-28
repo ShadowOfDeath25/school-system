@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('payment_values', function (Blueprint $table) {
             $table->id();
-            $table->string('academic_year');
+            $table->string('academic_year')->nullable();
             $table->string("language")->nullable();
             $table->string("level")->nullable();
             $table->decimal("value", 10, 2);

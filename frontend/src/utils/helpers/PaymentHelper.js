@@ -4,7 +4,8 @@ export const PaymentHelper = {
         TUITION: "مصروفات دراسية",
         BOOKS: "مصروفات الكتب",
         UNIFORM: "مصروفات الزي",
-        EXTRA_DUES: "مستحقات اضافية"
+        EXTRA_DUES: "مستحقات اضافية",
+        WITHDRAWAL:"مصروفات سحب الملف"
     },
     formatCurrency: (value) => isNaN(value) ? "-" : value,
     getTotal: (data) => {

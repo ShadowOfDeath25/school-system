@@ -102,12 +102,13 @@ export default function Withdrawn() {
         <Page>
             <Filters
                 resource={"students"}
-                onSubmit={(filters) => setFilters({withdrawn: true, ...filters})}
+                onSubmit={(filters) => setFilters(filters)}
                 fields={filterFields}
             />
             <Table
                 resource={"students"}
                 filters={filters}
+                params={{withdrawn: true}}
                 fields={[{name: "reg_number"}, {name: "name_in_arabic", label: "الاسم"}, {name: "classroom.name"}]}
                 children={enrollButton}
                 editable={false}

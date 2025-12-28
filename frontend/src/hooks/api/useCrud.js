@@ -27,7 +27,9 @@ export const useGet = (resource, id, params = {}, options = {}) => {
         queryKey: [resource, id, params],
         queryFn: () => axiosClient.get(`/${resource}/${id}`, {params}).then(res => res.data),
         keepPreviousData: true,
-        ...options
+        select:(data)=>data.data,
+        ...options,
+
     })
 }
 export const useFilters = (resource) => {

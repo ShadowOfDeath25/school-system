@@ -4,7 +4,7 @@ import StudentPayments from "@ui/StudentPayements/StudentPayments.jsx";
 import styles from './styles.module.css'
 
 export default function DetailsPage({student, children, breadcrumbsLinks, academicYear, setAcademicYear}) {
-
+    console.log(student)
     return (<>
         <Page breadcrumbsLinks={breadcrumbsLinks}>
             <div className={styles.detailsWrapper}>

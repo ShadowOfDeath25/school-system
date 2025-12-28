@@ -6,7 +6,7 @@ import DetailsPage from "@ui/DetailsPage/DetailsPage.jsx";
 export default function StudentDetailsLayout() {
     const {student, isLoading, academicYear, setAcademicYear} = useStudentDetails();
     const matches = useMatches();
-    console.log(matches.filter(match=>Boolean(match?.handle?.breadcrumbs)))
+
 
     const currentRoute = matches[matches.length - 2];
     const fallbackRedirect = currentRoute?.handle?.fallbackRedirect ?? "/";

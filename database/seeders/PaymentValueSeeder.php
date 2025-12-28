@@ -52,10 +52,10 @@ class PaymentValueSeeder extends Seeder
                     ]);
                 }
             }
-            PaymentValue::create([
-                'type' => 'مصروفات سحب الملف',
-                'value' => 200
-            ]);
         }
+        PaymentValue::create([
+            'type' => 'مصروفات سحب الملف',
+            'value' => 200
+        ]);
     }
 }

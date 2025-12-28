@@ -47,7 +47,7 @@ class StudentController extends Controller
                     ->withQueryString()
             );
         }
-        if ($request->has('includeWithdrawn')){
+        if ($request->has('includeWithdrawn')) {
             return StudentResource::collection(
                 Student::query()
                     ->with($this->relationsToLoad)
@@ -70,7 +70,7 @@ class StudentController extends Controller
 
     public function show(Student $student)
     {
-        return $student->load($this->relationsToLoad);
+        return StudentResource::make($student->load($this->relationsToLoad));
     }
 
     public function store(StoreStudentRequest $request): JsonResponse
