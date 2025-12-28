@@ -27,6 +27,7 @@ class UpdateBookRequest extends FormRequest
             'available_quantity' => ["integer", "lte:imported_quantity", "min:1"],
             'semester' => ["string"],
             'price' => ["numeric"],
+            'buy_price' => ["numeric"],
             'level' => ["string"],
             'subject_id' => ["sometimes", "integer", "exists:subjects,id"],
             'grade' => ["integer"],

@@ -28,6 +28,7 @@ class StoreBookRequest extends FormRequest
             'available_quantity' => ["required", "integer", "lte:imported_quantity", "min:1"],
             'semester' => ["required", "string"],
             'price' => ["numeric", "required"],
+            'buy_price' => ["numeric", "required"],
             'level' => ["string", "required",],
             'subject_id' => ["sometimes", "integer", "exists:subjects,id"],
             'grade' => ["required", "integer"],

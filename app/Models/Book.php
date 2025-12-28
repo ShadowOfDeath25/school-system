@@ -18,7 +18,8 @@ class Book extends Model
         'subject_id',
         'grade',
         'type',
-        'language'
+        'language',
+        'buy_price',
     ];
 
     public function subject(): BelongsTo

@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('academic_year');
-            $table->string("type");
+            $table->string("type")->index();
             $table->decimal('value', 10, 2);
             $table->date('date');
             $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();

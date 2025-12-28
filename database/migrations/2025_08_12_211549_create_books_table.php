@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('semester');
             $table->string('language');
             $table->string("academic_year");
+            $table->decimal("buy_price", 10, 2);
             $table->decimal("price", 10, 2);
             $table->timestamps();
         });
