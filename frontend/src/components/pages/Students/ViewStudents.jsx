@@ -1,15 +1,15 @@
 import Page from "@ui/Page/Page.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
-import {useState} from "react";
+import { useState } from "react";
 import Table from "@ui/Table/Table.jsx";
-import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
-import {StudentHelper} from "@utils/helpers/StudentHelper.js";
+import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
+import { StudentHelper } from "@utils/helpers/StudentHelper.js";
 import WithdrawButton from "@ui/WithdrawButton/WithdrawButton.jsx";
-import {useGetAll} from "../../../hooks/api/useCrud.js";
+import { useGetAll } from "../../../hooks/api/useCrud.js";
 
 export default function ViewStudents() {
     const [tableFilters, setTableFilters] = useState(null);
-    const {data: classrooms} = useGetAll("classrooms", {all: "true"});
+    const { data: classrooms } = useGetAll("classrooms", { all: "true" });
     const fields = [
         {
             name: "reg_number",
@@ -61,7 +61,7 @@ export default function ViewStudents() {
     ]
 
     const withdrawButton = {
-        header: "سحب الملف", content: <WithdrawButton/>
+        header: "سحب الملف", content: (student) => <WithdrawButton student={student} />
     }
     return (
         <Page>
