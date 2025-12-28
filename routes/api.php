@@ -36,36 +36,29 @@ use Illuminate\Support\Facades\Route;
 Route::get("/user", AuthCOntroller::class . "@user")->name("user");
 
 Route::post("/login", AuthController::class . "@login")->name("login");
-Route::get('/benchmark', function () {
-    $start = microtime(true);
-
-    $duration = microtime(true) - $start;
-
-    return response()->json([
-        'php_execution_time_ms' => $duration * 1000
-    ]);
-});
 Route::middleware("auth:sanctum")->group(function () {
-
-
     Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
+    Route::apiResource('roles', RoleController::class)->withFilters();
+    Route::apiResource('users', UserController::class)->withFilters();
+
     Route::apiResource('buses', BusController::class)->withFilters();
     Route::apiResource("books", BookController::class)->withFilters();
     Route::apiResource('parents', GuardianController::class)->withFilters();
     Route::apiResource('students', StudentController::class)->withFilters();
-    Route::get("students/{student}/payments",[StudentController::class, 'getPayments']);
     Route::apiResource('stations', StationController::class);
+    Route::apiResource('classrooms', ClassroomController::class)->withFilters();
+
+    Route::get("students/{student}/payments",[StudentController::class, 'getPayments']);
+    Route::get('/payments/summary', [PaymentController::class, 'summary'])->name('payments.summary');
     Route::apiResource('payments', PaymentController::class)->withFilters();
     Route::apiResource('incomes', IncomeController::class)->withFilters();
-    Route::apiResource('classrooms', ClassroomController::class)->withFilters();
-    Route::apiResource('subjects', SubjectController::class)->withFilters();
     Route::apiResource('expenses', ExpensesController::class)->withFilters();
-    Route::apiResource('roles', RoleController::class)->withFilters();
-    Route::apiResource('users', UserController::class)->withFilters();
+    Route::apiResource('bank-accounts', BankAccountController::class)->withFilters();
+
+    Route::apiResource('subjects', SubjectController::class)->withFilters();
     Route::apiResource('buildings', BuildingController::class);
     Route::apiResource('floors', FloorController::class);
     Route::apiResource('exam-halls', ExamHallController::class);
-    Route::apiResource('bank-accounts', BankAccountController::class)->withFilters();
     Route::apiResource('secret-numbers', SecretNumberController::class)->withFilters();
     Route::apiResource('exams', ExamController::class)->withFilters();
     Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();
@@ -81,6 +74,5 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
     Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
     Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
-
     Route::get("/permissions", [PermissionController::class, 'index']);
 });
