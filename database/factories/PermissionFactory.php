@@ -35,6 +35,7 @@ class PermissionFactory extends Factory
                 Permission::findOrCreate("$action $resource");
             }
         }
+            Permission::findOrCreate('view net-income');
     }
 
     /**

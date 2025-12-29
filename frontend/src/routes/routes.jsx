@@ -17,6 +17,7 @@ import incomesRoutes from '@routes/incomes.jsx'
 import bankAccountsRoutes from '@routes/bankAccounts.jsx'
 import busesRoutes from "@routes/buses.jsx";
 import paymentsRoutes from "@routes/payments.jsx";
+import safeRoutes from "@routes/safe.jsx"
 
 const mainRoutes = {
     handle: {
@@ -63,5 +64,6 @@ export const appRoutes = [
     incomesRoutes,
     bankAccountsRoutes,
     busesRoutes,
-    paymentsRoutes
+    paymentsRoutes,
+    safeRoutes,
 ];
