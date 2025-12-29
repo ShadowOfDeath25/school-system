@@ -13,11 +13,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $superAdmin = new User([
-            "name"=>"Abdelrahman Rafeek",
-            'email'=>"abdo.251152@gmail.com",
-            'password'=>"12345aA!",
-        ]);
+        $superAdmin = new User(config('admin_data'));
 
         $superAdmin->assignRole("Super Admin");
         $superAdmin->save();
