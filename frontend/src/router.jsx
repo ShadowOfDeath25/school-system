@@ -1,4 +1,4 @@
-import {createBrowserRouter} from 'react-router-dom';
+import {createBrowserRouter, Navigate} from 'react-router-dom';
 import LoginPage from '@pages/Login/LoginPage';
 import ProtectedRoute from '@components/guards/ProtectedRoute';
 import GuestLayout from '@layouts/Guest/GuestLayout';
@@ -18,6 +18,10 @@ export const routes = [
                     {
                         element: <DefaultLayout/>,
                         children: [
+                            {
+                              index: true,
+                              element: <Navigate to={'/students'}></Navigate>
+                            },
                             ...appRoutes
                         ]
                     }

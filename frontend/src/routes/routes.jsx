@@ -19,36 +19,10 @@ import busesRoutes from "@routes/buses.jsx";
 import paymentsRoutes from "@routes/payments.jsx";
 import safeRoutes from "@routes/safe.jsx"
 
-const mainRoutes = {
-    handle: {
-        sidebar: {
-            header: 'test 1',
-        },
-    },
-    children: [
-        {
-            index: true,
-            element: <App/>,
-            handle: {
-                sidebar: {
-                    title: 'App',
-                },
-            },
-        },
-        {
-            path: 'test',
-            element: <Test/>,
-            handle: {
-                sidebar: {
-                    title: 'Test',
-                },
-            },
-        },
-    ],
-};
+
 
 export const appRoutes = [
-    mainRoutes,
+
     usersRoutes,
     rolesRoutes,
     studentsRoutes,

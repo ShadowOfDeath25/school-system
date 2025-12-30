@@ -1,6 +1,5 @@
 .navbar {
     background-color: var(--primary-color);
-
     min-height: 80px;
     width: 100%;
     border-bottom: 3px solid var(--secondary-color);
@@ -9,10 +8,14 @@
     align-items: center;
     color: var(--primary-text-color);
     padding-inline: 1vw;
+    position: relative;
 }
-:global(img){
+.navbar :global(img){
     height: 64px;
     width: 64px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .menuIcon{
     color: var(--primary-text-color);

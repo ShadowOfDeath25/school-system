@@ -17,12 +17,12 @@ export default function ProtectedRoute() {
         return <Navigate to="/login" replace/>;
     }
 
-    const hasPermission = requiredPermission ? (user.role.includes("Super Admin")||user.permissions.includes(requiredPermission)) : true;
+    const hasPermission = requiredPermission ? (user.role.includes("Super Admin") || user.permissions.includes(requiredPermission)) : true;
 
-    if ( !hasPermission) {
+    if (!hasPermission) {
         return <Navigate to="/" replace/>;
     }
 
 
-    return <Outlet/>;
+    return <Outlet context={{user: user}}/>;
 }
