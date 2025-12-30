@@ -46,12 +46,13 @@ class SummaryService
             UNION ALL
 
             SELECT
-                income_types.name AS type,
+                'الايرادات المتنوعة' AS type,
                 COALESCE(SUM(incomes.value), 0) AS total
-            FROM income_types
-            LEFT JOIN incomes ON incomes.type = income_types.name
-                AND incomes.date BETWEEN ? AND ?
-            GROUP BY income_types.name
+            FROM
+            incomes
+            WHERE
+            incomes.date BETWEEN ? AND ?
+
         ";
 
         $results = DB::select($query, [$startDate, $endDate, $startDate, $endDate]);
