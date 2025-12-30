@@ -1,0 +1,157 @@
+.container {
+    background-color: var(--primary-color);
+    border-top: 5px solid var(--secondary-color);
+    width: 100%;
+    color: var(--primary-text-color);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    direction: rtl;
+
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1)
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--primary-text-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+}
+
+.formGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.label {
+    min-width: 100px;
+    font-weight: 500;
+}
+
+.radioGroup {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between !important;
+    width: 70%;
+    gap: 20px;
+}
+
+.dateInputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 20px;
+
+    padding: 5px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.actions {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+    justify-content: center;
+
+}
+
+
+.button {
+    font-size: 16px;
+    border-radius: 10px;
+    width: clamp(100px, 10vw, 200px);
+    padding: 10px;
+    background-color: var(--primary-text-color);
+    border: 1px solid transparent;
+    color: black;
+    cursor: pointer;
+    font-weight: normal;
+    transition: all 0.2s;
+
+    &:hover {
+        border: 1px solid var(--primary-text-color);
+        color: var(--primary-text-color);
+        background-color: transparent;
+        filter: none;
+
+    }
+
+    &:disabled {
+        background-color: grey;
+        color: white;
+        border: gray;
+        cursor: not-allowed;
+    }
+}
+
+.selectContainer {
+    width: 300px;
+}
+
+.radioOptionWrapper {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .label {
+        margin-bottom: 5px;
+    }
+
+    .radioGroup {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .radioOptionWrapper {
+        flex-wrap: wrap;
+    }
+
+    .dateInputs {
+        width: 100%;
+        flex-wrap: wrap;
+        margin-right: 0;
+        margin-top: 5px;
+    }
+
+    .selectContainer {
+        width: 100%;
+    }
+
+    .actions {
+        justify-content: center;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .button {
+        width: 100%;
+    }
+}
