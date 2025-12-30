@@ -5,8 +5,7 @@ namespace App\Services;
 use App\Enums\PaymentType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-Use Illuminate\Support\Collection;
-
+use Illuminate\Support\Collection;
 
 
 /**
@@ -95,9 +94,9 @@ class SummaryService
         ]);
 
         return [
-            'books' => (float) $result->books,
-            'uniforms' => (float) $result->uniforms,
-            'expenses' => (float) $result->expenses,
+            'books' => (float)$result->books,
+            'uniforms' => (float)$result->uniforms,
+            'expenses' => (float)$result->expenses,
         ];
     }
 }
