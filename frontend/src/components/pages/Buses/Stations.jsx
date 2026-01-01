@@ -1,17 +1,18 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {useCurrentUser} from "@hooks/api/auth.js";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { useCurrentUser } from "@hooks/api/auth.js";
 import Table from "@ui/Table/Table.jsx";
-import {useCreate} from '@hooks/api/useCrud.js'
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useState} from "react";
+import { useCreate, useGetAll } from '@hooks/api/useCrud.js'
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { useState } from "react";
 
 export default function Stations() {
-    const {data: user} = useCurrentUser()
+    const { data: user } = useCurrentUser()
     const userCanCreate = user?.role.includes("Super Admin") || user.permissions.includes('create stations')
     const mutation = useCreate('stations');
-    const {showSnackbar} = useSnackbar();
+    const { showSnackbar } = useSnackbar();
+    const { data: academicYears = [] } = useGetAll('academic-years');
     const [serverErrors, setServerErrors] = useState();
     const onSubmit = (data, actions) => {
         const normalizedData = {}
@@ -36,8 +37,9 @@ export default function Stations() {
             <Page>
                 <Form
                     onFormSubmit={onSubmit}
+                    serverErrors={serverErrors}
                     fields={[
-                        ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+                        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
                         {
                             name: "city",
                             label: "المدينة",
@@ -65,7 +67,7 @@ export default function Stations() {
                     resource={"stations"}
                     editable={false}
                     fields={[
-                        {name: "city"}, {name: "neighborhood"}, {name: "academic_year"}, {name: "value"}
+                        { name: "city" }, { name: "neighborhood" }, { name: "academic_year" }, { name: "value" }
                     ]}
                 />
             </Page>

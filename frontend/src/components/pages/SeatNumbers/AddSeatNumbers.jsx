@@ -1,17 +1,19 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {SeatNumberHelper} from "@helpers/SeatNumberHelper.js";
-import {useState} from "react";
-import {useCreate} from "@hooks/api/useCrud.js";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { SeatNumberHelper } from "@helpers/SeatNumberHelper.js";
+import { useState } from "react";
+import { useCreate } from "@hooks/api/useCrud.js";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { useGetAll } from "@hooks/api/useCrud.js";
 
 export default function AddSeatNumbers() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('seat-numbers');
-    const {showSnackbar} = useSnackbar();
+    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { showSnackbar } = useSnackbar();
     const fields = [
-        ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
         ClassroomHelper.FIELDS.LEVEL,
         ClassroomHelper.FIELDS.GRADE,
         ClassroomHelper.FIELDS.LANGUAGE,

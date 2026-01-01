@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import styles from './styles.module.css';
 import SelectField from '../SelectField/SelectField';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import { getAcademicYears } from "@utils/getAcademicYears.js";
+import { useGetAll } from "@hooks/api/useCrud.js";
 import { usePersistedState } from "@hooks/usePersistedState.js";
 
 export default function PeriodPicker({ onSubmit }) {
-    const academicYearOptions = getAcademicYears();
-    const [academicYear, setAcademicYear] = usePersistedState(academicYearOptions[1]);
+    const { data: academicYearOptions = [] } = useGetAll('academic-years');
+    const [academicYear, setAcademicYear] = usePersistedState('selected_academic_year', "");
+
+    useEffect(() => {
+        if (!academicYear && academicYearOptions.length > 0) {
+            setAcademicYear(academicYearOptions[0]);
+        }
+    }, [academicYear, academicYearOptions, setAcademicYear]);
     const [viewType, setViewType] = useState('period');
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
     const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
@@ -24,11 +30,11 @@ export default function PeriodPicker({ onSubmit }) {
                 case 'day':
                     onSubmit({
                         startDate: startDate,
-                        endDate: endDate,
+                        endDate: startDate,
                     })
                     break;
                 case 'year': {
-                    const [startYear, endYear] = academicYear.split('/');
+                    const [endYear, startYear] = academicYear.split('/');
                     onSubmit({
                         startDate: `${startYear}-09-01`,
                         endDate: `${endYear}-08-31`

@@ -1,21 +1,21 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
-import {SubjectHelper} from "@utils/helpers/SubjectHelper.js";
-import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
-import {value} from "loadsh/seq.js";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useState} from "react";
-import {ExamHelper} from "@helpers/ExamHelper.js";
+import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
+import { SubjectHelper } from "@utils/helpers/SubjectHelper.js";
+import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { useState } from "react";
+import { ExamHelper } from "@helpers/ExamHelper.js";
 
 export default function AddExams() {
-    const {data: subjects} = useGetAll('subjects', {all: true})
+    const { data: subjects } = useGetAll('subjects', { all: true })
+    const { data: academicYears = [] } = useGetAll('academic-years')
     const mutation = useCreate('exams');
-    const {showSnackbar} = useSnackbar();
+    const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState(null);
     const fields = [
         ExamHelper.FIELDS.NAME,
-        ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
         {
             name: "semester",
             label: "الفصل الدراسي",
@@ -46,7 +46,7 @@ export default function AddExams() {
                             && subject.GRADE === values[2]
                             && subject.LEVEL === values[3]
                             && subject.LANGUAGE === values[4]
-                    ).map(subject => ({label: subject.name, value: subject.id})) : [],
+                    ).map(subject => ({ label: subject.name, value: subject.id })) : [],
             disabled: (values) => values.some(value => !value)
         },
         ExamHelper.FIELDS.TYPE,

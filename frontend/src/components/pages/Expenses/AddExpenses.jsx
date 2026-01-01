@@ -1,14 +1,15 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useState} from "react";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { useState } from "react";
 
 export default function AddExpenses() {
-    const {data: types} = useGetAll('expense-types');
+    const { data: types } = useGetAll('expense-types');
+    const { data: academicYears = [] } = useGetAll('academic-years');
     const mutation = useCreate('expenses')
-    const {showSnackbar} = useSnackbar();
+    const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState();
     const onFormSubmit = (data) => {
         mutation.mutate(data, {
@@ -26,10 +27,11 @@ export default function AddExpenses() {
         <>
             <Page>
                 <Form
+                    serverErrors={serverErrors}
                     onFormSubmit={onFormSubmit}
                     fields={
                         [
-                            ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+                            { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
                             {
                                 name: "type",
                                 type: "select",

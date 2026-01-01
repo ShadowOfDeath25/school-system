@@ -25,7 +25,7 @@ class StoreBankAccountRequest extends FormRequest
             'notes' => ['required', 'string'],
             'type' => ['required', 'string', 'max:255'],
             'manager_name' => ['required', 'string', 'max:255'],
-            'academic_year' => ['required', 'string', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['required', 'string', 'exists:academic_years,name'],
             'value' => ['required', 'numeric'],
             'date' => ['required', 'date'],
         ];

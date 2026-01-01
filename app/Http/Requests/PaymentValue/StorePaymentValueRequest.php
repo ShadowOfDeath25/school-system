@@ -22,7 +22,7 @@ class StorePaymentValueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['required', 'exists:academic_years,name'],
             "level" => ['sometimes', 'string'],
             "language" => ['sometimes', 'string', 'in:لغات,عربي'],
             "grade" => ['sometimes', 'integer'],

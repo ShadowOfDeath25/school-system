@@ -1,8 +1,10 @@
 import styles from './styles.module.css'
 import SelectField from "@ui/SelectField/SelectField.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { useGetAll } from "@hooks/api/useCrud.js";
 
-export default function StudentData({student, academicYear, setAcademicYear}) {
+export default function StudentData({ student, academicYear, setAcademicYear }) {
+    const { data: academicYears = [] } = useGetAll('academic-years');
     console.log(student)
     return (
         <>
@@ -25,7 +27,7 @@ export default function StudentData({student, academicYear, setAcademicYear}) {
                             <td className={styles.label}>العام الدراسي</td>
                             <td>
                                 <SelectField
-                                    options={ClassroomHelper.FIELDS.ACADEMIC_YEAR.options}
+                                    options={academicYears}
                                     value={academicYear}
                                     handleChange={(e) => setAcademicYear(e.target.value)}
                                 />

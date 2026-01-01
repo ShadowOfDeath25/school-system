@@ -23,7 +23,7 @@ class StoreBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ["required", 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ["required", 'exists:academic_years,name'],
             'imported_quantity' => ["required", "integer", "min:1"],
             'available_quantity' => ["required", "integer", "lte:imported_quantity", "min:1"],
             'semester' => ["required", "string"],

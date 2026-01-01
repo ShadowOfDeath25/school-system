@@ -24,7 +24,7 @@ class StoreUniformRequest extends FormRequest
         return [
             'type' => ['required', "string"],
             'size' => ['required', "string"],
-            'academic_year' => ['required', 'string', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['required', 'string', 'exists:academic_years,name'],
             'imported_quantity' => ['required', 'integer'],
             'available_quantity' => ['required', 'integer', "lte:imported_quantity", "min:1"],
             'buy_price' => ['required', 'numeric'],

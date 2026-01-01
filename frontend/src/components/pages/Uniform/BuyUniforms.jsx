@@ -1,11 +1,11 @@
-import {useState} from "react";
-import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import { useState } from "react";
+import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {StudentHelper} from "@helpers/StudentHelper.js";
-import {UniformHelper} from "@helpers/UniformHelper.js";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { StudentHelper } from "@helpers/StudentHelper.js";
+import { UniformHelper } from "@helpers/UniformHelper.js";
 
 const initialFormValues = {
     academic_year: "",
@@ -17,11 +17,12 @@ const initialFormValues = {
 
 export default function BuyUniforms() {
     const [formValues, setFormValues] = useState(initialFormValues);
-    const {academic_year, level, grade, semester} = formValues;
+    const { academic_year, level, grade, semester } = formValues;
     const mutation = useCreate('uniform-purchases')
     const canFetchTypes = !!academic_year;
-    const {showSnackbar} = useSnackbar();
-    const {data: uniforms, isLoading: isLoadingTypes} = useGetAll('uniforms', {
+    const { showSnackbar } = useSnackbar();
+    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: uniforms, isLoading: isLoadingTypes } = useGetAll('uniforms', {
         types: true, academic_year, level, grade, semester
     }, {
         enabled: canFetchTypes, placeholderData: []
@@ -46,7 +47,7 @@ export default function BuyUniforms() {
                 values={formValues}
                 setValues={setFormValues}
                 fields={[
-                    ClassroomHelper.FIELDS.ACADEMIC_YEAR, {
+                    { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears }, {
                         name: 'type',
                         label: 'نوع الزي',
                         id: 'type',

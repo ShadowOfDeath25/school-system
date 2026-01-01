@@ -18,10 +18,10 @@
 .dropdown {
     position: absolute;
     display: flex;
-    left: 0;
-    right:0;
+    left: -1px;
+    right: -1px;
     top: 100%;
-    background-color: var(--primary-color);
+    background-color: #161B30;
     border-radius: 0 0 8px 8px;
     min-height: 100px;
     flex-direction: column;
@@ -31,6 +31,7 @@
     overflow: hidden;
     z-index: 100;
     border: 2px solid var(--secondary-color);
+    border-top: none;
 }
 
 .dropdown.closed {
@@ -72,7 +73,7 @@
         max-height: 40vh;
         min-height: 40vh;
         border-radius: 0;
-        border-inline:none;
+        border-inline: none;
         border-top: none;
         border-bottom: 3px solid var(--secondary-color)
     }

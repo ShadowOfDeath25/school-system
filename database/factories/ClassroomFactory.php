@@ -25,7 +25,7 @@ class ClassroomFactory extends Factory
             'ابتدائي' => $this->faker->numberBetween(1, 6),
             'اعدادي' => $this->faker->numberBetween(1, 3),
         };
-        $academic_year = $this->faker->randomElement(['2024/2025', '2025/2026']);
+        $academic_year = $this->faker->randomElement(['2025/2024', '2026/2025']);
         $language = $this->faker->randomElement(['عربي', 'لغات']);
 
         $existingClassNumbers = Classroom::where("grade", $grade)

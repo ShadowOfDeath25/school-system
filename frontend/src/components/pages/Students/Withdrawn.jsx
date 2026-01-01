@@ -1,19 +1,20 @@
 import Page from "@ui/Page/Page.jsx";
 import Table from "@ui/Table/Table.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
-import {useGetAll, useUpdate} from "@hooks/api/useCrud.js";
-import {useState} from "react";
-import {Button} from "@mui/material";
-import {useInputModal} from "@contexts/InputModalContext.jsx";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
+import { useGetAll, useUpdate } from "@hooks/api/useCrud.js";
+import { useState } from "react";
+import { Button } from "@mui/material";
+import { useInputModal } from "@contexts/InputModalContext.jsx";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
 
 export default function Withdrawn() {
-    const {data: classrooms} = useGetAll('classrooms', {all: 'true'});
+    const { data: classrooms } = useGetAll('classrooms', { all: 'true' });
+    const { data: academicYears = [] } = useGetAll('academic-years');
     const [filters, setFilters] = useState();
     const mutation = useUpdate('students');
-    const {showEditModal, hideEditModal} = useInputModal();
-    const {showSnackbar} = useSnackbar();
+    const { showEditModal, hideEditModal } = useInputModal();
+    const { showSnackbar } = useSnackbar();
     const filterFields = [
         {
             name: "classroom.level",
@@ -57,7 +58,7 @@ export default function Withdrawn() {
     const handleEnroll = (student) => {
         showEditModal({
             fields: [
-                ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+                { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
                 ClassroomHelper.FIELDS.LANGUAGE,
                 ClassroomHelper.FIELDS.LEVEL,
                 ClassroomHelper.FIELDS.GRADE,
@@ -70,12 +71,12 @@ export default function Withdrawn() {
                     dependency: ["academic_year", 'language', 'level', 'grade'],
                     disabled: (values) => values.some(value => !value),
                     options: (value) => classrooms?.data.filter(classroom => classroom.academic_year === value[0] && classroom.language === value[1] && classroom.level === value[2] && classroom.grade === value[3])
-                        .map(classroom => ({label: classroom.name, value: classroom.id}))
+                        .map(classroom => ({ label: classroom.name, value: classroom.id }))
 
                 }
             ],
             item: student, onSave: (payload) => {
-                mutation.mutate({classroom_id: payload.classroom, id: student.id}, {
+                mutation.mutate({ classroom_id: payload.classroom, id: student.id }, {
                     onSuccess: () => {
                         showSnackbar('تم الحاق الطالب بالفصل بنجاح')
                         hideEditModal();
@@ -108,8 +109,8 @@ export default function Withdrawn() {
             <Table
                 resource={"students"}
                 filters={filters}
-                params={{withdrawn: true}}
-                fields={[{name: "reg_number"}, {name: "name_in_arabic", label: "الاسم"}, {name: "classroom.name"}]}
+                params={{ withdrawn: true }}
+                fields={[{ name: "reg_number" }, { name: "name_in_arabic", label: "الاسم" }, { name: "classroom.name" }]}
                 children={enrollButton}
                 editable={false}
             />

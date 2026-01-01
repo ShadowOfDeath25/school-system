@@ -1,15 +1,16 @@
 import Page from "@ui/Page/Page.jsx";
-import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useState} from "react";
+import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { useState } from "react";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 
 export default function AddIncome() {
     const mutation = useCreate('incomes');
-    const {showSnackbar} = useSnackbar()
+    const { showSnackbar } = useSnackbar()
     const [serverErrors, setServerErrors] = useState();
-    const {data: types} = useGetAll("income-types")
+    const { data: types } = useGetAll("income-types")
+    const { data: academicYears = [] } = useGetAll('academic-years')
     const onSubmit = (data, actions) => {
         mutation.mutate(data, {
             onSuccess: () => {
@@ -28,7 +29,7 @@ export default function AddIncome() {
             <Page>
                 <Form
                     fields={[
-                        ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+                        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
 
                         {
                             name: "type",

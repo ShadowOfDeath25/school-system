@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Payment;
+namespace App\Http\Requests\AcademicYear;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StorePaymentRequest extends FormRequest
+class StoreAcademicYearRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,12 +23,7 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ["required", 'exists:academic_years,name'],
-            'level' => ['required', 'string'],
-            'type' => ["required", "string"],
-            'student_id' => ["required", "numeric", "exists:students,id"],
-            'date' => ["required", "date"],
-            'value' => ["required", "numeric", "min:1"]
+            'name' => ['required', 'unique:academic_years,name', 'regex:/^\d{4}\/\d{4}$/']
         ];
     }
 }

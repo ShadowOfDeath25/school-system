@@ -26,7 +26,7 @@ class StoreIncomeRequest extends FormRequest
             "value" => ["required", "numeric"],
             "description" => ["sometimes", "string"],
             "date" => ['required', 'date'],
-            "academic_year" => ['string', 'required', "regex:/^\d{4}\/\d{4}$/"]
+            "academic_year" => ['string', 'required', 'exists:academic_years,name']
         ];
     }
 }

@@ -22,7 +22,7 @@ class UpdateStationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['exists:academic_years,name'],
             'city' => ['string'],
             'neighborhood' => ['string'],
             'value' => ['numeric', 'sometimes']

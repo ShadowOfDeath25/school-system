@@ -24,7 +24,7 @@ class UpdateSeatNumberRequest extends FormRequest
         return [
             'level' => ['string', 'max:255', 'in:ابتدائي,رياض اطفال,اعدادي'],
             'grade' => ['integer' ],
-            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['exists:academic_years,name'],
             'language' => ['string', 'max:255', 'in:عربي,لغات'],
             'starts_at' => ['numeric'],
             'ends_at' => ['numeric'],

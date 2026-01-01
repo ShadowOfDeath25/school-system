@@ -31,7 +31,7 @@ class StoreExamRequest extends FormRequest
             'max_marks' => ['required', 'integer'],
             'min_marks' => ['required', 'integer'],
             'type' => ['required', 'string', 'max:255'],
-            'academic_year' => ['required', 'string', 'max:255'],
+            'academic_year' => ['required', 'string', 'exists:academic_years,name'],
             'grade' => ['required', 'integer'],
             'subject_id' => ['required', 'integer', 'exists:subjects,id'],
 

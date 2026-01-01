@@ -25,7 +25,7 @@ class UpdateExpensesRequest extends FormRequest
             'description' => ['string'],
             'value' => ['numeric'],
             'date' => ['date'],
-            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['exists:academic_years,name'],
             'type' => ['exists:expense_types,name']
         ];
     }

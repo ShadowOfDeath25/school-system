@@ -25,7 +25,7 @@ class StoreExtraDueRequest extends FormRequest
             'student_id' => ['numeric', 'exists:students,id', 'required'],
             'note' => ['string', 'max:255'],
             'value' => ['numeric', 'required'],
-            'academic_year' => ['required', 'string', 'regex:/^\d{4}\/\d{4}$/']
+            'academic_year' => ['required', 'string', 'exists:academic_years,name']
         ];
     }
 }

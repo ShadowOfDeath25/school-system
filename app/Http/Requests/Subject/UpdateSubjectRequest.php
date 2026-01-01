@@ -28,7 +28,7 @@ class UpdateSubjectRequest extends FormRequest
             'level' => ['string', 'max:50'],
             'semester' => ['string', 'max:50'],
             'language' => ['string', 'max:50'],
-            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['exists:academic_years,name'],
             'added_to_total' => ["integer",'min:0', 'max:1'],
             'added_to_report' => ["integer",'min:0', 'max:1'],
             'type' => ['string'],

@@ -1,5 +1,3 @@
-import {getAcademicYears} from "@utils/getAcademicYears.js";
-
 const LEVELS = [
     'رياض اطفال',
     'ابتدائي',
@@ -13,21 +11,21 @@ const LANGUAGES = [
 
 const GRADES = {
     "رياض اطفال": [
-        {label: "الأول", value: 1},
-        {label: "الثاني", value: 2},
+        { label: "الأول", value: 1 },
+        { label: "الثاني", value: 2 },
     ],
     "ابتدائي": [
-        {label: "الاول", value: 1},
-        {label: "الثاني", value: 2},
-        {label: "الثالث", value: 3},
-        {label: "الرابع", value: 4},
-        {label: "الخامس", value: 5},
-        {label: "السادس", value: 6},
+        { label: "الاول", value: 1 },
+        { label: "الثاني", value: 2 },
+        { label: "الثالث", value: 3 },
+        { label: "الرابع", value: 4 },
+        { label: "الخامس", value: 5 },
+        { label: "السادس", value: 6 },
     ],
     "اعدادي": [
-        {label: "الأول", value: 1},
-        {label: "الثاني", value: 2},
-        {label: "الثالث", value: 3},
+        { label: "الأول", value: 1 },
+        { label: "الثاني", value: 2 },
+        { label: "الثالث", value: 3 },
     ],
 };
 
@@ -54,7 +52,7 @@ const FIELDS = {
         placeholder: "اختر العام الدراسي",
         type: "select",
         required: true,
-        options: getAcademicYears()
+        options: []
     },
     MAX_CAPACITY: {
         name: "max_capacity",

@@ -26,7 +26,7 @@ class SeatNumberFactory extends Factory
         return [
             'level' => $level,
             'grade' => $grades[$level],
-            'academic_year' => fake()->randomElement(['2024/2025', '2025/2026']),
+            'academic_year' => fake()->randomElement(['2025/2024', '2026/2025']),
             'language' => fake()->randomElement(['لغات', 'عربي']),
             'starts_at' => $starts_at,
             'ends_at' => $starts_at + 100

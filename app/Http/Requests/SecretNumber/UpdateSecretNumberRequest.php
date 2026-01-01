@@ -25,7 +25,7 @@ class UpdateSecretNumberRequest extends FormRequest
             'grade' => ['integer'],
             'group_number' => ['numeric', 'max:255'],
             'group_capacity' => ['integer', 'max:255'],
-            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['exists:academic_years,name'],
             'language' => ['string', 'max:255', 'in:عربي,لغات'],
             'level' => ['string', 'max:255'],
             'starts_at' => ['numeric'],

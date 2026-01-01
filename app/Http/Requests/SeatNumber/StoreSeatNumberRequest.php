@@ -24,7 +24,7 @@ class StoreSeatNumberRequest extends FormRequest
         return [
             'level' => ['required', 'string', 'max:255', 'in:ابتدائي,رياض اطفال,اعدادي'],
             'grade' => ['required', 'integer', 'max:255'],
-            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['required', 'exists:academic_years,name'],
             'language' => ['required', 'string', 'max:255', 'in:عربي,لغات'],
             'starts_at' => ['required', 'numeric'],
             'ends_at' => ['required', 'numeric'],

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BookController;
@@ -40,6 +41,8 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/logout", AuthController::class . "@logout")->name("logout")->middleware("auth:sanctum");
     Route::apiResource('roles', RoleController::class)->withFilters();
     Route::apiResource('users', UserController::class)->withFilters();
+    Route::get('academic-years', [AcademicYearController::class, 'index']);
+    Route::post('academic-years', [AcademicYearController::class, 'store']);
 
     Route::apiResource('buses', BusController::class)->withFilters();
     Route::apiResource("books", BookController::class)->withFilters();
@@ -48,7 +51,7 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('stations', StationController::class);
     Route::apiResource('classrooms', ClassroomController::class)->withFilters();
 
-    Route::get("students/{student}/payments",[StudentController::class, 'getPayments']);
+    Route::get("students/{student}/payments", [StudentController::class, 'getPayments']);
     Route::get('/payments/summary', [PaymentController::class, 'summary'])->name('payments.summary');
     Route::apiResource('payments', PaymentController::class)->withFilters();
     Route::apiResource('incomes', IncomeController::class)->withFilters();

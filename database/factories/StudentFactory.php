@@ -26,7 +26,7 @@ class StudentFactory extends Factory
         ];
         $gender = $this->faker->randomElement(['male', 'female']);
         $language = $this->faker->randomElement(['عربي', 'لغات']);
-        $academicYear = $this->faker->randomElement(['2024/2025', '2026/2026']);
+        $academicYear = $this->faker->randomElement(['2026/2025', '2025/2024']);
         $level = $this->faker->randomElement(['رياض اطفال', 'اعدادي', 'ابتدائي']);
         $grade = $this->faker->randomElement($gradesByLevel[$level]);
         $classroom = Classroom::where('language', $language)

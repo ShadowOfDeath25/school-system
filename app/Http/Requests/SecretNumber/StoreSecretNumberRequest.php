@@ -25,7 +25,7 @@ class StoreSecretNumberRequest extends FormRequest
             'grade' => ['required', 'integer'],
             'group_number' => ['numeric', 'max:255'],
             'group_capacity' => ['required', 'integer', 'max:255'],
-            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['required', 'exists:academic_years,name'],
             'language' => ['required', 'string', 'max:255', 'in:عربي,لغات'],
             'level' => ['required', 'string', 'max:255'],
             'starts_at' => ['required', 'numeric'],

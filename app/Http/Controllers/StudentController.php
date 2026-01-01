@@ -152,7 +152,7 @@ class StudentController extends Controller
     public function getPayments(Request $request, Student $student)
     {
         $request->validate([
-            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['required', 'exists:academic_years,name'],
             'student' => ['exists:students,id']
         ]);
         $service = new StudentPaymentsService;

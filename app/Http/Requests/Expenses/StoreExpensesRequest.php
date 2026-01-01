@@ -25,7 +25,7 @@ class StoreExpensesRequest extends FormRequest
             'description' => ['required', 'string'],
             'value' => ['required', 'numeric'],
             'date' => ['required', 'date'],
-            'academic_year' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['required', 'exists:academic_years,name'],
             'type' => ['required', 'exists:expense_types,name']
         ];
     }

@@ -1,16 +1,17 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {SeatNumberHelper} from "@helpers/SeatNumberHelper.js";
-import {SubjectHelper} from "@helpers/SubjectHelper.js";
-import {useSnackbar} from '@contexts/SnackbarContext.jsx'
-import {useState} from "react";
-import {useCreate} from "@hooks/api/useCrud.js";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { SeatNumberHelper } from "@helpers/SeatNumberHelper.js";
+import { SubjectHelper } from "@helpers/SubjectHelper.js";
+import { useSnackbar } from '@contexts/SnackbarContext.jsx'
+import { useState } from "react";
+import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
 
 export default function AddSecretNumber() {
     const mutation = useCreate('secret-numbers');
-    const {showSnackbar} = useSnackbar();
+    const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState();
+    const { data: academicYears = [] } = useGetAll('academic-years')
     const onSubmit = (data) => {
         mutation.mutate(data, {
             onSuccess: () => {
@@ -28,12 +29,12 @@ export default function AddSecretNumber() {
             <Page>
                 <Form
                     fields={[
-                        ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+                        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
                         {
                             name: "group_number",
                             required: true,
                             label: "رقم المجموعة",
-                            placeholder:"رقم المجموعة" ,
+                            placeholder: "رقم المجموعة",
 
                         },
                         {

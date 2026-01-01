@@ -22,7 +22,7 @@ class StoreStationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ["required", 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ["required", 'exists:academic_years,name'],
             'city' => ['required', 'string'],
             'neighborhood' => ['required', 'string'],
             'value' => ["numeric"]

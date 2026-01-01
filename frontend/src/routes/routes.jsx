@@ -1,6 +1,3 @@
-import React from 'react';
-import App from '/src/App.jsx'
-import Test from '@ui/Test.jsx';
 import usersRoutes from '@routes/users.jsx';
 import rolesRoutes from "@routes/roles.jsx";
 import studentsRoutes from "@routes/students.jsx";
@@ -17,12 +14,11 @@ import incomesRoutes from '@routes/incomes.jsx'
 import bankAccountsRoutes from '@routes/bankAccounts.jsx'
 import busesRoutes from "@routes/buses.jsx";
 import paymentsRoutes from "@routes/payments.jsx";
-import safeRoutes from "@routes/safe.jsx"
-
+import dashboardRoutes from "@routes/dashboard.jsx"
 
 
 export const appRoutes = [
-
+    dashboardRoutes,
     usersRoutes,
     rolesRoutes,
     studentsRoutes,
@@ -39,5 +35,4 @@ export const appRoutes = [
     bankAccountsRoutes,
     busesRoutes,
     paymentsRoutes,
-    safeRoutes,
 ];

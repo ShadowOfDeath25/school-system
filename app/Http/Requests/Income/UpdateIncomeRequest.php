@@ -26,7 +26,7 @@ class UpdateIncomeRequest extends FormRequest
             "value" => ["numeric"],
             "description" => ["string"],
             "date" => ['date'],
-            "academic_year" => ['string', "regex:/^\d{4}\/\d{4}$/"]
+            "academic_year" => ['string', 'exists:academic_years,name']
         ];
     }
 }

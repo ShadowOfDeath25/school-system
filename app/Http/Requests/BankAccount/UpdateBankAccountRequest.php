@@ -25,7 +25,7 @@ class UpdateBankAccountRequest extends FormRequest
             'notes' => ['string'],
             'type' => ['string', 'max:255'],
             'manager_name' => ['string', 'max:255'],
-            'academic_year' => ['string', 'regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['string', 'exists:academic_years,name'],
             'value' => ['numeric'],
             'date' => ['date']
         ];

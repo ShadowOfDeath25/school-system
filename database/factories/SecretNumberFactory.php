@@ -29,7 +29,7 @@ class SecretNumberFactory extends Factory
             'level' => $level,
             'group_number' => fake()->randomNumber(),
             'group_capacity' => $capacity,
-            'academic_year' => fake()->randomElement(['2024/2025', '2025/2026']),
+            'academic_year' => fake()->randomElement(['2025/2026', '2026/2025']),
             'language' => fake()->randomElement(["عربي", 'لغات']),
             'starts_at' => $starts_at,
             'ends_at' => $starts_at + $capacity,

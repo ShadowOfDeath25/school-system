@@ -1,15 +1,16 @@
-import {useState} from "react";
-import {useCreate} from "@hooks/api/useCrud.js";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import { useState } from "react";
+import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {UniformHelper} from "@helpers/UniformHelper.js";
+import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { UniformHelper } from "@helpers/UniformHelper.js";
 
 export default function AddUniforms() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('uniforms')
-    const {showSnackbar} = useSnackbar()
+    const { showSnackbar } = useSnackbar()
+    const { data: academicYears = [] } = useGetAll('academic-years')
 
     const handleSubmit = (data) => {
         data.available_quantity = data.imported_quantity
@@ -33,7 +34,7 @@ export default function AddUniforms() {
                 <Form
                     serverErrors={serverErrors}
                     fields={[
-                        ClassroomHelper.FIELDS.ACADEMIC_YEAR,
+                        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
                         UniformHelper.FIELDS.TYPE,
                         UniformHelper.FIELDS.SELL_PRICE,
                         UniformHelper.FIELDS.BUY_PRICE,

@@ -22,7 +22,7 @@ class UpdateBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ['regex:/^\d{4}\/\d{4}$/'],
+            'academic_year' => ['exists:academic_years,name'],
             'imported_quantity' => ["integer"],
             'available_quantity' => ["integer", "lte:imported_quantity", "min:1"],
             'semester' => ["string"],

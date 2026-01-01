@@ -24,7 +24,7 @@ class UpdateExtraDueRequest extends FormRequest
         return [
             'note' => ['string', 'max:255'],
             'value' => ['numeric'],
-            'academic_year' => ['string', 'regex:/^\d{4}\/\d{4}$/']
+            'academic_year' => ['string', 'exists:academic_years,name']
         ];
     }
 }
