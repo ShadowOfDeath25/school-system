@@ -13,6 +13,9 @@ class AuthorizationException extends Exception
      */
     public function render(Request $request): JsonResponse
     {
-        return response()->json(["error" => "Access denied", "message" => "انت غير مصرح لك للقيام بهذا "], 403);
+        return response()->json([
+            "error" => "Access denied",
+            "message" => $this->getMessage() ?: "انت غير مصرح لك للقيام بهذا "
+        ], 403);
     }
 }

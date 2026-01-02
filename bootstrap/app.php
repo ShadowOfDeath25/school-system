@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectGuestsTo(fn() => config('app.frontend_url'));
         $middleware->statefulApi();
+        $middleware->alias([
+            'authorization' => \App\Http\Middleware\Authorization::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

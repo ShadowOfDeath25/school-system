@@ -20,7 +20,7 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request)
     {
-        $this->authorizeAction("create");
+
         $data = $request->validated();
         $role = new Role([
             'name' => $data["name"],
@@ -37,7 +37,7 @@ class RoleController extends Controller
 
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        $this->authorizeAction("update");
+
         $data = $request->validated();
         $role->update($data);
         if ($request->has("permissions")) {

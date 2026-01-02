@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+
 use App\Exceptions\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -30,12 +31,9 @@ trait HasCRUD
      * Display a listing of the resource.
      * @throws AuthorizationException
      */
+    public function index(Request $request){
 
 
-    public function index(Request $request)
-    {
-
-        $this->authorizeAction("view");
         $query = $this->getQuery();
 
 
@@ -110,7 +108,6 @@ trait HasCRUD
      */
     public function store(Request $request)
     {
-        $this->authorizeAction("create");
         $validated = app($this->storeRequest)->validated();
 
 
@@ -130,7 +127,6 @@ trait HasCRUD
      */
     public function show(string $id)
     {
-        $this->authorizeAction("view");
         $record = $this->getQuery()->findOrFail($id);
 
         return isset($this->resource)
@@ -144,7 +140,6 @@ trait HasCRUD
      */
     public function update(Request $request, string $id)
     {
-        $this->authorizeAction("update");
         $validated = app($this->updateRequest)->validated();
 
         $record = ($this->model)::findOrFail($id);
@@ -166,7 +161,6 @@ trait HasCRUD
      */
     public function destroy(string $id)
     {
-        $this->authorizeAction("delete");
         $record = ($this->model)::findOrFail($id);
         $record->delete();
 
@@ -174,14 +168,5 @@ trait HasCRUD
     }
 
 
-    /**
-     * @throws AuthorizationException
-     */
-    private function authorizeAction(string $action)
-    {
-        $modelName = strtolower(class_basename($this->model)) . "s";
-        if (!auth()->user()->can("$action $modelName")) {
-            throw new AuthorizationException();
-        }
-    }
+
 }
