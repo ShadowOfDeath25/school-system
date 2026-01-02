@@ -6,6 +6,7 @@ use App\Enums\PaymentType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Psy\Util\Json;
 
 
 /**
@@ -102,10 +103,71 @@ class SummaryService
 
     /**
      * Calculate total expenses and incomes for each month from the past 12 months
+     * @returns array - An array including the monthly totals and the total for the past year
      */
-    public function getMonthlySummary()
-    {
 
+    public function getMonthlySummary(): array
+    {
+        $startDate = now()->subMonth(11)->firstOfMonth();
+        $endDate = now()->endOfMonth();
+
+        $incomes = DB::table('payments')
+            ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->groupBy('year', 'month')
+            ->get();
+
+        $expenses = DB::table('expenses')
+            ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->groupBy('year', 'month')
+            ->get();
+
+        $bookExpenses = DB::table("books")
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(buy_price * imported_quantity) as value')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('year', 'month')
+            ->get();
+
+        $uniformExpenses = DB::table('uniforms')
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(buy_price * imported_quantity) as value')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->groupBy('year', 'month')
+            ->get();
+
+        $monthlyIncomes = $incomes
+            ->groupBy(fn($r) => "{$r->year}-{$r->month}")
+            ->map(fn($g) => $g->sum('value'));
+
+        $monthlyExpenses = collect()
+            ->merge($expenses)
+            ->merge($uniformExpenses)
+            ->merge($bookExpenses)
+            ->groupBy(fn($r) => "{$r->year}-{$r->month}")
+            ->map(fn($g) => $g->sum('value'));
+
+        $results = [
+            "monthly" => collect()
+        ];
+
+        while ($startDate <= $endDate) {
+            $key = "{$startDate->year}-{$startDate->month}";
+
+            $results["monthly"]->push([
+                'year' => $startDate->year,
+                'month' => $startDate->month,
+                'incomes' => (float)($monthlyIncomes[$key] ?? 0),
+                'expenses' => (float)($monthlyExpenses[$key] ?? 0),
+            ]);
+            $startDate->addMonth();
+        }
+        $results["total"] =
+            [
+                "incomes" => $results['monthly']->sum('incomes'),
+                "expenses" => $results['monthly']->sum('expenses')
+            ];
+
+        return $results;
     }
 
 }

@@ -7,21 +7,14 @@ use App\Services\SummaryService;
 use Carbon\Carbon;
 use Carbon\Month;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class FinancialReportsController extends Controller
 {
-    public function monthly()
+    public function monthly(): JsonResponse
     {
-
-        $startDate = now()->subMonth(11)->startOfMonth()->toDateString();
-        $endDate= now()->endOfMonth()->toDateString();
-
-        return [
-            $startDate,
-            $endDate
-        ];
-
-
+        $service = new SummaryService;
+        return response()->json($service->getMonthlySummary());
     }
 
     public function summary(PaymentSummaryRequest $request)
