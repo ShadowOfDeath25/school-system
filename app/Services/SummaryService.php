@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\PaymentType;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
@@ -155,7 +156,7 @@ class SummaryService
 
             $results["monthly"]->push([
                 'year' => $startDate->year,
-                'month' => $startDate->month,
+                'month' => Carbon::create(null, $startDate->month, 1)->translatedFormat('F'),
                 'incomes' => (float)($monthlyIncomes[$key] ?? 0),
                 'expenses' => (float)($monthlyExpenses[$key] ?? 0),
             ]);

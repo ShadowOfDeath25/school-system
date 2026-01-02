@@ -8,6 +8,7 @@ use App\Http\Controllers\BookPurchaseController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\BusController;
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExamHallController;
 use App\Http\Controllers\ExemptionController;
@@ -27,6 +28,7 @@ use App\Http\Controllers\SeatNumberController;
 use App\Http\Controllers\SecretNumberController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\StudentReportsController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SubjectTypeController;
 use App\Http\Controllers\UniformController;
@@ -53,9 +55,11 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('classrooms', ClassroomController::class)->withFilters();
 
 
-    Route::get('reports/financial/monthly',[FinancialReportsController::class,'monthly']);
+    Route::get('reports/financial/monthly', [FinancialReportsController::class, 'monthly'])->name('financial-reports.monthly');
     Route::get('reports/financial/summary', [FinancialReportsController::class, 'summary'])->name('financial-reports.summary');
+    Route::get('reports/students/summary', [StudentReportsController::class, 'summary'])->name('student-reports.summary');
     Route::get("students/{student}/payments", [StudentController::class, 'getPayments']);
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::apiResource('payments', PaymentController::class)->withFilters();
     Route::apiResource('incomes', IncomeController::class)->withFilters();
     Route::apiResource('expenses', ExpensesController::class)->withFilters();
