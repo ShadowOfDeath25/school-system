@@ -112,10 +112,16 @@ class SummaryService
         $startDate = now()->subMonth(11)->firstOfMonth();
         $endDate = now()->endOfMonth();
 
-        $incomes = DB::table('payments')
+        $payments = DB::table('payments')
             ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
             ->whereBetween('date', [$startDate, $endDate])
             ->groupBy('year', 'month')
+            ->get();
+
+        $incomes = DB::table('incomes')
+            ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
+            ->whereBetween('date',[$startDate, $endDate])
+            ->groupBy('year','month')
             ->get();
 
         $expenses = DB::table('expenses')
@@ -136,10 +142,16 @@ class SummaryService
             ->groupBy('year', 'month')
             ->get();
 
-        $monthlyIncomes = $incomes
+        $monthlyIncomes = collect()
+            ->merge($incomes)
+            ->merge($payments)
             ->groupBy(fn($r) => "{$r->year}-{$r->month}")
             ->map(fn($g) => $g->sum('value'));
 
+//        $payments
+//            ->groupBy(fn($r) => "{$r->year}-{$r->month}")
+//            ->map(fn($g) => $g->sum('value'));
+//
         $monthlyExpenses = collect()
             ->merge($expenses)
             ->merge($uniformExpenses)
