@@ -35,7 +35,10 @@ class PermissionFactory extends Factory
                 Permission::findOrCreate("$action $resource");
             }
         }
-            Permission::findOrCreate('view net-income');
+        Permission::findOrCreate('view net-income');
+        Permission::findOrCreate('view dashboard');
+        Permission::findOrCreate('view financial-reports');
+        Permission::findOrCreate('view student-reports');
     }
 
     /**
