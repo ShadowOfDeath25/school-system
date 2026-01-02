@@ -99,4 +99,13 @@ class SummaryService
             'expenses' => (float)$result->expenses,
         ];
     }
+
+    /**
+     * Calculate total expenses and incomes for each month from the past 12 months
+     */
+    public function getMonthlySummary()
+    {
+
+    }
+
 }

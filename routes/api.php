@@ -14,6 +14,7 @@ use App\Http\Controllers\ExemptionController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ExpenseTypeController;
 use App\Http\Controllers\ExtraDueController;
+use App\Http\Controllers\FinancialReportsController;
 use App\Http\Controllers\FloorController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
@@ -51,8 +52,10 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::apiResource('stations', StationController::class);
     Route::apiResource('classrooms', ClassroomController::class)->withFilters();
 
+
+    Route::get('reports/financial/monthly',[FinancialReportsController::class,'monthly']);
+    Route::get('reports/financial/summary', [FinancialReportsController::class, 'summary'])->name('financial-reports.summary');
     Route::get("students/{student}/payments", [StudentController::class, 'getPayments']);
-    Route::get('/payments/summary', [PaymentController::class, 'summary'])->name('payments.summary');
     Route::apiResource('payments', PaymentController::class)->withFilters();
     Route::apiResource('incomes', IncomeController::class)->withFilters();
     Route::apiResource('expenses', ExpensesController::class)->withFilters();

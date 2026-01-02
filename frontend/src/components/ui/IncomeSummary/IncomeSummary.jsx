@@ -4,7 +4,7 @@ import LoadingScreen from "../LoadingScreen/LoadingScreen.jsx";
 
 
 export default function IncomeSummary({startDate, endDate}) {
-    const {data, isLoading, isError} = useGetAll('payments/summary', {start_date: startDate, end_date: endDate}, {
+    const {data, isLoading, isError} = useGetAll('reports/financial/summary', {start_date: startDate, end_date: endDate}, {
         enabled: !!startDate && !!endDate
     });
 

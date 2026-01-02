@@ -24,12 +24,5 @@ class PaymentController extends Controller
         'type'
     ];
 
-    public function summary(PaymentSummaryRequest $request)
-    {
-        $data = $request->validated();
-        $service = new SummaryService();
-        $incomes = $service->getTotalIncome($data['start_date'], $data['end_date']);
-        $expenses = $service->getTotalExpenses($data['start_date'], $data['end_date']);
-        return response()->json(["incomes"=>$incomes, "expenses" => $expenses]);
-    }
+
 }
