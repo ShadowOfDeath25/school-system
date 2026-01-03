@@ -1,0 +1,21 @@
+.container {
+    display: block;
+    width: 60%;
+    margin: 20px auto;
+    background-color: var(--primary-color);
+    box-shadow: var(--container-box-shadow);
+    border-top: var(--container-border);
+    color: var(--primary-text-color);
+    overflow-x: auto;
+    scrollbar-width: none;
+    overflow-y: hidden;
+    padding: 20px;
+
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        margin: 10px 0;
+    }
+}

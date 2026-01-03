@@ -1,6 +1,6 @@
 import NetIncome from "@pages/NetIncome/NetIncome.jsx";
 import AcademicYears from "@pages/AcademicYears/AcademicYears.jsx";
-
+import Dashboard from "@pages/Dashboard/Dashboard.jsx"
 const route = {
     path: "dashboard",
     handle: {
@@ -10,6 +10,17 @@ const route = {
         }
     },
     children: [
+        {
+            index: true,
+            handle: {
+                sidebar: {
+                    title: "لوحة التحكم"
+                },
+                action: "view dashboard"
+            },
+            element:<Dashboard/>
+
+        },
         {
             path: "net-income",
             handle: {
