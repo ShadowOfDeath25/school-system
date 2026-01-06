@@ -1,0 +1,23 @@
+.chartsWrapper {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.statCards {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap:2% 2%;
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .statCards {
+        grid-template-columns: 1fr 1fr;
+    }
+}
