@@ -2,6 +2,7 @@ import {useStudentDetails} from "@hooks/useStudentDetails.js";
 import {Navigate, Outlet, useMatches} from "react-router-dom";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import DetailsPage from "@ui/DetailsPage/DetailsPage.jsx";
+import {useCurrentUser} from "@hooks/api/auth.js";
 
 export default function StudentDetailsLayout() {
     const {student, isLoading, academicYear, setAcademicYear} = useStudentDetails();
@@ -10,6 +11,7 @@ export default function StudentDetailsLayout() {
 
     const currentRoute = matches[matches.length - 2];
     const fallbackRedirect = currentRoute?.handle?.fallbackRedirect ?? "/";
+    const {data: currentUser} = useCurrentUser();
 
 
     const breadcrumbsLinks = matches
@@ -39,7 +41,7 @@ export default function StudentDetailsLayout() {
             setAcademicYear={setAcademicYear}
             breadcrumbsLinks={breadcrumbsLinks}
         >
-            <Outlet context={{student,academicYear,setAcademicYear}}/>
+            <Outlet context={{student, academicYear, setAcademicYear, user: currentUser}}/>
         </DetailsPage>
     );
 }

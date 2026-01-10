@@ -1,6 +1,8 @@
 import NetIncome from "@pages/NetIncome/NetIncome.jsx";
 import AcademicYears from "@pages/AcademicYears/AcademicYears.jsx";
 import Dashboard from "@pages/Dashboard/Dashboard.jsx"
+import Test from "@ui/Test.jsx";
+
 const route = {
     path: "dashboard",
     handle: {
@@ -18,7 +20,7 @@ const route = {
                 },
                 action: "view dashboard"
             },
-            element:<Dashboard/>
+            element: <Dashboard/>
 
         },
         {
@@ -40,6 +42,10 @@ const route = {
                 action: ['view academic-years', 'create-academic-years']
             },
             element: <AcademicYears/>
+        },
+        {
+            path:"test",
+            element:<Test/>
         }
     ]
 }
