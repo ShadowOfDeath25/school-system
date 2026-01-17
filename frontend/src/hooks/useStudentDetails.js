@@ -14,7 +14,7 @@ export function useStudentDetails() {
     const student = studentFromState || fetchedStudent;
 
     const { data: academicYears = [] } = useGetAll('academic-years');
-    const [academicYear, setAcademicYear] = usePersistedState('paymentsAcademicYear', "");
+    const [academicYear, setAcademicYear] = usePersistedState('academicYear', "");
 
     useEffect(() => {
         if (!academicYear && academicYears.length > 0) {
