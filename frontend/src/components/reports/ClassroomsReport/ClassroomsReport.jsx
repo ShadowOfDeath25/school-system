@@ -1,7 +1,7 @@
-import React, {forwardRef} from "react";
+import React, { forwardRef } from "react";
 import styles from './ClassroomsReport.module.css';
 
-const ClassroomsReport = forwardRef(({data}, ref) => {
+const ClassroomsReport = forwardRef(({ data }, ref) => {
     if (!data || !Array.isArray(data) || data.length === 0) {
         return (
             <div className={styles.hiddenContainer}>
@@ -42,7 +42,7 @@ const ClassroomsReport = forwardRef(({data}, ref) => {
                                 ) : (
                                     <tr>
                                         <td colSpan="2" className={`${styles.td} ${styles.noStudents}`}>
-                                           لا يوجد طلاب في هذا الفصل
+                                            لا يوجد طلاب في هذا الفصل
                                         </td>
                                     </tr>
                                 )}

@@ -1,14 +1,15 @@
-import {StrictMode} from 'react'
-import {createRoot} from 'react-dom/client'
-import {RouterProvider} from "react-router";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import { RouterProvider } from "react-router";
 import router from "./router.jsx"
-import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import './fonts.css'
 import './index.css'
-import {SnackbarProvider} from '@contexts/SnackbarContext.jsx'
-import {ConfirmModalProvider} from "@contexts/ConfirmModalContext.jsx";
+import { SnackbarProvider } from '@contexts/SnackbarContext.jsx'
+import { ConfirmModalProvider } from "@contexts/ConfirmModalContext.jsx";
 import './i18n'
-import {InputModalProvider} from "@contexts/InputModalContext.jsx";
+import { InputModalProvider } from "@contexts/InputModalContext.jsx";
+import { PDFPreviewProvider } from "@contexts/PDFPreviewContext.jsx";
 import '@utils/arrayExtensions.js'
 const queryClient = new QueryClient();
 window.__TANSTACK_QUERY_CLIENT__ = queryClient;
@@ -18,7 +19,9 @@ createRoot(document.getElementById('root')).render(
             <SnackbarProvider>
                 <ConfirmModalProvider>
                     <InputModalProvider>
-                        <RouterProvider router={router}/>
+                        <PDFPreviewProvider>
+                            <RouterProvider router={router} />
+                        </PDFPreviewProvider>
                     </InputModalProvider>
                 </ConfirmModalProvider>
             </SnackbarProvider>

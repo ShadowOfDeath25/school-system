@@ -30,4 +30,9 @@ class StudentReportsService
             'students_by_status' => $studentsByStatus,
         ];
     }
+
+    public function getArrearsReportData(string $language, string $academicYear, ?string $level, ?int $grade, ?int $classroom)
+    {
+        return "TBD";
+    }
 }

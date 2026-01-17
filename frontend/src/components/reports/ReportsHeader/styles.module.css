@@ -1,0 +1,24 @@
+.header{
+    display: flex;
+    width: 100%;
+    align-items:center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+    margin-bottom: 10px;
+}
+.schoolInfo {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.headerText {
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+}

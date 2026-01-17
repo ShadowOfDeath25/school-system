@@ -1,0 +1,283 @@
+.page {
+    font-family: 'ReadexPro', sans-serif;
+    padding: 10mm 5mm;
+    font-size: 10pt;
+    color: black;
+    background-color: #ffffff;
+    width: 76mm;
+    margin: 0 auto;
+    direction: rtl;
+}
+
+@media print {
+    @page {
+        width: 76mm;
+        height: auto;
+        orientation: portrait;
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+    }
+
+    .page {
+        width: 76mm;
+        padding: 5mm;
+        margin: 0;
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.headerContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 5px;
+    gap: 10px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    background-color: #eee;
+    border-radius: 50%;
+}
+
+.headerTextContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.headerText {
+    font-size: 10pt;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.headerSubText {
+    font-size: 9pt;
+    color: #333;
+}
+
+.doubleLine {
+    width: 100%;
+    height: 2px;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    margin-bottom: 10px;
+}
+
+.titleContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    width: 100%;
+    padding: 4px 0;
+}
+
+.mainTitle {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.subTitle {
+    font-size: 10pt;
+}
+
+.studentIdBox {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #000;
+    margin-bottom: 15px;
+}
+
+.studentIdCell {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px;
+    border-left: 1px solid #000;
+}
+
+.studentIdCellLast {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4px;
+}
+
+.cellLabel {
+    font-size: 9pt;
+    margin-bottom: 2px;
+    color: #444;
+}
+
+.cellValue {
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.receiptBody {
+    width: 100%;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.lineItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 6px;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.label {
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.valueText {
+    font-size: 11pt;
+    flex: 1;
+    text-align: left;
+}
+
+.amountText {
+    font-size: 11pt;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    margin: 5px 0;
+}
+
+.detailsTable {
+    width: 100%;
+    border: 1px solid #000;
+    margin-bottom: 10px;
+}
+
+.tableRow {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid #000;
+}
+
+.tableRowLast {
+    display: flex;
+    flex-direction: row;
+}
+
+.tableHeaderCell {
+    flex: 1;
+    padding: 4px;
+    background-color: #e6e6e6;
+    text-align: center;
+    font-size: 9pt;
+    font-weight: bold;
+    border-left: 1px solid #000;
+}
+
+.tableCell {
+    flex: 1;
+    padding: 4px;
+    text-align: center;
+    font-size: 10pt;
+    border-left: 1px solid #000;
+}
+
+.noBorderLeft {
+    border-left: 0;
+}
+
+.summaryTable {
+    width: 100%;
+    border: 1px solid #000;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    direction: rtl;
+}
+
+.summaryTitle {
+    background-color: #e6e6e6;
+    text-align: center;
+    padding: 3px;
+    font-size: 9pt;
+    font-weight: bold;
+    border-bottom: 1px solid #000;
+    display: block;
+}
+
+.summaryRow {
+    display: flex;
+    flex-direction: row-reverse;
+    border-bottom: 1px solid #000;
+}
+
+.summaryRowLast {
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.summaryLabel {
+    flex: 1;
+    padding: 3px;
+    text-align: right;
+    font-size: 9pt;
+    padding-right: 5px;
+    background-color: #f9f9f9;
+    border-left: 1px solid #000;
+}
+
+.summaryValue {
+    flex: 0.5;
+    padding: 3px;
+    text-align: center;
+    font-size: 9pt;
+}
+
+.footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 10px;
+}
+
+.footerText {
+    font-size: 10pt;
+    margin-bottom: 5px;
+}
+.recipientName{
+    align-self: center;
+    font-weight: bold;
+}
+
+.timestamp {
+    margin-top: 15px;
+    font-size: 8pt;
+    color: #666;
+    text-align: center;
+    width: 100%;
+}

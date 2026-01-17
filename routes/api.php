@@ -48,6 +48,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::get('reports/financial/monthly', [FinancialReportsController::class, 'monthly'])->name('financial-reports.monthly')->middleware('authorization:view financial-reports');
     Route::get('reports/financial/summary', [FinancialReportsController::class, 'summary'])->name('financial-reports.summary')->middleware('authorization:view financial-reports');
     Route::get('reports/students/summary', [StudentReportsController::class, 'summary'])->name('student-reports.summary')->middleware('authorization:view student-reports');
+    Route::get('reports/students/arrears', [StudentReportsController::class, 'arrearsReport'])->name('student-reports.arrears')->middleware('authorization:view student-reports');
 
     
     Route::middleware(["authorization"])->group(function () {

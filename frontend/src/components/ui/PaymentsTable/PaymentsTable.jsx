@@ -1,36 +1,38 @@
 import styles from '@ui/ItemPicker/styles.module.css'
-import {useState} from 'react';
-import InvoiceModal from '@ui/InvoiceModal/InvoiceModal.jsx';
-import {Button} from "@mui/material";
+import InvoicePDF from '@reports/Invoice/InvoicePDF';
+import { Button } from "@mui/material";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
-import {useCreate, useGetAll, useUpdate} from "@hooks/api/useCrud.js";
-import {useInputModal} from "@contexts/InputModalContext.jsx";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import { useCreate, useGetAll, useUpdate } from "@hooks/api/useCrud.js";
+import { useInputModal } from "@contexts/InputModalContext.jsx";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { usePDFPreview } from "@contexts/PDFPreviewContext.jsx";
+import { useCurrentUser } from "@hooks/api/auth.js";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-import {useQueryClient} from "@tanstack/react-query";
-import {PaymentHelper} from "../../../utils/helpers/PaymentHelper.js";
-import {useOutletContext} from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { PaymentHelper } from "../../../utils/helpers/PaymentHelper.js";
 
-export default function PaymentsTable({student, type, types, academicYear, btnText = "اضافة"}) {
+export default function PaymentsTable({ student, type, types, academicYear, btnText = "اضافة" }) {
     const paymentTypes = types || (type ? [type] : undefined);
 
-    const {data: payments, isLoading} = useGetAll('payments', {
+    const { data: payments, isLoading } = useGetAll('payments', {
         student_id: student.id,
         type: paymentTypes,
         academic_year: academicYear,
         all: true
-    })
+    });
+    const { data: studentPayments } = useGetAll(`students/${student.id}/payments`, {
+        academic_year: academicYear
+    });
+    const { data: currentUser } = useCurrentUser();
     const showType = !!types
     const mutation = useCreate('payments');
     const editMutation = useUpdate('payments');
-    const {showInputModal, hideInputModal} = useInputModal();
-    const {showSnackbar} = useSnackbar();
+    const { showInputModal, hideInputModal } = useInputModal();
+    const { showSnackbar } = useSnackbar();
+    const { showPDFPreview } = usePDFPreview();
     const queryClient = useQueryClient()
-    const [selectedInvoicePayment, setSelectedInvoicePayment] = useState(null);
-    const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
-    const context = useOutletContext()
-    console.log("current user:", context)
+
     let modalFields = [
         {
             name: "value",
@@ -61,7 +63,7 @@ export default function PaymentsTable({student, type, types, academicYear, btnTe
 
     if (isLoading) {
         return <div className={styles.container}>
-            <LoadingScreen/>
+            <LoadingScreen />
         </div>
     }
 
@@ -115,7 +117,7 @@ export default function PaymentsTable({student, type, types, academicYear, btnTe
                 }
             ],
             onSave: (formData) => {
-                editMutation.mutate({...formData}, {
+                editMutation.mutate({ ...formData }, {
                     onSuccess: () => {
                         hideInputModal();
                         showSnackbar("تم تحديث العنصر بنجاح")
@@ -133,8 +135,18 @@ export default function PaymentsTable({student, type, types, academicYear, btnTe
     }
 
     const handleShowInvoice = (payment) => {
-        setSelectedInvoicePayment(payment);
-        setIsInvoiceModalOpen(true);
+        showPDFPreview({
+            title: "إيصال دفع",
+            children: (
+                <InvoicePDF
+                    payment={payment}
+                    summaryData={studentPayments}
+                    student={student}
+                    academicYear={academicYear}
+                    recipientName={currentUser?.name}
+                />
+            )
+        });
     }
 
 
@@ -167,13 +179,13 @@ export default function PaymentsTable({student, type, types, academicYear, btnTe
                                     <td key={`payment-${payment.id}-value`}
                                         className={styles.cell}>{payment.value - 0}</td>
                                     {showType && <td key={`payment-${payment.id}-type`}
-                                                     className={styles.cell}
+                                        className={styles.cell}
                                     >
                                         {payment.type}
                                     </td>}
                                     <td key={`payment-${payment.id}-edit`} className={styles.cell}>
                                         <IconButton onClick={() => handleEdit(payment)}>
-                                            <EditIcon sx={{color: 'var(--color-focus)'}}/>
+                                            <EditIcon sx={{ color: 'var(--color-focus)' }} />
                                         </IconButton>
                                     </td>
                                     <td key={`payment-invoice-${payment.id}`} className={styles.cell}>
@@ -199,17 +211,6 @@ export default function PaymentsTable({student, type, types, academicYear, btnTe
                     {btnText}
                 </Button>
             </div>
-            <InvoiceModal
-                open={isInvoiceModalOpen}
-                onClose={() => setIsInvoiceModalOpen(false)}
-                payment={selectedInvoicePayment}
-                student={student}
-                academicYear={academicYear}
-                paymentsData={{
-
-                }}
-
-            />
         </div>
     );
 }

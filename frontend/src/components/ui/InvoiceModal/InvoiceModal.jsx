@@ -1,15 +1,21 @@
-import React, {useState, useEffect} from 'react';
-import {Button, Dialog, DialogActions, DialogContent} from "@mui/material";
-import {PDFViewer} from '@react-pdf/renderer';
-import InvoicePDF from '@reports/InvoicePDF';
-import {useGetAll} from "@hooks/api/useCrud.js";
-import {useOutletContext} from "react-router";
+import React, { useState, useEffect, useRef } from 'react';
+import { Button, Dialog, DialogActions, DialogContent } from "@mui/material";
+import { useReactToPrint } from 'react-to-print';
+import InvoicePDF from '@reports/Invoice/InvoicePDF';
+import { useGetAll } from "@hooks/api/useCrud.js";
+import { useOutletContext } from "react-router";
 
-export default function InvoiceModal({open, onClose, payment}) {
+export default function InvoiceModal({ open, onClose, payment }) {
     const [logoBase64, setLogoBase64] = useState(null);
-    const {student, academicYear, user} = useOutletContext()
-    const {data: fees} = useGetAll(`students/${student?.id}/payments`, {academic_year: academicYear}, {
+    const contentRef = useRef(null);
+    const { student, academicYear, user } = useOutletContext()
+    const { data: fees } = useGetAll(`students/${student?.id}/payments`, { academic_year: academicYear }, {
         enabled: !!student?.id && open
+    });
+
+    const handlePrint = useReactToPrint({
+        contentRef,
+        documentTitle: `إيصال دفع - ${student?.name || ''}`,
     });
 
     useEffect(() => {
@@ -51,13 +57,25 @@ export default function InvoiceModal({open, onClose, payment}) {
                 }
             }}
         >
-            <DialogContent style={{height: '70vh', padding: 0, overflow: 'hidden'}}>
-                <PDFViewer width="100%" height="100%" showToolbar={true} style={{border: 'none'}}>
-                    <InvoicePDF payment={payment} student={student} logo={logoBase64} academicYear={academicYear}
-                                summaryData={fees} recipientName={user?.name}/>
-                </PDFViewer>
+            <DialogContent style={{ height: '70vh', padding: '20px', overflow: 'auto', backgroundColor: '#525659' }}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div className="print-container" style={{ backgroundColor: 'white', boxShadow: '0 0 10px rgba(0,0,0,0.5)', width: 'fit-content' }}>
+                        <InvoicePDF
+                            ref={contentRef}
+                            payment={payment}
+                            student={student}
+                            logo={logoBase64}
+                            academicYear={academicYear}
+                            summaryData={fees}
+                            recipientName={user?.name}
+                        />
+                    </div>
+                </div>
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx={{ gap: 2, padding: 2 }}>
+                <Button onClick={handlePrint} variant="contained" color="primary">
+                    طباعة
+                </Button>
                 <Button onClick={onClose} variant="contained" color="error">
                     إغلاق
                 </Button>
