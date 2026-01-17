@@ -39,6 +39,7 @@ class PermissionFactory extends Factory
         Permission::findOrCreate('view dashboard');
         Permission::findOrCreate('view financial-reports');
         Permission::findOrCreate('view student-reports');
+        Permission::findOrCreate("view payment-reports");
     }
 
     /**

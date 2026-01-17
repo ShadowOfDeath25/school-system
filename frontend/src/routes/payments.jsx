@@ -11,6 +11,7 @@ import TuitionPayments from "@pages/Payments/TuitionPayments.jsx";
 import UniformPayments from "@pages/Payments/UniformPayments.jsx";
 import ExtraDues from "@pages/Payments/ExtraDues.jsx";
 import AddExemptions from "@pages/Payments/AddExemptions.jsx";
+import PaymentsReports from "@pages/Payments/PaymentsReports.jsx";
 
 const routes = {
     path: "payments",
@@ -54,11 +55,11 @@ const routes = {
         {
             path: 'exemptions',
             element: <PaymentsPage route={'/payments/:id/exemptions'}/>,
-            handle:{
-                sidebar:{
-                    title:"الاعفائات"
+            handle: {
+                sidebar: {
+                    title: "الاعفائات"
                 },
-                action:'create exemption'
+                action: 'create exemption'
             }
         },
         {
@@ -110,6 +111,16 @@ const routes = {
                     title: "مستحقات اضافية"
                 },
                 action: ['create extra-dues', 'update extra-dues']
+            }
+        },
+        {
+            path: "reports",
+            element: <PaymentsReports/>,
+            handle:{
+                sidebar:{
+                    title:"التقارير",
+                },
+                action:"view payment-reports"
             }
         },
         {
