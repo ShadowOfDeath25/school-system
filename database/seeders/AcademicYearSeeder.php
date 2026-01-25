@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AcademicYear;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,7 @@ class AcademicYearSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\AcademicYear::firstOrCreate(['name' => '2024/2025']);
+        AcademicYear::firstOrCreate(['name' => '2025/2024']);
+        AcademicYear::firstOrCreate(['name' => '2026/2025']);
     }
 }

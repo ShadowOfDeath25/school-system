@@ -22,8 +22,8 @@ class ClassroomFactory extends Factory
         $level = $this->faker->randomElement(['ابتدائي', 'اعدادي', 'رياض اطفال']);
         $grade = match ($level) {
             'رياض اطفال' => $this->faker->numberBetween(1, 2),
-            'ابتدائي' => $this->faker->numberBetween(1, 6),
-            'اعدادي' => $this->faker->numberBetween(1, 3),
+            'ابتدائي' => $this->faker->numberBetween(3, 8),
+            'اعدادي' => $this->faker->numberBetween(9, 11),
         };
         $academic_year = $this->faker->randomElement(['2025/2024', '2026/2025']);
         $language = $this->faker->randomElement(['عربي', 'لغات']);
@@ -48,7 +48,7 @@ class ClassroomFactory extends Factory
             'academic_year' => $academic_year,
             'language' => $language,
             'class_number' => $newClassNumber,
-            'name' => $grade . '/' . $newClassNumber . ' ' .$level,
+            'name' => getGradeNumber($grade) . '/' . $newClassNumber . ' ' .$level,
             'max_capacity'=>fake()->numberBetween(30,50),
             'floor_id' => Floor::query()->inRandomOrder()->value('id')
         ];
