@@ -72,6 +72,9 @@
             "dont-discover": []
         }
     },
+    "files": [
+        "bootstrap/helpers.php"
+    ],
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
