@@ -7,6 +7,8 @@ import {useGetAll} from "@hooks/api/useCrud.js";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 import InputField from "@ui/InputField/InputField.jsx";
 import TextArea from "@ui/TextArea/TextArea.jsx";
+import CheckboxField from "@ui/CheckboxField/CheckboxField.jsx";
+import {Checkbox, FormControlLabel, FormGroup} from "@mui/material";
 
 export default function PaymentsReportsPicker() {
 
@@ -20,9 +22,10 @@ export default function PaymentsReportsPicker() {
         level: "",
         grade: "",
         classroom: "",
-        min:"",
-        letter:"",
-        sorting:""
+        min: "",
+        letter: "",
+        sorting: "",
+        showNotes: false
     })
 
     const handleChange = (e) => {
@@ -80,71 +83,74 @@ export default function PaymentsReportsPicker() {
 
                         ]}
                     />
-                    <div className={styles.mainInputs}>
-                        <SelectField
-                            label={"العام الدراسي"}
-                            options={academicYears}
-                            placeholder={"اختر العام الدراسي"}
-                            value={formData.academicYear}
-                            handleChange={handleChange}
-                            name={"academicYear"}
-                        />
-                        <SelectField
-                            label={"اللغة"}
-                            name={"language"}
-                            placeholder={"اختر اللغة"}
-                            options={["عربي", "لغات", "الكل"]}
-                            value={formData.language}
-                            handleChange={handleChange}
-                        />
-                        <SelectField
-                            {...ClassroomHelper.FIELDS.LEVEL}
-                            value={formData.level}
-                            handleChange={handleChange}
-                        />
 
-                        <SelectField
-                            {...ClassroomHelper.FIELDS.GRADE}
-                            disabled={formData.level === ""}
-                            options={ClassroomHelper.getGradeOptionsByLevel(formData.level) || []}
-                            value={formData.grade}
-                            handleChange={handleChange}
-                        />
-                        <SelectField
-                            {...ClassroomHelper.FIELDS.CLASSROOM}
-                            disabled={formData.level === "" || formData.grade === ""}
-                            options={[
-                                ...new Set(
-                                    classrooms?.data
-                                        ?.filter(classroom => classroom.grade === formData.grade && classroom.level === formData.level)
-                                        .map(classroom => ({
-                                                label: classroom.name + " " + classroom.language,
-                                                value: classroom.id
-                                            })
-                                        )),{label: "الكل", value: "all"}]}
-                            value={formData.classroom}
-                            handleChange={handleChange}
-                            multiple={false}
-                        />
-                        <InputField
-                            type={"number"}
-                            name={"min"}
-                            value={formData.min}
-                            handleChange={handleChange}
-                            label={"الحد الأدنى"}
-                            placeholder={"ادخل الحد الادني"}
-                        />
-                        <SelectField
-                            name={"sorting"}
-                            label={"ترتيب / فرز"}
-                            options={[{label:"البنين اولًا",value:"maleFirst"},{label:"البنات اولًا",value:"femaleFirst"}]}
-                            placeholder={"ترتيب / فرز"}
-                            value={formData.sorting}
-                            handleChange={handleChange}
-                            multiple={false}
-                        />
-                    </div>
-                    {formData.reportSubType === "letters" &&
+                    <SelectField
+                        label={"العام الدراسي"}
+                        options={academicYears}
+                        placeholder={"اختر العام الدراسي"}
+                        value={formData.academicYear}
+                        handleChange={handleChange}
+                        name={"academicYear"}
+                    />
+                    <SelectField
+                        label={"اللغة"}
+                        name={"language"}
+                        placeholder={"اختر اللغة"}
+                        options={["عربي", "لغات", "الكل"]}
+                        value={formData.language}
+                        handleChange={handleChange}
+                    />
+                    <SelectField
+                        {...ClassroomHelper.FIELDS.LEVEL}
+                        value={formData.level}
+                        handleChange={handleChange}
+                    />
+
+                    <SelectField
+                        {...ClassroomHelper.FIELDS.GRADE}
+                        disabled={formData.level === ""}
+                        options={ClassroomHelper.getGradeOptionsByLevel(formData.level) || []}
+                        value={formData.grade}
+                        handleChange={handleChange}
+                    />
+                    <SelectField
+                        {...ClassroomHelper.FIELDS.CLASSROOM}
+                        disabled={formData.level === "" || formData.grade === ""}
+                        options={[
+                            ...new Set(
+                                classrooms?.data
+                                    ?.filter(classroom => classroom.grade === formData.grade && classroom.level === formData.level)
+                                    .map(classroom => ({
+                                            label: classroom.name + " " + classroom.language,
+                                            value: classroom.id
+                                        })
+                                    )), {label: "الكل", value: "all"}]}
+                        value={formData.classroom}
+                        handleChange={handleChange}
+                        multiple={false}
+                    />
+                    <InputField
+                        type={"number"}
+                        name={"min"}
+                        value={formData.min}
+                        handleChange={handleChange}
+                        label={"الحد الأدنى"}
+                        placeholder={"ادخل الحد الادني"}
+                    />
+                    <SelectField
+                        name={"sorting"}
+                        label={"ترتيب / فرز"}
+                        options={[{label: "البنين اولًا", value: "maleFirst"}, {
+                            label: "البنات اولًا",
+                            value: "femaleFirst"
+                        }]}
+                        placeholder={"ترتيب / فرز"}
+                        value={formData.sorting}
+                        handleChange={handleChange}
+                        multiple={false}
+                    />
+
+                    {(formData.reportSubType === "letters" || formData.reportSubType === "arrearsLetters") &&
                         <TextArea
                             value={formData.letter}
                             handleChange={handleChange}
@@ -155,6 +161,17 @@ export default function PaymentsReportsPicker() {
                         />
 
                     }
+                    <br/>
+                    <div className={styles.options}>
+                        <span>خيارات اخري</span>
+                        <FormControlLabel
+                            control={<Checkbox sx={{color: "var(--primary-text-color)"}}/>}
+                            label={"عرض العلامات المميزة"}
+                            sx={{color: "var(--primary-text-color)"}}
+
+                        />
+
+                    </div>
                 </div>
 
                 <div className={styles.actions}></div>

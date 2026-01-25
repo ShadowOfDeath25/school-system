@@ -43,14 +43,15 @@ Route::post("/login", AuthController::class . "@login")->name("login");
 Route::middleware(["auth:sanctum"])->group(function () {
     Route::post("/logout", AuthController::class . "@logout")->name("logout");
 
-    
+
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('authorization:view dashboard');
     Route::get('reports/financial/monthly', [FinancialReportsController::class, 'monthly'])->name('financial-reports.monthly')->middleware('authorization:view financial-reports');
     Route::get('reports/financial/summary', [FinancialReportsController::class, 'summary'])->name('financial-reports.summary')->middleware('authorization:view financial-reports');
     Route::get('reports/students/summary', [StudentReportsController::class, 'summary'])->name('student-reports.summary')->middleware('authorization:view student-reports');
     Route::get('reports/students/arrears', [StudentReportsController::class, 'arrearsReport'])->name('student-reports.arrears')->middleware('authorization:view student-reports');
+    Route::get('reports/students/letters', [StudentReportsController::class, 'studentLetters'])->name('student-reports.letters')->middleware('authorization:view student-reports');
 
-    
+
     Route::middleware(["authorization"])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();
         Route::apiResource('users', UserController::class)->withFilters();

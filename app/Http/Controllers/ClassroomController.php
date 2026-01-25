@@ -42,7 +42,6 @@ class ClassroomController extends Controller
 
     public function store(StoreClassroomRequest $request)
     {
-        $this->authorizeAction("create");
         $data = $request->validated();
 
         $existingClassNumbers = Classroom::where("grade", $data['grade'])
@@ -61,7 +60,7 @@ class ClassroomController extends Controller
 
         $classroom = new Classroom($data);
         $classroom->class_number = $newClassNumber;
-        $classroom->name = $data['grade'] . '/' . $classroom->class_number.' '.$data['level'];
+        $classroom->name = $classroom->class_number . '/' . $data['grade'] . ' ' . $data['level'];
         $classroom->save();
 
         return response()->json(ClassroomResource::make($classroom), 201);
