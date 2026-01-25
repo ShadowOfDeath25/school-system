@@ -3,11 +3,9 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import {useState} from "react";
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import {useGetAll} from "@hooks/api/useCrud.js";
-
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 import InputField from "@ui/InputField/InputField.jsx";
 import TextArea from "@ui/TextArea/TextArea.jsx";
-import CheckboxField from "@ui/CheckboxField/CheckboxField.jsx";
 import {Checkbox, FormControlLabel, FormGroup} from "@mui/material";
 
 export default function PaymentsReportsPicker() {
