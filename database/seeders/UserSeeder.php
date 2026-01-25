@@ -13,10 +13,10 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $superAdmin = new User(config('admin_data'));
+        $superAdmin = new User(config('app.admin_data'));
 
-        $superAdmin->assignRole("Super Admin");
         $superAdmin->save();
+        $superAdmin->assignRole("Super Admin");
         User::factory(70)->create();
 
     }
