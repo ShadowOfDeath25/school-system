@@ -19,16 +19,12 @@ class StudentFactory extends Factory
      */
     public function definition(): array
     {
-        $gradesByLevel = [
-            'ابتدائي' => [1, 2, 3, 4, 5, 6],
-            'اعدادي' => [1, 2, 3],
-            'رياض اطفال' => [1, 2]
-        ];
+
         $gender = $this->faker->randomElement(['male', 'female']);
         $language = $this->faker->randomElement(['عربي', 'لغات']);
         $academicYear = $this->faker->randomElement(['2026/2025', '2025/2024']);
         $level = $this->faker->randomElement(['رياض اطفال', 'اعدادي', 'ابتدائي']);
-        $grade = $this->faker->randomElement($gradesByLevel[$level]);
+        $grade = $this->faker->numberBetween(1, 11);
         $classroom = Classroom::where('language', $language)
             ->where('academic_year', $academicYear)
             ->inRandomOrder()
@@ -42,7 +38,7 @@ class StudentFactory extends Factory
             'birth_address' => fake()->city(),
             'note' => $this->faker->optional(0.2)->randomElement([null, 'ابناء عاملين', 'دمج', 'يتيم']),
             'level' => $level,
-            'grade'=>$grade,
+            'grade' => $grade,
             'gender' => $gender,
             'religion' => $this->faker->randomElement(['مسلم', 'مسيحي']),
             'nationality' => $this->faker->randomElement(['مصري', 'اجنبي']),

@@ -60,7 +60,7 @@ class ClassroomController extends Controller
 
         $classroom = new Classroom($data);
         $classroom->class_number = $newClassNumber;
-        $classroom->name = $classroom->class_number . '/' . $data['grade'] . ' ' . $data['level'];
+        $classroom->name = $classroom->class_number . '/' . getGradeNumber($data['grade']) . ' ' . $data['level'];
         $classroom->save();
 
         return response()->json(ClassroomResource::make($classroom), 201);

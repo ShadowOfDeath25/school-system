@@ -27,7 +27,7 @@ return new class extends Migration {
             $table->boolean('withdrawn')->nullable();
             $table->string('reg_number')->nullable();
             $table->string('level');
-            $table->string('grade');
+            $table->integer('grade');
             $table->foreignIdFor(Classroom::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });

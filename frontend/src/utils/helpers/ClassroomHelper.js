@@ -11,21 +11,21 @@ const LANGUAGES = [
 
 const GRADES = {
     "رياض اطفال": [
-        { label: "الأول", value: 1 },
-        { label: "الثاني", value: 2 },
+        {label: "الأول", value: 1},
+        {label: "الثاني", value: 2},
     ],
     "ابتدائي": [
-        { label: "الاول", value: 1 },
-        { label: "الثاني", value: 2 },
-        { label: "الثالث", value: 3 },
-        { label: "الرابع", value: 4 },
-        { label: "الخامس", value: 5 },
-        { label: "السادس", value: 6 },
+        {label: "الاول", value: 3},
+        {label: "الثاني", value: 4},
+        {label: "الثالث", value: 5},
+        {label: "الرابع", value: 6},
+        {label: "الخامس", value: 7},
+        {label: "السادس", value: 8},
     ],
     "اعدادي": [
-        { label: "الأول", value: 1 },
-        { label: "الثاني", value: 2 },
-        { label: "الثالث", value: 3 },
+        {label: "الأول", value: 9},
+        {label: "الثاني", value: 10},
+        {label: "الثالث", value: 11},
     ],
 };
 
