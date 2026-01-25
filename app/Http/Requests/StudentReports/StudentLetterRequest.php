@@ -6,7 +6,7 @@ use App\Enums\PaymentType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StudentReportsFilterRequest extends FormRequest
+class StudentLetterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,10 @@ class StudentReportsFilterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ['nullable', 'string', 'max:255'],
+            'academic_year' => ['required', 'string', 'max:255'],
             'language' => ['nullable', 'string', Rule::in(['عربي', 'لغات'])],
-            'level' => ['nullable', 'string', Rule::in(['ابتدائي', 'اعدادي', 'ثانوي'])],
-            'grade' => ['nullable', 'integer', 'min:1', 'max:12'],
+            'level' => ['required_with:grade', 'string', Rule::in(['ابتدائي', 'اعدادي', 'ثانوي'])],
+            'grade' => ['integer', 'min:1', 'max:12'],
             'classroom' => ['nullable', 'integer', 'exists:classrooms,id'],
             'min' => ['nullable', 'numeric', 'min:0'],
             'sorting' => ['nullable', 'string', Rule::in(['maleFirst', 'femaleFirst'])],
@@ -39,6 +39,7 @@ class StudentReportsFilterRequest extends FormRequest
                 PaymentType::ADDITIONAL->value,
                 PaymentType::WITHDRAWAL->value,
             ])],
+            'letter' => ['required', 'string']
         ];
     }
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentType;
-use App\Http\Requests\StudentReports\StudentReportsFilterRequest;
+use App\Http\Requests\StudentReports\StudentLetterRequest;
 use App\Services\StudentReportsService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -23,11 +23,11 @@ class StudentReportsController extends Controller
     /**
      * Get arrears report data (optionally filtered by classroom).
      *
-     * @param StudentReportsFilterRequest $request
+     * @param StudentLetterRequest $request
      * @param StudentReportsService $studentReportsService
      * @return JsonResponse
      */
-    public function arrearsReport(StudentReportsFilterRequest $request, StudentReportsService $studentReportsService): JsonResponse
+    public function arrearsReport(StudentLetterRequest $request, StudentReportsService $studentReportsService): JsonResponse
     {
         $classrooms = $studentReportsService->getStudentsGroupedByClassrooms(
             ...$this->extractStudentFilters($request)
@@ -39,11 +39,11 @@ class StudentReportsController extends Controller
     /**
      * Get student letters for students with outstanding payments.
      *
-     * @param StudentReportsFilterRequest $request
+     * @param StudentLetterRequest $request
      * @param StudentReportsService $service
      * @return JsonResponse
      */
-    public function studentLetters(StudentReportsFilterRequest $request, StudentReportsService $service): JsonResponse
+    public function studentLetters(StudentLetterRequest $request, StudentReportsService $service): JsonResponse
     {
         $classrooms = $service->getStudentsGroupedByClassrooms(
             ...$this->extractStudentFilters($request)
@@ -55,13 +55,13 @@ class StudentReportsController extends Controller
     /**
      * Extract student filter parameters from the request.
      *
-     * @param StudentReportsFilterRequest $request
+     * @param StudentLetterRequest $request
      * @return array
      */
-    private function extractStudentFilters(StudentReportsFilterRequest $request): array
+    private function extractStudentFilters(StudentLetterRequest $request): array
     {
         $validated = $request->validated();
-        
+
         return [
             'academicYear' => $validated['academic_year'] ?? null,
             'language' => $validated['language'] ?? null,
