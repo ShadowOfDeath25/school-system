@@ -50,7 +50,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::get('reports/students/summary', [StudentReportsController::class, 'summary'])->name('student-reports.summary')->middleware('authorization:view student-reports');
     Route::get('reports/students/arrears', [StudentReportsController::class, 'arrearsReport'])->name('student-reports.arrears')->middleware('authorization:view student-reports');
     Route::get('reports/students/letters', [StudentReportsController::class, 'studentLetters'])->name('student-reports.letters')->middleware('authorization:view student-reports');
-
+    Route::get("reports/{uuid}/preview", [StudentReportsController::class, 'preview'])->name("reports.preview");
 
     Route::middleware(["authorization"])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();
