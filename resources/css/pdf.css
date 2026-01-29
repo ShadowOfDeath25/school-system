@@ -1,0 +1,117 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', Roboto, sans-serif !important;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    direction: rtl;
+    padding: 10px;
+}
+
+.header {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 4px double black;
+    padding-block: 10px;
+}
+
+.school-data {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    flex: 1;
+}
+
+.school-data > span {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.header img {
+    height: 96px;
+    width: 96px;
+
+}
+
+.children {
+    flex: 1;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    align-items:flex-start;
+    flex:1;
+}
+
+.letterContainer {
+    width: 100%;
+    padding-block: 10px;
+    border: 7px double black;
+    padding-inline: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.academic-year {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 250px;
+    font-size: 14px;
+
+    border-collapse: collapse;
+}
+
+.academic-year > span {
+    border: 2px solid rgba(0, 0, 0, .3);
+    text-align: center;
+    padding: 5px 10px;
+}
+
+.academic-year > span:last-of-type {
+    border-width: 2px 0 2px 2px;
+}
+
+.student-name > span:last-of-type {
+    font-weight: bold;
+
+}
+
+.academic-year + span {
+    font-size: 14px;
+}
+
+.greeting {
+    align-self: center;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 20px;
+}
+
+.letterContainer > span:last-of-type {
+
+    align-self: flex-end;
+}
+.letters{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}

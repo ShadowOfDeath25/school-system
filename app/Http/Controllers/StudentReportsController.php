@@ -53,23 +53,29 @@ class StudentReportsController extends Controller
         $filePath = "reports/$uuid.pdf";
 
         $studentsByClassrooms = $service->getStudentsGroupedByClassrooms(
-            ...$this->extractStudentFilters($request)
-        );
-        $pdf = Pdf::view("reports.layouts.base",
-            [
-                "letter" => $request->validated('letter'),
-                $studentsByClassrooms
-            ]
+            ...$this->extractStudentFilters($request),
+
         );
 
-        Storage::put($filePath, $pdf);
+        $dir = storage_path('app/reports');
+
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        Pdf::view('reports.letters', [
+            'letter' => $request->validated('letter'),
+            'studentsByClassrooms' => $studentsByClassrooms,
+        ])
+            ->format('a4')
+
+            ->save(storage_path("app/$filePath"));
+
 
         return response()->json([
             'uuid' => $uuid,
-            'preview_url' => route("reports.preview", $uuid)
+            'preview_url' => route('reports.preview', $uuid),
         ]);
-
-
     }
 
     /**
@@ -91,6 +97,7 @@ class StudentReportsController extends Controller
             'min' => isset($validated['min']) ? (float)$validated['min'] : null,
             'sorting' => $validated['sorting'] ?? null,
             'type' => $validated['type'] ?? null,
+            'per_chunk' => $validated['per_chunk'] ?? 15,
         ];
     }
 
@@ -102,10 +109,14 @@ class StudentReportsController extends Controller
             abort(404, "هذا التقرير غير موجود");
         }
 
-        return response()->file($file_path, [
-            'Content-Type' => "application/pdf",
-            'Content-Disposition' => 'inline'
-        ])->deleteFileAfterSend(true);
+        return response()
+            ->file($file_path, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline',
+            ])
+            ->deleteFileAfterSend(true);
+
+
     }
 
 

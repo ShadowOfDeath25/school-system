@@ -1,12 +1,13 @@
 import React from 'react';
-import { Button, Container, Box, Typography, Stack } from '@mui/material';
-import { usePDFPreview } from '@contexts/PDFPreviewContext.jsx';
+import {Button, Container, Box, Typography, Stack} from '@mui/material';
+import {usePDFPreview} from '@contexts/PDFPreviewContext.jsx';
 import ArrearsReportPDF from '@reports/ArrearsReport/ArrearsReportPDF';
 import InvoicePDF from '@reports/Invoice/InvoicePDF';
+import Page from "@ui/Page/Page.jsx";
 
 export default function TestReports() {
-    const { showPDFPreview } = usePDFPreview();
-
+    const {showPDFPreview} = usePDFPreview();
+    const apiURL = import.meta.env.VITE_API_BASE_URL;
     const mockPayment = {
         id: 12345,
         value: 5000,
@@ -35,51 +36,34 @@ export default function TestReports() {
         }
     };
 
-    const handleShowArrearsReport = () => {
-        showPDFPreview({
-            title: "تقرير المتأخرات",
-            children: <ArrearsReportPDF />
-        });
-    };
-
-    const handleShowInvoice = () => {
-        showPDFPreview({
-            title: "إيصال دفع",
-            children: (
-                <InvoicePDF
-                    payment={mockPayment}
-                    student={mockStudent}
-                    summaryData={mockSummary}
-                    recipientName="المسؤول المالي"
-                    academicYear="2024 - 2025"
-                />
-            )
-        });
-    };
+    // const handleShowArrearsReport = () => {
+    //     showPDFPreview({
+    //         title: "تقرير المتأخرات",
+    //         children: <ArrearsReportPDF/>
+    //     });
+    // };
+    //
+    // const handleShowInvoice = () => {
+    //     showPDFPreview({
+    //         title: "إيصال دفع",
+    //         children: (
+    //             <InvoicePDF
+    //                 payment={mockPayment}
+    //                 student={mockStudent}
+    //                 summaryData={mockSummary}
+    //                 recipientName="المسؤول المالي"
+    //                 academicYear="2024 - 2025"
+    //             />
+    //         )
+    //     });
+    // };
 
     return (
-        <Container>
-            <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-                <Typography variant="h4" gutterBottom>اختبار التقارير</Typography>
-
-                <Stack direction="row" spacing={2}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleShowArrearsReport}
-                    >
-                        عرض تقرير المتأخرات
-                    </Button>
-
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={handleShowInvoice}
-                    >
-                        عرض إيصال الدفع
-                    </Button>
-                </Stack>
-            </Box>
-        </Container>
+        <Page>
+            <iframe
+                src={apiURL + "/reports/test"}
+                style={{width: '100%', height: '100vh', border: 'none'}}
+            />
+        </Page>
     );
 }

@@ -77,7 +77,8 @@ class StudentReportsService
         ?int    $classroom = null,
         ?float  $min = null,
         ?string $sorting = null,
-        ?string $type = null
+        ?string $type = null,
+        ?int    $per_chunk = 15
     ): Collection
     {
         $students = $this->getStudentsByClassrooms(
@@ -88,10 +89,12 @@ class StudentReportsService
             $classroom,
             $min,
             $sorting,
-            $type
+            $type,
+
+
         );
 
-        return $this->groupStudentsByClassroom($students);
+        return $this->groupStudentsByClassroom($students,$per_chunk);
     }
 
     /**
@@ -100,13 +103,13 @@ class StudentReportsService
      * @param Collection $students
      * @return Collection
      */
-    private function groupStudentsByClassroom(Collection $students): Collection
+    private function groupStudentsByClassroom(Collection $students,int $perChunk=15): Collection
     {
         return $students
             ->groupBy('classroom_id')
-            ->map(function ($classroomStudents) {
+            ->map(function ($classroomStudents) use ($perChunk){
                 $firstStudent = $classroomStudents->first();
-                
+
                 return [
                     'classroom_id' => $firstStudent->classroom_id,
                     'classroom_name' => $firstStudent->classroom_name,
@@ -121,7 +124,7 @@ class StudentReportsService
                             'total_required' => $student->total_required ?? null,
                             'amount_due' => $student->amount_due ?? null,
                         ];
-                    })->values(),
+                    })->chunk($perChunk)->map(fn($chunk) => $chunk->values())->values(),
                 ];
             })
             ->values();

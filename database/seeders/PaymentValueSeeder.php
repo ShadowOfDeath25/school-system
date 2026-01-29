@@ -15,8 +15,8 @@ class PaymentValueSeeder extends Seeder
 
         $currentYear = now()->year;
         $academicYears = [
-            ($currentYear - 1) . '/' . $currentYear,
-            $currentYear . '/' . ($currentYear + 1),
+            "2025/2024",
+            "2026/2025"
         ];
 
         $levelSpecificData = [

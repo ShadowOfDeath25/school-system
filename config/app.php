@@ -128,6 +128,12 @@ return [
         'email' => env('ADMIN_EMAIL'),
         'password' => env('ADMIN_PASSWORD'),
 
+    ],
+    'school_data' => [
+        "name" => env('SCHOOL_NAME', "مدرسة التربية الحديثة الخاصة"),
+        "governorate" => "محافظة " . env('GOVERNORATE', "القليوبية"),
+        "administration" => "ادارة " . env('ADMINISTRATION', "الخصوص") . " التعليمية",
     ]
+
 
 ];
