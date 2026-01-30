@@ -1,6 +1,7 @@
 @vite("resources/css/app.css")
 <div class="letters">
 @foreach($studentsByClassrooms as $classroom)
+{{--    @dd($classroom)--}}
     @foreach($classroom["students"] as $chunk)
         @foreach($chunk as $student)
             <x-letter
@@ -11,8 +12,6 @@
             >
             </x-letter>
         @endforeach
-        @pageNumber
-        @pageBreak
     @endforeach
 @endforeach
 </div>

@@ -68,7 +68,8 @@ class StudentReportsController extends Controller
             'studentsByClassrooms' => $studentsByClassrooms,
         ])
             ->format('a4')
-
+            ->margins(0, 0, 10, 0)
+            ->footerView("components.pdf-footer")
             ->save(storage_path("app/$filePath"));
 
 

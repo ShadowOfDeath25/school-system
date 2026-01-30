@@ -11,7 +11,7 @@ body {
     display: flex;
     flex-direction: column;
     direction: rtl;
-    padding: 10px;
+
 }
 
 .header {
@@ -53,17 +53,20 @@ body {
 .image-wrapper {
     display: flex;
     justify-content: flex-end;
-    align-items:flex-start;
-    flex:1;
+    align-items: flex-start;
+    flex: 1;
 }
 
 .letterContainer {
     width: 100%;
     padding-block: 10px;
     border: 7px double black;
+
     padding-inline: 10px;
     display: flex;
     flex-direction: column;
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .academic-year {
@@ -101,17 +104,32 @@ body {
 
 p {
     margin-bottom: 20px;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .letterContainer > span:last-of-type {
 
     align-self: flex-end;
 }
-.letters{
+
+.letters {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    padding-inline: 5px;
+    gap:5px;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+@page {
+    margin-top: 5px;
 }
