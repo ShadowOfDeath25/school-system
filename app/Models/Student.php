@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +13,32 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Student extends Model
 {
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::creating(function (Student $student) {
+            if ($student->reg_number) {
+                return;
+            }
+
+            $date = Carbon::parse($student->birth_date);
+            $prefix = $date->format('y') . $date->format('m');
+
+            $latest = Student::where('reg_number', 'like', $prefix . '%')
+                ->orderBy('reg_number', 'desc')
+                ->first();
+
+            if (!$latest) {
+                $sequence = 1;
+            } else {
+                $sequence = intval(substr($latest->reg_number, 4)) + 1;
+            }
+
+            $student->reg_number = $prefix . str_pad($sequence, 3, '0', STR_PAD_LEFT);
+        });
+
+
+    }
 
     protected $fillable = [
         'name_in_arabic',

@@ -42,7 +42,6 @@ class StudentFactory extends Factory
             'gender' => $gender,
             'religion' => $this->faker->randomElement(['مسلم', 'مسيحي']),
             'nationality' => $this->faker->randomElement(['مصري', 'اجنبي']),
-            'reg_number' => fake()->numerify('#######'),
             'withdrawn' => fake()->randomElement([true, false]),
             'status' => fake()->randomElement(['مستجد', "باقي"]),
             'classroom_id' => fake()->randomElement([null, $classroom, $classroom, $classroom]),

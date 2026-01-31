@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('language');
             $table->string('name_in_arabic');
             $table->string('name_in_english');
-            $table->date('birth_date');
+            $table->date('birth_date')->index();
             $table->string('nationality');
             $table->string('nid')->unique();
             $table->enum('gender', ['male', 'female']);

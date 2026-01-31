@@ -75,7 +75,7 @@ class StudentController extends Controller
 
     public function store(StoreStudentRequest $request): JsonResponse
     {
-        $this->authorizeAction("create");
+
         $validated = $request->validated();
 
         $guardianData = Arr::pull($validated, 'guardians', []);
