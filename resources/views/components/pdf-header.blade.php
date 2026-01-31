@@ -8,6 +8,11 @@
         {{$slot}}
     </div>
     <div class="image-wrapper">
-        <img src="{{public_path("logo.svg") ?? "logo.svg"}}" alt="school-logo"/>
+        @php
+            $logo = public_path('logo.svg');
+        @endphp
+
+        @inlinedImage($logo)
+
     </div>
 </div>

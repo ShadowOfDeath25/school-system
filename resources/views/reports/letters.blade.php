@@ -1,4 +1,4 @@
-@vite("resources/css/app.css")
+<link rel="stylesheet" href="{{ public_path('css/app.css') }}">
 <div class="letters">
 @foreach($studentsByClassrooms as $classroom)
 {{--    @dd($classroom)--}}

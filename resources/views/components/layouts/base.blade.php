@@ -6,7 +6,7 @@
     <!DOCTYPE html>
 <html>
     <head>
-        @vite(["resources/css/app.css"])
+        <link rel="stylesheet" href="{{ public_path('css/app.css') }}">
         <meta charset="utf-8">
         <title>@yield('title', 'Report')</title>
     </head>
