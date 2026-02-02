@@ -5,7 +5,7 @@ import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import { useCreate, useGetAll, useUpdate } from "@hooks/api/useCrud.js";
 import { useInputModal } from "@contexts/InputModalContext.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
-import { usePDFPreview } from "@contexts/PDFPreviewContext.jsx";
+import { useInvoiceModal } from "@contexts/InvoiceModalContext.jsx";
 import { useCurrentUser } from "@hooks/api/auth.js";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
@@ -30,7 +30,7 @@ export default function PaymentsTable({ student, type, types, academicYear, btnT
     const editMutation = useUpdate('payments');
     const { showInputModal, hideInputModal } = useInputModal();
     const { showSnackbar } = useSnackbar();
-    const { showPDFPreview } = usePDFPreview();
+    const { showInvoiceModal } = useInvoiceModal();
     const queryClient = useQueryClient()
 
     let modalFields = [
@@ -135,7 +135,7 @@ export default function PaymentsTable({ student, type, types, academicYear, btnT
     }
 
     const handleShowInvoice = (payment) => {
-        showPDFPreview({
+        showInvoiceModal({
             title: "إيصال دفع",
             children: (
                 <InvoicePDF
