@@ -5,6 +5,7 @@
     gap: 5px;
     align-items: center;
     width: 100%;
+
 }
 
 .inputWrapper label {
@@ -19,14 +20,25 @@
     width: 60%;
 }
 
-.radioGroup {
-
-    gap: 20px;
+.fullWidth {
+    width: 100% !important;
 }
 
+.radioGroup {
+
+    gap: 10%;
+}
+:global(.MuiFormControlLabel-root){
+    justify-content:flex-start;
+    margin-right: 0!important;
+}
 
 .radioGroup :global(.MuiRadio-root) {
     color: white;
+
+}
+.radioGroup {
+    flex-wrap: wrap;
 }
 
 
@@ -37,6 +49,7 @@
     position: absolute;
     bottom: -20px;
     margin-left: 0;
+
 }
 
 @media (max-width: 768px) {

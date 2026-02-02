@@ -1,0 +1,29 @@
+.container {
+    grid-column: span 4;
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 2fr;
+    row-gap: 3vh ;
+    column-gap: 3rem;
+    height: auto;
+    width: 100%;
+    grid-auto-rows: auto;
+
+}
+
+
+.container > div {
+    grid-column: span 2;
+}
+
+.container > div:first-of-type {
+    grid-column: span 3 !important;
+    width: 100%;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+}

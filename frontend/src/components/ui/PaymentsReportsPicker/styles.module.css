@@ -10,6 +10,9 @@
     border-top: var(--container-border);
     box-shadow: var(--container-box-shadow);
     box-sizing: border-box;
+    max-height: unset;
+
+
 }
 
 .title {
@@ -19,53 +22,74 @@
 
 .body {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr  ;
-    gap: 3rem 30%;
+    grid-template-columns: 1fr 2fr 1fr 2fr;
+    row-gap: 3vh;
+    column-gap: 3rem;
     padding-block: 20px;
+    grid-auto-rows: auto;
 }
-.body> div{
+
+
+.body > div:first-of-type {
     grid-column: span 2;
-}
-
-.inputWrapper input {
-    padding: 10px;
-    border: 1px solid var(--secondary-color);
-    border-radius: 5px;
-
-    margin-bottom: 5px;
-
-    &:focus {
-        outline: 3px solid var(--color-focus);
-        border-color: var(--color-focus);
-    }
-
-    width: 100%;
-
 
 }
+
+label {
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    width: fit-content;
+
+}
+
+/*.inputWrapper input {*/
+/*    padding: 10px;*/
+/*    border: 1px solid var(--secondary-color);*/
+/*    border-radius: 5px;*/
+
+/*    margin-bottom: 5px;*/
+
+/*    &:focus {*/
+/*        outline: 3px solid var(--color-focus);*/
+/*        border-color: var(--color-focus);*/
+/*    }*/
+
+/*    width: 100%;*/
+
+
+/*}*/
+/*.options{*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    width: 90%;*/
+/*}*/
+
+/*.body>div:first-child,*/
+/*.body>div:has(textarea),*/
+/*.body>div:nth-child(2){*/
+/*    grid-column: span 3;*/
 .options{
     display: flex;
     justify-content: space-between;
     width: 90%;
 }
 
-.body>div:first-child,
-.body>div:has(textarea),
-.body>div:nth-child(2){
-    grid-column: span 3;
-
-
-
-}
-@media (max-width: 768px){
-    .body{
-        grid-template-columns: 1fr;
+@media (max-width: 768px) {
+    .body {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
 
     }
-    br {
-        display: none;
+
+    .body > div {
+        grid-column: span 1 !important;
+        width: 100%;
     }
-    .body > div{
-        grid-column: span 4 !important;
+
+    .body > div:not(:last-child) {
+        margin-bottom: 1rem;
     }
+
+
 }
