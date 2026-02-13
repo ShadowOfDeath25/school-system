@@ -1,12 +1,11 @@
 import styles from './styles.module.css';
 import SelectField from "@ui/SelectField/SelectField.jsx";
 import {Activity, useState} from "react";
-
 import {useGetAll} from "@hooks/api/useCrud.js";
-
 import {usePersistedState} from "@hooks/usePersistedState.js";
 import TuitionReports from "@ui/TuitionReports/TuitionReports.jsx";
-import {Checkbox, FormControlLabel} from "@mui/material";
+import {Button, Checkbox, FormControlLabel} from "@mui/material";
+
 
 export default function PaymentsReportsPicker() {
     const [reportType, setReportType] = usePersistedState("reportType", "tuition");
@@ -15,6 +14,9 @@ export default function PaymentsReportsPicker() {
     const [formData, setFormData] = useState({});
 
 
+    const handleSubmit = () => {
+
+    }
     return (
         <>
             <form className={styles.container}>
@@ -76,7 +78,23 @@ export default function PaymentsReportsPicker() {
                         value={showNotes}
                         onChange={() => setShowNotes(!showNotes)}
                     />
-
+                </div>
+                <div className={styles.actions}>
+                    <Button
+                        variant={"contained"}
+                        onClick={handleSubmit}
+                    >
+                        طباعة
+                    </Button>
+                    <Button
+                        variant={"contained"}
+                        color={"error"}
+                        onClick={() => {
+                            setFormData({})
+                        }}
+                    >
+                        اعادة تعيين
+                    </Button>
                 </div>
             </form>
         </>

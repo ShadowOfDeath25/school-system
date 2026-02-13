@@ -62,4 +62,7 @@
     .radioContainer {
         width: 100%;
     }
+    .radioGroup{
+        gap:0;
+    }
 }

@@ -3,8 +3,8 @@ import RadioField from "@ui/RadioField/RadioField.jsx";
 import SelectField from "@ui/SelectField/SelectField.jsx";
 import {useGetAll} from "@hooks/api/useCrud.js";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {useState} from "react";
 import InputField from "@ui/InputField/InputField.jsx";
+import TextArea from "@ui/TextArea/TextArea.jsx";
 
 
 export default function TuitionReports({formData, setFormData, academicYears}) {
@@ -112,6 +112,25 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
                 name={"sorting"}
                 options={[{label: "البنين اولًا", value: "maleFirst"}, {label: "البنات اولًا", value: "femaleFirst"}]}
             />
+
+            {/*<TextArea*/}
+            {/*    label={'الخطاب'}*/}
+            {/*    name={"letter"}*/}
+            {/*    value={formData.letter}*/}
+            {/*    handleChange={handleChange}*/}
+            {/*    placeholder={"الخطاب"}*/}
+            {/*    props={{className:styles.letterArea,id:"x-letter"}}*/}
+            {/*/>*/}
+            <Activity mode={(formData.reportSubType === "letters" || formData.reportSubType === "arrearsLetters") ? "visible" : "hidden"}>
+                <label htmlFor="letter">الخطاب</label>
+                <textarea
+                    id={"letter"}
+                    name={"letter"}
+                    value={formData.letter}
+                    onChange={handleChange}
+                    placeholder={"الخطاب"}
+                />
+            </Activity>
         </div>
     );
 }

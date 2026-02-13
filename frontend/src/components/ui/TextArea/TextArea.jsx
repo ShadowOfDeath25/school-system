@@ -34,7 +34,7 @@ export default function TextArea({
                         dir="auto"
                         onBlur={handleBlur}
                         rows={rows}
-                        {...{props}}
+                        {...{...props}}
                     />
                     {helperText && <span className={styles.helperText}>{helperText}</span>}
                     {isInvalid && <span>{error}</span>}

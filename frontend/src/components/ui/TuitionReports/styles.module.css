@@ -2,12 +2,11 @@
     grid-column: span 4;
     display: grid;
     grid-template-columns: 1fr 2fr 1fr 2fr;
-    row-gap: 3vh ;
+    row-gap: 3vh;
     column-gap: 3rem;
     height: auto;
     width: 100%;
     grid-auto-rows: auto;
-
 }
 
 
@@ -19,7 +18,28 @@
     grid-column: span 3 !important;
     width: 100%;
 }
+label[for="letter"]{
+    grid-column: 1;
+}
+textarea{
+    grid-column: span 3 !important;
+    padding: 10px;
+    border: 1px solid var(--secondary-color);
+    border-radius: 5px;
+    font-family: inherit;
+    resize: vertical;
 
+    margin-bottom: 5px;
+
+    &:focus {
+        outline: 3px solid var(--color-focus);
+        border-color: var(--color-focus);
+    }
+    min-height: 100px;
+    width: 100%;
+
+
+}
 
 @media (max-width: 768px) {
     .container {
