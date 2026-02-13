@@ -20,7 +20,7 @@ export const routes = [
                         children: [
                             {
                               index: true,
-                              element: <Navigate to={'/students'}></Navigate>
+                              element: <Navigate to={'/dashboard'}></Navigate>
                             },
                             ...appRoutes
                         ]
