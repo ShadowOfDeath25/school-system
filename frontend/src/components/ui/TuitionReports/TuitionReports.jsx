@@ -5,6 +5,7 @@ import {useGetAll} from "@hooks/api/useCrud.js";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 import InputField from "@ui/InputField/InputField.jsx";
 import TextArea from "@ui/TextArea/TextArea.jsx";
+import {Activity} from "react";
 
 
 export default function TuitionReports({formData, setFormData, academicYears}) {
@@ -58,9 +59,9 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
                 label={"العام الدراسي"}
                 options={academicYears}
                 placeholder={"اختر العام الدراسي"}
-                value={formData.academicYear}
+                value={formData.academic_year}
                 handleChange={handleChange}
-                name={"academicYear"}
+                name={"academic_year"}
             />
             <SelectField
                 label={"اللغة"}
@@ -89,7 +90,7 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
                 {...ClassroomHelper.FIELDS.CLASSROOM}
                 value={formData.classroom_id}
                 name={"classroom_id"}
-                disabled={!(formData.level && formData.grade && formData.language && formData.academicYear)}
+                disabled={!(formData.level && formData.grade && formData.language && formData.academic_year)}
                 options={
                     classrooms?.data?.map(classroom => ({label: classroom.name, value: classroom.id}))
                 }

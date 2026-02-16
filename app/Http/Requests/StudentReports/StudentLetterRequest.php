@@ -26,7 +26,7 @@ class StudentLetterRequest extends FormRequest
         return [
             'academic_year' => ['required', 'string', 'max:255'],
             'language' => ['nullable', 'string', Rule::in(['عربي', 'لغات'])],
-            'level' => ['required_with:grade', 'string', Rule::in(['ابتدائي', 'اعدادي', 'ثانوي'])],
+            'level' => ['required_with:grade', 'string', Rule::in(['ابتدائي', 'اعدادي', 'رياض اطفال'])],
             'grade' => ['integer', 'min:1', 'max:12'],
             'classroom' => ['nullable', 'integer', 'exists:classrooms,id'],
             'min' => ['nullable', 'numeric', 'min:0'],
