@@ -12,9 +12,12 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
 
     const {data: classrooms} = useGetAll("classrooms", {
         all: "true",
-        academic_year: formData.academicYear, language: formData.language, level: formData.level, grade: formData.grade
+        academic_year: formData.academic_year,
+        language: formData.language === "الكل" ? null : formData.language,
+        level: formData.level,
+        grade: formData.grade
     }, {
-        disabled: !(formData.level && formData.grade && formData.language && formData.academicYear)
+        disabled: !(formData.level && formData.grade && formData.language && formData.academic_year)
     });
     const handleChange = (e) => {
         setFormData((prev) => ({...prev, [e.target.name]: e.target.value}))
@@ -24,7 +27,6 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
             <label>اختر التقرير </label>
             <RadioField
                 name={"reportSubType"}
-
                 value={formData.reportSubType}
                 handleChange={handleChange}
                 options={[
@@ -114,15 +116,9 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
                 options={[{label: "البنين اولًا", value: "maleFirst"}, {label: "البنات اولًا", value: "femaleFirst"}]}
             />
 
-            {/*<TextArea*/}
-            {/*    label={'الخطاب'}*/}
-            {/*    name={"letter"}*/}
-            {/*    value={formData.letter}*/}
-            {/*    handleChange={handleChange}*/}
-            {/*    placeholder={"الخطاب"}*/}
-            {/*    props={{className:styles.letterArea,id:"x-letter"}}*/}
-            {/*/>*/}
-            <Activity mode={(formData.reportSubType === "letters" || formData.reportSubType === "arrearsLetters") ? "visible" : "hidden"}>
+
+            <Activity
+                mode={(formData.reportSubType === "letters" || formData.reportSubType === "arrearsLetters") ? "visible" : "hidden"}>
                 <label htmlFor="letter">الخطاب</label>
                 <textarea
                     id={"letter"}

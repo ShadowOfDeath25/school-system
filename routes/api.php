@@ -51,13 +51,31 @@ Route::middleware(["auth:sanctum"])->group(function () {
 
 
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('authorization:view dashboard');
-    Route::get('reports/financial/monthly', [FinancialReportsController::class, 'monthly'])->name('financial-reports.monthly')->middleware('authorization:view financial-reports');
-    Route::get('reports/financial/summary', [FinancialReportsController::class, 'summary'])->name('financial-reports.summary')->middleware('authorization:view financial-reports');
-    Route::get('reports/students/summary', [StudentReportsController::class, 'summary'])->name('student-reports.summary')->middleware('authorization:view student-reports');
-    Route::get('reports/students/arrears', [StudentReportsController::class, 'arrearsReport'])->name('student-reports.arrears')->middleware('authorization:view student-reports');
-    Route::post('reports/students/letters', [StudentReportsController::class, 'studentLetters'])->name('student-reports.letters')->middleware('authorization:view student-reports');
-    Route::get("reports/{uuid}/preview", [StudentReportsController::class, 'preview'])->name("reports.preview");
+    Route::prefix("/reports")->name("reports.")->group(function () {
 
+        Route::get("{uuid}/preview", [StudentReportsController::class, 'preview'])->name("preview");
+
+        Route::prefix("/students")->name("students.")->group(function () {
+
+            Route::get('summary', [StudentReportsController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
+            Route::prefix("/payments")->name("payments.")->group(function () {
+
+                Route::get('/arrears', [StudentReportsController::class, 'arrearsReport'])->name('arrears')->middleware('authorization:view student-reports');
+                Route::post('/letters', [StudentReportsController::class, 'studentLetters'])->name('letters')->middleware('authorization:view student-reports');
+                Route::post('/arrears-letters', [StudentReportsController::class, 'studentLetters'])->name('arrears-letters')->middleware('authorization:view student-reports');
+
+            });
+
+        });
+
+
+        Route::prefix("financial")->name("financial.")->group(function () {
+            Route::get('monthly', [FinancialReportsController::class, 'monthly'])->name('monthly')->middleware('authorization:view financial-reports');
+            Route::get('summary', [FinancialReportsController::class, 'summary'])->name('summary')->middleware('authorization:view financial-reports');
+        });
+
+
+    });
     Route::middleware(["authorization"])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();
         Route::apiResource('users', UserController::class)->withFilters();

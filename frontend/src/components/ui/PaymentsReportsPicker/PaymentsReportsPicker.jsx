@@ -1,7 +1,7 @@
 import styles from './styles.module.css';
 import SelectField from "@ui/SelectField/SelectField.jsx";
 import {Activity, useState} from "react";
-import {useGet, useGetAll} from "@hooks/api/useCrud.js";
+import {useGetAll} from "@hooks/api/useCrud.js";
 import {usePersistedState} from "@hooks/usePersistedState.js";
 import TuitionReports from "@ui/TuitionReports/TuitionReports.jsx";
 import {Button, Checkbox, FormControlLabel} from "@mui/material";
@@ -18,16 +18,26 @@ export default function PaymentsReportsPicker() {
     const {showPDFPreview} = usePDFPreview();
 
     const normalizeData = () => {
-        return {
-            ...formData,
-            showNotes,
+        const result = {
+            show_notes: showNotes,
             type: PaymentHelper.PAYMENT_TYPES[reportType],
+        };
+        const {sorting, language, ...rest} = formData;
+        if (sorting !== "الكل") {
+            result.sorting = sorting;
         }
+        if (language !== "الكل") {
+            result.language = language;
+        }
+        return {
+            ...result,
+            ...rest
+        }
+
     }
     const handleSubmit = async () => {
-        const response = await axiosClient.post(`reports/students/${formData.reportSubType}`, normalizeData());
-        console.log(response.data)
-        showPDFPreview({url:response.data.preview_url});
+        const response = await axiosClient.post(`reports/students/payments/${formData.reportSubType}`, normalizeData());
+        showPDFPreview({url: response.data.preview_url});
     }
     return (
         <>

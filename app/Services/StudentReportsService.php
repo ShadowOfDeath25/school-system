@@ -94,7 +94,7 @@ class StudentReportsService
 
         );
 
-        return $this->groupStudentsByClassroom($students,$per_chunk);
+        return $this->groupStudentsByClassroom($students, $per_chunk);
     }
 
     /**
@@ -103,11 +103,11 @@ class StudentReportsService
      * @param Collection $students
      * @return Collection
      */
-    private function groupStudentsByClassroom(Collection $students,int $perChunk=15): Collection
+    private function groupStudentsByClassroom(Collection $students, int $perChunk = 15): Collection
     {
         return $students
             ->groupBy('classroom_id')
-            ->map(function ($classroomStudents) use ($perChunk){
+            ->map(function ($classroomStudents) use ($perChunk) {
                 $firstStudent = $classroomStudents->first();
 
                 return [
@@ -166,7 +166,7 @@ class StudentReportsService
             ->when($level, fn(Builder $query) => $query->where("classrooms.level", '=', $level))
             ->when($grade, fn(Builder $query) => $query->where("classrooms.grade", '=', $grade))
             ->when($classroom, fn(Builder $query) => $query->where("classrooms.id", '=', $classroom))
-            ->when($sorting, fn(Builder $query) => $query->orderBy('students.gender', $sorting === 'maleFirst' ? 'desc' : 'asc'));
+            ->when($sorting, fn(Builder $query) => $query->orderBy('students.gender', $sorting === 'maleFirst' ? 'asc' : 'desc'));
     }
 
     /**
