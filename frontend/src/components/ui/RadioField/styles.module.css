@@ -25,20 +25,22 @@
 }
 
 .radioGroup {
+    width: 100% !important;
+    gap:10%;
+    flex-wrap: wrap !important;
 
-    gap: 10%;
+
 }
-:global(.MuiFormControlLabel-root){
-    justify-content:flex-start;
-    margin-right: 0!important;
+
+:global(.MuiFormControlLabel-root) {
+    justify-content: flex-start;
+    margin-right: 0 !important;
+    width: fit-content;
 }
 
 .radioGroup :global(.MuiRadio-root) {
     color: white;
 
-}
-.radioGroup {
-    flex-wrap: wrap;
 }
 
 
@@ -62,7 +64,8 @@
     .radioContainer {
         width: 100%;
     }
-    .radioGroup{
-        gap:0;
+
+    .radioGroup {
+        gap: 0;
     }
 }
