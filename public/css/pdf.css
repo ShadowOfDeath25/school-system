@@ -20,7 +20,8 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: 4px double black;
-    padding-block: 10px;
+    padding-block: 5px;
+
 }
 
 .school-data {
@@ -28,6 +29,7 @@ body {
     flex-direction: column;
     height: 100%;
     flex: 1;
+    justify-content: center;
 }
 
 .school-data > span {
@@ -59,9 +61,8 @@ body {
 
 .letterContainer {
     width: 100%;
-    padding-block: 10px;
+    padding-block: 0 10px;
     border: 7px double black;
-
     padding-inline: 10px;
     display: flex;
     flex-direction: column;
@@ -121,7 +122,7 @@ p {
     flex-direction: column;
     align-items: center;
     padding-inline: 5px;
-    gap:5px;
+    gap: 5px;
 }
 
 .footer {
@@ -130,6 +131,63 @@ p {
     justify-content: center;
 
 }
+
+table {
+    
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+td.value {
+    text-align: center;
+}
+
+.table-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-block: 10px;
+}
+
+.net-income {
+    display: flex;
+    width: 100%;
+    justify-content: space-between
+}
+
+.net-income > span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+div.title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    font-size: 22px;
+    margin-top: 20px;
+    /*border-bottom: 4px black double;*/
+}
+
+hr {
+    border-bottom: 4px black double;
+    background-color: white;
+    border-top: none;
+    margin-block: 20px;
+}
+
+.total > td {
+    font-weight: bold;
+}
+
 @page {
     margin-top: 5px;
 }

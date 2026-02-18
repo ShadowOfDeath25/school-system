@@ -23,6 +23,7 @@ use App\Http\Controllers\IncomeTypeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentValueController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SeatNumberController;
 use App\Http\Controllers\SecretNumberController;
@@ -40,10 +41,7 @@ use Illuminate\Support\Facades\Route;
 Route::get("/user", AuthCOntroller::class . "@user")->name("user");
 
 Route::get("/pdf-test", function () {
-    return view("components.letter");
-});
-Route::get("pdf-preview", function () {
-    return view("preview");
+    return view("components.letter", ["incomes" => ["test" => 0]]);
 });
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::middleware(["auth:sanctum"])->group(function () {
@@ -53,7 +51,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('authorization:view dashboard');
     Route::prefix("/reports")->name("reports.")->group(function () {
 
-        Route::get("{uuid}/preview", [StudentReportsController::class, 'preview'])->name("preview");
+        Route::get("{uuid}/preview", [ReportController::class, 'preview'])->name("preview");
 
         Route::prefix("/students")->name("students.")->group(function () {
 
@@ -72,6 +70,8 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::prefix("financial")->name("financial.")->group(function () {
             Route::get('monthly', [FinancialReportsController::class, 'monthly'])->name('monthly')->middleware('authorization:view financial-reports');
             Route::get('summary', [FinancialReportsController::class, 'summary'])->name('summary')->middleware('authorization:view financial-reports');
+            Route::get('summary/print', [FinancialReportsController::class, 'printSummary'])->name('summary.print')->middleware('authorization:view financial-reports');
+
         });
 
 

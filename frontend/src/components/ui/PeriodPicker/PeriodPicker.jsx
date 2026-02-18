@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect} from 'react';
 import styles from './styles.module.css';
 import SelectField from '../SelectField/SelectField';
-import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
-import { useGetAll } from "@hooks/api/useCrud.js";
-import { usePersistedState } from "@hooks/usePersistedState.js";
+import {FormControlLabel, Radio, RadioGroup} from '@mui/material';
+import {useGetAll} from "@hooks/api/useCrud.js";
+import {usePersistedState} from "@hooks/usePersistedState.js";
 
-export default function PeriodPicker({ onSubmit }) {
-    const { data: academicYearOptions = [] } = useGetAll('academic-years');
+export default function PeriodPicker({onSubmit, onPrint}) {
+    const {data: academicYearOptions = []} = useGetAll('academic-years');
     const [academicYear, setAcademicYear] = usePersistedState('selected_academic_year', "");
 
     useEffect(() => {
@@ -43,7 +43,31 @@ export default function PeriodPicker({ onSubmit }) {
             }
         }
     };
-
+    const handlePrint = () => {
+        if (onPrint) {
+            switch (viewType) {
+                case 'period':
+                    onPrint({
+                        startDate: startDate,
+                        endDate: endDate
+                    })
+                    break;
+                case 'day':
+                    onPrint({
+                        startDate: startDate,
+                        endDate: startDate,
+                    })
+                    break;
+                case 'year': {
+                    const [endYear, startYear] = academicYear.split('/');
+                    onPrint({
+                        startDate: `${startYear}-09-01`,
+                        endDate: `${endYear}-08-31`
+                    })
+                }
+            }
+        }
+    }
     const handleViewTypeChange = (event) => {
         setViewType(event.target.value);
     };
@@ -72,8 +96,8 @@ export default function PeriodPicker({ onSubmit }) {
                     </div>
                 </div>
 
-                <div className={styles.row} style={{ alignItems: 'flex-start', }}>
-                    <label className={styles.label} style={{ marginTop: '10px' }}>عرض بواسطة</label>
+                <div className={styles.row} style={{alignItems: 'flex-start',}}>
+                    <label className={styles.label} style={{marginTop: '10px'}}>عرض بواسطة</label>
 
                     <RadioGroup
                         row
@@ -87,10 +111,10 @@ export default function PeriodPicker({ onSubmit }) {
                                 value="period"
                                 control={<Radio sx={{
                                     color: 'var(--secondary-color)',
-                                    '&.Mui-checked': { color: 'var(--secondary-color)' }
-                                }} />}
+                                    '&.Mui-checked': {color: 'var(--secondary-color)'}
+                                }}/>}
                                 label="فترة زمنية"
-                                sx={{ color: 'var(--primary-text-color)' }}
+                                sx={{color: 'var(--primary-text-color)'}}
                             />
                             {viewType === 'period' && (
                                 <div className={styles.dateInputs}>
@@ -98,14 +122,14 @@ export default function PeriodPicker({ onSubmit }) {
                                         type="date"
                                         value={endDate}
                                         onChange={(e) => setEndDate(e.target.value)}
-                                        style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                        style={{padding: '5px', borderRadius: '4px', border: '1px solid #ccc'}}
                                     />
-                                    <span style={{ margin: '0 5px' }}>الى</span>
+                                    <span style={{margin: '0 5px'}}>الى</span>
                                     <input
                                         type="date"
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
-                                        style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                        style={{padding: '5px', borderRadius: '4px', border: '1px solid #ccc'}}
                                     />
                                 </div>
                             )}
@@ -115,10 +139,10 @@ export default function PeriodPicker({ onSubmit }) {
                                 value="day"
                                 control={<Radio sx={{
                                     color: 'var(--secondary-color)',
-                                    '&.Mui-checked': { color: 'var(--secondary-color)' }
-                                }} />}
+                                    '&.Mui-checked': {color: 'var(--secondary-color)'}
+                                }}/>}
                                 label="اليوم"
-                                sx={{ color: 'var(--primary-text-color)' }}
+                                sx={{color: 'var(--primary-text-color)'}}
                             />
                             {viewType === 'day' && (
                                 <div className={styles.dateInputs}>
@@ -126,7 +150,7 @@ export default function PeriodPicker({ onSubmit }) {
                                         type="date"
                                         value={startDate}
                                         onChange={(e) => setStartDate(e.target.value)}
-                                        style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                        style={{padding: '5px', borderRadius: '4px', border: '1px solid #ccc'}}
                                     />
                                 </div>
                             )}
@@ -137,10 +161,10 @@ export default function PeriodPicker({ onSubmit }) {
                             value="year"
                             control={<Radio sx={{
                                 color: 'var(--secondary-color)',
-                                '&.Mui-checked': { color: 'var(--secondary-color)' }
-                            }} />}
+                                '&.Mui-checked': {color: 'var(--secondary-color)'}
+                            }}/>}
                             label="طوال العام"
-                            sx={{ color: 'var(--primary-text-color)' }}
+                            sx={{color: 'var(--primary-text-color)'}}
                         />
                     </RadioGroup>
                 </div>
@@ -148,7 +172,7 @@ export default function PeriodPicker({ onSubmit }) {
                     <button className={`${styles.button} ${styles.primaryButton}`} onClick={handleSubmit}>
                         عرض
                     </button>
-                    <button className={`${styles.button} ${styles.secondaryButton}`}>
+                    <button className={`${styles.button} ${styles.secondaryButton}`} onClick={handlePrint}>
                         طباعة
                     </button>
                 </div>
