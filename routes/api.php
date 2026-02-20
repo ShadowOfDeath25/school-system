@@ -29,7 +29,7 @@ use App\Http\Controllers\SeatNumberController;
 use App\Http\Controllers\SecretNumberController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\StudentReportsController;
+use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SubjectTypeController;
 use App\Http\Controllers\UniformController;
@@ -55,12 +55,12 @@ Route::middleware(["auth:sanctum"])->group(function () {
 
         Route::prefix("/students")->name("students.")->group(function () {
 
-            Route::get('summary', [StudentReportsController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
+            Route::get('summary', [StudentReportController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
             Route::prefix("/payments")->name("payments.")->group(function () {
 
-                Route::get('/arrears', [StudentReportsController::class, 'arrearsReport'])->name('arrears')->middleware('authorization:view student-reports');
-                Route::post('/letters', [StudentReportsController::class, 'studentLetters'])->name('letters')->middleware('authorization:view student-reports');
-                Route::post('/arrears-letters', [StudentReportsController::class, 'studentLetters'])->name('arrears-letters')->middleware('authorization:view student-reports');
+                Route::get('/arrears', [StudentReportController::class, 'arrearsReport'])->name('arrears')->middleware('authorization:view student-reports');
+                Route::post('/letters', [StudentReportController::class, 'studentLetters'])->name('letters')->middleware('authorization:view student-reports');
+                Route::post('/arrears-letters', [StudentReportController::class, 'studentLetters'])->name('arrears-letters')->middleware('authorization:view student-reports');
 
             });
 

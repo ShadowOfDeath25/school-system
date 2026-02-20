@@ -11,7 +11,7 @@ use Storage;
 use Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class StudentReportsController extends Controller
+class StudentReportController extends Controller
 {
     /**
      * Get a summary of student data.

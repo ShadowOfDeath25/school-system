@@ -16,6 +16,6 @@
     },
     "dependencies": {
         "lodash": "^4.17.21",
-        "puppeteer": "^24.36.0"
+        "puppeteer": "^24.37.4"
     }
 }

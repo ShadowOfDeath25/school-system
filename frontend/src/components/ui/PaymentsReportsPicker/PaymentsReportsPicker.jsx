@@ -8,6 +8,7 @@ import {Button, Checkbox, FormControlLabel} from "@mui/material";
 import axiosClient from "../../../axiosClient.js";
 import {PaymentHelper} from "@helpers/PaymentHelper.js";
 import {usePDFPreview} from "@contexts/PDFPreviewContext.jsx";
+import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
 
 export default function PaymentsReportsPicker() {
@@ -16,12 +17,13 @@ export default function PaymentsReportsPicker() {
     const [showNotes, setShowNotes] = useState(false);
     const [formData, setFormData] = useState({});
     const {showPDFPreview} = usePDFPreview();
-
+    const {showSnackbar} = useSnackbar();
     const normalizeData = () => {
         const result = {
             show_notes: showNotes,
             type: PaymentHelper.PAYMENT_TYPES[reportType],
         };
+        let isValid = true;
         const {sorting, language, ...rest} = formData;
         if (sorting !== "الكل") {
             result.sorting = sorting;
@@ -29,14 +31,33 @@ export default function PaymentsReportsPicker() {
         if (language !== "الكل") {
             result.language = language;
         }
-        return {
-            ...result,
-            ...rest
+        if (!rest.reportSubType) {
+            showSnackbar("يرجي اختيار تقرير", "error")
+            return {};
         }
+
+        if (["letters", "arrears-letters"].includes(rest.reportSubType) && !rest.letter ) {
+            showSnackbar("يرجي كتابة خطاب", "error")
+            isValid = false;
+        }
+        if (!rest.academic_year) {
+            showSnackbar("يرجي اختيار سنة دراسية", "error")
+            isValid = false;
+        }
+        return isValid ?
+            {
+                ...result,
+                ...rest
+            } : {}
 
     }
     const handleSubmit = async () => {
-        const response = await axiosClient.post(`reports/students/payments/${formData.reportSubType}`, normalizeData());
+        const normalizedData = normalizeData();
+        console.log(normalizedData);
+        if (normalizedData === {}) {
+            return;
+        }
+        const response = await axiosClient.post(`reports/students/payments/${formData.reportSubType}`, normalizedData);
         showPDFPreview({url: response.data.preview_url});
     }
     return (
