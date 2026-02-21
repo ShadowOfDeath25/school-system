@@ -5,19 +5,16 @@ namespace Database\Seeders;
 use App\Models\PaymentValue;
 use Illuminate\Database\Seeder;
 
+use App\Models\AcademicYear;
+
 class PaymentValueSeeder extends Seeder
 {
 
     public function run(): void
     {
-        PaymentValue::query()->truncate();
-
 
         $currentYear = now()->year;
-        $academicYears = [
-            "2025/2024",
-            "2026/2025"
-        ];
+        $academicYears = AcademicYear::pluck('name')->toArray();
 
         $levelSpecificData = [
             'رياض اطفال' => [

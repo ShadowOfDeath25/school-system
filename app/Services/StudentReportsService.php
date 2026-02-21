@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\PaymentType;
 use App\Models\Classroom;
 use App\Models\Student;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
@@ -139,7 +140,7 @@ class StudentReportsService
      * @param int|null $grade
      * @param int|null $classroom
      * @param string|null $sorting
-     * @return Builder
+     * @return Builder|EloquentBuilder
      */
     private function buildBaseStudentQuery(
         ?string $academicYear,
@@ -148,9 +149,10 @@ class StudentReportsService
         ?int    $grade,
         ?int    $classroom,
         ?string $sorting
-    ): Builder
+    ): Builder|EloquentBuilder
     {
-        return DB::table('students')
+        return Student::query()
+            ->with('guardians:id,phone_number')
             ->leftJoin('classrooms', 'students.classroom_id', '=', 'classrooms.id')
             ->select(
                 'students.id',
@@ -159,35 +161,36 @@ class StudentReportsService
                 'classrooms.name as classroom_name',
                 'classrooms.level',
                 'classrooms.language',
-                'classrooms.academic_year'
+                'classrooms.academic_year',
+
             )
-            ->when($academicYear, fn(Builder $query) => $query->where("classrooms.academic_year", '=', $academicYear))
-            ->when($language, fn(Builder $query) => $query->where("classrooms.language", '=', $language))
-            ->when($level, fn(Builder $query) => $query->where("classrooms.level", '=', $level))
-            ->when($grade, fn(Builder $query) => $query->where("classrooms.grade", '=', $grade))
-            ->when($classroom, fn(Builder $query) => $query->where("classrooms.id", '=', $classroom))
-            ->when($sorting, fn(Builder $query) => $query->orderBy('students.gender', $sorting === 'maleFirst' ? 'asc' : 'desc'));
+            ->when($academicYear, fn(EloquentBuilder $query) => $query->where("classrooms.academic_year", '=', $academicYear))
+            ->when($language, fn(EloquentBuilder $query) => $query->where("classrooms.language", '=', $language))
+            ->when($level, fn(EloquentBuilder $query) => $query->where("classrooms.level", '=', $level))
+            ->when($grade, fn(EloquentBuilder $query) => $query->where("classrooms.grade", '=', $grade))
+            ->when($classroom, fn(EloquentBuilder $query) => $query->where("classrooms.id", '=', $classroom))
+            ->when($sorting, fn(EloquentBuilder $query) => $query->orderBy('students.gender', $sorting === 'maleFirst' ? 'asc' : 'desc'));
     }
 
     /**
      * Add payment calculations to the query and filter by minimum amount due.
      *
-     * @param Builder $query
+     * @param Builder|EloquentBuilder $query
      * @param string|null $academicYear
      * @param string|null $level
      * @param string|null $language
      * @param string|null $type
      * @param float $min
-     * @return Builder
+     * @return Builder|EloquentBUilder
      */
     private function addPaymentCalculations(
-        Builder $query,
-        ?string $academicYear,
-        ?string $level,
-        ?string $language,
-        ?string $type,
-        float   $min
-    ): Builder
+        Builder|EloquentBuilder $query,
+        ?string                 $academicYear,
+        ?string                 $level,
+        ?string                 $language,
+        ?string                 $type,
+        float                   $min
+    ): Builder|EloquentBuilder
     {
         $paymentsSub = DB::table('payments')
             ->select("student_id", DB::raw("sum(value) as total_paid"))

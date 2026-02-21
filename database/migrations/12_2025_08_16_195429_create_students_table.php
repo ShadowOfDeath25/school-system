@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Classroom;
+use App\Models\PaymentValue;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -28,6 +29,8 @@ return new class extends Migration {
             $table->string('reg_number')->nullable();
             $table->string('level');
             $table->integer('grade');
+            $table->foreignIdFor(PaymentValue::class,"tuition_id")->nullable()->constrained()->nullOnDelete();
+            $table->foreignIdFor(PaymentValue::class,"administrative_id")->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(Classroom::class)->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });

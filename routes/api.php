@@ -38,8 +38,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::get("/user", AuthCOntroller::class . "@user")->name("user");
-
+Route::get("/user", AuthController::class . "@user")->name("user");
+Route::get("test",[StudentReportController::class,"test"]);
 Route::get("/pdf-test", function () {
     return view("components.letter", ["incomes" => ["test" => 0]]);
 });

@@ -23,9 +23,9 @@ class DatabaseSeeder extends Seeder
             StudentSeeder::class,
             SeatNumberSeeder::class,
             SecretNumberSeeder::class,
+            AcademicYearSeeder::class,
             PaymentValueSeeder::class,
             ExemptionSeeder::class,
-            AcademicYearSeeder::class,
         ]);
 
     }

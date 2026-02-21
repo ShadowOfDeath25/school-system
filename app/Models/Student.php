@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentType;
+use App\Observers\StudentObserver;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,35 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+
+#[ObservedBy([StudentObserver::class])]
 class Student extends Model
 {
     use HasFactory;
 
-    protected static function booted(): void
-    {
-        static::creating(function (Student $student) {
-            if ($student->reg_number) {
-                return;
-            }
-
-            $date = Carbon::parse($student->birth_date);
-            $prefix = $date->format('y') . $date->format('m');
-
-            $latest = Student::where('reg_number', 'like', $prefix . '%')
-                ->orderBy('reg_number', 'desc')
-                ->first();
-
-            if (!$latest) {
-                $sequence = 1;
-            } else {
-                $sequence = intval(substr($latest->reg_number, 4)) + 1;
-            }
-
-            $student->reg_number = $prefix . str_pad($sequence, 3, '0', STR_PAD_LEFT);
-        });
-
-
-    }
 
     protected $fillable = [
         'name_in_arabic',
@@ -99,6 +79,47 @@ class Student extends Model
                     ->exists();
             }
         );
+    }
+
+    public function assignPaymentValues(): void
+    {
+        if (!$this->classroom) {
+            return;
+        }
+        $values = PaymentValue::where("language", $this->language)
+            ->where("level", $this->level)
+            ->where("academic_year", $this->classroom->academic_year)
+            ->get();
+        foreach ($values as $value) {
+            if ($value->type === PaymentType::ADMINISTRATIVE) {
+                $this->administrative_id = $value->id;
+            }
+            if ($value->type === PaymentType::TUITION) {
+                $this->tuition_id = $value->id;
+            }
+        }
+    }
+
+    public function assignRegNum(): void
+    {
+        if ($this->reg_number) {
+            return;
+        }
+
+        $date = Carbon::parse($this->birth_date);
+        $prefix = $date->format('y') . $date->format('m');
+
+        $latest = Student::where('reg_number', 'like', $prefix . '%')
+            ->orderBy('reg_number', 'desc')
+            ->first();
+
+        if (!$latest) {
+            $sequence = 1;
+        } else {
+            $sequence = intval(substr($latest->reg_number, 4)) + 1;
+        }
+
+        $this->reg_number = $prefix . str_pad($sequence, 3, '0', STR_PAD_LEFT);
     }
 
 }

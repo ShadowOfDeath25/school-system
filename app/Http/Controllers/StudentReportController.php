@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Enums\PaymentType;
 use App\Http\Requests\StudentReports\StudentLetterRequest;
+use App\Models\Classroom;
+use App\Models\PaymentValue;
+use App\Models\Student;
 use App\Services\StudentReportsService;
 use Illuminate\Http\Request;
 use Spatie\LaravelPdf\Facades\Pdf;
@@ -102,7 +105,14 @@ class StudentReportController extends Controller
         ];
     }
 
-
+    public function test()
+    {
+        $values = PaymentValue::where("language","=", "عربي")
+            ->where("level","اعدادي")
+            ->where("academic_year", "2025/2024")
+            ->get();
+        @dd($values[2]);
+    }
 
 
 }
