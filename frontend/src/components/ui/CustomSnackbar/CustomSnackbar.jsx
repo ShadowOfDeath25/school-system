@@ -1,30 +1,45 @@
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert'
-import {useMediaQuery} from "@mui/material";
+import React, { useEffect } from 'react';
+import Alert from '@mui/material/Alert';
+import Grow from '@mui/material/Grow';
 
-export default function CustomSnackbar({msg, type, open, onClose}) {
-
-    const isMobile = useMediaQuery('(max-width: 768px)');
-
-    const anchorOrigin = {
-        vertical: isMobile ? 'top' : 'bottom',
-        horizontal: isMobile ? 'center' : "left",
-    };
+export default function CustomSnackbar({ msg, type, open, onClose, onExited }) {
+    useEffect(() => {
+        if (open) {
+            const timer = setTimeout(() => {
+                onClose();
+            }, 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [open, onClose]);
 
     return (
-        <Snackbar
-            autoHideDuration={4000}
-            open={open}
-            onClose={onClose}
-            anchorOrigin={anchorOrigin}
-            dir={"ltr"}
-            sx={{
-                ...(isMobile && { marginTop: '8vh' })
-            }}
-        >
-            <Alert severity={type} variant={"filled"}>
+        <Grow in={open} onExited={onExited}>
+            <Alert
+                severity={type}
+                variant="filled"
+                onClose={onClose}
+                dir="rtl"
+                sx={{
+                    boxShadow: 3,
+                    minWidth: '300px',
+                    maxWidth: '450px',
+                    width: '100%',
+                    alignItems: "center",
+                    '& .MuiAlert-message': {
+                        flexGrow: 1,
+                        textAlign: 'start',
+                        paddingInlineStart: '8px',
+                        fontSize: '1rem',
+                    },
+                    '& .MuiAlert-action': {
+                        paddingInlineStart: '16px',
+                        paddingInlineEnd: '4px',
+                        alignItems: 'center',
+                    },
+                }}
+            >
                 {msg}
             </Alert>
-        </Snackbar>
+        </Grow>
     );
 }
