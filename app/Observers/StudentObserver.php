@@ -14,6 +14,8 @@ class StudentObserver
 
     public function updating(Student $student): void
     {
-        $student->assignPaymentValues();
+        if ($student->isDirty(['classroom_id', 'language', 'level', 'withdrawn'])) {
+            $student->assignPaymentValues();
+        }
     }
 }
