@@ -40,7 +40,6 @@ class BookPurchaseController extends Controller
 
     public function store(StoreBookPurchaseRequest $request)
     {
-        $this->authorizeAction('store');
         $data = $request->validated();
         $book = Book::findOrFail($data['book_id']);
 
