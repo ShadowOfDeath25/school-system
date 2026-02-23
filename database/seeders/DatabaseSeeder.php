@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             BuildingSeeder::class,
             FloorSeeder::class,
+            AcademicYearSeeder::class,
+            PaymentValueSeeder::class,
             ClassroomSeeder::class,
             StudentSeeder::class,
             SeatNumberSeeder::class,
             SecretNumberSeeder::class,
-            AcademicYearSeeder::class,
-            PaymentValueSeeder::class,
             ExemptionSeeder::class,
         ]);
 
