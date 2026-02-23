@@ -1,16 +1,16 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import { useState } from "react";
-import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
-import { SubjectHelper } from "@helpers/SubjectHelper.js";
-import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
-import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import {useState} from "react";
+import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
+import {SubjectHelper} from "@helpers/SubjectHelper.js";
+import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
+import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
 export default function AddBooks() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('books')
-    const { showSnackbar } = useSnackbar()
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const {showSnackbar} = useSnackbar()
+    const {data: academicYears = []} = useGetAll('academic-years')
 
     const handleSubmit = (data) => {
         data.available_quantity = data.imported_quantity
@@ -34,7 +34,7 @@ export default function AddBooks() {
                 <Form
                     serverErrors={serverErrors}
                     fields={[
-                        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
+                        {...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears},
                         SubjectHelper.FIELDS.SEMESTER,
                         ClassroomHelper.FIELDS.LANGUAGE,
                         ClassroomHelper.FIELDS.LEVEL,
@@ -51,6 +51,7 @@ export default function AddBooks() {
                             label: "السعر",
                             type: "number",
                             required: true,
+                            min:1,
                             placeholder: "السعر"
                         },
                         {
@@ -58,8 +59,16 @@ export default function AddBooks() {
                             label: "الكمية الواردة",
                             type: "number",
                             required: true,
-                            placeholder: "السعر"
+                            placeholder: "الكمية الواردة"
                         },
+                        {
+                            name: "buy_price",
+                            label: "سعر الشراء",
+                            type: "number",
+                            required: true,
+                            min:1,
+                            placeholder: "السعر"
+                        }
 
                     ]}
                     onFormSubmit={handleSubmit}
