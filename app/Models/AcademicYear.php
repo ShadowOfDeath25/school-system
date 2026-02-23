@@ -10,4 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 class AcademicYear extends Model
 {
     protected $fillable = ['name'];
+
+    public static function latestYear(): AcademicYear
+    {
+        return AcademicYear::orderBy('name','desc')->first();
+    }
+
 }
