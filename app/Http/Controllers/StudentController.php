@@ -19,9 +19,7 @@ use Illuminate\Validation\ValidationException;
 
 class StudentController extends Controller
 {
-    use HasCRUD {
-        index as baseIndex;
-    }
+    use HasCRUD;
     use HasFilters;
 
     protected string $model = Student::class;
@@ -36,36 +34,20 @@ class StudentController extends Controller
     ];
     protected array $relationsToLoad = ['classroom', 'guardians'];
 
-    public function index(Request $request)
-    {
-        if ($request->has('withdrawn')) {
-            return StudentResource::collection(
-                Student::query()
-                    ->with($this->relationsToLoad)
-                    ->where('withdrawn', true)
-                    ->paginate($request->input('per_page', 30))
-                    ->withQueryString()
-            );
-        }
-        if ($request->has('includeWithdrawn')) {
-            return StudentResource::collection(
-                Student::query()
-                    ->with($this->relationsToLoad)
-                    ->paginate($request->input('per_page', 30))
-                    ->withQueryString()
-            );
-        }
-        return $this->baseIndex($request);
-    }
-
     public function query()
     {
-        return Student::query()
-            ->with($this->relationsToLoad)
-            ->where(function ($q) {
+        $query = Student::query()->with($this->relationsToLoad);
+
+        if (request()->has('withdrawn')) {
+            $query->where('withdrawn', true);
+        } elseif (!request()->has('includeWithdrawn')) {
+            $query->where(function ($q) {
                 $q->where('withdrawn', false)
                     ->orWhereNull('withdrawn');
             });
+        }
+
+        return $query;
     }
 
     public function show(Student $student)
@@ -107,7 +89,7 @@ class StudentController extends Controller
 
     public function update(UpdateStudentRequest $request, Student $student): StudentResource
     {
-        $this->authorizeAction("update");
+
 
         $validated = $request->validated();
 

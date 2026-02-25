@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 
 #[ObservedBy([StudentObserver::class])]
@@ -83,21 +84,44 @@ class Student extends Model
 
     public function assignPaymentValues(): void
     {
-        if (!$this->classroom) {
+        if (!$this->classroom_id) {
             return;
         }
+
+        $classroom = $this->classroom ?: Classroom::find($this->classroom_id);
+
+        if (!$classroom) {
+            return;
+        }
+
         $values = PaymentValue::where("language", $this->language)
-            ->where("level", $this->level)
-            ->where("academic_year", $this->classroom->academic_year)
+            ->where("level", $classroom->level)
+            ->where("academic_year", $classroom->academic_year)
             ->get();
+
         foreach ($values as $value) {
-            if ($value->type === PaymentType::ADMINISTRATIVE) {
-                $this->administrative_id = $value->id;
+            if ($value->type === PaymentType::ADMINISTRATIVE->value) {
+                $this->administrative()->associate($value);
             }
-            if ($value->type === PaymentType::TUITION) {
-                $this->tuition_id = $value->id;
+            if ($value->type === PaymentType::TUITION->value) {
+                $this->tuition()->associate($value);
             }
         }
+    }
+
+    public function extraDues(): HasMany
+    {
+        return $this->hasMany(ExtraDue::class);
+    }
+
+    public function tuition(): BelongsTo
+    {
+        return $this->belongsTo(PaymentValue::class, 'tuition_id');
+    }
+
+    public function administrative(): BelongsTo
+    {
+        return $this->belongsTo(PaymentValue::class, 'administrative_id');
     }
 
     public function assignRegNum(): void
@@ -122,4 +146,17 @@ class Student extends Model
         $this->reg_number = $prefix . str_pad($sequence, 3, '0', STR_PAD_LEFT);
     }
 
+    public function getBooksDueAttribute()
+    {
+        return $this->bookPurchases?->sum(
+            fn($p) => $p->quantity * ($p->book->price ?? 0)
+        ) ?? 0;
+    }
+
+    public function getUniformDueAttribute()
+    {
+        return $this->uniformPurchases?->sum(
+            fn($p) => $p->quantity * ($p->uniform->price ?? 0)
+        );
+    }
 }

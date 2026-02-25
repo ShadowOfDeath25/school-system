@@ -45,13 +45,14 @@ class StudentReportsService
         ?int    $classroom = null,
         ?float  $min = null,
         ?string $sorting = null,
-        ?string $type = null
+        ?string $type = null,
+        ?bool   $includePayments = false
     ): Collection
     {
         $query = $this->buildBaseStudentQuery($academicYear, $language, $level, $grade, $classroom, $sorting);
 
-        if ($min !== null) {
-            $query = $this->addPaymentCalculations($query, $academicYear, $level, $language, $type, $min);
+        if ($includePayments) {
+            $query = $this->addPaymentCalculations($query, $academicYear, $min, $type);
         }
 
         return $query->get();
@@ -68,6 +69,8 @@ class StudentReportsService
      * @param float|null $min
      * @param string|null $sorting
      * @param string|null $type
+     * @param int|null $per_chunk
+     * @param bool|null $includePayments
      * @return Collection
      */
     public function getStudentsGroupedByClassrooms(
@@ -79,7 +82,8 @@ class StudentReportsService
         ?float  $min = null,
         ?string $sorting = null,
         ?string $type = null,
-        ?int    $per_chunk = 15
+        ?int    $per_chunk = 15,
+        ?bool   $includePayments = false
     ): Collection
     {
         $students = $this->getStudentsByClassrooms(
@@ -91,8 +95,7 @@ class StudentReportsService
             $min,
             $sorting,
             $type,
-
-
+            $includePayments
         );
 
         return $this->groupStudentsByClassroom($students, $per_chunk);
@@ -106,6 +109,7 @@ class StudentReportsService
      */
     private function groupStudentsByClassroom(Collection $students, int $perChunk = 15): Collection
     {
+
         return $students
             ->groupBy('classroom_id')
             ->map(function ($classroomStudents) use ($perChunk) {
@@ -117,15 +121,7 @@ class StudentReportsService
                     'level' => $firstStudent->level,
                     'language' => $firstStudent->language,
                     'academic_year' => $firstStudent->academic_year,
-                    'students' => $classroomStudents->map(function ($student) {
-                        return [
-                            'id' => $student->id,
-                            'name_in_arabic' => $student->name_in_arabic,
-                            'total_paid' => $student->total_paid ?? null,
-                            'total_required' => $student->total_required ?? null,
-                            'amount_due' => $student->amount_due ?? null,
-                        ];
-                    })->chunk($perChunk)->map(fn($chunk) => $chunk->values())->values(),
+                    'students' => $classroomStudents->chunk($perChunk)->map(fn($chunk) => $chunk->values())->values(),
                 ];
             })
             ->values();
@@ -157,12 +153,13 @@ class StudentReportsService
             ->select(
                 'students.id',
                 'students.name_in_arabic',
+                'students.tuition_id',
+                'students.administrative_id',
                 'classrooms.id as classroom_id',
                 'classrooms.name as classroom_name',
                 'classrooms.level',
                 'classrooms.language',
                 'classrooms.academic_year',
-
             )
             ->when($academicYear, fn(EloquentBuilder $query) => $query->where("classrooms.academic_year", '=', $academicYear))
             ->when($language, fn(EloquentBuilder $query) => $query->where("classrooms.language", '=', $language))
@@ -177,8 +174,6 @@ class StudentReportsService
      *
      * @param Builder|EloquentBuilder $query
      * @param string|null $academicYear
-     * @param string|null $level
-     * @param string|null $language
      * @param string|null $type
      * @param float $min
      * @return Builder|EloquentBUilder
@@ -186,39 +181,66 @@ class StudentReportsService
     private function addPaymentCalculations(
         Builder|EloquentBuilder $query,
         ?string                 $academicYear,
-        ?string                 $level,
-        ?string                 $language,
-        ?string                 $type,
-        float                   $min
+        float                   $min,
+        ?string                 $type = PaymentType::TUITION->value
     ): Builder|EloquentBuilder
     {
-        $paymentsSub = DB::table('payments')
-            ->select("student_id", DB::raw("sum(value) as total_paid"))
-            ->when($type, fn(Builder $query) => $query->where("payments.type", '=', $type))
-            ->groupBy("student_id");
 
-        $valuesSub = DB::table('payment_values')
-            ->select("level", "language", 'academic_year', DB::raw("sum(value) as total_required"))
-            ->when($academicYear, fn(Builder $query) => $query->where("payment_values.academic_year", '=', $academicYear))
-            ->when($type, fn(Builder $query) => $query->where("payment_values.type", '=', $type))
-            ->when($level, fn(Builder $query) => $query->where("payment_values.level", '=', $level))
-            ->when($language, fn(Builder $query) => $query->where("payment_values.language", '=', $language))
-            ->groupBy("level", "language", "academic_year");
+        $type = PaymentType::tryFrom($type);
 
-        return $query
-            ->leftJoinSub($paymentsSub, 'payments_sum', function (JoinClause $join) {
-                $join->on('payments_sum.student_id', '=', 'students.id');
-            })
-            ->leftJoinSub($valuesSub, 'values_sum', function (JoinClause $join) {
-                $join->on('values_sum.level', '=', 'classrooms.level')
-                    ->on('values_sum.language', '=', 'classrooms.language')
-                    ->on('values_sum.academic_year', '=', 'classrooms.academic_year');
-            })
-            ->addSelect(
-                'payments_sum.total_paid',
-                'values_sum.total_required',
-                DB::raw('(values_sum.total_required - COALESCE(payments_sum.total_paid, 0)) as amount_due')
-            )
-            ->having('amount_due', '>=', $min);
+        if (!$type) {
+            abort(422, 'Invalid payment type');
+        }
+
+
+        match ($type) {
+
+            PaymentType::TUITION =>
+            $query->withSum('tuition as total_sum', 'value'),
+
+            PaymentType::ADMINISTRATIVE =>
+            $query->withSum('administrative as total_sum', 'value'),
+
+            PaymentType::ADDITIONAL =>
+            $query->withSum('extra_dues as total_sum', 'value'),
+
+            PaymentType::BOOK =>
+            $query->selectSub(function ($q) use ($academicYear) {
+                $q->from('book_purchases')
+                    ->join('books', 'books.id', '=', 'book_purchases.book_id')
+                    ->selectRaw('COALESCE(SUM(book_purchases.quantity * books.price),0)')
+                    ->whereColumn('book_purchases.student_id', 'students.id')
+                    ->when($academicYear, fn($b) => $b->where('books.academic_year', $academicYear)
+                    );
+            }, 'total_sum')
+        ,
+
+            PaymentType::UNIFORM =>
+            $query->selectSub(function ($q) use ($academicYear) {
+                $q->from('uniform_purchases')
+                    ->join('uniforms', 'uniforms.id', '=', 'uniform_purchases.uniform_id')
+                    ->selectRaw('COALESCE(SUM(uniform_purchases.quantity * uniforms.price),0)')
+                    ->whereColumn('uniform_purchases.student_id', 'students.id')
+                    ->when($academicYear, fn($b) => $b->where('uniforms.academic_year', $academicYear)
+                    );
+            }, 'total_sum'),
+        };
+
+        $query->withSum([
+            'payments as paid_sum' => fn($q) => $q->where('type', $type->value)
+        ], 'value');
+
+
+        if ($min > 0) {
+            $query->havingRaw('(COALESCE(total_sum,0) - COALESCE(paid_sum,0)) >= ?', [$min]);
+        } else {
+            $query->havingRaw(
+                '(COALESCE(total_sum,0) - COALESCE(paid_sum,0)) >= 0'
+            );
+        }
+
+        return $query;
     }
+
+
 }

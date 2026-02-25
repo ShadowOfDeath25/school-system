@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Requests\StudentReports;
+namespace App\Http\Requests\Student\Reports;
 
-use App\Enums\PaymentType;
+use App\Traits\Requests\HasReportFilters;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StudentLetterRequest extends FormRequest
+class GenerateLetterRequest extends FormRequest
 {
+    use HasReportFilters;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -24,23 +25,18 @@ class StudentLetterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ['required', 'string', 'max:255'],
-            'language' => ['nullable', 'string', Rule::in(['عربي', 'لغات'])],
-            'level' => ['required_with:grade', 'string', Rule::in(['ابتدائي', 'اعدادي', 'رياض اطفال'])],
-            'grade' => ['integer', 'min:1', 'max:12'],
-            'classroom' => ['nullable', 'integer', 'exists:classrooms,id'],
-            'min' => ['nullable', 'numeric', 'min:0'],
-            'sorting' => ['nullable', 'string', Rule::in(['maleFirst', 'femaleFirst'])],
-            'type' => ['nullable', 'string', Rule::in([
-                PaymentType::ADMINISTRATIVE->value,
-                PaymentType::TUITION->value,
-                PaymentType::UNIFORM->value,
-                PaymentType::BOOK->value,
-                PaymentType::ADDITIONAL->value,
-                PaymentType::WITHDRAWAL->value,
-            ])],
+            ...$this->baseReportFilters(),
             'letter' => ['required', 'string']
         ];
+    }
+
+    protected function passedValidation(): void
+    {
+        $this->replace([
+            ...$this->validated(),
+            'min' => (float)$this->validated('min')
+        ]);
+
     }
 
     /**

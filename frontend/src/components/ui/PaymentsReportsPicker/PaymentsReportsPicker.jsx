@@ -21,7 +21,7 @@ export default function PaymentsReportsPicker() {
     const normalizeData = () => {
         const result = {
             show_notes: showNotes,
-            type: PaymentHelper.PAYMENT_TYPES[reportType],
+            type: reportType,
         };
         let isValid = true;
         const {sorting, language, ...rest} = formData;
@@ -67,44 +67,14 @@ export default function PaymentsReportsPicker() {
                 <div className={styles.body}>
                     <label htmlFor={"reportType"}>نوع التقرير</label>
                     <SelectField
-                        options={[
-                            {
-                                label: "المصروفات الدراسية",
-                                value: "tuition"
-                            },
-                            {
-                                label: "المصروفات الادارية",
-                                value: "administrative"
-                            },
-                            {
-                                label: "مصروفات الكتب",
-                                value: "books"
-                            },
-                            {
-                                label: "المستحقات الاضافية",
-                                value: "extra-dues"
-                            },
-                            {
-                                label: "الاعفائات",
-                                value: "exemptions"
-                            },
-                            {
-                                label: "مصروفات ادارية من سحب الملفات",
-                                value: "withdrawals"
-                            },
-                            {
-                                label: "مصروفات الزي",
-                                value: "uniforms"
-                            }
-                        ]
-                        }
+                        options={[...Object.values(PaymentHelper.PAYMENT_TYPES)]}
                         id={"reportType"}
                         placeholder={"اختر نوع التقرير"}
                         value={reportType}
                         handleChange={(e) => setReportType(e.target.value)}
                         name={"reportType"}
                     />
-                    <Activity mode={reportType === "tuition" ? "visible" : "hidden"}>
+                    <Activity mode={reportType === PaymentHelper.PAYMENT_TYPES.TUITION ? "visible" : "hidden"}>
                         <TuitionReports
                             formData={formData}
                             setFormData={setFormData}

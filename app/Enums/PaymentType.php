@@ -5,7 +5,7 @@ namespace App\Enums;
 
 enum PaymentType: string
 {
-    case ADMINISTRATIVE = 'مصروفات ادراية';
+    case ADMINISTRATIVE = 'مصروفات ادارية';
     case TUITION = 'مصروفات دراسية';
     case UNIFORM = 'مصروفات الزي';
     case BOOK = 'مصروفات الكتب';

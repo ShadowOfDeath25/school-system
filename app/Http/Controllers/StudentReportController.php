@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\PaymentType;
-use App\Http\Requests\StudentReports\StudentLetterRequest;
-use App\Models\Classroom;
-use App\Models\PaymentValue;
+use App\Http\Requests\Student\Reports\GenerateLetterRequest;
 use App\Models\Student;
 use App\Services\StudentReportsService;
-use Illuminate\Http\Request;
 use Spatie\LaravelPdf\Facades\Pdf;
-use Storage;
 use Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -30,14 +25,15 @@ class StudentReportController extends Controller
     /**
      * Get arrears report data (optionally filtered by classroom).
      *
-     * @param StudentLetterRequest $request
+     * @param GenerateLetterRequest $request
      * @param StudentReportsService $studentReportsService
      * @return JsonResponse
      */
-    public function arrearsReport(StudentLetterRequest $request, StudentReportsService $studentReportsService): JsonResponse
+    public function arrearsReport(GenerateLetterRequest $request, StudentReportsService $studentReportsService): JsonResponse
     {
         $classrooms = $studentReportsService->getStudentsGroupedByClassrooms(
-            ...$this->extractStudentFilters($request)
+            ...$this->extractStudentFilters($request),
+            includePayments: true
         );
 
         return response()->json($classrooms);
@@ -46,11 +42,11 @@ class StudentReportController extends Controller
     /**
      * Get student letters for students with outstanding payments.
      *
-     * @param StudentLetterRequest $request
+     * @param GenerateLetterRequest $request
      * @param StudentReportsService $service
      * @return JsonResponse
      */
-    public function studentLetters(StudentLetterRequest $request, StudentReportsService $service): JsonResponse
+    public function studentLetters(GenerateLetterRequest $request, StudentReportsService $service): JsonResponse
     {
         $uuid = Str::uuid()->toString();
         $filePath = "reports/$uuid.pdf";
@@ -62,7 +58,7 @@ class StudentReportController extends Controller
 
         $dir = storage_path('app/reports');
 
-        if (! is_dir($dir)) {
+        if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -85,10 +81,10 @@ class StudentReportController extends Controller
     /**
      * Extract student filter parameters from the request.
      *
-     * @param StudentLetterRequest $request
+     * @param GenerateLetterRequest $request
      * @return array
      */
-    private function extractStudentFilters(StudentLetterRequest $request): array
+    private function extractStudentFilters(GenerateLetterRequest $request): array
     {
         $validated = $request->validated();
 
@@ -98,7 +94,7 @@ class StudentReportController extends Controller
             'level' => $validated['level'] ?? null,
             'grade' => isset($validated['grade']) ? (int)$validated['grade'] : null,
             'classroom' => isset($validated['classroom']) ? (int)$validated['classroom'] : null,
-            'min' => isset($validated['min']) ? (float)$validated['min'] : null,
+            'min' => isset($validated['min']) ? (float)$validated['min'] : 0,
             'sorting' => $validated['sorting'] ?? null,
             'type' => $validated['type'] ?? null,
             'per_chunk' => $validated['per_chunk'] ?? 15,
@@ -107,12 +103,8 @@ class StudentReportController extends Controller
 
     public function test()
     {
-        $values = PaymentValue::where("language","=", "عربي")
-            ->where("level","اعدادي")
-            ->where("academic_year", "2025/2024")
-            ->get();
-        @dd($values[2]);
+        $students = Student::with(["bookPurchases.book", "uniformPurchases.uniform"])->find(172);
+        return [$students->books_due, $students->uniform_due];
+
     }
-
-
 }
