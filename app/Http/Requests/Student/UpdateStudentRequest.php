@@ -30,7 +30,7 @@ class UpdateStudentRequest extends FormRequest
             'status' => ['sometimes', 'string', Rule::in(['مستجد', 'باقي', 'تم سحب ملفه'])],
             'reg_number' => ['sometimes', 'string', 'numeric'],
             'withdrawn' => ['sometimes', 'boolean'],
-            'classroom_id' => ['sometimes', "numeric", "exists:classrooms,id"],
+            'classroom_id' => ['nullable','sometimes', "numeric", "exists:classrooms,id"],
             'guardians' => ['sometimes', 'array'],
             'guardians.*.name' => ['required', 'string', 'max:255'],
             'guardians.*.phone_number' => ['required', 'string', 'max:20', 'distinct'],

@@ -121,7 +121,7 @@ p {
     flex-direction: column;
     align-items: center;
     padding-inline: 5px;
-    gap:5px;
+    gap: 5px;
 }
 
 .footer {
@@ -130,6 +130,9 @@ p {
     justify-content: center;
 
 }
+
+
+
 @page {
     margin-top: 5px;
 }

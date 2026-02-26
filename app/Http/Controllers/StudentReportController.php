@@ -46,9 +46,16 @@ class StudentReportController extends Controller
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
+        $baseTitle = "متأخرات";
+        $type = PaymentType::from($request->validated('type'));
+        $typeValue = match ($type) {
+            PaymentType::TUITION, PaymentType::ADMINISTRATIVE, PaymentType::ADDITIONAL => preg_replace('/(?<!\p{Arabic})(?!ال)(\p{Arabic}+)/u', 'ال$1', $type->value),
+            default => $type->value
+        };
+        $title = $baseTitle . ' ' . $typeValue;
         Pdf::view('reports.arrears', [
             'classrooms' => $classrooms,
-            'type'=>$request->validated('type')
+            'title' => $title
         ])
             ->format('a4')
             ->orientation(Orientation::Landscape)

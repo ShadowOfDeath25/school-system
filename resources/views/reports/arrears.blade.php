@@ -6,15 +6,24 @@
     @endphp
     @foreach($classroom['students'] as $chunk)
         <x-pdf-header>
-            <h3>متأخرات {{$type}}</h3>
+            <h3>{{$title}}</h3>
         </x-pdf-header>
-        <div style="margin-bottom: 20px;">
-            <h3>{{ $classroom['classroom']->name ?? 'Classroom' }}</h3>
-            <p>
-                <strong>العام الدراسي:</strong> {{ $classroom['classroom']->academic_year }} |
-                <strong>الطاقة الاستيعابية:</strong> {{ $classroom['classroom']->max_capacity ?? 'N/A' }} |
-                <strong>الطاقة الفعلية:</strong> {{ $classroom['classroom']->students_count }}
-            </p>
+        <div class="classroom-data">
+            <h3>{{ $classroom['classroom']->name ?? "الغير مقيدون"}}</h3>
+            <div>
+                <span>
+                <strong>العام الدراسي: </strong> {{ $classroom['classroom']->academic_year }}
+                </span>
+                |
+                <span>
+                <strong>الطاقة الاستيعابية: </strong> {{ $classroom['classroom']->max_capacity ?? 'N/A' }}
+                </span>
+                |
+                <span>
+                <strong> الطاقة الفعلية:</strong> {{ $classroom['classroom']->students_count }}
+                </span>
+            </div>
+
         </div>
         <table class="table table-bordered">
             <thead>
@@ -59,7 +68,7 @@
                     @endphp
                     <tr style="background-color: #f8f9fa; font-weight: bold;">
                         <td colspan="6" style="text-align: center;">إجمالي المتبقي للفصل</td>
-                        <td colspan="2">{{ number_format($totalRemaining, 2) }}</td>
+                        <td colspan="2" style="text-align: center;">{{ number_format($totalRemaining, 2) }} ج.م</td>
 
                     </tr>
                 @endif
