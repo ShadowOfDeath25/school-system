@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PaymentType;
+use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateLetterRequest;
 use App\Models\Student;
 use App\Services\StudentReportsService;
+use Spatie\LaravelPdf\Enums\Orientation;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,14 +32,33 @@ class StudentReportController extends Controller
      * @param StudentReportsService $studentReportsService
      * @return JsonResponse
      */
-    public function arrearsReport(GenerateLetterRequest $request, StudentReportsService $studentReportsService): JsonResponse
+    public function arrearsReport(GenerateArrearsReportRequest $request, StudentReportsService $studentReportsService): JsonResponse
     {
         $classrooms = $studentReportsService->getStudentsGroupedByClassrooms(
             ...$this->extractStudentFilters($request),
             includePayments: true
         );
 
-        return response()->json($classrooms);
+        $uuid = Str::uuid()->toString();
+        $filePath = "reports/$uuid.pdf";
+        $dir = storage_path('app/reports');
+
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        Pdf::view('reports.arrears', [
+            'classrooms' => $classrooms,
+            'type'=>$request->validated('type')
+        ])
+            ->format('a4')
+            ->orientation(Orientation::Landscape)
+            ->footerView('components.pdf-footer')
+            ->margins(10, 5, 10, 5)
+            ->save(storage_path(("app/$filePath")));
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid),
+        ]);
     }
 
     /**
@@ -81,10 +103,10 @@ class StudentReportController extends Controller
     /**
      * Extract student filter parameters from the request.
      *
-     * @param GenerateLetterRequest $request
+     * @param GenerateArrearsReportRequest|GenerateLetterRequest $request
      * @return array
      */
-    private function extractStudentFilters(GenerateLetterRequest $request): array
+    private function extractStudentFilters(GenerateArrearsReportRequest|GenerateLetterRequest $request): array
     {
         $validated = $request->validated();
 
@@ -96,7 +118,7 @@ class StudentReportController extends Controller
             'classroom' => isset($validated['classroom']) ? (int)$validated['classroom'] : null,
             'min' => isset($validated['min']) ? (float)$validated['min'] : 0,
             'sorting' => $validated['sorting'] ?? null,
-            'type' => $validated['type'] ?? null,
+            'type' => $validated['type'] ?? PaymentType::TUITION->value,
             'per_chunk' => $validated['per_chunk'] ?? 15,
         ];
     }

@@ -116,11 +116,7 @@ class StudentReportsService
                 $firstStudent = $classroomStudents->first();
 
                 return [
-                    'classroom_id' => $firstStudent->classroom_id,
-                    'classroom_name' => $firstStudent->classroom_name,
-                    'level' => $firstStudent->level,
-                    'language' => $firstStudent->language,
-                    'academic_year' => $firstStudent->academic_year,
+                    'classroom' => $firstStudent->classroom,
                     'students' => $classroomStudents->chunk($perChunk)->map(fn($chunk) => $chunk->values())->values(),
                 ];
             })
@@ -148,25 +144,23 @@ class StudentReportsService
     ): Builder|EloquentBuilder
     {
         return Student::query()
-            ->with('guardians:id,phone_number')
-            ->leftJoin('classrooms', 'students.classroom_id', '=', 'classrooms.id')
-            ->select(
-                'students.id',
-                'students.name_in_arabic',
-                'students.tuition_id',
-                'students.administrative_id',
-                'classrooms.id as classroom_id',
-                'classrooms.name as classroom_name',
-                'classrooms.level',
-                'classrooms.language',
-                'classrooms.academic_year',
+            ->with([
+                'guardians:id,phone_number',
+                'classroom' => fn($q) => $q->select('id', 'name', 'level', 'language', 'academic_year', 'grade', 'max_capacity')->withCount('students')
+            ])
+            ->when($academicYear, fn($query) => $query->whereHas('classroom', fn($q) => $q->where('academic_year', $academicYear))
             )
-            ->when($academicYear, fn(EloquentBuilder $query) => $query->where("classrooms.academic_year", '=', $academicYear))
-            ->when($language, fn(EloquentBuilder $query) => $query->where("classrooms.language", '=', $language))
-            ->when($level, fn(EloquentBuilder $query) => $query->where("classrooms.level", '=', $level))
-            ->when($grade, fn(EloquentBuilder $query) => $query->where("classrooms.grade", '=', $grade))
-            ->when($classroom, fn(EloquentBuilder $query) => $query->where("classrooms.id", '=', $classroom))
-            ->when($sorting, fn(EloquentBuilder $query) => $query->orderBy('students.gender', $sorting === 'maleFirst' ? 'asc' : 'desc'));
+            ->when($language, fn($query) => $query->whereHas('classroom', fn($q) => $q->where('language', $language))
+            )
+            ->when($level, fn($query) => $query->whereHas('classroom', fn($q) => $q->where('level', $level))
+            )
+            ->when($grade, fn($query) => $query->whereHas('classroom', fn($q) => $q->where('grade', $grade))
+            )
+            ->when($classroom, fn($query) => $query->where('classroom_id', $classroom)
+            )
+            ->when($sorting, fn($query) => $query->orderBy('gender', $sorting === 'maleFirst' ? 'asc' : 'desc')
+            )
+            ->select('id', 'name_in_arabic', 'reg_number', 'tuition_id', 'administrative_id', 'classroom_id');
     }
 
     /**
@@ -196,7 +190,17 @@ class StudentReportsService
         match ($type) {
 
             PaymentType::TUITION =>
-            $query->withSum('tuition as total_sum', 'value'),
+            $query->selectSub(function ($q) {
+                $q->from('payment_values')
+                    ->selectRaw('COALESCE(SUM(payment_values.value), 0) - (SELECT COALESCE(SUM(exemptions.value), 0) FROM exemptions WHERE exemptions.student_id = students.id AND exemptions.type = students.note)')
+                    ->whereColumn('payment_values.id', 'students.tuition_id');
+            }, 'total_sum')
+            ->selectSub(function ($q) {
+                $q->from('exemptions')
+                    ->selectRaw('COALESCE(SUM(exemptions.value), 0)')
+                    ->whereColumn('exemptions.student_id', 'students.id')
+                    ->whereColumn('exemptions.type', 'students.note');
+            }, 'exemption_amount'),
 
             PaymentType::ADMINISTRATIVE =>
             $query->withSum('administrative as total_sum', 'value'),
