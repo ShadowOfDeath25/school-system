@@ -86,7 +86,7 @@ export default function PaymentsReportsPicker() {
                         handleChange={(e) => setReportType(e.target.value)}
                         name={"reportType"}
                     />
-                    <Activity mode={reportType === PaymentHelper.PAYMENT_TYPES.TUITION ? "visible" : "hidden"}>
+                    <Activity mode={reportType !== PaymentHelper.PAYMENT_TYPES.WITHDRAWAL ? "visible" : "hidden"}>
                         <TuitionReports
                             formData={formData}
                             setFormData={setFormData}

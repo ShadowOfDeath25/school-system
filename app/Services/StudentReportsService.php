@@ -211,7 +211,16 @@ class StudentReportsService
                 }, 'exemption_amount'),
 
             PaymentType::ADMINISTRATIVE =>
-            $query->withSum('administrative as total_sum', 'value'),
+            $query->selectSub(function ($q) {
+                $q->selectRaw("
+                    COALESCE((SELECT value FROM payment_values WHERE id = students.administrative_id LIMIT 1), 0)
+                    +
+                    CASE
+                        WHEN students.withdrawn = 1 THEN COALESCE((SELECT value FROM payment_values WHERE type = ? LIMIT 1), 0)
+                        ELSE 0
+                    END
+                ", ['مصروفات سحب الملف']);
+            }, 'total_sum'),
 
             PaymentType::ADDITIONAL =>
             $query->withSum('extra_dues as total_sum', 'value'),
