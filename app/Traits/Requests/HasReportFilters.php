@@ -31,6 +31,15 @@ trait HasReportFilters
                 PaymentType::ADDITIONAL->value,
                 PaymentType::WITHDRAWAL->value,
             ])],
+            'show_notes' => ['nullable', 'boolean']
         ];
+
     }
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'show_notes' => filter_var($this->show_notes, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
+        ]);
+    }
+
 }

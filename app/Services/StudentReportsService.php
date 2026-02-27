@@ -46,10 +46,11 @@ class StudentReportsService
         ?float  $min = null,
         ?string $sorting = null,
         ?string $type = null,
-        ?bool   $includePayments = false
+        ?bool   $includePayments = false,
+        ?bool   $showNotes = false
     ): Collection
     {
-        $query = $this->buildBaseStudentQuery($academicYear, $language, $level, $grade, $classroom, $sorting);
+        $query = $this->buildBaseStudentQuery($academicYear, $language, $level, $grade, $classroom, $sorting,$showNotes);
 
         if ($includePayments) {
             $query = $this->addPaymentCalculations($query, $academicYear, $min, $type);
@@ -83,7 +84,8 @@ class StudentReportsService
         ?string $sorting = null,
         ?string $type = null,
         ?int    $per_chunk = 15,
-        ?bool   $includePayments = false
+        ?bool   $includePayments = false,
+        ?bool $show_notes = false
     ): Collection
     {
         $students = $this->getStudentsByClassrooms(
@@ -95,7 +97,8 @@ class StudentReportsService
             $min,
             $sorting,
             $type,
-            $includePayments
+            $includePayments,
+            $show_notes,
         );
 
         return $this->groupStudentsByClassroom($students, $per_chunk);
@@ -140,10 +143,11 @@ class StudentReportsService
         ?string $level,
         ?int    $grade,
         ?int    $classroom,
-        ?string $sorting
+        ?string $sorting,
+        ?bool   $showNotes = false
     ): Builder|EloquentBuilder
     {
-        return Student::query()
+        $query = Student::query()
             ->with([
                 'guardians:id,phone_number',
                 'classroom' => fn($q) => $q->select('id', 'name', 'level', 'language', 'academic_year', 'grade', 'max_capacity')->withCount('students')
@@ -161,6 +165,10 @@ class StudentReportsService
             ->when($sorting, fn($query) => $query->orderBy('gender', $sorting === 'maleFirst' ? 'asc' : 'desc')
             )
             ->select('id', 'name_in_arabic', 'reg_number', 'tuition_id', 'administrative_id', 'classroom_id');
+        if ($showNotes) {
+            $query->addSelect('note');
+        }
+        return $query;
     }
 
     /**
@@ -195,12 +203,12 @@ class StudentReportsService
                     ->selectRaw('COALESCE(SUM(payment_values.value), 0) - (SELECT COALESCE(SUM(exemptions.value), 0) FROM exemptions WHERE exemptions.student_id = students.id AND exemptions.type = students.note)')
                     ->whereColumn('payment_values.id', 'students.tuition_id');
             }, 'total_sum')
-            ->selectSub(function ($q) {
-                $q->from('exemptions')
-                    ->selectRaw('COALESCE(SUM(exemptions.value), 0)')
-                    ->whereColumn('exemptions.student_id', 'students.id')
-                    ->whereColumn('exemptions.type', 'students.note');
-            }, 'exemption_amount'),
+                ->selectSub(function ($q) {
+                    $q->from('exemptions')
+                        ->selectRaw('COALESCE(SUM(exemptions.value), 0)')
+                        ->whereColumn('exemptions.student_id', 'students.id')
+                        ->whereColumn('exemptions.type', 'students.note');
+                }, 'exemption_amount'),
 
             PaymentType::ADMINISTRATIVE =>
             $query->withSum('administrative as total_sum', 'value'),

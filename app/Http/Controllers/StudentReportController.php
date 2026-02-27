@@ -127,6 +127,7 @@ class StudentReportController extends Controller
             'sorting' => $validated['sorting'] ?? null,
             'type' => $validated['type'] ?? PaymentType::TUITION->value,
             'per_chunk' => $validated['per_chunk'] ?? 12,
+            'show_notes' => $validated['show_notes'] ?? false,
         ];
     }
 

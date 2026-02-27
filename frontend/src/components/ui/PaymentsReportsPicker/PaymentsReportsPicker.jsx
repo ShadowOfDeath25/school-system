@@ -115,7 +115,7 @@ export default function PaymentsReportsPicker() {
                         variant={"contained"}
                         color={"error"}
                         onClick={() => {
-                            setFormData({})
+                            setFormData({min:0})
                         }}
                     >
                         اعادة تعيين

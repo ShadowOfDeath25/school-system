@@ -12,7 +12,7 @@
             <h3>{{ $classroom['classroom']->name ?? "الغير مقيدون"}}</h3>
             <div>
                 <span>
-                <strong>العام الدراسي: </strong> {{ $classroom['classroom']->academic_year }}
+                <strong>العام الدراسي: </strong> {{ $classroom['classroom']->academic_year ?? "N/A" }}
                 </span>
                 |
                 <span>
@@ -20,7 +20,7 @@
                 </span>
                 |
                 <span>
-                <strong> الطاقة الفعلية:</strong> {{ $classroom['classroom']->students_count }}
+                <strong> الطاقة الفعلية:</strong> {{ $classroom['classroom']->students_count ?? "N/A" }}
                 </span>
             </div>
 
@@ -36,6 +36,9 @@
                     <th>اعفائات</th>
                     <th>المتبقي</th>
                     <th>المحمول</th>
+                    @if(request()->boolean("show_notes"))
+                        <th>علامة مميزة</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -55,6 +58,9 @@
                                 @endif
                             @endforeach
                         </td>
+                        @if(request()->boolean("show_notes"))
+                            <td>{{$student->note ?? "لا يوجد"}}</td>
+                        @endif
                     </tr>
                 @endforeach
                 @if($loop->last)
@@ -68,7 +74,7 @@
                     @endphp
                     <tr style="background-color: #f8f9fa; font-weight: bold;">
                         <td colspan="6" style="text-align: center;">إجمالي المتبقي للفصل</td>
-                        <td colspan="2" style="text-align: center;">{{ number_format($totalRemaining, 2) }} ج.م</td>
+                        <td colspan="3" style="text-align: center;">{{ number_format($totalRemaining, 2) }} ج.م</td>
 
                     </tr>
                 @endif
