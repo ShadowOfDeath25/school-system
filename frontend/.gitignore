@@ -30,3 +30,6 @@ storybook-static
 # environment variables
 .env
 .env.production
+
+errors.txt
+.agents

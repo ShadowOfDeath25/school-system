@@ -28,7 +28,7 @@ class StudentReportController extends Controller
     /**
      * Get arrears report data (optionally filtered by classroom).
      *
-     * @param GenerateLetterRequest $request
+     * @param GenerateArrearsReportRequest $request
      * @param StudentReportsService $studentReportsService
      * @return JsonResponse
      */
@@ -126,7 +126,7 @@ class StudentReportController extends Controller
             'min' => isset($validated['min']) ? (float)$validated['min'] : 0,
             'sorting' => $validated['sorting'] ?? null,
             'type' => $validated['type'] ?? PaymentType::TUITION->value,
-            'per_chunk' => $validated['per_chunk'] ?? 15,
+            'per_chunk' => $validated['per_chunk'] ?? 12,
         ];
     }
 

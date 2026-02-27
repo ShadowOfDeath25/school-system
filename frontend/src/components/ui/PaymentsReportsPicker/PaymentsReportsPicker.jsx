@@ -17,7 +17,7 @@ export default function PaymentsReportsPicker() {
     const [showNotes, setShowNotes] = useState(false);
     const [formData, setFormData] = useState({});
     const {showPDFPreview} = usePDFPreview();
-    const {showSnackbar} = useSnackbar();
+    const {showSnackbar, hideSnackbar} = useSnackbar();
     const normalizeData = () => {
         const result = {
             show_notes: showNotes,
@@ -36,7 +36,7 @@ export default function PaymentsReportsPicker() {
             return {};
         }
 
-        if (["letters", "arrears-letters"].includes(rest.reportSubType) && !rest.letter ) {
+        if (["letters", "arrears-letters"].includes(rest.reportSubType) && !rest.letter) {
             showSnackbar("يرجي كتابة خطاب", "error")
             isValid = false;
         }
@@ -53,11 +53,23 @@ export default function PaymentsReportsPicker() {
     }
     const handleSubmit = async () => {
         const normalizedData = normalizeData();
-        console.log(normalizedData);
-        if (normalizedData === {}) {
+        if (!normalizedData) {
             return;
         }
-        const response = await axiosClient.post(`reports/students/payments/${formData.reportSubType}`, normalizedData);
+        const snackbarId = showSnackbar('جاري تحميل التقرير', "info")
+        let response;
+        if (['letters', 'arrears-letters'].includes(formData.reportSubType)) {
+            response = await axiosClient.post(`reports/students/payments/${formData.reportSubType}`, normalizedData);
+            hideSnackbar(snackbarId)
+
+        } else {
+            response = await axiosClient.get(`reports/students/payments/${formData.reportSubType}`, {params: normalizedData});
+            hideSnackbar(snackbarId)
+        }
+        if (response.status !== 200) {
+            showSnackbar(response.data.message, "error");
+            return;
+        }
         showPDFPreview({url: response.data.preview_url});
     }
     return (

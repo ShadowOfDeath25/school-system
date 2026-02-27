@@ -20,6 +20,7 @@ export const SnackbarProvider = ({ children }) => {
     const showSnackbar = useCallback((msg, type = 'success') => {
         const id = Date.now() + Math.random();
         setSnackbars(prev => [...prev, { id, msg, type, open: true }]);
+        return id;
     }, []);
 
     const handleClose = useCallback((id) => {
@@ -35,7 +36,7 @@ export const SnackbarProvider = ({ children }) => {
     const isMobile = useMediaQuery('(max-width: 768px)');
 
     return (
-        <SnackbarContext.Provider value={{ showSnackbar }}>
+        <SnackbarContext.Provider value={{ showSnackbar,hideSnackbar:handleClose }}>
             {children}
             <Box
                 sx={{
