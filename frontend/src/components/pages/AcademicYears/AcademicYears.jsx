@@ -5,13 +5,17 @@ import {useState} from "react";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import Table from "@ui/Table/Table.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
+import ActivateAcademicYearButton from "@ui/ActivateAcademicYearButton/ActivateAcademicYearButton.jsx";
 
 
 export default function AcademicYears() {
     const [startYear, setStartYear] = useState(new Date().getFullYear());
     const mutation = useCreate('academic-years');
     const {showSnackbar} = useSnackbar();
-
+    const activateButton = {
+        header: "تعيين كالعام الدراسي الحالي",
+        content: (row) => <ActivateAcademicYearButton row={row}/>
+    }
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -65,11 +69,12 @@ export default function AcademicYears() {
             </form>
             <Table
                 resource={'academic-years'}
-                params={{withName: "true"}}
                 editable={false}
                 deletable={false}
-                fields={[{name:"name",label:"العام الدراسي"}]}
-            />
+                fields={[{name: "name", label: "العام الدراسي"}, {name: "active", label: "الحالي"}]}
+            >
+                {activateButton}
+            </Table>
 
         </Page>
     </>);

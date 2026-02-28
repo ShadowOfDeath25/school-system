@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\AcademicYear;
 use App\Models\PaymentValue;
+use Cache;
 
 class AcademicYearObserver
 {
@@ -28,7 +29,7 @@ class AcademicYearObserver
      */
     public function deleted(AcademicYear $academicYear): void
     {
-        //
+        Cache::forget('academic_year.active');
     }
 
     /**
@@ -45,5 +46,11 @@ class AcademicYearObserver
     public function forceDeleted(AcademicYear $academicYear): void
     {
         //
+    }
+    public function saved(AcademicYear $academicYear):void
+    {
+        if ($academicYear->wasChanged('active')){
+            Cache::forget('academic_year.active');
+        }
     }
 }

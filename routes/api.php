@@ -79,8 +79,9 @@ Route::middleware(["auth:sanctum"])->group(function () {
     Route::middleware(["authorization"])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();
         Route::apiResource('users', UserController::class)->withFilters();
-        Route::get('academic-years', [AcademicYearController::class, 'index']);
-        Route::post('academic-years', [AcademicYearController::class, 'store']);
+        Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
+        Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
+        Route::patch('academic-years/{academicYear}/activate',[AcademicYearController::class,'activate'])->name('academic-years.activate');
 
         Route::apiResource('buses', BusController::class)->withFilters();
         Route::apiResource("books", BookController::class)->withFilters();
