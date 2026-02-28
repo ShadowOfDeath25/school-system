@@ -64,6 +64,19 @@ class StudentController extends Controller
         $studentData = $validated;
 
         $student = DB::transaction(function () use ($studentData, $guardianData) {
+            if (!empty($studentData['classroom_id'])) {
+                $newClassroom = Classroom::withCount(['students' => function ($query) {
+                    $query->where('withdrawn', false)
+                        ->orWhereNull('withdrawn');
+                }])->findOrFail($studentData['classroom_id']);
+                
+                if ($newClassroom->students_count >= $newClassroom->max_capacity) {
+                    throw ValidationException::withMessages([
+                        'classroom_id' => ['The selected classroom is full.'],
+                    ]);
+                }
+            }
+
             $student = new Student($studentData);
             $student->save();
 

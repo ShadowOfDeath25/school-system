@@ -82,6 +82,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
         Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
         Route::patch('academic-years/{academicYear}/activate',[AcademicYearController::class,'activate'])->name('academic-years.activate');
+        Route::put('academic-years/{academicYear}/activate',[AcademicYearController::class,'activate'])->name('academic-years.activate');
 
         Route::apiResource('buses', BusController::class)->withFilters();
         Route::apiResource("books", BookController::class)->withFilters();
@@ -89,7 +90,6 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::apiResource('students', StudentController::class)->withFilters();
         Route::apiResource('stations', StationController::class);
         Route::apiResource('classrooms', ClassroomController::class)->withFilters();
-
         Route::get("students/{student}/payments", [StudentController::class, 'getPayments']);
         Route::apiResource('payments', PaymentController::class)->withFilters();
         Route::apiResource('incomes', IncomeController::class)->withFilters();

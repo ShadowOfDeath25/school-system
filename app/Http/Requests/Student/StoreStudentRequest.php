@@ -27,6 +27,8 @@ class StoreStudentRequest extends FormRequest
             'nationality' => ["string", "required"],
             'note' => ['nullable', Rule::in(["ابناء عاملين", "توأم", "دمج", "يتيم", null])],
             'classroom_id' => ["numeric", "exists:classrooms,id"],
+            'grade' => ["numeric", 'required', "min:1", "max:11"],
+            'level' => ["string", 'required', "in:ابتدائي,اعدادي,رياض اطفال"],
             'guardians' => ['sometimes', 'array'],
             'guardians.*.name' => ['required', 'string', 'max:255'],
             'guardians.*.phone_number' => ['required', 'string', 'max:20', 'distinct'],

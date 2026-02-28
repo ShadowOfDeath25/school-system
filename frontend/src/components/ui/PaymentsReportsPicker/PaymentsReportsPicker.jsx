@@ -13,7 +13,10 @@ import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
 export default function PaymentsReportsPicker() {
     const [reportType, setReportType] = usePersistedState("reportType", "tuition");
-    const {data: academicYears = []} = useGetAll('academic-years');
+    const {data: academicYears = []} = useGetAll('academic-years', {},
+        {
+            select: (data) => data?.data.map(academicYear => academicYear.name)
+        });
     const [showNotes, setShowNotes] = useState(false);
     const [formData, setFormData] = useState({});
     const {showPDFPreview} = usePDFPreview();
@@ -115,7 +118,7 @@ export default function PaymentsReportsPicker() {
                         variant={"contained"}
                         color={"error"}
                         onClick={() => {
-                            setFormData({min:0})
+                            setFormData({min: 0})
                         }}
                     >
                         اعادة تعيين

@@ -9,10 +9,12 @@ use App\Models\Classroom;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 
 
 class ClassroomController extends Controller
 {
+
     use HasCRUD, HasFilters;
 
     protected string $model = Classroom::class;
@@ -30,9 +32,13 @@ class ClassroomController extends Controller
 
     protected function query(): Builder
     {
+
+        $isActive = request()->boolean('isActive');
+        $withStudents = request()->boolean("withStudents");
         return $this->model::query()
+            ->when($isActive, fn(Builder $query) => $query->active())
             ->withCount('students')
-            ->with($this->relationsToLoad)
+            ->when($withStudents, fn(Builder $query) => $query->with('students'))
             ->orderBy('academic_year', 'desc')
             ->orderBy('language')
             ->orderBy('level')

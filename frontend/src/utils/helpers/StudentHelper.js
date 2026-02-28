@@ -42,7 +42,14 @@ const FIELDS = {
             label: "الاسم باللغة الانجليزية",
             required: true,
             placeholder: 'الاسم باللغة الانجليزية'
-        }, NATIONALITY: {
+        },
+        LEVEL: {
+            ...ClassroomHelper.FIELDS.LEVEL
+        },
+        GRADE: {
+            ...ClassroomHelper.FIELDS.GRADE
+        }
+        , NATIONALITY: {
             name: "nationality",
             type: "radio",
             id: "nationality",
@@ -50,7 +57,9 @@ const FIELDS = {
             required: true,
             placeholder: "الجنسية",
             options: NATIONALITIES
-        }, GENDER: {
+        }
+        ,
+        GENDER: {
             name: "gender",
             type: "radio",
             id: "gender",
@@ -70,7 +79,9 @@ const FIELDS = {
             type: "radio",
             required: true,
             options: ClassroomHelper.LANGUAGES
-        }
+        },
+
+
     }, FATHER: {
         NAME: {
             name: "father_name", type: "text", id: "name", label: "الاسم", placeholder: "الاسم"

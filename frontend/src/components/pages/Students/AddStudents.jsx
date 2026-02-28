@@ -1,14 +1,38 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {useCreate} from "@hooks/api/useCrud.js";
+import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useState} from "react";
+import {useState, useRef} from "react";
 import {StudentHelper} from "@utils/helpers/StudentHelper.js";
+import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 
 export default function AddStudents() {
     const creationMutation = useCreate("students");
     const {showSnackbar} = useSnackbar();
     const [serverErrors, setServerErrors] = useState();
+    const formStateRef = useRef({});
+    const [classroomParameters, setClassroomParameters] = useState({level: "", grade: "", language: ""});
+
+    const {data: classrooms} = useGetAll("classrooms", {
+        isActive: true,
+        level: classroomParameters.level,
+        grade: classroomParameters.grade,
+        language: classroomParameters.language,
+        all: true
+    }, {
+        enabled: !!(classroomParameters.level && classroomParameters.grade && classroomParameters.language),
+        select: (data) => data?.data.map(classroom => ({
+            label: `${classroom.name}` + "    " + " (نسبة الإشغال " + classroom.occupancy + ")",
+            value: classroom.id
+        }))
+    });
+    console.log(classrooms ?? "no classrooms")
+
+    const handleFormDataChange = (newData) => {
+        if (newData.level !== classroomParameters.level || newData.grade !== classroomParameters.grade || newData.language !== classroomParameters.language) {
+            setClassroomParameters({level: newData.level, grade: newData.grade, language: newData.language});
+        }
+    };
 
     const normalizeData = (data) => {
         const normalizedData = {}
@@ -27,7 +51,6 @@ export default function AddStudents() {
         motherData.gender = "female";
         normalizedData.guardians = [fatherData, motherData];
         normalizedData.status = "مستجد";
-        console.log(normalizedData)
         return normalizedData;
     }
 
@@ -49,9 +72,25 @@ export default function AddStudents() {
     return (
         <Page>
             <Form
-                fields={StudentHelper.getAllFields()}
+                fields={[...StudentHelper.getAllFields(),
+                    {
+                        title: "الحاق بفصل",
+                        fields: [
+                            {
+                                ...ClassroomHelper.FIELDS.CLASSROOM,
+                                options: classrooms,
+                                name: "classroom_id",
+                                dependency: ["grade", "level", "language"],
+                                multiple: false
+
+                            }
+                        ]
+                    }
+                ]}
                 serverErrors={serverErrors}
                 onFormSubmit={onFormSubmit}
+                formStateRef={formStateRef}
+                onFormDataChange={handleFormDataChange}
             />
         </Page>
     );

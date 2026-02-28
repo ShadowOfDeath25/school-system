@@ -3,20 +3,22 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import useForm from "@hooks/useForm.js";
-import {useEffect, useMemo, useRef} from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 
 export default function Form({
-                                 fields,
-                                 id,
-                                 title,
-                                 btnText = "إضافة",
-                                 onFormSubmit,
-                                 serverErrors,
-                                 isModal = false,
-                                 values: externalValues,
-                                 setValues: setExternalValues
-                             }) {
+    fields,
+    id,
+    title,
+    btnText = "إضافة",
+    onFormSubmit,
+    serverErrors,
+    isModal = false,
+    values: externalValues,
+    setValues: setExternalValues,
+    formStateRef,
+    onFormDataChange
+}) {
     const isSectioned = fields.length > 0 && fields[0].hasOwnProperty('fields');
 
     const allFields = useMemo(
@@ -53,12 +55,19 @@ export default function Form({
     })) : internalForm.setFieldValue;
 
     const handleChange = isControlled ? (e) => {
-        const {name, value} = e.target;
-        setExternalValues(prev => ({...prev, [name]: value}));
+        const { name, value } = e.target;
+        setExternalValues(prev => ({ ...prev, [name]: value }));
     } : internalForm.handleChange;
 
     const prevFormDataRef = useRef(formData);
     useEffect(() => {
+        if (formStateRef) {
+            formStateRef.current = formData;
+        }
+        if (onFormDataChange) {
+            onFormDataChange(formData);
+        }
+
         const prevFormData = prevFormDataRef.current;
         allFields.forEach(field => {
             if (field.type === 'select' && typeof field.options === 'function') {
@@ -80,7 +89,7 @@ export default function Form({
         });
 
         prevFormDataRef.current = formData;
-    }, [formData, allFields, setFieldValue]);
+    }, [formData, allFields, setFieldValue, formStateRef, onFormDataChange]);
 
     const hasEmptyRequiredFields = allFields.some(field => {
         if (!field.required) return false;
@@ -140,21 +149,21 @@ export default function Form({
         >
             {title && <h3 className={styles.formTitle}>{title}</h3>}
             {isSectioned ? (fields.map((section, index) => (
-                    <div
-                        key={index}
-                        className={styles.formSection}
-                    >
-                        {
-                            section.title &&
-                            <h4 className={styles.sectionTitle}>
-                                {section.title}
-                            </h4>
-                        }
-                        <div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
-                            {section.fields.map(renderField)}
-                        </div>
+                <div
+                    key={index}
+                    className={styles.formSection}
+                >
+                    {
+                        section.title &&
+                        <h4 className={styles.sectionTitle}>
+                            {section.title}
+                        </h4>
+                    }
+                    <div className={`${isModal ? styles.modalInputs : styles.formInputs}`}>
+                        {section.fields.map(renderField)}
                     </div>
-                ))) :
+                </div>
+            ))) :
                 (
                     <div
                         className={`${isModal ? styles.modalInputs : styles.formInputs} ${!btnText ? styles.noButton : ''}`}>

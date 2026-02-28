@@ -36,6 +36,11 @@ class Student extends Model
         'reg_number',
         'status',
         'language',
+        'level',
+        'grade',
+        'tuition_id',
+        'administrative_id',
+        'has_siblings',
     ];
 
     public function classroom(): BelongsTo
