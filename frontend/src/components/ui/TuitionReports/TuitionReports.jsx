@@ -85,7 +85,7 @@ export default function TuitionReports({formData, setFormData, academicYears, re
             />
 
             <Activity
-                mode={(reportSubType === "letters" || reportSubType === "arrearsLetters") ? "visible" : "hidden"}>
+                mode={(reportSubType === "letters" || reportSubType === "arrears-letters") ? "visible" : "hidden"}>
                 <label htmlFor="letter">الخطاب</label>
                 <textarea
                     id={"letter"}

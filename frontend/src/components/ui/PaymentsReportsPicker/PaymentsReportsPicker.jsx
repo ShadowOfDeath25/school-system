@@ -10,6 +10,9 @@ import {PaymentHelper} from "@helpers/PaymentHelper.js";
 import {usePDFPreview} from "@contexts/PDFPreviewContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import RadioField from "@ui/RadioField/RadioField.jsx";
+import Form from "@ui/Form/Form.jsx";
+import InputField from "@ui/InputField/InputField.jsx";
+import DailyPaymentReportsForm from "@ui/DailyPaymentReportsForm/DailyPaymentReportsForm.jsx";
 
 
 export default function PaymentsReportsPicker() {
@@ -93,11 +96,12 @@ export default function PaymentsReportsPicker() {
                         name={"reportType"}
                     />
                     <br/>
+
                     <label>اختر التقرير </label>
                     <RadioField
                         name={"reportSubType"}
                         value={formData.reportSubType}
-                        handleChange={(e)=>setFormData((prev) => ({...prev, [e.target.name]: e.target.value}))}
+                        handleChange={(e) => setFormData((prev) => ({...prev, [e.target.name]: e.target.value}))}
                         options={[
                             {
                                 label: "سجلات المصروفات",
@@ -109,7 +113,7 @@ export default function PaymentsReportsPicker() {
                             },
                             {
                                 label: "خطابات متأخرات المصروفات",
-                                value: "arrearsLetters"
+                                value: "arrears-letters"
                             },
                             {
                                 label: "خطابات",
@@ -120,18 +124,29 @@ export default function PaymentsReportsPicker() {
                                 value: "stats"
                             },
                             {
-                                label: "الاحصائيات اليومية",
-                                value: "dailyStats"
+                                label: "المدفوعات اليومية",
+                                value: "daily"
                             }
 
                         ]}
                     />
-                    <Activity mode={reportType !== PaymentHelper.PAYMENT_TYPES.WITHDRAWAL ? "visible" : "hidden"}>
+
+                    <Activity
+                        mode={['arrears', 'arrears-letters', 'letters'].includes(formData.reportSubType) ? "visible" : "hidden"}>
                         <TuitionReports
                             formData={formData}
                             setFormData={setFormData}
                             academicYears={academicYears}
                             reportSubType={formData.reportSubType}
+                        />
+                    </Activity>
+
+
+                    <Activity mode={formData.reportSubType === "daily" ? "visible" : "hidden"}>
+                        <DailyPaymentReportsForm
+                            formData={formData}
+                            setFormData={setFormData}
+                            academicYears={academicYears}
                         />
                     </Activity>
 

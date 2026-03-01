@@ -30,7 +30,7 @@
                 <th>رقم الإيصال</th>
                 <th>القيمة</th>
                 <th>اسم التلميذ</th>
-                <th colspan="2">بيانات الدراسة</th>
+                <th colspan="2">بيانات الفصل</th>
             </tr>
         </thead>
         <tbody>
@@ -39,11 +39,11 @@
                     [$classroomNumber,$classroomLevel] = explode(' ',$payment->student->classroom->name,2)
                 @endphp
                 <tr>
-                    <td>{{$payment->id}}</td>
-                    <td>{{$payment->value}}</td>
+                    <td style="text-align:center;width:120px">{{$payment->id}}</td>
+                    <td style="text-align:center;width:50px">{{$payment->value}}</td>
                     <td>{{$payment->student->name_in_arabic}}</td>
-                    <td>{{$classroomNumber}}</td>
-                    <td>{{$classroomLevel}}</td>
+                    <td style="text-align:center">{{$classroomNumber}}</td>
+                    <td style="text-align:center">{{$classroomLevel}}</td>
                 </tr>
             @endforeach
         </tbody>

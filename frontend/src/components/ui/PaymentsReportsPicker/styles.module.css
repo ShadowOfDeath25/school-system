@@ -30,14 +30,17 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.body > div:has( > input) {
+    grid-column: span 2;
+}
 
 .body > div:first-of-type {
     grid-column: span 2;
 
 }
+
 .body > div:nth-of-type(2) {
     grid-column: span 3;
-
 }
 
 label {
@@ -49,23 +52,25 @@ label {
 }
 
 
-.options{
+.options {
     display: flex;
     justify-content: space-between;
     width: 90%;
 }
-.actions{
+
+.actions {
     margin-top: 10px;
     display: flex;
     justify-content: flex-end;
     gap: 10px;
     align-items: center;
 }
+
 @media (max-width: 768px) {
     .body {
         grid-template-columns: 1fr !important;
         gap: 1rem;
-        padding-block:10px;
+        padding-block: 10px;
     }
 
     .body > div {
@@ -76,7 +81,8 @@ label {
     .body > div:not(:last-child) {
         margin-bottom: 1rem;
     }
-    .actions{
+
+    .actions {
         justify-content: center;
         gap: 5%;
     }
