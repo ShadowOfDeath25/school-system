@@ -9,6 +9,7 @@ import axiosClient from "../../../axiosClient.js";
 import {PaymentHelper} from "@helpers/PaymentHelper.js";
 import {usePDFPreview} from "@contexts/PDFPreviewContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import RadioField from "@ui/RadioField/RadioField.jsx";
 
 
 export default function PaymentsReportsPicker() {
@@ -18,7 +19,9 @@ export default function PaymentsReportsPicker() {
             select: (data) => data?.data.map(academicYear => academicYear.name)
         });
     const [showNotes, setShowNotes] = useState(false);
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        reportSubType: undefined
+    });
     const {showPDFPreview} = usePDFPreview();
     const {showSnackbar, hideSnackbar} = useSnackbar();
     const normalizeData = () => {
@@ -89,11 +92,46 @@ export default function PaymentsReportsPicker() {
                         handleChange={(e) => setReportType(e.target.value)}
                         name={"reportType"}
                     />
+                    <br/>
+                    <label>اختر التقرير </label>
+                    <RadioField
+                        name={"reportSubType"}
+                        value={formData.reportSubType}
+                        handleChange={(e)=>setFormData((prev) => ({...prev, [e.target.name]: e.target.value}))}
+                        options={[
+                            {
+                                label: "سجلات المصروفات",
+                                value: "tuition records"
+                            },
+                            {
+                                label: "متأخرات المصروفات",
+                                value: "arrears"
+                            },
+                            {
+                                label: "خطابات متأخرات المصروفات",
+                                value: "arrearsLetters"
+                            },
+                            {
+                                label: "خطابات",
+                                value: "letters"
+                            },
+                            {
+                                label: "احصائيات المصروفات",
+                                value: "stats"
+                            },
+                            {
+                                label: "الاحصائيات اليومية",
+                                value: "dailyStats"
+                            }
+
+                        ]}
+                    />
                     <Activity mode={reportType !== PaymentHelper.PAYMENT_TYPES.WITHDRAWAL ? "visible" : "hidden"}>
                         <TuitionReports
                             formData={formData}
                             setFormData={setFormData}
                             academicYears={academicYears}
+                            reportSubType={formData.reportSubType}
                         />
                     </Activity>
 

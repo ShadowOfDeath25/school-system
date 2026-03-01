@@ -35,6 +35,10 @@
     grid-column: span 2;
 
 }
+.body > div:nth-of-type(2) {
+    grid-column: span 3;
+
+}
 
 label {
     white-space: nowrap;

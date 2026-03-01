@@ -14,10 +14,10 @@
     grid-column: span 2;
 }
 
-.container > div:first-of-type {
-    grid-column: span 3 !important;
-    width: 100%;
-}
+/*.container > div:first-of-type {*/
+/*    grid-column: span 3 !important;*/
+/*    width: 100%;*/
+/*}*/
 label[for="letter"]{
     grid-column: 1;
 }

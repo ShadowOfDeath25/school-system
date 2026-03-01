@@ -8,7 +8,7 @@ import TextArea from "@ui/TextArea/TextArea.jsx";
 import {Activity} from "react";
 
 
-export default function TuitionReports({formData, setFormData, academicYears}) {
+export default function TuitionReports({formData, setFormData, academicYears, reportSubType}) {
 
     const {data: classrooms} = useGetAll("classrooms", {
         all: "true",
@@ -24,39 +24,7 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
     }
     return (
         <div className={styles.container}>
-            <label>اختر التقرير </label>
-            <RadioField
-                name={"reportSubType"}
-                value={formData.reportSubType}
-                handleChange={handleChange}
-                options={[
-                    {
-                        label: "سجلات المصروفات",
-                        value: "tuition records"
-                    },
-                    {
-                        label: "متأخرات المصروفات",
-                        value: "arrears"
-                    },
-                    {
-                        label: "خطابات متأخرات المصروفات",
-                        value: "arrearsLetters"
-                    },
-                    {
-                        label: "خطابات",
-                        value: "letters"
-                    },
-                    {
-                        label: "احصائيات المصروفات",
-                        value: "stats"
-                    },
-                    {
-                        label: "الاحصائيات اليومية",
-                        value: "dailyStats"
-                    }
 
-                ]}
-            />
             <SelectField
                 label={"العام الدراسي"}
                 options={academicYears}
@@ -116,9 +84,8 @@ export default function TuitionReports({formData, setFormData, academicYears}) {
                 options={[{label: "البنين اولًا", value: "maleFirst"}, {label: "البنات اولًا", value: "femaleFirst"}]}
             />
 
-
             <Activity
-                mode={(formData.reportSubType === "letters" || formData.reportSubType === "arrearsLetters") ? "visible" : "hidden"}>
+                mode={(reportSubType === "letters" || reportSubType === "arrearsLetters") ? "visible" : "hidden"}>
                 <label htmlFor="letter">الخطاب</label>
                 <textarea
                     id={"letter"}
