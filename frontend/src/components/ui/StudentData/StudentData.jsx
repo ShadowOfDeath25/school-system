@@ -1,10 +1,12 @@
 import styles from './styles.module.css'
 import SelectField from "@ui/SelectField/SelectField.jsx";
-import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
-import { useGetAll } from "@hooks/api/useCrud.js";
+import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
+import {useGetAll} from "@hooks/api/useCrud.js";
 
-export default function StudentData({ student, academicYear, setAcademicYear }) {
-    const { data: academicYears = [] } = useGetAll('academic-years');
+export default function StudentData({student, academicYear, setAcademicYear}) {
+    const {data: academicYears = []} = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     console.log(student)
     return (
         <>
