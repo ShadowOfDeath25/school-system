@@ -13,7 +13,9 @@ export default function AddSubjects() {
     const mutation = useCreate('subjects');
     const { showSnackbar } = useSnackbar();
     const { data: types } = useGetAll('subject-types', { all: true })
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    })
     const fields = [
         { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
         SubjectHelper.FIELDS.SEMESTER,

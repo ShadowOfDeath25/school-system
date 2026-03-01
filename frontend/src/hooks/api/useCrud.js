@@ -27,7 +27,7 @@ export const useGet = (resource, id, params = {}, options = {}) => {
         queryKey: [resource, id, params],
         queryFn: () => axiosClient.get(`/${resource}/${id}`, {params}).then(res => res.data),
         keepPreviousData: true,
-        select:(data)=>data.data,
+        select: (data) => data.data,
         ...options,
 
     })
@@ -39,7 +39,14 @@ export const useFilters = (resource) => {
             const response = await axiosClient.get(`${resource}/filters`);
             const normalizedData = {}
             for (const [key, value] of Object.entries(response.data)) {
+
                 normalizedData[key] = value.map(item => {
+                    if (typeof item === 'object') {
+                        return {
+                            label: item.name,
+                            value: item.id
+                        }
+                    }
                     return {
                         label: item,
                         value: item

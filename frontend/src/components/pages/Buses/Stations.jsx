@@ -12,7 +12,9 @@ export default function Stations() {
     const userCanCreate = user?.role.includes("Super Admin") || user.permissions.includes('create stations')
     const mutation = useCreate('stations');
     const { showSnackbar } = useSnackbar();
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const [serverErrors, setServerErrors] = useState();
     const onSubmit = (data, actions) => {
         const normalizedData = {}

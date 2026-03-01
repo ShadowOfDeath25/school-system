@@ -8,7 +8,9 @@ import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 export default function AddPayments() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('payment-values')
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    })
     const { showSnackbar } = useSnackbar()
     const onSubmit = (data, formActions) => {
 

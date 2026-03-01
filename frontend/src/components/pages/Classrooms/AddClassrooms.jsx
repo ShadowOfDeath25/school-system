@@ -1,16 +1,18 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
-import {useState} from "react";
-import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
+import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { useState } from "react";
+import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
 
 
 export default function AddClassrooms() {
     const creationMutation = useCreate("classrooms");
-    const {data: academicYears = []} = useGetAll('academic-years');
-    const {data: buildings = []} = useGetAll('buildings');
-    const {showSnackbar} = useSnackbar();
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
+    const { data: buildings = [] } = useGetAll('buildings');
+    const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState(null);
 
 
@@ -37,7 +39,7 @@ export default function AddClassrooms() {
                 fields={
                     [
                         ...ClassroomHelper.getAllFields().filter(field => field.name !== 'classroom')
-                            .map(field => field.name === 'academic_year' ? {...field, options: academicYears} : field),
+                            .map(field => field.name === 'academic_year' ? { ...field, options: academicYears } : field),
                         {
                             name: "building",
                             type: "select",
@@ -60,7 +62,7 @@ export default function AddClassrooms() {
                             required: true,
                             label: "الطابق",
                             placeholder: "اختر الطابق",
-                            disabled: (buildingIndex) => (buildingIndex ==="")
+                            disabled: (buildingIndex) => (buildingIndex === "")
                         }
 
                     ]}

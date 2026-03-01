@@ -92,6 +92,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::apiResource('classrooms', ClassroomController::class)->withFilters();
         Route::get("students/{student}/payments", [StudentController::class, 'getPayments']);
         Route::apiResource('payments', PaymentController::class)->withFilters();
+        Route::get('recipients', [PaymentController::class, 'recipients']);
         Route::apiResource('incomes', IncomeController::class)->withFilters();
         Route::apiResource('expenses', ExpensesController::class)->withFilters();
         Route::apiResource('bank-accounts', BankAccountController::class)->withFilters();

@@ -10,7 +10,9 @@ import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
 
 export default function Withdrawn() {
     const { data: classrooms } = useGetAll('classrooms', { all: 'true' });
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const [filters, setFilters] = useState();
     const mutation = useUpdate('students');
     const { showEditModal, hideEditModal } = useInputModal();

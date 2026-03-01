@@ -21,7 +21,9 @@ export default function BuyUniforms() {
     const mutation = useCreate('uniform-purchases')
     const canFetchTypes = !!academic_year;
     const { showSnackbar } = useSnackbar();
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const { data: uniforms, isLoading: isLoadingTypes } = useGetAll('uniforms', {
         types: true, academic_year, level, grade, semester
     }, {

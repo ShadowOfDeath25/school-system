@@ -8,7 +8,9 @@ import { SeatNumberHelper } from "@helpers/SeatNumberHelper.js";
 
 export default function ViewSeatNumbers() {
     const [filters, setFilters] = useState();
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const filterFields = [
         {
             ...ClassroomHelper.FIELDS.LANGUAGE,

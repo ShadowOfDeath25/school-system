@@ -10,7 +10,9 @@ import { useGetAll } from "@hooks/api/useCrud.js";
 export default function AddSeatNumbers() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('seat-numbers');
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const { showSnackbar } = useSnackbar();
     const fields = [
         { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },

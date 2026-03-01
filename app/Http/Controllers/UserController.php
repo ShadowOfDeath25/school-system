@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    use HasCRUD,HasFilters;
+    use HasCRUD, HasFilters;
 
     protected string $model = User::class;
     protected string $storeRequest = StoreUserRequest::class;
@@ -28,37 +28,29 @@ class UserController extends Controller
         'name', 'email'
     ];
 
-    /**
-     * @throws AuthorizationException
-     */
+
     public function assignRole(RoleRequest $request, User $user)
     {
-        $this->authorizeAction("assign");
         $roles = $request->validated();
         $user->assignRole($roles);
         $user->save();
         return response()->json(["message" => "Role was assigned successfully", "user" => UserResource::make($user)]);
     }
 
-    /**
-     * @throws AuthorizationException
-     */
+
     public function syncRole(RoleRequest $request, User $user)
     {
-        $this->authorizeAction("sync");
         $roles = $request->validated();
         $user->syncRoles($roles);
         return response()->json(["message" => "Role was synced successfully", "user" => UserResource::make($user)]);
     }
 
-    /**
-     * @throws AuthorizationException
-     */
+
     public function removeRole(RoleRequest $request, User $user)
     {
-        $this->authorizeAction("remove");
-        $roles= $request->validated();
-        foreach($roles as $role){
+
+        $roles = $request->validated();
+        foreach ($roles as $role) {
             $user->removeRole($role);
         }
         return response()->json(["message" => "Role was removed successfully", "user" => UserResource::make($user)]);

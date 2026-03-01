@@ -1,14 +1,14 @@
 import styles from './styles.module.css';
 import SelectField from "@ui/SelectField/SelectField.jsx";
-import {Activity, useState} from "react";
-import {useGetAll} from "@hooks/api/useCrud.js";
-import {usePersistedState} from "@hooks/usePersistedState.js";
+import { Activity, useState } from "react";
+import { useGetAll } from "@hooks/api/useCrud.js";
+import { usePersistedState } from "@hooks/usePersistedState.js";
 import TuitionReports from "@ui/TuitionReports/TuitionReports.jsx";
-import {Button, Checkbox, FormControlLabel} from "@mui/material";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import axiosClient from "../../../axiosClient.js";
-import {PaymentHelper} from "@helpers/PaymentHelper.js";
-import {usePDFPreview} from "@contexts/PDFPreviewContext.jsx";
-import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import { PaymentHelper } from "@helpers/PaymentHelper.js";
+import { usePDFPreview } from "@contexts/PDFPreviewContext.jsx";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import Form from "@ui/Form/Form.jsx";
 import InputField from "@ui/InputField/InputField.jsx";
@@ -17,23 +17,22 @@ import DailyPaymentReportsForm from "@ui/DailyPaymentReportsForm/DailyPaymentRep
 
 export default function PaymentsReportsPicker() {
     const [reportType, setReportType] = usePersistedState("reportType", "tuition");
-    const {data: academicYears = []} = useGetAll('academic-years', {},
-        {
-            select: (data) => data?.data.map(academicYear => academicYear.name)
-        });
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const [showNotes, setShowNotes] = useState(false);
     const [formData, setFormData] = useState({
         reportSubType: undefined
     });
-    const {showPDFPreview} = usePDFPreview();
-    const {showSnackbar, hideSnackbar} = useSnackbar();
+    const { showPDFPreview } = usePDFPreview();
+    const { showSnackbar, hideSnackbar } = useSnackbar();
     const normalizeData = () => {
         const result = {
             show_notes: showNotes,
             type: reportType,
         };
         let isValid = true;
-        const {sorting, language, ...rest} = formData;
+        const { sorting, language, ...rest } = formData;
         if (sorting !== "الكل") {
             result.sorting = sorting;
         }
@@ -72,14 +71,14 @@ export default function PaymentsReportsPicker() {
             hideSnackbar(snackbarId)
 
         } else {
-            response = await axiosClient.get(`reports/students/payments/${formData.reportSubType}`, {params: normalizedData});
+            response = await axiosClient.get(`reports/students/payments/${formData.reportSubType}`, { params: normalizedData });
             hideSnackbar(snackbarId)
         }
         if (response.status !== 200) {
             showSnackbar(response.data.message, "error");
             return;
         }
-        showPDFPreview({url: response.data.preview_url});
+        showPDFPreview({ url: response.data.preview_url });
     }
     return (
         <>
@@ -95,13 +94,13 @@ export default function PaymentsReportsPicker() {
                         handleChange={(e) => setReportType(e.target.value)}
                         name={"reportType"}
                     />
-                    <br/>
+                    <br />
 
                     <label>اختر التقرير </label>
                     <RadioField
                         name={"reportSubType"}
                         value={formData.reportSubType}
-                        handleChange={(e) => setFormData((prev) => ({...prev, [e.target.name]: e.target.value}))}
+                        handleChange={(e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
                         options={[
                             {
                                 label: "سجلات المصروفات",
@@ -153,9 +152,9 @@ export default function PaymentsReportsPicker() {
 
                     <label>خيارات اخري</label>
                     <FormControlLabel
-                        control={<Checkbox sx={{color: "var(--primary-text-color)"}}/>}
+                        control={<Checkbox sx={{ color: "var(--primary-text-color)" }} />}
                         label={"عرض العلامات المميزة"}
-                        sx={{color: "var(--primary-text-color)"}}
+                        sx={{ color: "var(--primary-text-color)" }}
                         value={showNotes}
                         onChange={() => setShowNotes(!showNotes)}
                     />
@@ -171,7 +170,7 @@ export default function PaymentsReportsPicker() {
                         variant={"contained"}
                         color={"error"}
                         onClick={() => {
-                            setFormData({min: 0})
+                            setFormData({ min: 0 })
                         }}
                     >
                         اعادة تعيين

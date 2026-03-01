@@ -17,7 +17,9 @@ export default function BuyBooks() {
     const mutation = useCreate('book-purchases')
     const canFetchTypes = !!(academic_year && level && grade && semester);
     const { showSnackbar } = useSnackbar();
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const { data: books, isLoading: isLoadingTypes } = useGetAll('books', {
         types: true, academic_year, level, grade, semester
     }, {

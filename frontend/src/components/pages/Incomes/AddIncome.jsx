@@ -10,7 +10,9 @@ export default function AddIncome() {
     const { showSnackbar } = useSnackbar()
     const [serverErrors, setServerErrors] = useState();
     const { data: types } = useGetAll("income-types")
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    })
     const onSubmit = (data, actions) => {
         mutation.mutate(data, {
             onSuccess: () => {

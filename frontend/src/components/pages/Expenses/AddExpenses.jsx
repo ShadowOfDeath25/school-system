@@ -7,7 +7,9 @@ import { useState } from "react";
 
 export default function AddExpenses() {
     const { data: types } = useGetAll('expense-types');
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
     const mutation = useCreate('expenses')
     const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState();

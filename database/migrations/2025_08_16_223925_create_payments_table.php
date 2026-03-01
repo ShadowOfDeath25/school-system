@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Student;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,6 +19,7 @@ return new class extends Migration {
             $table->decimal('value', 10, 2);
             $table->date('date');
             $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdfor(User::class, 'recipient_id')->nullable()->constrained()->nullOnDelete();
             $table->string('level');
             $table->index(['student_id', 'academic_year', 'type']);
             $table->timestamps();

@@ -29,7 +29,8 @@ class GenerateDailyPaymentsReportRequest extends FormRequest
         return [
             'date' => ['required', 'date', 'date_format:Y-m-d'],
             'type' => ['required', 'string', new Enum(PaymentType::class)],
-            'academic_year' => ['required', 'string', 'exists:academic_years,name']
+            'academic_year' => ['required', 'string', 'exists:academic_years,name'],
+            'recipient_id' => ['sometimes', 'integer', 'exists:users,id']
         ];
     }
 }

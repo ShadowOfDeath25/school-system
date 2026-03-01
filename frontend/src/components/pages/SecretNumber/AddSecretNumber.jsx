@@ -11,7 +11,9 @@ export default function AddSecretNumber() {
     const mutation = useCreate('secret-numbers');
     const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState();
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    })
     const onSubmit = (data) => {
         mutation.mutate(data, {
             onSuccess: () => {

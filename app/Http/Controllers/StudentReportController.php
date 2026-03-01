@@ -137,8 +137,7 @@ class StudentReportController extends Controller
 
     public function test()
     {
-        $students = Student::with(["bookPurchases.book", "uniformPurchases.uniform"])->find(172);
-        return [$students->books_due, $students->uniform_due];
+        return auth()->user();
 
     }
 
@@ -151,11 +150,13 @@ class StudentReportController extends Controller
         $query = Payment::query()
             ->with([
                 'student' => fn($q) => $q->select('id', 'name_in_arabic', 'classroom_id'),
-                'student.classroom' => fn($q) => $q->select('id', 'name')
+                'student.classroom' => fn($q) => $q->select('id', 'name'),
+                'recipient:id,name'
             ])
             ->where('date', $requestData['date'])
             ->where('payments.academic_year', $requestData['academic_year'])
             ->where('type', $requestData['type'])
+            ->when($requestData['recipient_id'], fn($q) => $q->where('recipient_id', $requestData['recipient_id']))
             ->select([
                 'payments.id',
                 'payments.value',
@@ -188,8 +189,8 @@ class StudentReportController extends Controller
             ->save(storage_path("app/$filePath"));
 
         return response()->json([
-            "uuid"=>$uuid,
-            "preview_url"=>route('reports.preview', $uuid)
+            "uuid" => $uuid,
+            "preview_url" => route('reports.preview', $uuid)
         ]);
     }
 }

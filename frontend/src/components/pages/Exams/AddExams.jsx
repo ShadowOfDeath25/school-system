@@ -9,7 +9,9 @@ import { ExamHelper } from "@helpers/ExamHelper.js";
 
 export default function AddExams() {
     const { data: subjects } = useGetAll('subjects', { all: true })
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    })
     const mutation = useCreate('exams');
     const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState(null);

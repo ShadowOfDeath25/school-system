@@ -11,7 +11,9 @@ export default function NotEnrolled() {
     const { showEditModal, hideEditModal } = useInputModal();
     const { showSnackbar } = useSnackbar();
     const { data: classrooms } = useGetAll('classrooms');
-    const { data: academicYears = [] } = useGetAll('academic-years');
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    });
 
     const handleEnroll = (student) => {
         showEditModal({

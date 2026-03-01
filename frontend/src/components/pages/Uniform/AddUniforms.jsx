@@ -10,7 +10,9 @@ export default function AddUniforms() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('uniforms')
     const { showSnackbar } = useSnackbar()
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    })
 
     const handleSubmit = (data) => {
         data.available_quantity = data.imported_quantity

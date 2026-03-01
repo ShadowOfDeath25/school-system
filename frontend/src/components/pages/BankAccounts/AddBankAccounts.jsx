@@ -9,7 +9,9 @@ export default function AddBankAccounts() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('bank-accounts');
     const { showSnackbar } = useSnackbar()
-    const { data: academicYears = [] } = useGetAll('academic-years')
+    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+        select: (data) => data?.data?.map((academicYear) => academicYear.name)
+    })
     const onSubmit = (data, actions) => {
         mutation.mutate(data, {
             onSuccess: () => {
