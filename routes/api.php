@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get("/user", AuthController::class . "@user")->name("user");
-Route::get("test",[StudentReportController::class,"test"]);
+Route::get("test", [StudentReportController::class, "test"]);
 Route::get("/pdf-test", function () {
     return view("components.letter", ["incomes" => ["test" => 0]]);
 });
@@ -53,15 +53,15 @@ Route::middleware(["auth:sanctum"])->group(function () {
 
         Route::get("{uuid}/preview", [ReportController::class, 'preview'])->name("preview");
 
-        Route::prefix("/students")->name("students.")->group(function () {
+        Route::prefix("/students")->middleware('authorization:view student-reports')->name("students.")->group(function () {
 
             Route::get('summary', [StudentReportController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
             Route::prefix("/payments")->name("payments.")->group(function () {
 
-                Route::get('/arrears', [StudentReportController::class, 'arrearsReport'])->name('arrears')->middleware('authorization:view student-reports');
-                Route::post('/letters', [StudentReportController::class, 'studentLetters'])->name('letters')->middleware('authorization:view student-reports');
-                Route::post('/arrears-letters', [StudentReportController::class, 'studentLetters'])->name('arrears-letters')->middleware('authorization:view student-reports');
-
+                Route::get('/daily', [StudentReportController::class, 'dailyPayments']);
+                Route::get('/arrears', [StudentReportController::class, 'arrearsReport'])->name('arrears');
+                Route::post('/letters', [StudentReportController::class, 'studentLetters'])->name('letters');
+                Route::post('/arrears-letters', [StudentReportController::class, 'studentLetters'])->name('arrears-letters');
             });
 
         });
@@ -81,8 +81,8 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::apiResource('users', UserController::class)->withFilters();
         Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
         Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
-        Route::patch('academic-years/{academicYear}/activate',[AcademicYearController::class,'activate'])->name('academic-years.activate');
-        Route::put('academic-years/{academicYear}/activate',[AcademicYearController::class,'activate'])->name('academic-years.activate');
+        Route::patch('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
+        Route::put('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
 
         Route::apiResource('buses', BusController::class)->withFilters();
         Route::apiResource("books", BookController::class)->withFilters();

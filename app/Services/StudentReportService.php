@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Expr\Cast\Double;
 
-class StudentReportsService
+class StudentReportService
 {
     /**
      * Returns total number of students, total number of classrooms,
@@ -110,7 +110,7 @@ class StudentReportsService
      * @param Collection $students
      * @return Collection
      */
-    private function groupStudentsByClassroom(Collection $students, int $perChunk = 15): Collection
+    private function groupStudentsByClassroom(Collection $students, int $perChunk = 12): Collection
     {
 
         return $students

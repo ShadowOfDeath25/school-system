@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enums\PaymentType;
 use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
+use App\Http\Requests\Student\Reports\GenerateDailyPaymentsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateLetterRequest;
+use App\Models\Payment;
 use App\Models\Student;
-use App\Services\StudentReportsService;
+use App\Services\StudentReportService;
+use Carbon\Carbon;
+use Spatie\LaravelPdf\Enums\Format;
 use Spatie\LaravelPdf\Enums\Orientation;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Str;
@@ -17,10 +21,10 @@ class StudentReportController extends Controller
     /**
      * Get a summary of student data.
      *
-     * @param StudentReportsService $studentReportsService
+     * @param StudentReportService $studentReportsService
      * @return JsonResponse
      */
-    public function summary(StudentReportsService $studentReportsService): JsonResponse
+    public function summary(StudentReportService $studentReportsService): JsonResponse
     {
         return response()->json($studentReportsService->getStudentSummary());
     }
@@ -29,10 +33,10 @@ class StudentReportController extends Controller
      * Get arrears report data (optionally filtered by classroom).
      *
      * @param GenerateArrearsReportRequest $request
-     * @param StudentReportsService $studentReportsService
+     * @param StudentReportService $studentReportsService
      * @return JsonResponse
      */
-    public function arrearsReport(GenerateArrearsReportRequest $request, StudentReportsService $studentReportsService): JsonResponse
+    public function arrearsReport(GenerateArrearsReportRequest $request, StudentReportService $studentReportsService): JsonResponse
     {
         $classrooms = $studentReportsService->getStudentsGroupedByClassrooms(
             ...$this->extractStudentFilters($request),
@@ -72,10 +76,10 @@ class StudentReportController extends Controller
      * Get student letters for students with outstanding payments.
      *
      * @param GenerateLetterRequest $request
-     * @param StudentReportsService $service
+     * @param StudentReportService $service
      * @return JsonResponse
      */
-    public function studentLetters(GenerateLetterRequest $request, StudentReportsService $service): JsonResponse
+    public function studentLetters(GenerateLetterRequest $request, StudentReportService $service): JsonResponse
     {
         $uuid = Str::uuid()->toString();
         $filePath = "reports/$uuid.pdf";
@@ -136,5 +140,56 @@ class StudentReportController extends Controller
         $students = Student::with(["bookPurchases.book", "uniformPurchases.uniform"])->find(172);
         return [$students->books_due, $students->uniform_due];
 
+    }
+
+    public function dailyPayments(GenerateDailyPaymentsReportRequest $request): JsonResponse
+    {
+        ["uuid" => $uuid, "filePath" => $filePath] = generateReportUUID();
+
+        $requestData = $request->validated();
+
+        $query = Payment::query()
+            ->with([
+                'student' => fn($q) => $q->select('id', 'name_in_arabic', 'classroom_id'),
+                'student.classroom' => fn($q) => $q->select('id', 'name')
+            ])
+            ->where('date', $requestData['date'])
+            ->where('payments.academic_year', $requestData['academic_year'])
+            ->where('type', $requestData['type'])
+            ->select([
+                'payments.id',
+                'payments.value',
+                'payments.student_id',
+                'payments.date',
+                'payments.academic_year',
+                'payments.type'
+            ]);
+
+
+        $type = PaymentType::from($requestData['type']);
+        $typeValue = match ($type) {
+            PaymentType::TUITION, PaymentType::ADMINISTRATIVE, PaymentType::ADDITIONAL => preg_replace('/(?<!\p{Arabic})(?!ال)(\p{Arabic}+)/u', 'ال$1', $type->value),
+            default => $type->value
+        };
+
+
+        $payments = $query->get()->chunk($requestData['per_chunk'] ?? 12);
+
+        Pdf::view('reports.daily_payments', [
+            'payments' => $payments,
+            'date' => Carbon::parse($requestData['date'])->locale('ar'),
+            'title' => 'مدفوعات اليوم',
+            'type' => $typeValue
+        ])
+            ->orientation(Orientation::Landscape)
+            ->format(Format::A4)
+            ->footerView('components.pdf-footer')
+            ->margins(5, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            "uuid"=>$uuid,
+            "preview_url"=>route('reports.preview', $uuid)
+        ]);
     }
 }

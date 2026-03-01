@@ -1,9 +1,6 @@
 <?php
 
 
-
-
-
 if (!function_exists("getGradeNumber")) {
     function getGradeNumber(int $grade): int
     {
@@ -15,4 +12,16 @@ if (!function_exists("getGradeNumber")) {
         };
     }
 
+}
+if (!function_exists("generateReportUUID")) {
+    function generateReportUUID(): array
+    {
+        $uuid = Str::uuid()->toString();
+        $filePath = "reports/$uuid.pdf";
+        $dir = storage_path('app/reports');
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+        return ["uuid" => $uuid, "filePath" => $filePath];
+    }
 }
