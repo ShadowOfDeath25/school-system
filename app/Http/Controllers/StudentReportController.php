@@ -156,16 +156,16 @@ class StudentReportController extends Controller
             ->where('date', $requestData['date'])
             ->where('payments.academic_year', $requestData['academic_year'])
             ->where('type', $requestData['type'])
-            ->when($requestData['recipient_id'], fn($q) => $q->where('recipient_id', $requestData['recipient_id']))
+            ->when(isset($requestData['recipient_id']), fn($q) => $q->where('recipient_id', $requestData['recipient_id']))
             ->select([
                 'payments.id',
                 'payments.value',
                 'payments.student_id',
                 'payments.date',
                 'payments.academic_year',
-                'payments.type'
+                'payments.type',
+                'payments.recipient_id'
             ]);
-
 
         $type = PaymentType::from($requestData['type']);
         $typeValue = match ($type) {
@@ -173,8 +173,10 @@ class StudentReportController extends Controller
             default => $type->value
         };
 
-
-        $payments = $query->get()->chunk($requestData['per_chunk'] ?? 12);
+        $perChunk = $requestData['per_chunk'] ?? 12;
+        $payments = $query->get()
+            ->groupBy('recipient_id')
+            ->map(fn($group) => $group->chunk($perChunk));
 
         Pdf::view('reports.daily_payments', [
             'payments' => $payments,
