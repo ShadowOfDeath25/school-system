@@ -68,7 +68,7 @@ class StudentReportController extends Controller
             ->save(storage_path(("app/$filePath")));
         return response()->json([
             'uuid' => $uuid,
-            'preview_url' => route('reports.preview', $uuid),
+            'preview_url' => route('reports.preview', $uuid, true),
         ]);
     }
 
@@ -107,7 +107,7 @@ class StudentReportController extends Controller
 
         return response()->json([
             'uuid' => $uuid,
-            'preview_url' => route('reports.preview', $uuid),
+            'preview_url' => route('reports.preview', $uuid, true),
         ]);
     }
 
@@ -192,7 +192,7 @@ class StudentReportController extends Controller
 
         return response()->json([
             "uuid" => $uuid,
-            "preview_url" => route('reports.preview', $uuid)
+            "preview_url" => route('reports.preview', $uuid, true)
         ]);
     }
 }

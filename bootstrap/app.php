@@ -12,11 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
         $middleware->redirectGuestsTo(fn() => config('app.frontend_url'));
         $middleware->statefulApi();
         $middleware->alias([
             'authorization' => \App\Http\Middleware\Authorization::class,
         ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
