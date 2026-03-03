@@ -25,7 +25,8 @@ class GenerateArrearsReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            ...$this->baseReportFilters()
+            ...$this->baseReportFilters(),
+            'grouped' => ['boolean', 'sometimes']
         ];
     }
 }

@@ -38,10 +38,45 @@ class StudentReportController extends Controller
      */
     public function arrearsReport(GenerateArrearsReportRequest $request, StudentReportService $studentReportsService): JsonResponse
     {
-        $classrooms = $studentReportsService->getStudentsGroupedByClassrooms(
-            ...$this->extractStudentFilters($request),
-            includePayments: true
-        );
+        $filters = $this->extractStudentFilters($request);
+
+        if ($filters['grouped']) {
+            $data = $studentReportsService->getArrearsGroupedByGrade(
+                academicYear: $filters['academicYear'],
+                language: $filters['language'],
+                level: $filters['level'],
+                grade: $filters['grade'],
+                classroom: $filters['classroom'],
+                min: $filters['min'],
+                sorting: $filters['sorting'],
+                type: $filters['type']
+            );
+            $view = 'reports.arrears_grouped';
+            $baseTitle = "متأخرات";
+            $viewData = [
+                'grades' => $data,
+                'academic_year' => $filters['academicYear']
+            ];
+        } else {
+            $data = $studentReportsService->getStudentsGroupedByClassrooms(
+                academicYear: $filters['academicYear'],
+                language: $filters['language'],
+                level: $filters['level'],
+                grade: $filters['grade'],
+                classroom: $filters['classroom'],
+                min: $filters['min'],
+                sorting: $filters['sorting'],
+                type: $filters['type'],
+                per_chunk: $filters['per_chunk'],
+                includePayments: true,
+                show_notes: $filters['show_notes']
+            );
+            $view = 'reports.arrears';
+            $baseTitle = "متأخرات";
+            $viewData = [
+                'classrooms' => $data,
+            ];
+        }
 
         $uuid = Str::uuid()->toString();
         $filePath = "reports/$uuid.pdf";
@@ -50,43 +85,45 @@ class StudentReportController extends Controller
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
-        $baseTitle = "متأخرات";
-        $type = PaymentType::from($request->validated('type'));
+
+        $type = PaymentType::from($filters['type']);
         $typeValue = match ($type) {
             PaymentType::TUITION, PaymentType::ADMINISTRATIVE, PaymentType::ADDITIONAL => preg_replace('/(?<!\p{Arabic})(?!ال)(\p{Arabic}+)/u', 'ال$1', $type->value),
             default => $type->value
         };
         $title = $baseTitle . ' ' . $typeValue;
-        Pdf::view('reports.arrears', [
-            'classrooms' => $classrooms,
-            'title' => $title
-        ])
+        $viewData['title'] = $title;
+
+        Pdf::view($view, $viewData)
             ->format('a4')
             ->orientation(Orientation::Landscape)
             ->footerView('components.pdf-footer')
             ->margins(10, 5, 10, 5)
             ->save(storage_path(("app/$filePath")));
+
         return response()->json([
             'uuid' => $uuid,
             'preview_url' => route('reports.preview', $uuid, true),
         ]);
     }
 
-    /**
-     * Get student letters for students with outstanding payments.
-     *
-     * @param GenerateLetterRequest $request
-     * @param StudentReportService $service
-     * @return JsonResponse
-     */
     public function studentLetters(GenerateLetterRequest $request, StudentReportService $service): JsonResponse
     {
         $uuid = Str::uuid()->toString();
         $filePath = "reports/$uuid.pdf";
 
+        $filters = $this->extractStudentFilters($request);
         $studentsByClassrooms = $service->getStudentsGroupedByClassrooms(
-            ...$this->extractStudentFilters($request),
-
+            academicYear: $filters['academicYear'],
+            language: $filters['language'],
+            level: $filters['level'],
+            grade: $filters['grade'],
+            classroom: $filters['classroom'],
+            min: $filters['min'],
+            sorting: $filters['sorting'],
+            type: $filters['type'],
+            per_chunk: $filters['per_chunk'],
+            show_notes: $filters['show_notes']
         );
 
         $dir = storage_path('app/reports');
@@ -132,6 +169,7 @@ class StudentReportController extends Controller
             'type' => $validated['type'] ?? PaymentType::TUITION->value,
             'per_chunk' => $validated['per_chunk'] ?? 12,
             'show_notes' => $validated['show_notes'] ?? false,
+            'grouped' => $validated['grouped'] ?? false,
         ];
     }
 

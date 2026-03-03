@@ -264,4 +264,74 @@ class StudentReportService
     }
 
 
+    /**
+     * Get arrears report data grouped by grade and classroom.
+     *
+     * @param string|null $academicYear
+     * @param string|null $language
+     * @param string|null $level
+     * @param int|null $grade
+     * @param int|null $classroom
+     * @param float|null $min
+     * @param string|null $sorting
+     * @param string|null $type
+     * @return Collection
+     */
+    public function getArrearsGroupedByGrade(
+        ?string $academicYear = null,
+        ?string $language = null,
+        ?string $level = null,
+        ?int    $grade = null,
+        ?int    $classroom = null,
+        ?float  $min = null,
+        ?string $sorting = null,
+        ?string $type = null,
+    ): Collection
+    {
+        $students = $this->getStudentsByClassrooms(
+            $academicYear,
+            $language,
+            $level,
+            $grade,
+            $classroom,
+            $min,
+            $sorting,
+            $type,
+            true, // includePayments
+            false // showNotes
+        );
+
+        return $students->groupBy(function ($student) {
+            return $student->classroom->grade ?? 'N/A';
+        })->sortKeys()->map(function ($gradeStudents, $grade) {
+            $classrooms = $gradeStudents->groupBy('classroom_id')->map(function ($classroomStudents) {
+                $classroom = $classroomStudents->first()->classroom;
+
+                return [
+                    'name' => $classroom->name ?? "الغير مقيدون",
+                    'language'=>$classroom->language,
+                    'max_capacity' => $classroom->max_capacity ?? 0,
+                    'students_count' => $classroom->students_count ?? $classroomStudents->count(),
+                    'required_sum' => $classroomStudents->sum(fn($s) => ($s->total_sum ?? 0) + ($s->exemption_amount ?? 0)),
+                    'paid_sum' => $classroomStudents->sum('paid_sum'),
+                    'exemption_sum' => $classroomStudents->sum('exemption_amount'),
+                    'remaining_sum' => $classroomStudents->sum(fn($s) => ($s->total_sum ?? 0) - ($s->paid_sum ?? 0)),
+                ];
+            })->values();
+
+            return [
+                'grade' => $grade,
+                'classrooms' => $classrooms,
+                'totals' => [
+                    'classrooms_count' => $classrooms->count(),
+                    'max_capacity' => $classrooms->sum('max_capacity'),
+                    'students_count' => $classrooms->sum('students_count'),
+                    'required_sum' => $classrooms->sum('required_sum'),
+                    'paid_sum' => $classrooms->sum('paid_sum'),
+                    'exemption_sum' => $classrooms->sum('exemption_sum'),
+                    'remaining_sum' => $classrooms->sum('remaining_sum'),
+                ]
+            ];
+        })->values();
+    }
 }
