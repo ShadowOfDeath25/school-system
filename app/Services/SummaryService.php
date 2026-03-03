@@ -75,30 +75,39 @@ class SummaryService
     public function getTotalExpenses($startDate, $endDate): array
     {
         $query = "
-            SELECT
-                (SELECT COALESCE(SUM(buy_price * imported_quantity), 0)
-                 FROM books
-                 WHERE created_at BETWEEN ? AND ?) as books,
+            SELECT 'books' AS category, NULL AS type,
+                   COALESCE(SUM(buy_price * imported_quantity), 0) AS total
+            FROM books
+            WHERE created_at BETWEEN ? AND ?
 
-                (SELECT COALESCE(SUM(buy_price * imported_quantity), 0)
-                 FROM uniforms
-                 WHERE created_at BETWEEN ? AND ?) as uniforms,
+            UNION ALL
 
-                (SELECT COALESCE(SUM(value), 0)
-                 FROM expenses
-                 WHERE date BETWEEN ? AND ?) as expenses
+            SELECT 'uniforms' AS category, NULL AS type,
+                   COALESCE(SUM(buy_price * imported_quantity), 0) AS total
+            FROM uniforms
+            WHERE created_at BETWEEN ? AND ?
+
+            UNION ALL
+
+            SELECT 'expenses' AS category, type,
+                   COALESCE(SUM(value), 0) AS total
+            FROM expenses
+            WHERE date BETWEEN ? AND ?
+            GROUP BY type
         ";
 
-        $result = DB::selectOne($query, [
+        $rows = collect(DB::select($query, [
             $startDate, $endDate,
             $startDate, $endDate,
-            $startDate, $endDate
-        ]);
+            $startDate, $endDate,
+        ]));
 
         return [
-            'books' => (float)$result->books,
-            'uniforms' => (float)$result->uniforms,
-            'expenses' => (float)$result->expenses,
+            'books'    => (float)$rows->firstWhere('category', 'books')->total,
+            'uniforms' => (float)$rows->firstWhere('category', 'uniforms')->total,
+            'expenses' => $rows->where('category', 'expenses')
+                               ->keyBy('type')
+                               ->map(fn($item) => (float)$item->total),
         ];
     }
 

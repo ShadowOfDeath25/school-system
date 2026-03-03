@@ -14,11 +14,6 @@
 @php
     $incomeSum= 0;
     $expenseSum=0;
-    $expenseTypes = [
-        "expenses"=>"مصروفات متنوعة",
-        "books"=>"واردات الكتب",
-        "uniforms"=>"واردات الزي"
-];
 @endphp
 <table>
     <thead>
@@ -57,15 +52,27 @@
     </thead>
     <tbody>
 
-        @foreach($expenses as $key=>$value)
+        <tr>
+            <td>واردات الكتب</td>
+            <td class="value">{{$expenses['books']+0}}</td>
+        </tr>
+        @php $expenseSum += $expenses['books']; @endphp
+
+        <tr>
+            <td>واردات الزي</td>
+            <td class="value">{{$expenses['uniforms']+0}}</td>
+        </tr>
+        @php $expenseSum += $expenses['uniforms']; @endphp
+
+     
+        @foreach($expenses['expenses'] as $type => $value)
             <tr>
-                <td>{{$expenseTypes[$key]}}</td>
+                <td>{{ $type }}</td>
                 <td class="value">{{$value+0}}</td>
             </tr>
-            @php
-                $expenseSum+=$value;
-            @endphp
+            @php $expenseSum += $value; @endphp
         @endforeach
+
         <tr class="total">
             <td>الإجمالي</td>
             <td class="value">{{$expenseSum}}</td>
