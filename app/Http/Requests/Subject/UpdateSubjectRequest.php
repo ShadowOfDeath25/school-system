@@ -23,16 +23,8 @@ class UpdateSubjectRequest extends FormRequest
     {
         return [
             'name' => ['string', 'max:255'],
-            'max_marks' => ['integer'],
-            'min_marks' => ['integer'],
-            'level' => ['string', 'max:50'],
-            'semester' => ['string', 'max:50'],
             'language' => ['string', 'max:50'],
-            'academic_year' => ['exists:academic_years,name'],
-            'added_to_total' => ["integer",'min:0', 'max:1'],
-            'added_to_report' => ["integer",'min:0', 'max:1'],
             'type' => ['string'],
-            'grade' => ['integer']
         ];
     }
 }

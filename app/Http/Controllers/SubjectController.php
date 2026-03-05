@@ -19,12 +19,8 @@ class SubjectController extends Controller
     use HasFilters;
 
     protected array $filterable = [
-        'academic_year',
-        'language',
-        'level',
-        'grade',
-        'semester',
-        'type'
+        'type',
+        'language'
     ];
     protected string $model = Subject::class;
     protected string $storeRequest = StoreSubjectRequest::class;

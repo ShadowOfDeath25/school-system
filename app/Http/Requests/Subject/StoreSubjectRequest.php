@@ -23,16 +23,8 @@ class StoreSubjectRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'max_marks' => ['required', 'integer'],
-            'min_marks' => ['required', 'integer'],
-            'level' => ['required', 'string', 'max:50'],
-            'semester' => ['required', 'string', 'max:50'],
             'language' => ['required', 'string', 'max:50'],
-            'academic_year' => ['required', 'exists:academic_years,name'],
-            'added_to_total' => ['required', 'integer', 'min:0', 'max:1'],
-            'added_to_report' => ['required', 'integer', 'min:0', 'max:1'],
             'type' => ['required', 'string'],
-            'grade' => ['required', 'integer']
         ];
     }
 }

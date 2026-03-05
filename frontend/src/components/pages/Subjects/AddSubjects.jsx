@@ -1,40 +1,33 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
-import { useState } from "react";
-import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
-import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import {useState} from "react";
+import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
+import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
 
-import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
-import { SubjectHelper } from "@utils/helpers/SubjectHelper.js";
+import {ClassroomHelper} from "@utils/helpers/ClassroomHelper.js";
+import {SubjectHelper} from "@utils/helpers/SubjectHelper.js";
 
 export default function AddSubjects() {
     const [serverErrors, setServerErrors] = useState();
     const mutation = useCreate('subjects');
-    const { showSnackbar } = useSnackbar();
-    const { data: types } = useGetAll('subject-types', { all: true })
-    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
+    const {showSnackbar} = useSnackbar();
+    const {data: types} = useGetAll('subject-types', {all: true})
+    const {data: academicYears = []} = useGetAll('academic-years', {}, {
         select: (data) => data?.data?.map((academicYear) => academicYear.name)
     })
     const fields = [
-        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
-        SubjectHelper.FIELDS.SEMESTER,
-        ClassroomHelper.FIELDS.LANGUAGE,
-        ClassroomHelper.FIELDS.LEVEL,
-        ClassroomHelper.FIELDS.GRADE,
+
         {
             name: "type",
             type: "select",
             label: "نوع المادة",
             placeholder: "نوع المادة",
             required: true,
-            options: types?.data?.map(type => ({ value: type.name, label: type.name }))
+            options: types?.data?.map(type => ({value: type.name, label: type.name}))
         },
         SubjectHelper.FIELDS.NAME,
-        SubjectHelper.FIELDS.MAX_MARKS,
-        SubjectHelper.FIELDS.MIN_MARKS,
-        SubjectHelper.FIELDS.ADDED_TO_REPORT,
-        SubjectHelper.FIELDS.ADDED_TO_TOTAL
+        ClassroomHelper.FIELDS.LANGUAGE,
     ]
     const handleSubmit = (data) => {
 
