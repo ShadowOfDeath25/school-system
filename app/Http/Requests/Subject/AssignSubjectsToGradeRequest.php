@@ -6,7 +6,7 @@ use App\Enums\Grade;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class AssignSubjectsToGrade extends FormRequest
+class AssignSubjectsToGradeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,6 @@ class AssignSubjectsToGrade extends FormRequest
     {
         return [
             'subjects' => ['array', 'required'],
-            'grade' => ['integer', 'required', new Enum(Grade::class)],
             'subjects.*.min_marks' => ['numeric', 'required'],
             'subjects.*.max_marks' => ['numeric', 'required', 'gt:subjects.*.min_marks'],
             'subjects.*.added_to_total' => ['boolean', 'required'],
@@ -33,4 +32,16 @@ class AssignSubjectsToGrade extends FormRequest
             'subjects.*.semester' => ['string', 'required', 'in:الاول,الثاني,طوال العام'],
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        if (!Grade::tryFrom($this->route('grade'))) {
+            abort(404, "هذه السنة الدراسية غير موجودة");
+        }
+
+
+        return $this;
+    }
+
+
 }
