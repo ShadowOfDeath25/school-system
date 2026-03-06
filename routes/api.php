@@ -17,6 +17,7 @@ use App\Http\Controllers\ExpenseTypeController;
 use App\Http\Controllers\ExtraDueController;
 use App\Http\Controllers\FinancialReportsController;
 use App\Http\Controllers\FloorController;
+use App\Http\Controllers\GradeController;
 use App\Http\Controllers\GradeSubjectController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
@@ -86,7 +87,10 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::put('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
 
         Route::prefix('grades')->name('grades.')->group(function () {
-            Route::post('{grade}/subjects', [GradeSubjectController::class, 'store']);
+            Route::post('{grade}/subjects', [GradeController::class, 'assignSubjects'])->name('assign-subjects');
+            Route::put("{grade}/subjects", [GradeController::class, 'updateSubjects'])->name('update-subjects');
+            Route::patch("{grade}/subjects", [GradeController::class, 'updateSubjects'])->name('update-subjects');
+            Route::delete('{grade}/subjects', [GradeController::class, 'deleteSubjects'])->name('delete-subjects');
         });
 
         Route::apiResource('buses', BusController::class)->withFilters();

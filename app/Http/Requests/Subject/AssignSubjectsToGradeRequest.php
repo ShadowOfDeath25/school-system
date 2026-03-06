@@ -26,21 +26,13 @@ class AssignSubjectsToGradeRequest extends FormRequest
         return [
             'subjects' => ['array', 'required'],
             'subjects.*.min_marks' => ['numeric', 'required'],
+            'subjects.*.subject_id' => ['required', "exists:subjects,id"],
             'subjects.*.max_marks' => ['numeric', 'required', 'gt:subjects.*.min_marks'],
             'subjects.*.added_to_total' => ['boolean', 'required'],
             'subjects.*.added_to_report' => ['boolean', 'required'],
             'subjects.*.semester' => ['string', 'required', 'in:الاول,الثاني,طوال العام'],
+            'subjects.*.language' => ['string', 'required', "in:عربي,لغات"]
         ];
-    }
-
-    protected function prepareForValidation()
-    {
-        if (!Grade::tryFrom($this->route('grade'))) {
-            abort(404, "هذه السنة الدراسية غير موجودة");
-        }
-
-
-        return $this;
     }
 
 

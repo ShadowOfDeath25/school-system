@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subject extends Model
@@ -24,7 +25,10 @@ class Subject extends Model
         return $this->hasMany(Exam::class);
     }
 
-
+    public function grades(): BelongsToMany
+    {
+        return $this->BelongsToMany(Grade::class)->using(GradeSubject::class)->withPivot(['min_marks', 'max_marks', 'added_to_total', 'added_to_report', 'semester']);
+    }
 
 
 }

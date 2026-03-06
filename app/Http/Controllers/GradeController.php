@@ -2,64 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Subject\AssignSubjectsToGradeRequest;
+use App\Http\Requests\Subject\DetachSubjectFromGradeRequest;
+use App\Http\Requests\Subject\UpdateGradeSubjectsRequest;
 use App\Models\Grade;
+use App\Models\GradeSubject;
 use Illuminate\Http\Request;
 
 class GradeController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function assignSubjects(AssignSubjectsToGradeRequest $request, Grade $grade)
     {
-        //
+        $grade->subjects()->syncWithoutDetaching($request->validated('subjects'));
+        return response()->json("", 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function updateSubjects(UpdateGradeSubjectsRequest $request, Grade $grade)
     {
-        //
+        $subjects = collect($request->validated('subjects'))
+            ->map(fn($s) => [
+                ...$s,
+                'grade_id' => $grade->id,
+            ])
+            ->toArray();
+        GradeSubject::upsert(
+            $subjects,
+            ['grade_id', 'subject_id', 'language'],
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function deleteSubjects(DetachSubjectFromGradeRequest $request, Grade $grade)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Grade $grade)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Grade $grade)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Grade $grade)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Grade $grade)
-    {
-        //
+        $grade->subjects()->detach($request->validated('subjects'));
     }
 }

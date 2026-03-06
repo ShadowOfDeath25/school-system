@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Grade;
 use App\Models\Subject;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,12 +15,14 @@ return new class extends Migration {
         Schema::create('grade_subject', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Subject::class)->constrained()->cascadeOnDelete();
-            $table->tinyInteger('grade')->unsigned();
+            $table->foreignIdFor(Grade::class)->nullable()->constrained()->nullOnDelete();
             $table->float('min_marks')->unsigned();
             $table->float('max_marks')->unsigned();
             $table->boolean('added_to_total')->default(true);
             $table->boolean('added_to_report')->default(true);
             $table->string('semester');
+            $table->string("language")->nullable();
+            $table->unique(['subject_id', 'grade_id']);
             $table->timestamps();
         });
     }
