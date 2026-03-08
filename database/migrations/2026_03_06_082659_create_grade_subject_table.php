@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->boolean('added_to_report')->default(true);
             $table->string('semester');
             $table->string("language")->nullable();
-            $table->unique(['subject_id', 'grade_id']);
+            $table->unique(['subject_id', 'grade_id','language']);
             $table->timestamps();
         });
     }

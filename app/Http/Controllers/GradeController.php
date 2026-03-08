@@ -14,7 +14,7 @@ class GradeController extends Controller
     public function assignSubjects(AssignSubjectsToGradeRequest $request, Grade $grade)
     {
         $grade->subjects()->syncWithoutDetaching($request->validated('subjects'));
-        return response()->json("", 200);
+        return response()->json($grade->subjects()->get(), 200);
     }
 
     public function updateSubjects(UpdateGradeSubjectsRequest $request, Grade $grade)
@@ -29,10 +29,12 @@ class GradeController extends Controller
             $subjects,
             ['grade_id', 'subject_id', 'language'],
         );
+        return response()->json($grade->subjects()->get(), 200);
     }
 
     public function deleteSubjects(DetachSubjectFromGradeRequest $request, Grade $grade)
     {
         $grade->subjects()->detach($request->validated('subjects'));
+        return response()->json($grade->subjects()->get(), 200);
     }
 }
