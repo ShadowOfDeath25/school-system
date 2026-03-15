@@ -48,19 +48,19 @@ export default function IncomeSummary({ startDate, endDate }) {
             <div className={styles.section}>
                 <h3 className={styles.title}>المصروفات </h3>
                 <div className={styles.grid}>
-                    {/* Books */}
+                   
                     <div className={styles.item}>
                         <span className={styles.label}>واردات الكتب</span>
                         <span className={styles.value}>{formatValue(booksExpense)}</span>
                     </div>
 
-                    {/* Uniforms */}
+                    
                     <div className={styles.item}>
                         <span className={styles.label}>واردات الزي</span>
                         <span className={styles.value}>{formatValue(uniformsExpense)}</span>
                     </div>
 
-                    {/* Grouped Expenses */}
+                   
                     {Object.entries(subExpenses).map(([type, value]) => (
                         <div key={type} className={styles.item}>
                             <span className={styles.label}>{type}</span>

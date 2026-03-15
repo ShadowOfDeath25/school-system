@@ -122,14 +122,14 @@ export default function PeriodPicker({ onSubmit, onPrint }) {
                                 <div className={styles.dateInputs}>
                                     <input
                                         type="date"
-                                        value={endDate}
+                                        value={startDate}
                                         onChange={(e) => setEndDate(e.target.value)}
                                         style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
                                     />
                                     <span style={{ margin: '0 5px' }}>الى</span>
                                     <input
                                         type="date"
-                                        value={startDate}
+                                        value={endDate}
                                         onChange={(e) => setStartDate(e.target.value)}
                                         style={{ padding: '5px', borderRadius: '4px', border: '1px solid #ccc' }}
                                     />
