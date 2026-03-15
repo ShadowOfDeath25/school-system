@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentType;
+use App\Exports\DailyPaymentsExport;
+use App\Exports\LettersExport;
 use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateDailyPaymentsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateLetterRequest;
@@ -10,10 +12,12 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Services\StudentReportService;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Enums\Format;
 use Spatie\LaravelPdf\Enums\Orientation;
 use Spatie\LaravelPdf\Facades\Pdf;
 use Str;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class StudentReportController extends Controller
@@ -36,7 +40,7 @@ class StudentReportController extends Controller
      * @param StudentReportService $studentReportsService
      * @return JsonResponse
      */
-    public function arrearsReport(GenerateArrearsReportRequest $request, StudentReportService $studentReportsService): JsonResponse
+    public function arrearsReport(GenerateArrearsReportRequest $request, StudentReportService $studentReportsService): JsonResponse|BinaryFileResponse
     {
         $filters = $this->extractStudentFilters($request);
 
@@ -94,6 +98,11 @@ class StudentReportController extends Controller
         $title = $baseTitle . ' ' . $typeValue;
         $viewData['title'] = $title;
 
+        if ($request->query('export') === 'excel') {
+            $exportClass = $filters['grouped'] ? \App\Exports\ArrearsGroupedExport::class : \App\Exports\ArrearsExport::class;
+            return Excel::download(new $exportClass($viewData), 'arrears.xlsx');
+        }
+
         Pdf::view($view, $viewData)
             ->format('a4')
             ->orientation(Orientation::Landscape)
@@ -107,7 +116,7 @@ class StudentReportController extends Controller
         ]);
     }
 
-    public function studentLetters(GenerateLetterRequest $request, StudentReportService $service): JsonResponse
+    public function studentLetters(GenerateLetterRequest $request, StudentReportService $service): JsonResponse|BinaryFileResponse
     {
         $uuid = Str::uuid()->toString();
         $filePath = "reports/$uuid.pdf";
@@ -132,10 +141,16 @@ class StudentReportController extends Controller
             mkdir($dir, 0755, true);
         }
 
-        Pdf::view('reports.letters', [
+        $viewData = [
             'letter' => $request->validated('letter'),
             'studentsByClassrooms' => $studentsByClassrooms,
-        ])
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new LettersExport($viewData), 'letters.xlsx');
+        }
+
+        Pdf::view('reports.letters', $viewData)
             ->format('a4')
             ->margins(0, 0, 10, 0)
             ->footerView("components.pdf-footer")
@@ -173,13 +188,8 @@ class StudentReportController extends Controller
         ];
     }
 
-    public function test()
-    {
-        return auth()->user();
 
-    }
-
-    public function dailyPayments(GenerateDailyPaymentsReportRequest $request): JsonResponse
+    public function dailyPayments(GenerateDailyPaymentsReportRequest $request): JsonResponse|BinaryFileResponse
     {
         ["uuid" => $uuid, "filePath" => $filePath] = generateReportUUID();
 
@@ -216,12 +226,18 @@ class StudentReportController extends Controller
             ->groupBy('recipient_id')
             ->map(fn($group) => $group->chunk($perChunk));
 
-        Pdf::view('reports.daily_payments', [
+        $viewData = [
             'payments' => $payments,
             'date' => Carbon::parse($requestData['date'])->locale('ar'),
             'title' => 'مدفوعات اليوم',
             'type' => $typeValue
-        ])
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new DailyPaymentsExport($viewData), 'daily_payments.xlsx');
+        }
+
+        Pdf::view('reports.daily_payments', $viewData)
             ->orientation(Orientation::Landscape)
             ->format(Format::A4)
             ->footerView('components.pdf-footer')

@@ -42,13 +42,18 @@ class FinancialReportsController extends Controller
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
-        Pdf::view('reports.net_income',
-            [
-                "incomes" => $incomes,
-                "expenses" => $expenses,
-                "start_date" => $start_date,
-                "end_date" => $end_date
-            ])
+        $viewData = [
+            "incomes" => $incomes,
+            "expenses" => $expenses,
+            "start_date" => $start_date,
+            "end_date" => $end_date
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\NetIncomeExport($viewData), 'net_income.xlsx');
+        }
+
+        Pdf::view('reports.net_income', $viewData)
             ->format('a4')
             ->margins(5, 5, 5, 5)
             ->footerView("components.pdf-footer")
