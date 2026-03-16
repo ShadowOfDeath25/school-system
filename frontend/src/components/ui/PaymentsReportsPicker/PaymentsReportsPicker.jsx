@@ -10,10 +10,8 @@ import {PaymentHelper} from "@helpers/PaymentHelper.js";
 import {usePDFPreview} from "@contexts/PDFPreviewContext.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import RadioField from "@ui/RadioField/RadioField.jsx";
-import Form from "@ui/Form/Form.jsx";
-import InputField from "@ui/InputField/InputField.jsx";
 import DailyPaymentReportsForm from "@ui/DailyPaymentReportsForm/DailyPaymentReportsForm.jsx";
-import ExportAsExcelButton from "@ui/ExportAsExcelButton/ExportAsExcelButton.jsx";
+import {useExport} from "@hooks/useExport.js";
 
 
 export default function PaymentsReportsPicker() {
@@ -27,6 +25,7 @@ export default function PaymentsReportsPicker() {
     });
     const {showPDFPreview} = usePDFPreview();
     const {showSnackbar, hideSnackbar} = useSnackbar();
+    const {exportAsExcel} = useExport();
 
     const normalizeData = () => {
         const result = {
@@ -179,11 +178,20 @@ export default function PaymentsReportsPicker() {
                     </Button>
                     <Activity
                         mode={["arrears-letters", "letters"].includes(formData.reportSubType) ? "hidden" : "visible"}>
-                        <ExportAsExcelButton
-                            url={`reports/students/payments/${formData.reportSubType}`}
-                            params={normalizeData}
-                            method={["letters", 'arrears-letters'].includes(formData.reportSubType) ? "post" : "get"}
-                        />
+                        <Button
+                            variant={"contained"}
+                            color={"success"}
+                            onClick={() => {
+                                exportAsExcel(
+                                    `reports/students/payments/${formData.reportSubType}`,
+                                    normalizeData,
+                                    ["letters", 'arrears-letters'].includes(formData.reportSubType) ? "post" : "get"
+                                )
+                            }}
+                        >
+                            تصدير ك EXCEL
+                        </Button>
+
                     </Activity>
                     <Button
                         variant={"contained"}

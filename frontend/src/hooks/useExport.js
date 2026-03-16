@@ -1,12 +1,12 @@
-import {Button} from "@mui/material";
-import axiosClient from "../../../axiosClient.js";
+import axiosClient from "../axiosClient.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
+import {Button} from "@mui/material";
+import {useCallback} from "react";
 
-export default function ExportAsExcelButton({url, params, method = "get"}) {
-
+export const useExport = () => {
     const {showSnackbar} = useSnackbar();
 
-    const handleClick = async () => {
+    const exportAsExcel = useCallback(async (url, params, method = "get") => {
         const finalParams = typeof params === 'function' ? params() : params;
         if (!finalParams) return;
         finalParams.export = "excel";
@@ -37,17 +37,6 @@ export default function ExportAsExcelButton({url, params, method = "get"}) {
             window.URL.revokeObjectURL(urlBlob);
             showSnackbar("تم تحميل التقرير بنجاح", "success")
         }
-    }
-    return (
-        <>
-            <Button
-                variant={"contained"}
-                color={"success"}
-                onClick={handleClick}
-            >
-                تصدير كملف Excel
-            </Button>
-        </>
-    );
+    }, [])
+    return {exportAsExcel}
 }
-
