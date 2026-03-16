@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Enums\PaymentType;
+use App\Exports\ArrearsExport;
+use App\Exports\ArrearsGroupedExport;
 use App\Exports\DailyPaymentsExport;
 use App\Exports\LettersExport;
 use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
@@ -99,7 +101,7 @@ class StudentReportController extends Controller
         $viewData['title'] = $title;
 
         if ($request->query('export') === 'excel') {
-            $exportClass = $filters['grouped'] ? \App\Exports\ArrearsGroupedExport::class : \App\Exports\ArrearsExport::class;
+            $exportClass = $filters['grouped'] ? ArrearsGroupedExport::class : ArrearsExport::class;
             return Excel::download(new $exportClass($viewData), 'arrears.xlsx');
         }
 

@@ -13,6 +13,7 @@ import RadioField from "@ui/RadioField/RadioField.jsx";
 import Form from "@ui/Form/Form.jsx";
 import InputField from "@ui/InputField/InputField.jsx";
 import DailyPaymentReportsForm from "@ui/DailyPaymentReportsForm/DailyPaymentReportsForm.jsx";
+import ExportAsExcelButton from "@ui/ExportAsExcelButton/ExportAsExcelButton.jsx";
 
 
 export default function PaymentsReportsPicker() {
@@ -26,6 +27,7 @@ export default function PaymentsReportsPicker() {
     });
     const {showPDFPreview} = usePDFPreview();
     const {showSnackbar, hideSnackbar} = useSnackbar();
+
     const normalizeData = () => {
         const result = {
             show_notes: showNotes,
@@ -41,7 +43,7 @@ export default function PaymentsReportsPicker() {
         }
         if (!rest.reportSubType) {
             showSnackbar("يرجي اختيار تقرير", "error")
-            return {};
+            return null;
         }
 
         if (["letters", "arrears-letters"].includes(rest.reportSubType) && !rest.letter) {
@@ -56,7 +58,7 @@ export default function PaymentsReportsPicker() {
             {
                 ...result,
                 ...rest
-            } : {}
+            } : null
 
     }
     const handleSubmit = async () => {
@@ -175,6 +177,14 @@ export default function PaymentsReportsPicker() {
                     >
                         طباعة
                     </Button>
+                    <Activity
+                        mode={["arrears-letters", "letters"].includes(formData.reportSubType) ? "hidden" : "visible"}>
+                        <ExportAsExcelButton
+                            url={`reports/students/payments/${formData.reportSubType}`}
+                            params={normalizeData}
+                            method={["letters", 'arrears-letters'].includes(formData.reportSubType) ? "post" : "get"}
+                        />
+                    </Activity>
                     <Button
                         variant={"contained"}
                         color={"error"}
