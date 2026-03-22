@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
+use App\Traits\LogsActivityInArabic;
 
 #[ObservedBy([AcademicYearObserver::class])]
 class AcademicYear extends Model
 {
+    use LogsActivityInArabic;
     protected $fillable = [
         'name',
         'active'

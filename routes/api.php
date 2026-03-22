@@ -37,6 +37,7 @@ use App\Http\Controllers\SubjectTypeController;
 use App\Http\Controllers\UniformController;
 use App\Http\Controllers\UniformPurchaseController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -126,5 +127,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
         Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
         Route::get("/permissions", [PermissionController::class, 'index']);
+        Route::get("/activity-logs", [ActivityLogController::class, 'index']);
+        Route::delete("/activity-logs/{activity}", [ActivityLogController::class, 'delete']);
     });
 });

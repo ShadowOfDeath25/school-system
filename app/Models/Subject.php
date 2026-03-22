@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\LogsActivityInArabic;
 
 class Subject extends Model
 {
+    use LogsActivityInArabic;
     protected $fillable = [
         'name',
         'type',

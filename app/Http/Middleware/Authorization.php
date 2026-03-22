@@ -26,7 +26,7 @@ class Authorization
      */
     public function handle(Request $request, Closure $next, ?string $permission = null): Response
     {
-        // 1. Check if permission is passed as a middleware parameter
+
         if ($permission) {
             if ($request->user() && !$request->user()->can($permission)) {
                 throw new AuthorizationException("انت غير مصرح لك للقيام بهذه العملية");
@@ -37,7 +37,7 @@ class Authorization
         $route = $request->route();
         $controller = $route->getController();
 
-        // 2. Check for $permission property on controller
+
         if (property_exists($controller, 'permission')) {
             $reflection = new ReflectionClass($controller);
             $property = $reflection->getProperty('permission');
@@ -50,7 +50,7 @@ class Authorization
             return $next($request);
         }
 
-        // 3. Falling back to dynamic model-based logic
+
         $modelClass = null;
         if (property_exists($controller, 'model')) {
             $reflection = new ReflectionClass($controller);

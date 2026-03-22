@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Book extends Model
 {
+    use LogsActivityInArabic;
     protected $fillable = [
         'academic_year',
         'imported_quantity',

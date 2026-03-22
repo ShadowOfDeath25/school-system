@@ -40,6 +40,8 @@ class PermissionFactory extends Factory
         Permission::findOrCreate('view financial-reports');
         Permission::findOrCreate('view student-reports');
         Permission::findOrCreate("view payment-reports");
+        Permission::findOrCreate("view activity-logs");
+        Permission::findOrCreate("delete activity-logs");
     }
 
     /**

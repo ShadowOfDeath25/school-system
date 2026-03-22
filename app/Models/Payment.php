@@ -6,10 +6,12 @@ use App\Observers\PaymentObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\LogsActivityInArabic;
 
 #[ObservedBy(PaymentObserver::class)]
 class Payment extends Model
 {
+    use LogsActivityInArabic;
     protected $fillable = [
         'academic_year',
         'type',

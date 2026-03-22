@@ -2,6 +2,7 @@ import NetIncome from "@pages/NetIncome/NetIncome.jsx";
 import AcademicYears from "@pages/AcademicYears/AcademicYears.jsx";
 import Dashboard from "@pages/Dashboard/Dashboard.jsx"
 import TestReports from "@ui//test.jsx";
+import ActivityLogs from "@pages/ActivityLogs/ActivityLogs.jsx";
 
 
 const route = {
@@ -21,7 +22,7 @@ const route = {
                 },
                 action: "view dashboard"
             },
-            element: <Dashboard />
+            element: <Dashboard/>
 
         },
         {
@@ -32,7 +33,7 @@ const route = {
                 },
                 action: "view net-income"
             },
-            element: <NetIncome />
+            element: <NetIncome/>
         },
         {
             path: "academic-years",
@@ -42,17 +43,17 @@ const route = {
                 },
                 action: ['view academic-years', 'create-academic-years']
             },
-            element: <AcademicYears />
+            element: <AcademicYears/>
         },
         {
-            path: "test",
+            path: "activity-logs",
             handle: {
                 sidebar: {
-                    title: "اختبار"
+                    title: "سجل الاحداث"
                 },
-                action: "view test"
+                action: "view activity-logs"
             },
-            element: <TestReports />
+            element: <ActivityLogs/>
         }
     ]
 }
