@@ -15,7 +15,8 @@ export default function InputField({
                                        handleBlur,
                                        isValid,
                                        isModal = false,
-                                       min = 0,
+                                       min,
+                                       max,
                                        helperText = "",
                                        props = {}
 
@@ -43,7 +44,8 @@ export default function InputField({
                         onChange={handleChange}
                         dir="auto"
                         onBlur={handleBlur}
-                        {...(type === "number") ? {min: min} : {}}
+                        {...(min !== undefined && min !== null ? { min } : {})}
+                        {...(max !== undefined && max !== null ? { max } : {})}
                         {...{props}}
                     />
                     {helperText &&<span className={styles.helperText}>{helperText}</span>}

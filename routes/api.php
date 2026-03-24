@@ -128,6 +128,7 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
         Route::get("/permissions", [PermissionController::class, 'index']);
         Route::get("/activity-logs", [ActivityLogController::class, 'index']);
+        Route::get('activity-logs/filters', [ActivityLogController::class, 'filters']);
         Route::delete("/activity-logs/{activity}", [ActivityLogController::class, 'delete']);
     });
 });

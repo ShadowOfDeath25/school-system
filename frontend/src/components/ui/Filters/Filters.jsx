@@ -34,8 +34,10 @@ export default function Filters({onSubmit, resource, fields = [], additionalFiel
         if (removedFields.includes(field.name)) return;
         const commonProps = {
             ...field,
-            value: filters[field.name],
+            value: filters[field.name] ?? '',
             handleChange: handleChange,
+            min: typeof field.min === 'function' ? field.min(filters) : field.min,
+            max: typeof field.max === 'function' ? field.max(filters) : field.max,
             options: typeof field.options === 'function'
                 ? field.dependency
                     ? Array.isArray(field.dependency)
