@@ -79,23 +79,22 @@ Route::middleware(["auth:sanctum"])->group(function () {
 
 
     });
+    Route::prefix('grades')->name('grades.')->group(function () {
+        Route::get("", [GradeController::class, "index"])->middleware("authorization:view grades")->name("index");
+        Route::post('{grade}/subjects', [GradeController::class, 'assignSubjects'])->middleware('authorization:create grade-subjects')->name('assign-subjects');
+        Route::match(['put', 'patch'], '{grade}/subjects', [GradeController::class, 'updateSubjects'])->middleware('authorization:update grade-subjects')->name('update-subjects');
+        Route::delete('{grade}/subjects', [GradeController::class, 'deleteSubjects'])->middleware('authorization:delete grade-subjects')->name('delete-subjects');
+        Route::get('{grade}/subjects', [GradeController::class, 'getSubjects'])->name('get-subjects')->middleware('authorization:view grade-subjects');
+        Route::get('{grade}/subjects/available', [GradeController::class, 'getAvailableSubjects'])->middleware('authorization:view grade-subjects')->name('get-available-subjects');
+    });
     Route::middleware(["authorization"])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();
         Route::apiResource('users', UserController::class)->withFilters();
         Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
         Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
-        Route::patch('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
-        Route::put('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
+        Route::match(['put', 'patch'], 'academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
 
-        Route::prefix('grades')->name('grades.')->group(function () {
-            Route::get("", [GradeController::class, "index"]);
-            Route::post('{grade}/subjects', [GradeController::class, 'assignSubjects'])->name('assign-subjects');
-            Route::put("{grade}/subjects", [GradeController::class, 'updateSubjects'])->name('update-subjects');
-            Route::patch("{grade}/subjects", [GradeController::class, 'updateSubjects'])->name('update-subjects');
-            Route::delete('{grade}/subjects', [GradeController::class, 'deleteSubjects'])->name('delete-subjects');
-            Route::get('{grade}/subjects', [GradeController::class, 'getSubjects'])->name('get-subjects');
-            Route::get('{grade}/subjects/available', [GradeController::class, 'getAvailableSubjects'])->name('get-available-subjects');
-        });
+
 
         Route::apiResource('buses', BusController::class)->withFilters();
         Route::apiResource("books", BookController::class)->withFilters();

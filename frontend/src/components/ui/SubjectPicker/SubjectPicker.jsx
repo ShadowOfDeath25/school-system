@@ -47,8 +47,8 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
         mutationFn: (ids) => axiosClient.delete(endpoint, {data: {subjects: ids}}),
         onSuccess: () => {
             showSnackbar("تم حذف المادة بنجاح");
-            queryClient.invalidateQueries({ queryKey: [endpoint] });
-            queryClient.invalidateQueries({ queryKey: [`grades/${grade?.id}/subjects/available`] });
+            queryClient.invalidateQueries({queryKey: [endpoint]});
+            queryClient.invalidateQueries({queryKey: [`grades/${grade?.id}/subjects/available`]});
         },
         onError: (error) => {
             showSnackbar(error?.response?.data?.message ?? "حدث خطأ اثناء حذف المادة", "error");
@@ -60,15 +60,15 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
         onSuccess: () => {
             showSnackbar("تم تحديث المادة بنجاح");
             hideInputModal();
-            queryClient.invalidateQueries({ queryKey: [endpoint] });
+            queryClient.invalidateQueries({queryKey: [endpoint]});
         },
         onError: (error) => {
             showSnackbar(error?.response?.data?.message ?? "حدث خطأ اثناء تحديث المادة", "error");
         }
     });
 
-    const userCanEdit = user?.role.includes("Super Admin") || user?.permissions.includes(`update subjects`);
-    const userCanDelete = user?.role.includes("Super Admin") || user?.permissions.includes(`delete subjects`);
+    const userCanEdit = user?.role.includes("Super Admin") || user?.permissions.includes(`update grade-subjects`);
+    const userCanDelete = user?.role.includes("Super Admin") || user?.permissions.includes(`delete grade-subjects`);
 
 
     const {data: assignedSubjects, isLoading: isLoadingAssigned} = useGetAll(
@@ -184,8 +184,8 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
                     onSuccess: () => {
                         showSnackbar("تم اضافة المادة بنجاح");
                         hideInputModal();
-                        queryClient.invalidateQueries({ queryKey: [endpoint] });
-                        queryClient.invalidateQueries({ queryKey: [`grades/${grade?.id}/subjects/available`] });
+                        queryClient.invalidateQueries({queryKey: [endpoint]});
+                        queryClient.invalidateQueries({queryKey: [`grades/${grade?.id}/subjects/available`]});
                     },
                     onError: (error) => {
                         showSnackbar(
