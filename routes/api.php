@@ -88,10 +88,13 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::put('academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
 
         Route::prefix('grades')->name('grades.')->group(function () {
+            Route::get("", [GradeController::class, "index"]);
             Route::post('{grade}/subjects', [GradeController::class, 'assignSubjects'])->name('assign-subjects');
             Route::put("{grade}/subjects", [GradeController::class, 'updateSubjects'])->name('update-subjects');
             Route::patch("{grade}/subjects", [GradeController::class, 'updateSubjects'])->name('update-subjects');
             Route::delete('{grade}/subjects', [GradeController::class, 'deleteSubjects'])->name('delete-subjects');
+            Route::get('{grade}/subjects', [GradeController::class, 'getSubjects'])->name('get-subjects');
+            Route::get('{grade}/subjects/available', [GradeController::class, 'getAvailableSubjects'])->name('get-available-subjects');
         });
 
         Route::apiResource('buses', BusController::class)->withFilters();

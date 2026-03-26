@@ -76,9 +76,40 @@
     flex-direction: column;
     align-items: flex-start;
 
-    & div {
+    & div:not(:has(input[type="checkbox"])) {
         width: 100% !important;
     }
+}
+
+.checkboxWrapper {
+    flex-direction: row-reverse !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.checkboxLabel {
+    margin-bottom: 0 !important;
+    cursor: pointer;
+    order: 2;
+}
+
+.checkboxContainer {
+    width: auto !important;
+    order: 1;
+}
+
+.checkbox {
+    width: 20px !important;
+    height: 20px !important;
+    cursor: pointer;
+    margin-bottom: 0 !important;
+}
+
+.checkbox:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 @media (max-width: 768px) {

@@ -1,20 +1,20 @@
 import styles from './styles.module.css';
-import {FormHelperText, MenuItem, Select} from '@mui/material';
+import { FormHelperText, MenuItem, Select } from '@mui/material';
 
 export default function SelectField({
-                                        name,
-                                        label,
-                                        id,
-                                        value,
-                                        handleChange,
-                                        handleBlur,
-                                        isValid,
-                                        error,
-                                        placeholder,
-                                        options = [],
-                                        multiple = false,
-                                        disabled = false,
-                                    }) {
+    name,
+    label,
+    id,
+    value,
+    handleChange,
+    handleBlur,
+    isValid,
+    error,
+    placeholder,
+    options = [],
+    multiple = false,
+    disabled = false,
+}) {
     const isInvalid = isValid === false;
 
     const selectValue = multiple ? (Array.isArray(value) ? value : []) : value ?? '';
@@ -35,9 +35,9 @@ export default function SelectField({
                 <Select
                     sx={{
                         borderRadius: "5px",
-                        "&:before": {borderBottom: "none"},
-                        "&:after": {borderBottom: "none"},
-                        "&:hover:not(.Mui-disabled):before": {borderBottom: "none"},
+                        "&:before": { borderBottom: "none" },
+                        "&:after": { borderBottom: "none" },
+                        "&:hover:not(.Mui-disabled):before": { borderBottom: "none" },
                     }}
                     className={styles.selectField}
                     id={id}

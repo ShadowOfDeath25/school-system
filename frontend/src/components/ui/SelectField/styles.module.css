@@ -7,7 +7,7 @@
     width: 100%;
 }
 
-.inputWrapper > div {
+.inputWrapper>div {
     position: relative;
     display: flex;
     flex-direction: column;
@@ -15,7 +15,7 @@
 
 }
 
-.inputWrapper.noLabel > div {
+.inputWrapper.noLabel>div {
     width: 100%;
 }
 
@@ -37,11 +37,11 @@
     }
 }
 
-:global( .Mui-focused) {
+:global(.Mui-focused) {
     outline: 3px solid var(--color-focus) !important;
 }
 
-:global(.MuiSelect-select ) {
+:global(.MuiSelect-select) {
     padding: 10px 32px 10px 10px !important;
 
 }
@@ -87,7 +87,7 @@
         width: 100%;
     }
 
-    .inputWrapper > div {
+    .inputWrapper>div {
         width: 100%;
 
     }

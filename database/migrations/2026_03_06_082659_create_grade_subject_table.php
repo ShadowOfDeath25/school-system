@@ -22,7 +22,8 @@ return new class extends Migration {
             $table->boolean('added_to_report')->default(true);
             $table->string('semester');
             $table->string("language")->nullable();
-            $table->unique(['subject_id', 'grade_id','language']);
+            $table->integer('classwork_marks')->default(0);
+            $table->unique(['subject_id', 'grade_id', 'language']);
             $table->timestamps();
         });
     }

@@ -19,6 +19,7 @@ export default function Table({
                                   handleEdit,
                                   editable = true,
                                   deletable = true,
+                                  searchable = true,
                                   params = {},
                                   children,
                                   onClick = null
@@ -134,7 +135,7 @@ export default function Table({
 
     if (isLoading || userIsLoading) {
         return (<div className={styles.wrapper}>
-            <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} disabled={true}/>
+            <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} disabled={true} searchable={searchable}/>
             <div className={styles.tableContainer}>
                 <LoadingScreen/>
             </div>
@@ -143,7 +144,7 @@ export default function Table({
 
     if (isError || !data || tableData.length === 0) {
         return (<div className={styles.wrapper}>
-            <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+            <TableToolbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} searchable={searchable}/>
             <div className={styles.tableContainer}
                  style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                 <h3 className={"serverError"}>{isError ? "حدث خطأ أثناء جلب البيانات" : "لا يوجد بيانات للعرض"}</h3>
@@ -168,6 +169,7 @@ export default function Table({
                 setSearchTerm={setSearchTerm}
                 perPage={perPage}
                 setPerPage={setPerPage}
+                searchable={searchable}
             />
             <div className={styles. tableContainer}>
                 <TablePresenter

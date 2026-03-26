@@ -46,9 +46,10 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
     }, [fields]);
 
     const handleChange = useCallback((e) => {
-        const {name, value} = e.target;
+        const {name, value, type, checked} = e.target;
+        const fieldValue = type === 'checkbox' ? checked : value;
         setFormData(prevData => {
-            const newFormData = {...prevData, [name]: value};
+            const newFormData = {...prevData, [name]: fieldValue};
 
             if (touched[name]) {
                 const error = validateField(name, value, newFormData);

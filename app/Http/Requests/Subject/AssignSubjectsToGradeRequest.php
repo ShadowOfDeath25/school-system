@@ -24,14 +24,15 @@ class AssignSubjectsToGradeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'subjects' => ['array', 'required'],
-            'subjects.*.min_marks' => ['numeric', 'required'],
-            'subjects.*.subject_id' => ['required', "exists:subjects,id"],
-            'subjects.*.max_marks' => ['numeric', 'required', 'gt:subjects.*.min_marks'],
-            'subjects.*.added_to_total' => ['boolean', 'required'],
-            'subjects.*.added_to_report' => ['boolean', 'required'],
-            'subjects.*.semester' => ['string', 'required', 'in:الاول,الثاني,طوال العام'],
-            'subjects.*.language' => ['string', 'required', "in:عربي,لغات"]
+
+            'subject_id' => ['required', "exists:subjects,id"],
+            'min_marks' => ['numeric', 'required'],
+            'max_marks' => ['numeric', 'required', 'gt:min_marks'],
+            'classwork_marks' => ['numeric', 'lt:max_marks', 'required'],
+            'added_to_total' => ['boolean'],
+            'added_to_report' => ['boolean'],
+            'semester' => ['string', 'required', 'in:الاول,الثاني,طوال العام'],
+            'language' => ['string', 'required', "in:عربي,لغات"]
         ];
     }
 

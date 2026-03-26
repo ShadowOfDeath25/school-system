@@ -7,24 +7,27 @@ export default function TableToolbar({
                                          setSearchTerm,
                                          perPage = localStorage.getItem("per_page"),
                                          setPerPage,
-                                         disabled = false
+                                         disabled = false,
+                                         searchable = true
                                      }) {
     const handlePerPageChange = (e) => {
         setPerPage(e.target.value)
         localStorage.setItem('per_page', e.target.value)
     }
     return (<div className={styles.toolbar}>
-        <div className={styles.searchContainer}>
-            <input
-                type="text"
-                placeholder="بحث..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className={styles.searchInput}
-                disabled={disabled}
-            />
-            <SearchIcon className={styles.searchIcon}/>
-        </div>
+        {searchable && (
+            <div className={styles.searchContainer}>
+                <input
+                    type="text"
+                    placeholder="بحث..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className={styles.searchInput}
+                    disabled={disabled}
+                />
+                <SearchIcon className={styles.searchIcon}/>
+            </div>
+        )}
         <Select
             variant={'outlined'}
             value={perPage}

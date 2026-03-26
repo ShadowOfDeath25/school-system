@@ -55,8 +55,9 @@ export default function Form({
     })) : internalForm.setFieldValue;
 
     const handleChange = isControlled ? (e) => {
-        const { name, value } = e.target;
-        setExternalValues(prev => ({ ...prev, [name]: value }));
+        const { name, value, type, checked } = e.target;
+        const fieldValue = type === 'checkbox' ? checked : value;
+        setExternalValues(prev => ({ ...prev, [name]: fieldValue }));
     } : internalForm.handleChange;
 
     const prevFormDataRef = useRef(formData);

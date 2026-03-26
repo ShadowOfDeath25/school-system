@@ -8,6 +8,7 @@ use App\Traits\LogsActivityInArabic;
 class GradeSubject extends Pivot
 {
     use LogsActivityInArabic;
+
     protected $fillable = [
         'subject_id',
         'grade',
@@ -16,5 +17,14 @@ class GradeSubject extends Pivot
         'added_to_total',
         'added_to_report',
         'semester',
+        'language',
+        'classwork_marks'
     ];
+
+    public function getExamMarksAttribute()
+    {
+        return $this->max_marks - $this->classwork_marks;
+    }
+
+
 }

@@ -29,18 +29,20 @@ export default function InputField({
 
     const isInvalid = isValid === false;
 
+    const isCheckbox = type === "checkbox";
     return (
         <>
-            <div className={`${styles.inputWrapper} ${isModal ? styles.modalInputWrapper : ""} `}>
-                <label htmlFor={id}>{label}</label>
-                <div>
+            <div className={`${styles.inputWrapper} ${isModal ? styles.modalInputWrapper : ""} ${isCheckbox ? styles.checkboxWrapper : ""}`}>
+                <label htmlFor={id} className={isCheckbox ? styles.checkboxLabel : ""}>{label}</label>
+                <div className={isCheckbox ? styles.checkboxContainer : ""}>
                     <input
-                        className={`${isInvalid ? styles.error : ""} ${type === "password" ? styles.password : ""}`}
+                        className={`${isInvalid ? styles.error : ""} ${type === "password" ? styles.password : ""} ${isCheckbox ? styles.checkbox : ""}`}
                         id={id}
                         type={type === "password" ? (showPassword ? "text" : "password") : type}
                         name={name}
                         placeholder={placeholder ?? ""}
-                        value={value}
+                        value={isCheckbox ? undefined : (value ?? "")}
+                        checked={isCheckbox ? !!value : undefined}
                         onChange={handleChange}
                         dir="auto"
                         onBlur={handleBlur}
@@ -48,7 +50,7 @@ export default function InputField({
                         {...(max !== undefined && max !== null ? { max } : {})}
                         {...{props}}
                     />
-                    {helperText &&<span className={styles.helperText}>{helperText}</span>}
+                    {helperText && <span className={styles.helperText}>{helperText}</span>}
                     {type === "password" &&
                         <IconButton
                             aria-label="toggle password visibility"
@@ -56,7 +58,7 @@ export default function InputField({
                             edge="end"
                             className={styles.showPasswordButton}
                         >
-                            {showPassword ? <VisibilityOff/> : <Visibility/>}
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                     }
                     {isInvalid && <span>{error}</span>}

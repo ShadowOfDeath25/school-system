@@ -10,6 +10,7 @@ use App\Traits\LogsActivityInArabic;
 class Subject extends Model
 {
     use LogsActivityInArabic;
+
     protected $fillable = [
         'name',
         'type',
@@ -29,7 +30,9 @@ class Subject extends Model
 
     public function grades(): BelongsToMany
     {
-        return $this->BelongsToMany(Grade::class)->using(GradeSubject::class)->withPivot(['min_marks', 'max_marks', 'added_to_total', 'added_to_report', 'semester']);
+        return $this->BelongsToMany(Grade::class)
+            ->using(GradeSubject::class)
+            ->withPivot(['min_marks', 'max_marks', 'grade_id', 'added_to_total', 'added_to_report', 'semester', 'classwork_marks']);
     }
 
 
