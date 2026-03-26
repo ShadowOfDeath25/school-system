@@ -14,12 +14,11 @@ export default function AssignSubjectToGrades() {
         <Page breadcrumbsLinks={breadcrumbsLinks}>
             <SubjectPicker
                 grade={state.grade}
-                config={{title: "المواد المعينة للعربي"}}
+
                 language={"عربي"}
             />
             <SubjectPicker
                 grade={state.grade}
-                config={{title: "المواد المعينة لللغات"}}
                 language="لغات"
             />
         </Page>

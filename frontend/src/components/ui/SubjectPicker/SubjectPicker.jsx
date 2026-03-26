@@ -280,7 +280,7 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
         );
     }
 
-    const pickerTitle = title || config.title;
+    const pickerTitle = title || config.title || `المواد المعينة للصف ${grade?.name} ${language}`;
     return (
         <div className={styles.container}>
             {pickerTitle && <h2 className={styles.title}>{pickerTitle}</h2>}
