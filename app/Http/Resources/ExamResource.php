@@ -24,12 +24,13 @@ class ExamResource extends JsonResource
             'formatted_date' => (new Carbon($this->date))->translatedFormat('h:i a - d/m/Y'),
             'subject' => $this->gradeSubject->subject->name,
             'academic_year' => $this->academic_year,
-            'grade' => $this->grade,
+            'grade' => $this->gradeSubject->grade,
             'type' => $this->type,
             'subject_type' => $this->gradeSubject->subject->type,
             'marks' => $this->marks,
             'duration_in_hours' => $this->duration_in_hours + 0,
             'semester' => $this->semester,
+            'language' => $this->language,
             'date' => $this->date
 
         ];
