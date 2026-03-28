@@ -41,6 +41,7 @@ export default function ViewExams() {
                     {
                         name: "marks",
                         label: "الدرجة العظمي",
+                        editable:false,
                         type: "number",
                         required: true,
                         placeholder: "الدرجة العظمي",
