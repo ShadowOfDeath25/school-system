@@ -58,4 +58,5 @@ class GradeController extends Controller
         })->where('language', $language)->get();
         return response()->json(["data" => $subjects]);
     }
+
 }

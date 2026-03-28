@@ -25,15 +25,12 @@ class UpdateExamRequest extends FormRequest
 
             'name' => ['string', 'max:255'],
             'date' => ['date'],
-            'language' => ['string', 'max:255'],
-            'level' => ['string', 'max:255'],
+            'language' => ['string', "in:عربي,لغات", 'max:255'],
             'duration_in_hours' => ['numeric'],
-            'max_marks' => ['numeric'],
-            'min_marks' => ['numeric'],
-            'type' => ['string', 'max:255'],
-            'academic_year' => ['string', 'max:255'],
-            'grade' => ['string', 'max:255'],
-            'subject_id' => ['string', 'max:255', 'exists:subjects,id'],
+            'type' => ['string', "in:دور اول,دور تاني", 'max:255'],
+            'academic_year' => ['string', 'exists:academic_years,name'],
+            'grade_subject_id' => ['exists:grade_subject,id'],
+            'semester' => ["string", 'in:الاول,الثاني']
         ];
     }
 }

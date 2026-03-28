@@ -13,11 +13,12 @@ const FIELDS = {
     TYPE: {
         name: "type",
         label: "نوع الاختبار",
+        placeholder: "نوع الاختبار",
         type: "select",
         required: true,
         options: TYPES
     },
-    DATE:{
+    DATE: {
         name: "date",
         label: "موعد الاختبار",
         type: "datetime-local",
@@ -26,17 +27,18 @@ const FIELDS = {
     DURATION_IN_HOURS: {
         name: "duration_in_hours",
         label: "المدة بالساعات",
+        placeholder: "المدة بالساعات",
         type: "number",
         required: true,
     },
-    MIN_MARKS:{
+    MIN_MARKS: {
         name: "min_marks",
         label: "الدرجة الصغري",
         type: "number",
         placeholder: 'الدرجة الصغري',
         required: true,
     },
-    MAX_MARKS:{
+    MAX_MARKS: {
         name: "max_marks",
         label: "الدرجة العظمي",
         type: "number",
@@ -47,7 +49,7 @@ const FIELDS = {
 export const ExamHelper = {
     TYPES,
     FIELDS,
-    getALlFields:()=>{
+    getALlFields: () => {
         return Object.values(FIELDS)
     }
 }

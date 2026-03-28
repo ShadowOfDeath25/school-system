@@ -8,10 +8,14 @@ import { useState } from "react";
 import { ExamHelper } from "@helpers/ExamHelper.js";
 
 export default function AddExams() {
-    const { data: subjects } = useGetAll('subjects', { all: true })
+    const [formData, setFormData] = useState({});
+    const { data: subjects } = useGetAll(`grades/${formData.grade}/subjects`, { language: formData.language }, {
+        enabled: !!(formData.language && formData.grade)
+    })
     const { data: academicYears = [] } = useGetAll('academic-years', {}, {
         select: (data) => data?.data?.map((academicYear) => academicYear.name)
     })
+    console.log(formData)
     const mutation = useCreate('exams');
     const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState(null);
@@ -24,38 +28,26 @@ export default function AddExams() {
             type: "select",
             required: true,
             placeholder: "اختر الفصل الدراسي",
-            options: SubjectHelper.SEMESTERS
+            options: ["الاول", "الثاني"]
         },
         ClassroomHelper.FIELDS.LANGUAGE,
         ClassroomHelper.FIELDS.LEVEL,
         ClassroomHelper.FIELDS.GRADE,
         {
-            ...SubjectHelper.FIELDS.TYPE,
-            options: subjects?.data ? [...new Set(subjects.data.map(subject => subject.type))] : []
-        },
-        {
-            name: "subject_id",
+            name: "grade_subject_id",
             label: "اسم المادة",
             type: "select",
             placeholder: "اختر المادة",
             required: true,
-            dependency: ['subject.type', 'academic_year', 'grade', 'level', 'language'],
-            options: (values) =>
+            dependency: ['grade', 'language'],
+            options: () =>
                 subjects?.data ? subjects?.data
-                    .filter(
-                        subject => subject.type === values[0]
-                            && subject.ACADEMIC_YEAR === values[1]
-                            && subject.GRADE === values[2]
-                            && subject.LEVEL === values[3]
-                            && subject.LANGUAGE === values[4]
-                    ).map(subject => ({ label: subject.name, value: subject.id })) : [],
+                    .map(subject => ({ label: subject.name, value: subject.id })) : [],
             disabled: (values) => values.some(value => !value)
         },
         ExamHelper.FIELDS.TYPE,
         ExamHelper.FIELDS.DATE,
         ExamHelper.FIELDS.DURATION_IN_HOURS,
-        ExamHelper.FIELDS.MIN_MARKS,
-        ExamHelper.FIELDS.MAX_MARKS,
     ]
 
 
@@ -79,6 +71,8 @@ export default function AddExams() {
                 fields={fields}
                 onFormSubmit={onSubmit}
                 serverErrors={serverErrors}
+                values={formData}
+                setValues={setFormData}
             />
         </Page>
     </>);

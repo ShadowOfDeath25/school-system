@@ -20,10 +20,10 @@ class ExamController extends Controller
         'level',
         'grade',
         'type',
-        'subject.type',
-        'subject.name',
+        'gradeSubject.subject.type',
+        'gradeSubject.subject.name',
     ];
-    protected array $relationsToLoad = ['subject'];
+    protected array $relationsToLoad = ['gradeSubject.subject'];
     protected string $model = Exam::class;
     protected string $storeRequest = StoreExamRequest::class;
     protected string $updateRequest = UpdateExamRequest::class;

@@ -39,14 +39,7 @@ export default function ViewExams() {
                     {name: "name", label: "اسم الاختبار", editable: false},
                     {name: "type", label: "نوع الاختبار", editable: false},
                     {
-                        name: "min_marks",
-                        label: "الدرجة الصغري",
-                        type: "number",
-                        required: true,
-                        placeholder: "الدرجة الصغري"
-                    },
-                    {
-                        name: "max_marks",
+                        name: "marks",
                         label: "الدرجة العظمي",
                         type: "number",
                         required: true,

@@ -25,16 +25,12 @@ class StoreExamRequest extends FormRequest
 
             'name' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
-            'language' => ['required', 'string', 'max:255'],
-            'level' => ['required', 'string', 'max:255'],
+            'language' => ['required', 'string', "in:عربي,لغات", 'max:255'],
             'duration_in_hours' => ['required', 'numeric'],
-            'max_marks' => ['required', 'integer'],
-            'min_marks' => ['required', 'integer'],
-            'type' => ['required', 'string', 'max:255'],
+            'type' => ['required', 'string', "in:دور اول,دور تاني", 'max:255'],
             'academic_year' => ['required', 'string', 'exists:academic_years,name'],
-            'grade' => ['required', 'integer'],
-            'subject_id' => ['required', 'integer', 'exists:subjects,id'],
-
+            'grade_subject_id' => ['required', 'exists:grade_subject,id'],
+            'semester'=>['required',"string",'in:الاول,الثاني']
         ];
 
     }
