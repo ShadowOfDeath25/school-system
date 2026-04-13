@@ -69,6 +69,7 @@ export default function ViewStudents() {
                 resource={"students"}
                 onSubmit={(filter) => setTableFilters(filter)}
                 fields={filterFields}
+
             />
             <Table
                 resource={"students"}

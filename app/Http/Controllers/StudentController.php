@@ -30,7 +30,7 @@ class StudentController extends Controller
         'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade'
     ];
     protected array $searchable = [
-        'name_in_arabic', 'name_in_english'
+        'name_in_arabic', 'name_in_english', 'nid', 'reg_number'
     ];
     protected array $relationsToLoad = ['classroom', 'guardians'];
 
@@ -69,7 +69,7 @@ class StudentController extends Controller
                     $query->where('withdrawn', false)
                         ->orWhereNull('withdrawn');
                 }])->findOrFail($studentData['classroom_id']);
-                
+
                 if ($newClassroom->students_count >= $newClassroom->max_capacity) {
                     throw ValidationException::withMessages([
                         'classroom_id' => ['The selected classroom is full.'],
@@ -154,4 +154,9 @@ class StudentController extends Controller
         return response()->json($service->getStudentPayments($student, $request->input('academic_year')));
     }
 
+    public function requiredExams(Request $request, Student $student)
+    {
+//        @dd($student->required_exams);
+        return $student->required_exams;
+    }
 }

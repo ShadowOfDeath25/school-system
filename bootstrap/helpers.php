@@ -13,6 +13,17 @@ if (!function_exists("getGradeNumber")) {
     }
 
 }
+if (!function_exists("getLevel")) {
+    function getLevel(int $grade): string
+    {
+        return match ($grade) {
+            1, 2 => "رياض اطفال",
+            3, 4, 5, 6 => "ابتدائي",
+            7, 8, 9, 10, 11 => "اعدادي",
+            default => throw new Error("Invalid Grade Number")
+        };
+    }
+}
 if (!function_exists("generateReportUUID")) {
     function generateReportUUID(): array
     {

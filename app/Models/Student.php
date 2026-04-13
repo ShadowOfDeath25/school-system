@@ -165,4 +165,37 @@ class Student extends Model
             fn($p) => $p->quantity * ($p->uniform->price ?? 0)
         );
     }
+
+    public function exams(): BelongsToMany
+    {
+        return $this->belongsToMany(Exam::class)
+            ->using(ExamStudent::class)
+            ->withPivot('marks')
+            ->using(ExamStudent::class);
+    }
+
+    public function getRequiredExamsAttribute()
+    {
+        if (!$this->classroom_id) {
+            return collect();
+        }
+
+        $gradeSubjects = GradeSubject::where('grade_id', $this->grade)
+            ->where('language', $this->language)
+            ->with('exams')
+            ->get();
+
+        return Exam::whereHas('gradeSubject', function ($q) {
+            $q->where('grade_id', $this->grade)
+                ->where('language', $this->language);
+        })
+            ->whereDoesntHave('students', function ($q) {
+                $q->where('students.id', $this->id);
+            })
+            ->get();
+
+    }
+
+
+
 }

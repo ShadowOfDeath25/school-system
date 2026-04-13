@@ -27,6 +27,8 @@ class DatabaseSeeder extends Seeder
             SeatNumberSeeder::class,
             SecretNumberSeeder::class,
             ExemptionSeeder::class,
+            SubjectTypeSeeder::class,
+            SubjectSeeder::class,
         ]);
 
     }

@@ -24,6 +24,7 @@ return new class extends Migration {
             $table->string("language")->nullable();
             $table->integer('classwork_marks')->default(0);
             $table->unique(['subject_id', 'grade_id', 'language']);
+            $table->index(['grade_id', 'language']);
             $table->timestamps();
         });
     }

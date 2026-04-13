@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use App\Traits\LogsActivityInArabic;
 
@@ -35,5 +36,10 @@ class GradeSubject extends Pivot
     public function grade(): BelongsTo
     {
         return $this->belongsTo(Grade::class);
+    }
+
+    public function exams(): HasMany
+    {
+        return $this->hasMany(Exam::class, 'grade_subject_id');
     }
 }

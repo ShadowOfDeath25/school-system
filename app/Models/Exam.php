@@ -31,5 +31,12 @@ class Exam extends Model
         return $this->belongsTo(GradeSubject::class);
     }
 
+    public function students()
+    {
+        return $this->belongsToMany(Student::class)
+            ->using(ExamStudent::class)
+            ->withPivot('marks')
+            ->using(ExamStudent::class);
+    }
 
 }

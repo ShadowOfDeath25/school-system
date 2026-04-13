@@ -11,6 +11,7 @@ use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExamHallController;
+use App\Http\Controllers\ExamStudentController;
 use App\Http\Controllers\ExemptionController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ExpenseTypeController;
@@ -49,8 +50,8 @@ Route::get("/pdf-test", function () {
 Route::post("/login", AuthController::class . "@login")->name("login");
 Route::middleware(["auth:sanctum"])->group(function () {
     Route::post("/logout", AuthController::class . "@logout")->name("logout");
-
-
+    Route::get("/students/{student}/exams/required", [StudentController::class, "requiredExams"])->name("students.exams.required")->middleware("authorization:view exams");
+    Route::post("students/exams/marks", [ExamStudentController::class, "store"])->middleware("authorization:create exam-students")->name("students.exams.marks.store");
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('authorization:view dashboard');
     Route::prefix("/reports")->name("reports.")->group(function () {
 
@@ -93,7 +94,6 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
         Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
         Route::match(['put', 'patch'], 'academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
-
 
 
         Route::apiResource('buses', BusController::class)->withFilters();
