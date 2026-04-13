@@ -19,12 +19,16 @@ export default function StudentPicker() {
         <Page breadcrumbsLinks={breadcrumbsLinks}>
             <Table
                 resource={"students"}
-                params={{classroom_id: state.classroom.id}}
+                params={{
+                    classroom: state.classroom.name,
+                    language: state.classroom.language,
+                    "classroom.academic_year": state.classroom.academic_year,
+                }}
                 fields={[
                     {name: 'reg_number', label: "رقم القيد"},
                     {name: 'name_in_arabic', label: "الاسم"},
                     {name: "nid", label: "الرقم القومي"},
-                    {name: 'religion',label:"الديانة"}
+                    {name: 'religion', label: "الديانة"}
                 ]}
                 editable={false}
                 deletable={false}

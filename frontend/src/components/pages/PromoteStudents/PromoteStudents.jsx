@@ -3,6 +3,7 @@ import Table from "@ui/Table/Table.jsx";
 import {useNavigate} from "react-router";
 import Filters from "@ui/Filters/Filters.jsx";
 import {useState} from "react";
+import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 
 export default function PromoteStudents() {
     const navigate = useNavigate();
@@ -15,26 +16,10 @@ export default function PromoteStudents() {
         });
     }
     const filterFields = [
-        {
-            ...ClassroomHelper.FIELDS.LEVEL,
-            name: "classroom.level",
-        },
-        {
-            ...ClassroomHelper.FIELDS.GRADE,
-            name: "classroom.grade",
-            dependency: "classroom.level",
-        },
-        {
-            ...ClassroomHelper.FIELDS.CLASSROOM,
-            options: (values) => {
-                let [grade, level] = values;
-                if (!grade || !level || !classrooms?.data) return [];
-                return [...new Set(classrooms.data.filter(classroom => classroom.grade === grade && classroom.level === level).map(classroom => classroom.name))]
-            },
-
-        }
-
+        ClassroomHelper.FIELDS.LEVEL,
+        ClassroomHelper.FIELDS.GRADE
     ]
+
     return (
         <Page>
             <Filters

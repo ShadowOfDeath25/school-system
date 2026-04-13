@@ -27,7 +27,7 @@ class StudentController extends Controller
     protected string $updateRequest = UpdateStudentRequest::class;
     protected string $resource = StudentResource::class;
     protected array $filterable = [
-        'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade'
+        'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade','language'
     ];
     protected array $searchable = [
         'name_in_arabic', 'name_in_english', 'nid', 'reg_number'
