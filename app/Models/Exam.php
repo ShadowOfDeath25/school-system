@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\LogsActivityInArabic;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[ObservedBy(ExamObserver::class)]
 class Exam extends Model
@@ -31,7 +32,7 @@ class Exam extends Model
         return $this->belongsTo(GradeSubject::class);
     }
 
-    public function students()
+    public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class)
             ->using(ExamStudent::class)

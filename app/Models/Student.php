@@ -180,11 +180,6 @@ class Student extends Model
             return collect();
         }
 
-        $gradeSubjects = GradeSubject::where('grade_id', $this->grade)
-            ->where('language', $this->language)
-            ->with('exams')
-            ->get();
-
         return Exam::whereHas('gradeSubject', function ($q) {
             $q->where('grade_id', $this->grade)
                 ->where('language', $this->language);
@@ -195,7 +190,6 @@ class Student extends Model
             ->get();
 
     }
-
 
 
 }

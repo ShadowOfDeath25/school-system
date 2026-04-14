@@ -6,6 +6,7 @@ use App\Http\Requests\Student\StoreStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Resources\StudentResource;
 use App\Models\Classroom;
+use App\Models\Exam;
 use App\Models\Guardian;
 use App\Models\Student;
 use App\Services\StudentPaymentsService;
@@ -27,7 +28,7 @@ class StudentController extends Controller
     protected string $updateRequest = UpdateStudentRequest::class;
     protected string $resource = StudentResource::class;
     protected array $filterable = [
-        'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade','language'
+        'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade', 'language'
     ];
     protected array $searchable = [
         'name_in_arabic', 'name_in_english', 'nid', 'reg_number'
@@ -156,7 +157,6 @@ class StudentController extends Controller
 
     public function requiredExams(Request $request, Student $student)
     {
-//        @dd($student->required_exams);
         return $student->required_exams;
     }
 }

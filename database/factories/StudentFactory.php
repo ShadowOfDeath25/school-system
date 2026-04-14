@@ -27,6 +27,7 @@ class StudentFactory extends Factory
         $level = getLevel($grade);
         $classroom = Classroom::where('language', $language)
             ->where('academic_year', $academicYear)
+            ->where('grade', $grade)
             ->inRandomOrder()
             ->first()?->id;
 
