@@ -16,6 +16,7 @@ class ExpenseResource extends JsonResource
     public function toArray(Request $request): array
     {
         Carbon::setLocale('ar');
+
         return [
             'id' => $this->id,
             'date' => $this->date,
@@ -23,7 +24,7 @@ class ExpenseResource extends JsonResource
             'value' => $this->value,
             'type' => $this->type,
             'number' => $this->id,
-            'description' => $this->description
+            'description' => $this->description,
         ];
     }
 }

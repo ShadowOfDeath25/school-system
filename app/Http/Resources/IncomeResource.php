@@ -21,7 +21,7 @@ class IncomeResource extends JsonResource
             'value' => $this->value,
             'formatted_date' => (new Carbon($this->date))->format('d/m/Y'),
             'type' => $this->type,
-            'description' => $this->description
+            'description' => $this->description,
         ];
     }
 }

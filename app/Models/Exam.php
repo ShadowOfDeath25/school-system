@@ -3,16 +3,15 @@
 namespace App\Models;
 
 use App\Observers\ExamObserver;
+use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 #[ObservedBy(ExamObserver::class)]
 class Exam extends Model
 {
-
     use LogsActivityInArabic;
 
     protected $fillable = [
@@ -39,5 +38,4 @@ class Exam extends Model
             ->withPivot('marks')
             ->using(ExamStudent::class);
     }
-
 }

@@ -1,11 +1,11 @@
 <?php
 
-use App\Models\Subject;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -14,15 +14,15 @@ return new class extends Migration {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->string("level");
-            $table->integer("imported_quantity");
-            $table->integer("available_quantity")->nullable();
-            $table->integer("grade");
+            $table->string('level');
+            $table->integer('imported_quantity');
+            $table->integer('available_quantity')->nullable();
+            $table->integer('grade');
             $table->string('semester');
             $table->string('language');
-            $table->string("academic_year");
-            $table->decimal("buy_price", 10, 2);
-            $table->decimal("price", 10, 2);
+            $table->string('academic_year');
+            $table->decimal('buy_price', 10, 2);
+            $table->decimal('price', 10, 2);
             $table->timestamps();
         });
     }

@@ -3,23 +3,24 @@
 namespace App\Models;
 
 use App\Observers\PaymentObserver;
+use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\LogsActivityInArabic;
 
 #[ObservedBy(PaymentObserver::class)]
 class Payment extends Model
 {
     use LogsActivityInArabic;
+
     protected $fillable = [
         'academic_year',
         'type',
-        "value",
-        "student_id",
-        "level",
+        'value',
+        'student_id',
+        'level',
         'date',
-        'recipient_id'
+        'recipient_id',
     ];
 
     public function student(): BelongsTo
@@ -31,6 +32,4 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class, 'recipient_id');
     }
-
-
 }

@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\AcademicYear;
 use Illuminate\Support\Str;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 return [
 
@@ -104,5 +107,22 @@ return [
     */
 
     'prefix' => env('CACHE_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-cache-'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Serializable Classes
+    |--------------------------------------------------------------------------
+    |
+    | When serializing and unserializing cached PHP objects, you may explicitly
+    | list the classes that are allowed to be unserialized. Setting this value
+    | to "false" will disable all PHP object unserialization.
+    |
+    */
+
+    'serializable_classes' => [
+        AcademicYear::class,
+        Permission::class,
+        Role::class,
+    ],
 
 ];

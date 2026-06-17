@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\LogsActivityInArabic;
 
 class PaymentValue extends Model
 {
@@ -16,13 +16,13 @@ class PaymentValue extends Model
         'grade',
         'level',
         'value',
-        'type'
+        'type',
     ];
 
     /**
      * Clones the payment values from the most recent academic year to the newly created one.
      *
-     * @param string $newAcademicYear The name of the newly created academic year (e.g., "2027/2026")
+     * @param  string  $newAcademicYear  The name of the newly created academic year (e.g., "2027/2026")
      */
     public static function AddNewAcademicYear(string $newAcademicYear): void
     {
@@ -31,7 +31,7 @@ class PaymentValue extends Model
             ->orderBy('academic_year', 'desc')
             ->first();
 
-        if (!$lastYearWithPayments) {
+        if (! $lastYearWithPayments) {
             return;
         }
 
@@ -39,14 +39,13 @@ class PaymentValue extends Model
 
         $previousYearPayments = self::where('academic_year', $previousYear)->get();
 
-
         foreach ($previousYearPayments as $payment) {
             self::create([
                 'academic_year' => $newAcademicYear,
-                'language'      => $payment->language,
-                'level'         => $payment->level,
-                'value'         => $payment->value,
-                'type'          => $payment->type,
+                'language' => $payment->language,
+                'level' => $payment->level,
+                'value' => $payment->value,
+                'type' => $payment->type,
             ]);
         }
     }

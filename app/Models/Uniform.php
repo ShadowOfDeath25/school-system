@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\LogsActivityInArabic;
+use Illuminate\Database\Eloquent\Model;
 
 class Uniform extends Model
 {
@@ -18,7 +18,6 @@ class Uniform extends Model
         'piece',
         'buy_price',
         'sell_price',
-        'level'
+        'level',
     ];
-
 }

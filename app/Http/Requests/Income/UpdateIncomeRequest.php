@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Income;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateIncomeRequest extends FormRequest
@@ -17,16 +18,16 @@ class UpdateIncomeRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "type" => ["string", 'exists:income_types,name', "max:255"],
-            "value" => ["numeric"],
-            "description" => ["string"],
-            "date" => ['date'],
-            "academic_year" => ['string', 'exists:academic_years,name']
+            'type' => ['string', 'exists:income_types,name', 'max:255'],
+            'value' => ['numeric'],
+            'description' => ['string'],
+            'date' => ['date'],
+            'academic_year' => ['string', 'exists:academic_years,name'],
         ];
     }
 }

@@ -3,10 +3,11 @@
 namespace Database\Factories;
 
 use App\Models\Building;
+use App\Models\Floor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Floor>
+ * @extends Factory<Floor>
  */
 class FloorFactory extends Factory
 {
@@ -19,7 +20,7 @@ class FloorFactory extends Factory
     {
         return [
             'name' => fake('ar_EG')->word(),
-            'building_id' => Building::query()->inRandomOrder()->value('id')
+            'building_id' => Building::query()->inRandomOrder()->value('id'),
         ];
     }
 }

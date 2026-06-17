@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\LogsActivityInArabic;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Book extends Model
 {
     use LogsActivityInArabic;
+
     protected $fillable = [
         'academic_year',
         'imported_quantity',
@@ -26,12 +27,11 @@ class Book extends Model
 
     public function subject(): BelongsTo
     {
-        return $this->belongsTo(Subject::class, 'subject_id', "id");
+        return $this->belongsTo(Subject::class, 'subject_id', 'id');
     }
 
     public function purchases(): HasMany
     {
         return $this->hasMany(BookPurchase::class, 'book_id', 'id');
     }
-
 }

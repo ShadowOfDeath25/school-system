@@ -2,18 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 use App\Traits\LogsActivityInArabic;
+use Illuminate\Database\Eloquent\Model;
 
 class Expense extends Model
 {
     use LogsActivityInArabic;
+
     protected $fillable = [
         'description',
         'value',
         'type',
         'academic_year',
-        'date'
+        'date',
     ];
 }

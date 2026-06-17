@@ -12,6 +12,8 @@ class BusController extends Controller
     use HasCRUD;
 
     protected string $model = Bus::class;
+
     protected string $storeRequest = StoreBusRequest::class;
+
     protected string $updateRequest = UpdateBusRequest::class;
 }

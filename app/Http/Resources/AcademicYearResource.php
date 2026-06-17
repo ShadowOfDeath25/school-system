@@ -15,9 +15,9 @@ class AcademicYearResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id" => $this->id,
-            "name" => $this->name,
-            "active" => $this->active ? "نعم" : "لا"
+            'id' => $this->id,
+            'name' => $this->name,
+            'active' => $this->active ? 'نعم' : 'لا',
         ];
     }
 }

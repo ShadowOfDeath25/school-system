@@ -18,11 +18,15 @@ class ExemptionController extends Controller
     use HasFilters;
 
     protected string $model = Exemption::class;
+
     protected string $storeRequest = StoreExemptionRequest::class;
+
     protected string $updateRequest = UpdateExemptionRequest::class;
+
     protected array $searchable = ['type', 'value'];
+
     protected array $filterable = [
-        'type', 'student_id'
+        'type', 'student_id',
     ];
 
     public function index(FilterExemptionRequest $request)
@@ -36,17 +40,16 @@ class ExemptionController extends Controller
             );
         }
 
-        if (!empty($data['student_id'])) {
+        if (! empty($data['student_id'])) {
 
             $q = Exemption::query();
 
-            if (!empty($data['type'])) {
-                $q->where('type', $data["type"])
-                    ->orWhere('student_id', $data["student_id"]);
+            if (! empty($data['type'])) {
+                $q->where('type', $data['type'])
+                    ->orWhere('student_id', $data['student_id']);
             } else {
                 $q->where('student_id', $data['student_id']);
             }
-
 
         } else {
             return $this->baseIndex($request);
@@ -56,6 +59,4 @@ class ExemptionController extends Controller
 
         return JsonResource::collection($result);
     }
-
-
 }

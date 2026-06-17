@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\BookPurchase;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBookPurchaseRequest extends FormRequest
@@ -17,14 +18,14 @@ class UpdateBookPurchaseRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'quantity' => ['integer', "min:1"],
+            'quantity' => ['integer', 'min:1'],
             'book_id' => ['exists:books,id'],
-            'student_name' => ['string']
+            'student_name' => ['string'],
         ];
     }
 }

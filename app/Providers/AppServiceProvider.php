@@ -23,13 +23,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         PendingResourceRegistration::macro('withFilters', function () {
-            Route::get($this->name . '/filters', [$this->controller, 'filters'])
-                ->name($this->name . '.filters');
+            Route::get($this->name.'/filters', [$this->controller, 'filters'])
+                ->name($this->name.'.filters');
+
             return $this;
         });
 
         Gate::before(function ($user, $ability) {
-            return $user->hasRole("Super Admin") ? true : null;
+            return $user->hasRole('Super Admin') ? true : null;
         });
     }
 }

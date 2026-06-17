@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Bus;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBusRequest extends FormRequest
@@ -17,17 +18,17 @@ class StoreBusRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "route" => ["required"],
-            "supervisor_name" => ["required", "string"],
-            "driver_name" => ["required", "string"],
-            'capacity' => ["integer", 'required'],
-            'license_plate' => ["required", "unique:buses,license_plate"],
-            'number' => ["required", "numeric", "integer"]
+            'route' => ['required'],
+            'supervisor_name' => ['required', 'string'],
+            'driver_name' => ['required', 'string'],
+            'capacity' => ['integer', 'required'],
+            'license_plate' => ['required', 'unique:buses,license_plate'],
+            'number' => ['required', 'numeric', 'integer'],
         ];
     }
 }

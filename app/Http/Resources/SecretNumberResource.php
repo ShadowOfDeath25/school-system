@@ -24,7 +24,7 @@ class SecretNumberResource extends JsonResource
             'level' => $this->level,
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,
-            'semester' => $this->semester
+            'semester' => $this->semester,
         ];
     }
 }

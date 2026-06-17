@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Classroom;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ClassroomSeeder extends Seeder
@@ -13,7 +12,7 @@ class ClassroomSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i = 1; $i <= 50; $i++){
+        for ($i = 1; $i <= 50; $i++) {
             Classroom::factory()->create();
         }
     }

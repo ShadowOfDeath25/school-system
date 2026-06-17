@@ -16,7 +16,6 @@ enum Grade: int
     case TENTH = 10;
     case ELEVENTH = 11;
 
-
     public function label(): string
     {
         return match ($this) {

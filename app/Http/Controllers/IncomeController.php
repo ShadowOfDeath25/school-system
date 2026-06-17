@@ -14,11 +14,14 @@ class IncomeController extends Controller
     use HasCRUD, HasFilters;
 
     protected string $model = Income::class;
-    protected string $updateRequest = StoreIncomeRequest::class;
-    protected string $storeRequest = UpdateIncomeRequest::class;
-    protected string $resource = IncomeResource::class;
-    protected array $filterable = [
-        'type', 'academic_year'
-    ];
 
+    protected string $updateRequest = StoreIncomeRequest::class;
+
+    protected string $storeRequest = UpdateIncomeRequest::class;
+
+    protected string $resource = IncomeResource::class;
+
+    protected array $filterable = [
+        'type', 'academic_year',
+    ];
 }

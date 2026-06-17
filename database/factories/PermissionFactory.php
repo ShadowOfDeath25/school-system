@@ -2,18 +2,17 @@
 
 namespace Database\Factories;
 
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends Factory<Model>
  */
 class PermissionFactory extends Factory
 {
-
-
     public static function generate(): void
     {
         $modelPath = app_path('Models');
@@ -23,10 +22,9 @@ class PermissionFactory extends Factory
             $className = pathinfo($file->getFilename(), PATHINFO_FILENAME);
             $fqcn = "App\\Models\\{$className}";
 
-            if (!class_exists($fqcn)) {
+            if (! class_exists($fqcn)) {
                 continue;
             }
-
 
             $resource = Str::plural(Str::kebab($className));
 
@@ -39,9 +37,9 @@ class PermissionFactory extends Factory
         Permission::findOrCreate('view dashboard');
         Permission::findOrCreate('view financial-reports');
         Permission::findOrCreate('view student-reports');
-        Permission::findOrCreate("view payment-reports");
-        Permission::findOrCreate("view activity-logs");
-        Permission::findOrCreate("delete activity-logs");
+        Permission::findOrCreate('view payment-reports');
+        Permission::findOrCreate('view activity-logs');
+        Permission::findOrCreate('delete activity-logs');
     }
 
     /**
@@ -56,4 +54,3 @@ class PermissionFactory extends Factory
         ];
     }
 }
-

@@ -6,7 +6,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -21,7 +22,7 @@ return new class extends Migration {
             $table->boolean('added_to_total')->default(true);
             $table->boolean('added_to_report')->default(true);
             $table->string('semester');
-            $table->string("language")->nullable();
+            $table->string('language')->nullable();
             $table->integer('classwork_marks')->default(0);
             $table->unique(['subject_id', 'grade_id', 'language']);
             $table->index(['grade_id', 'language']);

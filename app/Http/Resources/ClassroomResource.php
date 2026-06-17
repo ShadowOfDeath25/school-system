@@ -15,12 +15,13 @@ class ClassroomResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $studentCount = $this->whenCounted('students', $this->students_count, fn() => $this->students()->count());
+        $studentCount = $this->whenCounted('students', $this->students_count, fn () => $this->students()->count());
 
-        $occupancy = "0%";
+        $occupancy = '0%';
         if ($this->max_capacity > 0) {
-            $occupancy = round(($studentCount / $this->max_capacity) * 100) . "%";
+            $occupancy = round(($studentCount / $this->max_capacity) * 100).'%';
         }
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -29,10 +30,10 @@ class ClassroomResource extends JsonResource
             'language' => $this->language,
             'capacity' => $studentCount,
             'occupancy' => $occupancy,
-            'grade'=>$this->grade,
-            'level'=>$this->level,
+            'grade' => $this->grade,
+            'level' => $this->level,
             'students' => $this->whenLoaded('students', function () {
-                return $this->students->map(fn($student) => [
+                return $this->students->map(fn ($student) => [
                     'name' => $student->name_in_arabic,
                 ]);
             }),

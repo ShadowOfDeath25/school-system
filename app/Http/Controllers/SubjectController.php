@@ -20,11 +20,15 @@ class SubjectController extends Controller
 
     protected array $filterable = [
         'type',
-        'language'
+        'language',
     ];
+
     protected string $model = Subject::class;
+
     protected string $storeRequest = StoreSubjectRequest::class;
+
     protected string $updateRequest = UpdateSubjectRequest::class;
+
     protected string $resource = SubjectResource::class;
 
     public function index(Request $request)
@@ -40,6 +44,4 @@ class SubjectController extends Controller
             return $this->baseIndex($request);
         }
     }
-
-
 }

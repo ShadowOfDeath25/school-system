@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Classroom;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateClassroomRequest extends FormRequest
@@ -17,18 +18,18 @@ class UpdateClassroomRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'language' => ["string", "max:255"],
-            'phase' => ["string", "max:255"],
-            'edu_year' => ["integer"],
-            'class_number' => ["integer"],
-            'actual_capacity' => ["integer"],
-            'max_capacity' => ["integer"],
-            'floor_id' => ["integer", "exists:floors,id"]
+            'language' => ['string', 'max:255'],
+            'phase' => ['string', 'max:255'],
+            'edu_year' => ['integer'],
+            'class_number' => ['integer'],
+            'actual_capacity' => ['integer'],
+            'max_capacity' => ['integer'],
+            'floor_id' => ['integer', 'exists:floors,id'],
         ];
     }
 }

@@ -13,7 +13,10 @@ class GuardianController extends Controller
     use HasCRUD;
 
     protected string $model = Guardian::class;
+
     protected string $storeRequest = StoreGuardianRequest::class;
+
     protected string $updateRequest = UpdateGuardianRequest::class;
+
     protected string $resource = GuardianResource::class;
 }

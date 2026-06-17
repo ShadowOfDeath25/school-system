@@ -16,7 +16,8 @@ class ExamResource extends JsonResource
     public function toArray(Request $request): array
     {
         Carbon::setLocale('ar');
-        $this->load("gradeSubject.subject");
+        $this->load('gradeSubject.subject');
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -31,7 +32,7 @@ class ExamResource extends JsonResource
             'duration_in_hours' => $this->duration_in_hours + 0,
             'semester' => $this->semester,
             'language' => $this->language,
-            'date' => $this->date
+            'date' => $this->date,
 
         ];
     }

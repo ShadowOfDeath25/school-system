@@ -7,7 +7,7 @@ use App\Models\Floor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Classroom>
+ * @extends Factory<Classroom>
  */
 class ClassroomFactory extends Factory
 {
@@ -29,13 +29,13 @@ class ClassroomFactory extends Factory
         $missingGrades = [];
         foreach ($gradesMap as $lvl => $grds) {
             foreach ($grds as $g) {
-                if (!in_array($g, $existingGrades)) {
+                if (! in_array($g, $existingGrades)) {
                     $missingGrades[$g] = $lvl;
                 }
             }
         }
 
-        if (!empty($missingGrades)) {
+        if (! empty($missingGrades)) {
             $grade = array_rand($missingGrades);
             $level = $missingGrades[$grade];
         } else {
@@ -50,7 +50,7 @@ class ClassroomFactory extends Factory
         $academic_year = $this->faker->randomElement(['2025/2024', '2026/2025']);
         $language = $this->faker->randomElement(['عربي', 'لغات']);
 
-        $existingClassNumbers = Classroom::where("grade", $grade)
+        $existingClassNumbers = Classroom::where('grade', $grade)
             ->where('level', $level)
             ->where('academic_year', $academic_year)
             ->where('language', $language)
@@ -60,7 +60,9 @@ class ClassroomFactory extends Factory
 
         $newClassNumber = 1;
         foreach ($existingClassNumbers as $number) {
-            if ($number != $newClassNumber) break;
+            if ($number != $newClassNumber) {
+                break;
+            }
             $newClassNumber++;
         }
 
@@ -70,9 +72,9 @@ class ClassroomFactory extends Factory
             'academic_year' => $academic_year,
             'language' => $language,
             'class_number' => $newClassNumber,
-            'name' => $newClassNumber . '/' . getGradeNumber($grade) . ' ' . $level,
+            'name' => $newClassNumber.'/'.getGradeNumber($grade).' '.$level,
             'max_capacity' => fake()->numberBetween(30, 50),
-            'floor_id' => Floor::query()->inRandomOrder()->value('id')
+            'floor_id' => Floor::query()->inRandomOrder()->value('id'),
         ];
     }
 }

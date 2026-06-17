@@ -4,14 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AcademicYear\StoreAcademicYearRequest;
 use App\Http\Resources\AcademicYearResource;
-use http\Env\Response;
-use Illuminate\Http\Request;
-
 use App\Models\AcademicYear;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Laminas\Diactoros\Response\JsonResponse;
 use Throwable;
 
 class AcademicYearController extends Controller
@@ -32,6 +27,7 @@ class AcademicYearController extends Controller
     {
         $academicYear = new AcademicYear($request->validated());
         $academicYear->save();
+
         return response()->json(['academicYear' => $academicYear], 201);
     }
 
@@ -45,7 +41,7 @@ class AcademicYearController extends Controller
                 ->update(['active' => false]);
             $academicYear->update(['active' => true]);
         });
+
         return response('', 204);
     }
-
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\SeatNumber;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSeatNumberRequest extends FormRequest
@@ -17,13 +18,13 @@ class UpdateSeatNumberRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'level' => ['string', 'max:255', 'in:ابتدائي,رياض اطفال,اعدادي'],
-            'grade' => ['integer' ],
+            'grade' => ['integer'],
             'academic_year' => ['exists:academic_years,name'],
             'language' => ['string', 'max:255', 'in:عربي,لغات'],
             'starts_at' => ['numeric'],

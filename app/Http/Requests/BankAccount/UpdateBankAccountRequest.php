@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\BankAccount;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBankAccountRequest extends FormRequest
@@ -17,7 +18,7 @@ class UpdateBankAccountRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -27,7 +28,7 @@ class UpdateBankAccountRequest extends FormRequest
             'manager_name' => ['string', 'max:255'],
             'academic_year' => ['string', 'exists:academic_years,name'],
             'value' => ['numeric'],
-            'date' => ['date']
+            'date' => ['date'],
         ];
     }
 }

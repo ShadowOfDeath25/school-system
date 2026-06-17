@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\SeatNumber;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\SeatNumber>
+ * @extends Factory<SeatNumber>
  */
 class SeatNumberFactory extends Factory
 {
@@ -16,20 +17,21 @@ class SeatNumberFactory extends Factory
      */
     public function definition(): array
     {
-        $level = fake()->randomElement(["اعدادي", "ابتدائي", 'رياض اطفال']);
+        $level = fake()->randomElement(['اعدادي', 'ابتدائي', 'رياض اطفال']);
         $grades = [
-            "رياض اطفال" => fake()->numberBetween(1, 2),
-            "ابتدائي" => fake()->numberBetween(1, 6),
-            "اعدادي" => fake()->numberBetween(1, 3)
+            'رياض اطفال' => fake()->numberBetween(1, 2),
+            'ابتدائي' => fake()->numberBetween(1, 6),
+            'اعدادي' => fake()->numberBetween(1, 3),
         ];
         $starts_at = fake()->numberBetween(100000, 999900);
+
         return [
             'level' => $level,
             'grade' => $grades[$level],
             'academic_year' => fake()->randomElement(['2025/2024', '2026/2025']),
             'language' => fake()->randomElement(['لغات', 'عربي']),
             'starts_at' => $starts_at,
-            'ends_at' => $starts_at + 100
+            'ends_at' => $starts_at + 100,
         ];
     }
 }

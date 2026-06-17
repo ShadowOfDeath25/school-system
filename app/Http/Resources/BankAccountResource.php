@@ -22,7 +22,7 @@ class BankAccountResource extends JsonResource
             'value' => $this->value,
             'formatted_date' => (new Carbon($this->date))->format('d/m/Y'),
             'manager_name' => $this->manager_name,
-            'notes' => $this->notes ?? "لا يوجد"
+            'notes' => $this->notes ?? 'لا يوجد',
         ];
     }
 }

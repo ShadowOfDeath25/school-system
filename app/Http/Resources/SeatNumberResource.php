@@ -20,13 +20,14 @@ class SeatNumberResource extends JsonResource
             3 => 'الثالث',
             4 => 'الرابع',
             5 => 'الخامس',
-            6 => 'السادس'
+            6 => 'السادس',
         ];
+
         return [
             'id' => $this->id,
             'level' => $this->level,
             'grade' => $gradeWords[$this->grade],
-            'academic_year'=>$this->academic_year,
+            'academic_year' => $this->academic_year,
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,
         ];

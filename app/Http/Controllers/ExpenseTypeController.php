@@ -8,11 +8,11 @@ use App\Traits\HasCRUD;
 
 class ExpenseTypeController extends Controller
 {
-    use HasCrud;
+    use HasCRUD;
 
     protected string $model = ExpenseType::class;
+
     protected string $storeRequest = StoreExpenseTypeRequest::class;
+
     protected string $updateRequest = StoreExpenseTypeRequest::class;
-
-
 }

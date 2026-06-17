@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Subject;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class DetachSubjectFromGradeRequest extends FormRequest
@@ -17,13 +18,13 @@ class DetachSubjectFromGradeRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "subjects" => ['required', 'array'],
-            "subject.*" => ['integer', "exists:grade_subject:subject_id"]
+            'subjects' => ['required', 'array'],
+            'subject.*' => ['integer', 'exists:grade_subject:subject_id'],
         ];
     }
 }

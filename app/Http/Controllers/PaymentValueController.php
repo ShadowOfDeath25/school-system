@@ -8,7 +8,6 @@ use App\Http\Resources\PaymentValueResource;
 use App\Models\PaymentValue;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
-use Illuminate\Http\Request;
 
 class PaymentValueController extends Controller
 {
@@ -18,14 +17,19 @@ class PaymentValueController extends Controller
     use HasFilters;
 
     protected string $model = PaymentValue::class;
+
     protected string $storeRequest = StorePaymentValueRequest::class;
+
     protected string $updateRequest = UpdatePaymentValueRequest::class;
+
     protected string $resource = PaymentValueResource::class;
+
     protected array $searchable = [
-        'academic_year', 'type', 'language', 'level'
+        'academic_year', 'type', 'language', 'level',
     ];
+
     protected array $filterable = [
-        'academic_year', 'type', 'language', 'level'
+        'academic_year', 'type', 'language', 'level',
     ];
 
     public function store(StorePaymentValueRequest $request)
@@ -40,9 +44,7 @@ class PaymentValueController extends Controller
         if ($q->exists()) {
             return response()->json(['message' => 'هذا العنصر موجود بالفعل'], 409);
         }
+
         return $this->baseStore($request);
     }
-
-
-
 }

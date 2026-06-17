@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Bus;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,15 +19,15 @@ class UpdateBusRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "route" => [],
-            "supervisor_name" => ["string"],
-            "driver_name" => ["string"],
-            'capacity' => ["integer",],
+            'route' => [],
+            'supervisor_name' => ['string'],
+            'driver_name' => ['string'],
+            'capacity' => ['integer'],
             'license_plate' => [Rule::unique('buses', 'license_plate')->ignore($this->route('bus'))],
         ];
     }

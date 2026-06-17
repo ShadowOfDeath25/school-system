@@ -37,10 +37,9 @@ class StoreStudentMarkRequest extends FormRequest
             $student = Student::find($this->student_id);
             $exam = Exam::find($this->exam_id);
 
-            if (!$student || !$exam) {
+            if (! $student || ! $exam) {
                 return;
             }
-
 
             if ($student->grade_id !== $exam->grade_id || $student->language !== $exam->language) {
                 $validator->errors()->add(
@@ -50,5 +49,4 @@ class StoreStudentMarkRequest extends FormRequest
             }
         });
     }
-
 }

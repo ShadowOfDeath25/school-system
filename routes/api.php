@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankAccountController;
 use App\Http\Controllers\BookController;
@@ -19,7 +20,6 @@ use App\Http\Controllers\ExtraDueController;
 use App\Http\Controllers\FinancialReportsController;
 use App\Http\Controllers\FloorController;
 use App\Http\Controllers\GradeController;
-use App\Http\Controllers\GradeSubjectController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\IncomeTypeController;
@@ -38,29 +38,27 @@ use App\Http\Controllers\SubjectTypeController;
 use App\Http\Controllers\UniformController;
 use App\Http\Controllers\UniformPurchaseController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get("/user", AuthController::class . "@user")->name("user");
-Route::get("test", [StudentReportController::class, "test"]);
-Route::get("/pdf-test", function () {
-    return view("components.letter", ["incomes" => ["test" => 0]]);
+Route::get('/user', AuthController::class.'@user')->name('user');
+Route::get('test', [StudentReportController::class, 'test']);
+Route::get('/pdf-test', function () {
+    return view('components.letter', ['incomes' => ['test' => 0]]);
 });
-Route::post("/login", AuthController::class . "@login")->name("login");
-Route::middleware(["auth:sanctum"])->group(function () {
-    Route::post("/logout", AuthController::class . "@logout")->name("logout");
-    Route::get("/students/{student}/exams/required", [StudentController::class, "requiredExams"])->name("students.exams.required")->middleware("authorization:view exams");
-    Route::post("students/exams/marks", [ExamStudentController::class, "store"])->middleware("authorization:create exam-students")->name("students.exams.marks.store");
+Route::post('/login', AuthController::class.'@login')->name('login');
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::post('/logout', AuthController::class.'@logout')->name('logout');
+    Route::get('/students/{student}/exams/required', [StudentController::class, 'requiredExams'])->name('students.exams.required')->middleware('authorization:view exams');
+    Route::post('students/exams/marks', [ExamStudentController::class, 'store'])->middleware('authorization:create exam-students')->name('students.exams.marks.store');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('authorization:view dashboard');
-    Route::prefix("/reports")->name("reports.")->group(function () {
+    Route::prefix('/reports')->name('reports.')->group(function () {
 
-        Route::get("{uuid}/preview", [ReportController::class, 'preview'])->name("preview");
+        Route::get('{uuid}/preview', [ReportController::class, 'preview'])->name('preview');
 
-        Route::prefix("/students")->middleware('authorization:view student-reports')->name("students.")->group(function () {
+        Route::prefix('/students')->middleware('authorization:view student-reports')->name('students.')->group(function () {
 
             Route::get('summary', [StudentReportController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
-            Route::prefix("/payments")->name("payments.")->group(function () {
+            Route::prefix('/payments')->name('payments.')->group(function () {
 
                 Route::get('/daily', [StudentReportController::class, 'dailyPayments']);
                 Route::get('/arrears', [StudentReportController::class, 'arrearsReport'])->name('arrears');
@@ -70,39 +68,36 @@ Route::middleware(["auth:sanctum"])->group(function () {
 
         });
 
-
-        Route::prefix("financial")->name("financial.")->group(function () {
+        Route::prefix('financial')->name('financial.')->group(function () {
             Route::get('monthly', [FinancialReportsController::class, 'monthly'])->name('monthly')->middleware('authorization:view financial-reports');
             Route::get('summary', [FinancialReportsController::class, 'summary'])->name('summary')->middleware('authorization:view financial-reports');
             Route::get('summary/print', [FinancialReportsController::class, 'printSummary'])->name('summary.print')->middleware('authorization:view financial-reports');
 
         });
 
-
     });
     Route::prefix('grades')->name('grades.')->group(function () {
-        Route::get("", [GradeController::class, "index"])->middleware("authorization:view grades")->name("index");
+        Route::get('', [GradeController::class, 'index'])->middleware('authorization:view grades')->name('index');
         Route::post('{grade}/subjects', [GradeController::class, 'assignSubjects'])->middleware('authorization:create grade-subjects')->name('assign-subjects');
         Route::match(['put', 'patch'], '{grade}/subjects', [GradeController::class, 'updateSubjects'])->middleware('authorization:update grade-subjects')->name('update-subjects');
         Route::delete('{grade}/subjects', [GradeController::class, 'deleteSubjects'])->middleware('authorization:delete grade-subjects')->name('delete-subjects');
         Route::get('{grade}/subjects', [GradeController::class, 'getSubjects'])->name('get-subjects')->middleware('authorization:view grade-subjects');
         Route::get('{grade}/subjects/available', [GradeController::class, 'getAvailableSubjects'])->middleware('authorization:view grade-subjects')->name('get-available-subjects');
     });
-    Route::middleware(["authorization"])->group(function () {
+    Route::middleware(['authorization'])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();
         Route::apiResource('users', UserController::class)->withFilters();
         Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
         Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
         Route::match(['put', 'patch'], 'academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
 
-
         Route::apiResource('buses', BusController::class)->withFilters();
-        Route::apiResource("books", BookController::class)->withFilters();
+        Route::apiResource('books', BookController::class)->withFilters();
         Route::apiResource('parents', GuardianController::class)->withFilters();
         Route::apiResource('students', StudentController::class)->withFilters();
         Route::apiResource('stations', StationController::class);
         Route::apiResource('classrooms', ClassroomController::class)->withFilters();
-        Route::get("students/{student}/payments", [StudentController::class, 'getPayments']);
+        Route::get('students/{student}/payments', [StudentController::class, 'getPayments']);
         Route::apiResource('payments', PaymentController::class)->withFilters();
         Route::get('recipients', [PaymentController::class, 'recipients']);
         Route::apiResource('incomes', IncomeController::class)->withFilters();
@@ -125,12 +120,12 @@ Route::middleware(["auth:sanctum"])->group(function () {
         Route::apiResource('payment-values', PaymentValueController::class)->withFilters();
         Route::apiResource('extra-dues', ExtraDueController::class)->withFilters();
         Route::apiResource('exemptions', ExemptionController::class);
-        Route::patch('/users/{user}/roles', UserController::class . "@assignRole")->name("users.roles.assign");
-        Route::put('/users/{user}/roles', UserController::class . "@syncRole")->name("users.roles.sync");
-        Route::delete("/users/{user}/roles", UserController::class . "@removeRole")->name("users.roles.remove");
-        Route::get("/permissions", [PermissionController::class, 'index']);
-        Route::get("/activity-logs", [ActivityLogController::class, 'index']);
+        Route::patch('/users/{user}/roles', UserController::class.'@assignRole')->name('users.roles.assign');
+        Route::put('/users/{user}/roles', UserController::class.'@syncRole')->name('users.roles.sync');
+        Route::delete('/users/{user}/roles', UserController::class.'@removeRole')->name('users.roles.remove');
+        Route::get('/permissions', [PermissionController::class, 'index']);
+        Route::get('/activity-logs', [ActivityLogController::class, 'index']);
         Route::get('activity-logs/filters', [ActivityLogController::class, 'filters']);
-        Route::delete("/activity-logs/{activity}", [ActivityLogController::class, 'delete']);
+        Route::delete('/activity-logs/{activity}', [ActivityLogController::class, 'delete']);
     });
 });

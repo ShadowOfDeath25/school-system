@@ -4,11 +4,8 @@ namespace App\Services;
 
 use App\Enums\PaymentType;
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
-use Psy\Util\Json;
-
+use Illuminate\Support\Facades\DB;
 
 /**
  * Service responsible for calculating financial summaries.
@@ -24,15 +21,15 @@ class SummaryService
      *
      * Combines income from defined PaymentType cases and dynamic income types.
      *
-     * @param string $startDate Start date (Y-m-d)
-     * @param string $endDate End date (Y-m-d)
+     * @param  string  $startDate  Start date (Y-m-d)
+     * @param  string  $endDate  End date (Y-m-d)
      * @return Collection a Collection with income types as keys and total amounts as values.
      */
     public function getTotalIncome(string $startDate, string $endDate): Collection
     {
 
         $paymentTypesTable = collect(PaymentType::cases())
-            ->map(fn($case) => "SELECT '{$case->value}' AS type ")
+            ->map(fn ($case) => "SELECT '{$case->value}' AS type ")
             ->implode('UNION ALL ');
 
         $query = "
@@ -60,7 +57,7 @@ class SummaryService
 
         $totals = collect($results)
             ->keyBy('type')
-            ->map(fn($item) => $item->total);
+            ->map(fn ($item) => $item->total);
 
         return $totals;
     }
@@ -68,9 +65,9 @@ class SummaryService
     /**
      * Calculate total expenses for books, uniforms, and general expenses within a date range.
      *
-     * @param string $startDate Start date (Y-m-d)
-     * @param string $endDate End date (Y-m-d)
-     * @return array  an array containing totals for 'books', 'uniforms', and 'expenses'.
+     * @param  string  $startDate  Start date (Y-m-d)
+     * @param  string  $endDate  End date (Y-m-d)
+     * @return array an array containing totals for 'books', 'uniforms', and 'expenses'.
      */
     public function getTotalExpenses($startDate, $endDate): array
     {
@@ -103,19 +100,19 @@ class SummaryService
         ]));
 
         return [
-            'books'    => (float)$rows->firstWhere('category', 'books')->total,
-            'uniforms' => (float)$rows->firstWhere('category', 'uniforms')->total,
+            'books' => (float) $rows->firstWhere('category', 'books')->total,
+            'uniforms' => (float) $rows->firstWhere('category', 'uniforms')->total,
             'expenses' => $rows->where('category', 'expenses')
-                               ->keyBy('type')
-                               ->map(fn($item) => (float)$item->total),
+                ->keyBy('type')
+                ->map(fn ($item) => (float) $item->total),
         ];
     }
 
     /**
      * Calculate total expenses and incomes for each month from the past 12 months
+     *
      * @returns array - An array including the monthly totals and the total for the past year
      */
-
     public function getMonthlySummary(): array
     {
         $startDate = now()->subMonth(11)->firstOfMonth();
@@ -129,8 +126,8 @@ class SummaryService
 
         $incomes = DB::table('incomes')
             ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
-            ->whereBetween('date',[$startDate, $endDate])
-            ->groupBy('year','month')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->groupBy('year', 'month')
             ->get();
 
         $expenses = DB::table('expenses')
@@ -139,7 +136,7 @@ class SummaryService
             ->groupBy('year', 'month')
             ->get();
 
-        $bookExpenses = DB::table("books")
+        $bookExpenses = DB::table('books')
             ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(buy_price * imported_quantity) as value')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('year', 'month')
@@ -154,42 +151,41 @@ class SummaryService
         $monthlyIncomes = collect()
             ->merge($incomes)
             ->merge($payments)
-            ->groupBy(fn($r) => "{$r->year}-{$r->month}")
-            ->map(fn($g) => $g->sum('value'));
+            ->groupBy(fn ($r) => "{$r->year}-{$r->month}")
+            ->map(fn ($g) => $g->sum('value'));
 
-//        $payments
-//            ->groupBy(fn($r) => "{$r->year}-{$r->month}")
-//            ->map(fn($g) => $g->sum('value'));
-//
+        //        $payments
+        //            ->groupBy(fn($r) => "{$r->year}-{$r->month}")
+        //            ->map(fn($g) => $g->sum('value'));
+        //
         $monthlyExpenses = collect()
             ->merge($expenses)
             ->merge($uniformExpenses)
             ->merge($bookExpenses)
-            ->groupBy(fn($r) => "{$r->year}-{$r->month}")
-            ->map(fn($g) => $g->sum('value'));
+            ->groupBy(fn ($r) => "{$r->year}-{$r->month}")
+            ->map(fn ($g) => $g->sum('value'));
 
         $results = [
-            "monthly" => collect()
+            'monthly' => collect(),
         ];
 
         while ($startDate <= $endDate) {
             $key = "{$startDate->year}-{$startDate->month}";
 
-            $results["monthly"]->push([
+            $results['monthly']->push([
                 'year' => $startDate->year,
                 'month' => Carbon::create(null, $startDate->month, 1)->translatedFormat('F'),
-                'incomes' => (float)($monthlyIncomes[$key] ?? 0),
-                'expenses' => (float)($monthlyExpenses[$key] ?? 0),
+                'incomes' => (float) ($monthlyIncomes[$key] ?? 0),
+                'expenses' => (float) ($monthlyExpenses[$key] ?? 0),
             ]);
             $startDate->addMonth();
         }
-        $results["total"] =
+        $results['total'] =
             [
-                "incomes" => $results['monthly']->sum('incomes'),
-                "expenses" => $results['monthly']->sum('expenses')
+                'incomes' => $results['monthly']->sum('incomes'),
+                'expenses' => $results['monthly']->sum('expenses'),
             ];
 
         return $results;
     }
-
 }

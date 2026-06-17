@@ -18,7 +18,7 @@ class BuildingResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'floors' => $this->floors,
-            'floors_count' => $this->floors_count
+            'floors_count' => $this->floors_count,
         ];
     }
 }
