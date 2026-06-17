@@ -2,14 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\AcademicYear;
 use App\Models\PaymentValue;
 use Illuminate\Database\Seeder;
 
-use App\Models\AcademicYear;
-
 class PaymentValueSeeder extends Seeder
 {
-
     public function run(): void
     {
 
@@ -34,7 +32,7 @@ class PaymentValueSeeder extends Seeder
                 ['type' => 'مصروفات دراسية', 'language' => 'لغات', 'value' => 7000],
                 ['type' => 'مصروفات ادارية', 'language' => 'لغات', 'value' => 250],
                 ['type' => 'مصروفات ادارية', 'language' => 'عربي', 'value' => 250],
-            ]
+            ],
         ];
 
         foreach ($academicYears as $academicYear) {
@@ -52,7 +50,7 @@ class PaymentValueSeeder extends Seeder
         }
         PaymentValue::create([
             'type' => 'مصروفات سحب الملف',
-            'value' => 200
+            'value' => 200,
         ]);
     }
 }

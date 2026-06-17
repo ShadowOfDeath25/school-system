@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Student\Reports;
 
 use App\Traits\Requests\HasReportFilters;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class GenerateLetterRequest extends FormRequest
@@ -20,13 +21,13 @@ class GenerateLetterRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             ...$this->baseReportFilters(),
-            'letter' => ['required', 'string']
+            'letter' => ['required', 'string'],
         ];
     }
 
@@ -34,7 +35,7 @@ class GenerateLetterRequest extends FormRequest
     {
         $this->replace([
             ...$this->validated(),
-            'min' => (float)$this->validated('min')
+            'min' => (float) $this->validated('min'),
         ]);
 
     }

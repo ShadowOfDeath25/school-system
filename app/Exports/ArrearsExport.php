@@ -5,16 +5,13 @@ namespace App\Exports;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class ArrearsExport implements FromView, ShouldAutoSize, WithEvents
 {
-    public function __construct(public array $viewData)
-    {
-    }
+    public function __construct(public array $viewData) {}
 
     public function view(): View
     {
@@ -36,5 +33,4 @@ class ArrearsExport implements FromView, ShouldAutoSize, WithEvents
             },
         ];
     }
-
 }

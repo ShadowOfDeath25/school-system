@@ -18,19 +18,25 @@ class UniformPurchaseController extends Controller
     use HasFilters;
 
     protected string $model = UniformPurchase::class;
+
     protected string $storeRequest = StoreUniformPurchaseRequest::class;
+
     protected string $updateRequest = UpdateUniformPurchaseRequest::class;
+
     protected string $resource = UniformPurchaseResource::class;
+
     protected array $filterable = [
         'uniform.academic_year',
         'uniform.type',
-        'student.id'
+        'student.id',
     ];
+
     protected array $searchable = [
         'student_name',
     ];
+
     protected array $relationsToLoad = [
-        'uniform', 'student'
+        'uniform', 'student',
     ];
 
     public function store(StoreUniformPurchaseRequest $request)
@@ -39,12 +45,12 @@ class UniformPurchaseController extends Controller
         $data = $request->validated();
         $uniform = Uniform::findOrFail($data['uniform_id']);
         if ($uniform->available_quantity < $data['quantity']) {
-            return response()->json(["message" => $uniform->available_quantity === 0 ? "نفذ هذا الزي" : "هذه الكمية غير متاحة"], 409);
+            return response()->json(['message' => $uniform->available_quantity === 0 ? 'نفذ هذا الزي' : 'هذه الكمية غير متاحة'], 409);
         }
         $uniform->available_quantity -= $data['quantity'];
 
         $uniform->save();
+
         return $this->baseStore($request);
     }
-
 }

@@ -15,14 +15,13 @@ class BookResource extends JsonResource
     public function toArray(Request $request): array
     {
         $grades = [
-            1 => "الاول",
-            2 => "الثاني",
-            3 => "الثالث",
-            4 => "الرابع",
-            5 => "الخامس",
-            6 => "السادس",
+            1 => 'الاول',
+            2 => 'الثاني',
+            3 => 'الثالث',
+            4 => 'الرابع',
+            5 => 'الخامس',
+            6 => 'السادس',
         ];
-
 
         return [
             'id' => $this->id,
@@ -32,7 +31,7 @@ class BookResource extends JsonResource
             'imported_quantity' => $this->imported_quantity,
             'available_quantity' => $this->available_quantity,
             'price' => $this->price,
-            'bought_quantity' => $this->imported_quantity - $this->available_quantity
+            'bought_quantity' => $this->imported_quantity - $this->available_quantity,
         ];
     }
 }

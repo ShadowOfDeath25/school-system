@@ -11,11 +11,12 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        //TODO: handle multiple logins
+        // TODO: handle multiple logins
         $credentials = $request->only('email', 'password');
-        $remember = $request->filled("remember");
+        $remember = $request->filled('remember');
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
+
             return response()->json([
                 'message' => 'Logged in successfully',
                 'user' => UserResource::make(Auth::user()),
@@ -24,10 +25,9 @@ class AuthController extends Controller
         }
 
         return response()->json([
-            'message' => 'خطأ في البريد الإلكتروني او كلمة السر'
+            'message' => 'خطأ في البريد الإلكتروني او كلمة السر',
         ], 422);
     }
-
 
     public function logout(Request $request)
     {
@@ -41,13 +41,14 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        //todo change the way this is handled
-        if ($request->headers->get("referer") == null) {
-            return redirect(env("FRONTEND_URL"));
+        // todo change the way this is handled
+        if ($request->headers->get('referer') == null) {
+            return redirect(env('FRONTEND_URL'));
         }
         if ($request->user()) {
-            return response()->json(["user" => UserResource::make($request->user())]);
+            return response()->json(['user' => UserResource::make($request->user())]);
         }
-        return response()->json(["user" => null]);
+
+        return response()->json(['user' => null]);
     }
 }

@@ -12,12 +12,14 @@ use Illuminate\Database\Eloquent\Builder;
 
 class BuildingController extends Controller
 {
-
     use HasCRUD, HasFilters;
 
     protected string $model = Building::class;
+
     protected string $storeRequest = StoreBuildingRequest::class;
+
     protected string $updateRequest = UpdateBuildingRequest::class;
+
     protected string $resource = BuildingResource::class;
 
     public function query(): Builder
@@ -26,5 +28,4 @@ class BuildingController extends Controller
             ->with('floors')
             ->withCount('floors');
     }
-
 }

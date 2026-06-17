@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\ExtraDue;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreExtraDueRequest extends FormRequest
@@ -17,7 +18,7 @@ class StoreExtraDueRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -25,7 +26,7 @@ class StoreExtraDueRequest extends FormRequest
             'student_id' => ['numeric', 'exists:students,id', 'required'],
             'note' => ['string', 'max:255'],
             'value' => ['numeric', 'required'],
-            'academic_year' => ['required', 'string', 'exists:academic_years,name']
+            'academic_year' => ['required', 'string', 'exists:academic_years,name'],
         ];
     }
 }

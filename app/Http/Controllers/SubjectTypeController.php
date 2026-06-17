@@ -11,7 +11,8 @@ class SubjectTypeController extends Controller
     use HasCRUD;
 
     protected string $model = SubjectType::class;
-    protected string $storeRequest = StoreSubjectTypeRequest::class;
-    protected string $updateRequest = StoreSubjectTypeRequest::class;
 
+    protected string $storeRequest = StoreSubjectTypeRequest::class;
+
+    protected string $updateRequest = StoreSubjectTypeRequest::class;
 }

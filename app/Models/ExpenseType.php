@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\LogsActivityInArabic;
+use Illuminate\Database\Eloquent\Model;
 
 class ExpenseType extends Model
 {
     use LogsActivityInArabic;
-    protected $fillable=[
-        'name'
+
+    protected $fillable = [
+        'name',
     ];
 }

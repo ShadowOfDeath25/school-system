@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder
@@ -16,7 +15,7 @@ class UserSeeder extends Seeder
         $superAdmin = new User(config('app.admin_data'));
 
         $superAdmin->save();
-        $superAdmin->assignRole("Super Admin");
+        $superAdmin->assignRole('Super Admin');
         User::factory(70)->create();
 
     }

@@ -7,11 +7,10 @@ use Illuminate\Support\Facades\Schema;
 
 trait HasFilters
 {
-
     public function filters(): JsonResponse
     {
         $data = [];
-        if (property_exists($this, 'filterable') && is_array($this->filterable) && !empty($this->filterable)) {
+        if (property_exists($this, 'filterable') && is_array($this->filterable) && ! empty($this->filterable)) {
             $modelInstance = new $this->model;
             $tableColumns = Schema::getColumnListing($modelInstance->getTable());
 
@@ -46,6 +45,7 @@ trait HasFilters
                 }
             }
         }
+
         return response()->json($data);
     }
 }

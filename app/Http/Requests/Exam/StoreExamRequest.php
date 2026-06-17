@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Exam;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreExamRequest extends FormRequest
@@ -17,7 +18,7 @@ class StoreExamRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -25,12 +26,12 @@ class StoreExamRequest extends FormRequest
 
             'name' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
-            'language' => ['required', 'string', "in:عربي,لغات", 'max:255'],
+            'language' => ['required', 'string', 'in:عربي,لغات', 'max:255'],
             'duration_in_hours' => ['required', 'numeric'],
-            'type' => ['required', 'string', "in:دور اول,دور تاني", 'max:255'],
+            'type' => ['required', 'string', 'in:دور اول,دور تاني', 'max:255'],
             'academic_year' => ['required', 'string', 'exists:academic_years,name'],
             'grade_subject_id' => ['required', 'exists:grade_subject,id'],
-            'semester'=>['required',"string",'in:الاول,الثاني']
+            'semester' => ['required', 'string', 'in:الاول,الثاني'],
         ];
 
     }

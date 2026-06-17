@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\LogsActivityInArabic;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class SecretNumber extends Model
 {
     use HasFactory, LogsActivityInArabic;
+
     protected $fillable = [
         'grade',
         'group_number',
@@ -19,6 +19,6 @@ class SecretNumber extends Model
         'level',
         'starts_at',
         'ends_at',
-        'semester'
+        'semester',
     ];
 }

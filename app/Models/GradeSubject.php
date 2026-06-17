@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
-use App\Traits\LogsActivityInArabic;
 
 class GradeSubject extends Pivot
 {
@@ -20,7 +20,7 @@ class GradeSubject extends Pivot
         'added_to_report',
         'semester',
         'language',
-        'classwork_marks'
+        'classwork_marks',
     ];
 
     public function getExamMarksAttribute()

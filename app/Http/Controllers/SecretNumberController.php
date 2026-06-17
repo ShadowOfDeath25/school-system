@@ -14,14 +14,18 @@ class SecretNumberController extends Controller
     use HasCRUD, HasFilters;
 
     protected array $filterable = [
-        'academic_year', 'language', 'semester'
+        'academic_year', 'language', 'semester',
     ];
-    protected array $searchable = [
-        'group_number'
-    ];
-    protected string $model = SecretNumber::class;
-    protected string $storeRequest = StoreSecretNumberRequest::class;
-    protected string $updateRequest = UpdateSecretNumberRequest::class;
-    protected string $resource = SecretNumberResource::class;
 
+    protected array $searchable = [
+        'group_number',
+    ];
+
+    protected string $model = SecretNumber::class;
+
+    protected string $storeRequest = StoreSecretNumberRequest::class;
+
+    protected string $updateRequest = UpdateSecretNumberRequest::class;
+
+    protected string $resource = SecretNumberResource::class;
 }

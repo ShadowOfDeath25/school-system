@@ -13,7 +13,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $superAdmin = new Role([
-            "name" => "Super Admin",
+            'name' => 'Super Admin',
         ]);
         $superAdmin->save();
 

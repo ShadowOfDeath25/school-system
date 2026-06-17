@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\IncomeType;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreIncomeTypeRequest extends FormRequest
@@ -17,12 +18,12 @@ class StoreIncomeTypeRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "name" => ['string', 'required', 'unique:income_types,name']
+            'name' => ['string', 'required', 'unique:income_types,name'],
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PaymentType;
 use App\Observers\StudentObserver;
+use App\Traits\LogsActivityInArabic;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,15 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Traits\LogsActivityInArabic;
-
 
 #[ObservedBy([StudentObserver::class])]
 class Student extends Model
 {
     use HasFactory, LogsActivityInArabic;
-
 
     protected $fillable = [
         'name_in_arabic',
@@ -28,7 +25,7 @@ class Student extends Model
         'nid',
         'birth_date',
         'birth_address',
-        "note",
+        'note',
         'gender',
         'religion',
         'nationality',
@@ -59,12 +56,12 @@ class Student extends Model
         return $this->belongsToMany(Guardian::class);
     }
 
-    public function bookPurchases(): hasMany
+    public function bookPurchases(): HasMany
     {
         return $this->hasMany(BookPurchase::class);
     }
 
-    public function uniformPurchases(): hasMany
+    public function uniformPurchases(): HasMany
     {
         return $this->hasMany(UniformPurchase::class);
     }
@@ -73,7 +70,7 @@ class Student extends Model
     {
         return Attribute::make(
             get: function () {
-                if (!$this->relationLoaded('guardians')) {
+                if (! $this->relationLoaded('guardians')) {
                     return false;
                 }
                 $guardianIds = $this->guardians->pluck('id');
@@ -90,19 +87,19 @@ class Student extends Model
 
     public function assignPaymentValues(): void
     {
-        if (!$this->classroom_id) {
+        if (! $this->classroom_id) {
             return;
         }
 
         $classroom = $this->classroom ?: Classroom::find($this->classroom_id);
 
-        if (!$classroom) {
+        if (! $classroom) {
             return;
         }
 
-        $values = PaymentValue::where("language", $this->language)
-            ->where("level", $classroom->level)
-            ->where("academic_year", $classroom->academic_year)
+        $values = PaymentValue::where('language', $this->language)
+            ->where('level', $classroom->level)
+            ->where('academic_year', $classroom->academic_year)
             ->get();
 
         foreach ($values as $value) {
@@ -137,32 +134,32 @@ class Student extends Model
         }
 
         $date = Carbon::parse($this->birth_date);
-        $prefix = $date->format('y') . $date->format('m');
+        $prefix = $date->format('y').$date->format('m');
 
-        $latest = Student::where('reg_number', 'like', $prefix . '%')
+        $latest = Student::where('reg_number', 'like', $prefix.'%')
             ->orderBy('reg_number', 'desc')
             ->first();
 
-        if (!$latest) {
+        if (! $latest) {
             $sequence = 1;
         } else {
             $sequence = intval(substr($latest->reg_number, 4)) + 1;
         }
 
-        $this->reg_number = $prefix . str_pad($sequence, 3, '0', STR_PAD_LEFT);
+        $this->reg_number = $prefix.str_pad($sequence, 3, '0', STR_PAD_LEFT);
     }
 
     public function getBooksDueAttribute()
     {
         return $this->bookPurchases?->sum(
-            fn($p) => $p->quantity * ($p->book->price ?? 0)
+            fn ($p) => $p->quantity * ($p->book->price ?? 0)
         ) ?? 0;
     }
 
     public function getUniformDueAttribute()
     {
         return $this->uniformPurchases?->sum(
-            fn($p) => $p->quantity * ($p->uniform->price ?? 0)
+            fn ($p) => $p->quantity * ($p->uniform->price ?? 0)
         );
     }
 
@@ -176,7 +173,7 @@ class Student extends Model
 
     public function getRequiredExamsAttribute()
     {
-        if (!$this->classroom_id) {
+        if (! $this->classroom_id) {
             return collect();
         }
 
@@ -190,6 +187,4 @@ class Student extends Model
             ->get();
 
     }
-
-
 }

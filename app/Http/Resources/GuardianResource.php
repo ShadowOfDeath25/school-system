@@ -20,7 +20,7 @@ class GuardianResource extends JsonResource
             'phone_number' => $this->phone_number,
             'edu' => $this->education,
             'job' => $this->job,
-            'gender' => $this->gender
+            'gender' => $this->gender,
         ];
     }
 }

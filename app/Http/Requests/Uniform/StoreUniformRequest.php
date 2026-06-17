@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Uniform;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUniformRequest extends FormRequest
@@ -17,20 +18,20 @@ class StoreUniformRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'type' => ['required', "string"],
-            'size' => ['required', "string"],
+            'type' => ['required', 'string'],
+            'size' => ['required', 'string'],
             'academic_year' => ['required', 'string', 'exists:academic_years,name'],
             'imported_quantity' => ['required', 'integer'],
-            'available_quantity' => ['required', 'integer', "lte:imported_quantity", "min:1"],
+            'available_quantity' => ['required', 'integer', 'lte:imported_quantity', 'min:1'],
             'buy_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric'],
             'piece' => ['required', 'string'],
-            'level'=>['required','string','in:ابتدائي,اعدادي,رياض اطفال']
+            'level' => ['required', 'string', 'in:ابتدائي,اعدادي,رياض اطفال'],
         ];
     }
 }

@@ -20,8 +20,9 @@ class SubjectFactory extends Factory
     {
 
         $name = $this->faker->unique()->word();
+
         return [
-            "name" => $name,
+            'name' => $name,
             'language' => $this->faker->randomElement(['عربي', 'لغات']),
             'type' => SubjectType::inRandomOrder()->first()->name,
         ];

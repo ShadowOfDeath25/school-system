@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\UniformPurchase;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUniformPurchaseRequest extends FormRequest
@@ -17,14 +18,14 @@ class UpdateUniformPurchaseRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'uniform_id' => ["exists:uniforms,id"],
-            'student_id' => ["exists:students,id"],
-            'quantity' => ['integer', 'min:1']
+            'uniform_id' => ['exists:uniforms,id'],
+            'student_id' => ['exists:students,id'],
+            'quantity' => ['integer', 'min:1'],
         ];
     }
 }

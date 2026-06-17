@@ -23,10 +23,10 @@ class ActivityLogIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "start_date" => ["date", "date_format:Y-m-d"],
-            "end_date" => ["date", "date_format:Y-m-d", 'after_or_equal:start_date'],
-            "users" => ['array'],
-            "users.*" => ['exists:users,id'],
+            'start_date' => ['date', 'date_format:Y-m-d'],
+            'end_date' => ['date', 'date_format:Y-m-d', 'after_or_equal:start_date'],
+            'users' => ['array'],
+            'users.*' => ['exists:users,id'],
         ];
     }
 }

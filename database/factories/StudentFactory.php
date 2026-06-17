@@ -8,7 +8,7 @@ use App\Models\Student;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Student>
+ * @extends Factory<Student>
  */
 class StudentFactory extends Factory
 {
@@ -44,7 +44,7 @@ class StudentFactory extends Factory
             'religion' => $this->faker->randomElement(['مسلم', 'مسيحي']),
             'nationality' => $this->faker->randomElement(['مصري', 'اجنبي']),
             'withdrawn' => fake()->randomElement([true, false]),
-            'status' => fake()->randomElement(['مستجد', "باقي"]),
+            'status' => fake()->randomElement(['مستجد', 'باقي']),
             'classroom_id' => fake()->randomElement([null, $classroom, $classroom, $classroom]),
             'language' => $language,
         ];

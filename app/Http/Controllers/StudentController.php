@@ -6,7 +6,6 @@ use App\Http\Requests\Student\StoreStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Resources\StudentResource;
 use App\Models\Classroom;
-use App\Models\Exam;
 use App\Models\Guardian;
 use App\Models\Student;
 use App\Services\StudentPaymentsService;
@@ -24,15 +23,21 @@ class StudentController extends Controller
     use HasFilters;
 
     protected string $model = Student::class;
+
     protected string $storeRequest = StoreStudentRequest::class;
+
     protected string $updateRequest = UpdateStudentRequest::class;
+
     protected string $resource = StudentResource::class;
+
     protected array $filterable = [
-        'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade', 'language'
+        'classroom', 'classroom.level', 'classroom.academic_year', 'classroom.grade', 'language',
     ];
+
     protected array $searchable = [
-        'name_in_arabic', 'name_in_english', 'nid', 'reg_number'
+        'name_in_arabic', 'name_in_english', 'nid', 'reg_number',
     ];
+
     protected array $relationsToLoad = ['classroom', 'guardians'];
 
     public function query()
@@ -41,7 +46,7 @@ class StudentController extends Controller
 
         if (request()->has('withdrawn')) {
             $query->where('withdrawn', true);
-        } elseif (!request()->has('includeWithdrawn')) {
+        } elseif (! request()->has('includeWithdrawn')) {
             $query->where(function ($q) {
                 $q->where('withdrawn', false)
                     ->orWhereNull('withdrawn');
@@ -65,7 +70,7 @@ class StudentController extends Controller
         $studentData = $validated;
 
         $student = DB::transaction(function () use ($studentData, $guardianData) {
-            if (!empty($studentData['classroom_id'])) {
+            if (! empty($studentData['classroom_id'])) {
                 $newClassroom = Classroom::withCount(['students' => function ($query) {
                     $query->where('withdrawn', false)
                         ->orWhereNull('withdrawn');
@@ -90,20 +95,18 @@ class StudentController extends Controller
                 $guardianIds[] = $newOrFoundGuardian->id;
             }
 
-            if (!empty($guardianIds)) {
+            if (! empty($guardianIds)) {
                 $student->guardians()->attach($guardianIds);
             }
 
             return $student;
         });
 
-
         return (new $this->resource($student->load($this->relationsToLoad)))->response()->setStatusCode(201);
     }
 
     public function update(UpdateStudentRequest $request, Student $student): StudentResource
     {
-
 
         $validated = $request->validated();
 
@@ -132,6 +135,7 @@ class StudentController extends Controller
                     if (empty($guardian['phone_number'])) {
                         return null;
                     }
+
                     return Guardian::firstOrCreate(
                         ['phone_number' => $guardian['phone_number']],
                         $guardian
@@ -141,7 +145,6 @@ class StudentController extends Controller
             }
         });
 
-
         return new $this->resource($student->load($this->relationsToLoad));
     }
 
@@ -149,9 +152,10 @@ class StudentController extends Controller
     {
         $request->validate([
             'academic_year' => ['required', 'exists:academic_years,name'],
-            'student' => ['exists:students,id']
+            'student' => ['exists:students,id'],
         ]);
         $service = new StudentPaymentsService;
+
         return response()->json($service->getStudentPayments($student, $request->input('academic_year')));
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Enums;
 
-
 enum PaymentType: string
 {
     case ADMINISTRATIVE = 'مصروفات ادارية';

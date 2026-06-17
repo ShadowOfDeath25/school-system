@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Expenses;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateExpensesRequest extends FormRequest
@@ -17,7 +18,7 @@ class UpdateExpensesRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -26,7 +27,7 @@ class UpdateExpensesRequest extends FormRequest
             'value' => ['numeric'],
             'date' => ['date'],
             'academic_year' => ['exists:academic_years,name'],
-            'type' => ['exists:expense_types,name']
+            'type' => ['exists:expense_types,name'],
         ];
     }
 }

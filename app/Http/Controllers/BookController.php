@@ -14,21 +14,25 @@ class BookController extends Controller
     use HasCRUD, HasFilters;
 
     protected array $filterable = [
-        'type', 'academic_year', "semester", "level", "language", "grade"
+        'type', 'academic_year', 'semester', 'level', 'language', 'grade',
     ];
+
     protected array $searchable = [
-        'type', 'grade', 'level'
+        'type', 'grade', 'level',
     ];
+
     protected string $model = Book::class;
+
     protected string $storeRequest = StoreBookRequest::class;
+
     protected string $updateRequest = UpdateBookRequest::class;
+
     protected string $resource = BookResource::class;
 
     public function update(UpdateBookRequest $request, Book $book)
     {
         $data = $request->validated();
         $original_imported_quantity = $book->imported_quantity;
-
 
         $book->fill($data);
 

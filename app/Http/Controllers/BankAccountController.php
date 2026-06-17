@@ -14,9 +14,12 @@ class BankAccountController extends Controller
     use HasCRUD, HasFilters;
 
     protected string $model = BankAccount::class;
-    protected string $storeRequest = StoreBankAccountRequest::class;
-    protected string $updateRequest = UpdateBankAccountRequest::class;
-    protected string $resource = BankAccountResource::class;
-    protected array $filterable = ['academic_year', 'type'];
 
+    protected string $storeRequest = StoreBankAccountRequest::class;
+
+    protected string $updateRequest = UpdateBankAccountRequest::class;
+
+    protected string $resource = BankAccountResource::class;
+
+    protected array $filterable = ['academic_year', 'type'];
 }

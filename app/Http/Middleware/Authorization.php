@@ -4,9 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\AuthorizationException;
 use Closure;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionException;
@@ -17,10 +15,6 @@ class Authorization
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param Closure $next
-     * @param string|null $permission
-     * @return Response
      * @throws ReflectionException
      * @throws AuthorizationException
      */
@@ -28,15 +22,15 @@ class Authorization
     {
 
         if ($permission) {
-            if ($request->user() && !$request->user()->can($permission)) {
-                throw new AuthorizationException("انت غير مصرح لك للقيام بهذه العملية");
+            if ($request->user() && ! $request->user()->can($permission)) {
+                throw new AuthorizationException('انت غير مصرح لك للقيام بهذه العملية');
             }
+
             return $next($request);
         }
 
         $route = $request->route();
         $controller = $route->getController();
-
 
         if (property_exists($controller, 'permission')) {
             $reflection = new ReflectionClass($controller);
@@ -44,12 +38,12 @@ class Authorization
             $property->setAccessible(true);
             $permission = $property->getValue($controller);
 
-            if ($permission && $request->user() && !$request->user()->can($permission)) {
-                throw new AuthorizationException("انت غير مصرح لك للقيام بهذه العملية");
+            if ($permission && $request->user() && ! $request->user()->can($permission)) {
+                throw new AuthorizationException('انت غير مصرح لك للقيام بهذه العملية');
             }
+
             return $next($request);
         }
-
 
         $modelClass = null;
         if (property_exists($controller, 'model')) {
@@ -65,8 +59,8 @@ class Authorization
             $action = $this->getActionMapping($route->getActionMethod());
             $permission = "$action $modelName";
 
-            if ($action && $request->user() && !$request->user()->can($permission)) {
-                throw new AuthorizationException("انت غير مصرح لك للقيام بهذه العملية");
+            if ($action && $request->user() && ! $request->user()->can($permission)) {
+                throw new AuthorizationException('انت غير مصرح لك للقيام بهذه العملية');
             }
         }
 

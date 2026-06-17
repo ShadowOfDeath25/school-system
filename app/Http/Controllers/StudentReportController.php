@@ -26,9 +26,6 @@ class StudentReportController extends Controller
 {
     /**
      * Get a summary of student data.
-     *
-     * @param StudentReportService $studentReportsService
-     * @return JsonResponse
      */
     public function summary(StudentReportService $studentReportsService): JsonResponse
     {
@@ -38,8 +35,6 @@ class StudentReportController extends Controller
     /**
      * Get arrears report data (optionally filtered by classroom).
      *
-     * @param GenerateArrearsReportRequest $request
-     * @param StudentReportService $studentReportsService
      * @return JsonResponse
      */
     public function arrearsReport(GenerateArrearsReportRequest $request, StudentReportService $studentReportsService): JsonResponse|BinaryFileResponse
@@ -58,10 +53,10 @@ class StudentReportController extends Controller
                 type: $filters['type']
             );
             $view = 'reports.arrears_grouped';
-            $baseTitle = "متأخرات";
+            $baseTitle = 'متأخرات';
             $viewData = [
                 'grades' => $data,
-                'academic_year' => $filters['academicYear']
+                'academic_year' => $filters['academicYear'],
             ];
         } else {
             $data = $studentReportsService->getStudentsGroupedByClassrooms(
@@ -78,7 +73,7 @@ class StudentReportController extends Controller
                 show_notes: $filters['show_notes']
             );
             $view = 'reports.arrears';
-            $baseTitle = "متأخرات";
+            $baseTitle = 'متأخرات';
             $viewData = [
                 'classrooms' => $data,
             ];
@@ -88,7 +83,7 @@ class StudentReportController extends Controller
         $filePath = "reports/$uuid.pdf";
         $dir = storage_path('app/reports');
 
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -97,11 +92,12 @@ class StudentReportController extends Controller
             PaymentType::TUITION, PaymentType::ADMINISTRATIVE, PaymentType::ADDITIONAL => preg_replace('/(?<!\p{Arabic})(?!ال)(\p{Arabic}+)/u', 'ال$1', $type->value),
             default => $type->value
         };
-        $title = $baseTitle . ' ' . $typeValue;
+        $title = $baseTitle.' '.$typeValue;
         $viewData['title'] = $title;
 
         if ($request->query('export') === 'excel') {
             $exportClass = $filters['grouped'] ? ArrearsGroupedExport::class : ArrearsExport::class;
+
             return Excel::download(new $exportClass($viewData), 'arrears.xlsx');
         }
 
@@ -139,7 +135,7 @@ class StudentReportController extends Controller
 
         $dir = storage_path('app/reports');
 
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
@@ -155,9 +151,8 @@ class StudentReportController extends Controller
         Pdf::view('reports.letters', $viewData)
             ->format('a4')
             ->margins(0, 0, 10, 0)
-            ->footerView("components.pdf-footer")
+            ->footerView('components.pdf-footer')
             ->save(storage_path("app/$filePath"));
-
 
         return response()->json([
             'uuid' => $uuid,
@@ -167,9 +162,6 @@ class StudentReportController extends Controller
 
     /**
      * Extract student filter parameters from the request.
-     *
-     * @param GenerateArrearsReportRequest|GenerateLetterRequest $request
-     * @return array
      */
     private function extractStudentFilters(GenerateArrearsReportRequest|GenerateLetterRequest $request): array
     {
@@ -179,9 +171,9 @@ class StudentReportController extends Controller
             'academicYear' => $validated['academic_year'] ?? null,
             'language' => $validated['language'] ?? null,
             'level' => $validated['level'] ?? null,
-            'grade' => isset($validated['grade']) ? (int)$validated['grade'] : null,
-            'classroom' => isset($validated['classroom']) ? (int)$validated['classroom'] : null,
-            'min' => isset($validated['min']) ? (float)$validated['min'] : 0,
+            'grade' => isset($validated['grade']) ? (int) $validated['grade'] : null,
+            'classroom' => isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+            'min' => isset($validated['min']) ? (float) $validated['min'] : 0,
             'sorting' => $validated['sorting'] ?? null,
             'type' => $validated['type'] ?? PaymentType::TUITION->value,
             'per_chunk' => $validated['per_chunk'] ?? 12,
@@ -190,23 +182,22 @@ class StudentReportController extends Controller
         ];
     }
 
-
     public function dailyPayments(GenerateDailyPaymentsReportRequest $request): JsonResponse|BinaryFileResponse
     {
-        ["uuid" => $uuid, "filePath" => $filePath] = generateReportUUID();
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
 
         $requestData = $request->validated();
 
         $query = Payment::query()
             ->with([
-                'student' => fn($q) => $q->select('id', 'name_in_arabic', 'classroom_id'),
-                'student.classroom' => fn($q) => $q->select('id', 'name'),
-                'recipient:id,name'
+                'student' => fn ($q) => $q->select('id', 'name_in_arabic', 'classroom_id'),
+                'student.classroom' => fn ($q) => $q->select('id', 'name'),
+                'recipient:id,name',
             ])
             ->where('date', $requestData['date'])
             ->where('payments.academic_year', $requestData['academic_year'])
             ->where('type', $requestData['type'])
-            ->when(isset($requestData['recipient_id']), fn($q) => $q->where('recipient_id', $requestData['recipient_id']))
+            ->when(isset($requestData['recipient_id']), fn ($q) => $q->where('recipient_id', $requestData['recipient_id']))
             ->select([
                 'payments.id',
                 'payments.value',
@@ -214,7 +205,7 @@ class StudentReportController extends Controller
                 'payments.date',
                 'payments.academic_year',
                 'payments.type',
-                'payments.recipient_id'
+                'payments.recipient_id',
             ]);
 
         $type = PaymentType::from($requestData['type']);
@@ -226,13 +217,13 @@ class StudentReportController extends Controller
         $perChunk = $requestData['per_chunk'] ?? 12;
         $payments = $query->get()
             ->groupBy('recipient_id')
-            ->map(fn($group) => $group->chunk($perChunk));
+            ->map(fn ($group) => $group->chunk($perChunk));
 
         $viewData = [
             'payments' => $payments,
             'date' => Carbon::parse($requestData['date'])->locale('ar'),
             'title' => 'مدفوعات اليوم',
-            'type' => $typeValue
+            'type' => $typeValue,
         ];
 
         if ($request->query('export') === 'excel') {
@@ -247,8 +238,8 @@ class StudentReportController extends Controller
             ->save(storage_path("app/$filePath"));
 
         return response()->json([
-            "uuid" => $uuid,
-            "preview_url" => route('reports.preview', $uuid, true)
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
         ]);
     }
 }

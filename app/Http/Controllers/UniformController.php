@@ -18,21 +18,25 @@ class UniformController extends Controller
     use HasFilters;
 
     protected array $filterable = [
-        'academic_year', 'type', 'level'
+        'academic_year', 'type', 'level',
     ];
+
     protected array $searchable = [
-        'type'
+        'type',
     ];
+
     protected string $model = Uniform::class;
+
     protected string $storeRequest = StoreUniformRequest::class;
+
     protected string $updateRequest = UpdateUniformRequest::class;
+
     protected string $resource = UniformResource::class;
 
     public function update(UpdateUniformRequest $request, Uniform $uniform)
     {
         $data = $request->validated();
         $original_imported_quantity = $uniform->imported_quantity;
-
 
         $uniform->fill($data);
 
@@ -52,6 +56,7 @@ class UniformController extends Controller
             ->distinct()
             ->pluck('type');
         $data->additional(['types' => $types]);
+
         return $data;
 
     }

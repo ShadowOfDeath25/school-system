@@ -6,7 +6,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -15,7 +16,7 @@ return new class extends Migration {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('academic_year');
-            $table->string("type")->index();
+            $table->string('type')->index();
             $table->decimal('value', 10, 2);
             $table->date('date');
             $table->foreignIdFor(Student::class)->constrained()->cascadeOnDelete();

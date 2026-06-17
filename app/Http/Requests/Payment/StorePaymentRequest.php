@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Payment;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePaymentRequest extends FormRequest
@@ -17,17 +18,17 @@ class StorePaymentRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'academic_year' => ["required", 'exists:academic_years,name'],
+            'academic_year' => ['required', 'exists:academic_years,name'],
             'level' => ['required', 'string'],
-            'type' => ["required", "string"],
-            'student_id' => ["required", "numeric", "exists:students,id"],
-            'date' => ["required", "date"],
-            'value' => ["required", "numeric", "min:1"]
+            'type' => ['required', 'string'],
+            'student_id' => ['required', 'numeric', 'exists:students,id'],
+            'date' => ['required', 'date'],
+            'value' => ['required', 'numeric', 'min:1'],
         ];
     }
 }

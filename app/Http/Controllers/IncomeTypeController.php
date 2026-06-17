@@ -11,7 +11,8 @@ class IncomeTypeController extends Controller
     use HasCRUD;
 
     protected string $model = IncomeType::class;
-    protected string $storeRequest = StoreIncomeTypeRequest::class;
-    protected string $updateRequest = StoreIncomeTypeRequest::class;
 
+    protected string $storeRequest = StoreIncomeTypeRequest::class;
+
+    protected string $updateRequest = StoreIncomeTypeRequest::class;
 }

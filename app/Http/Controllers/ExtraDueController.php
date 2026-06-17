@@ -13,9 +13,12 @@ class ExtraDueController extends Controller
     use HasCRUD, HasFilters;
 
     protected string $model = ExtraDue::class;
+
     protected string $storeRequest = StoreExtraDueRequest::class;
+
     protected string $updateRequest = UpdateExtraDueRequest::class;
+
     protected array $filterable = [
-        'student_id', 'academic_year'
+        'student_id', 'academic_year',
     ];
 }

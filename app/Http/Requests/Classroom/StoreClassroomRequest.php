@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Classroom;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreClassroomRequest extends FormRequest
@@ -17,19 +18,19 @@ class StoreClassroomRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'language' => ["required", "string", "max:255"],
-            'level' => ["required", "string", "max:255"],
-            'grade' => ["required", "integer"],
-            'leader' => ["nullable", "string"],
+            'language' => ['required', 'string', 'max:255'],
+            'level' => ['required', 'string', 'max:255'],
+            'grade' => ['required', 'integer'],
+            'leader' => ['nullable', 'string'],
             'academic_year' => ['required', 'string', 'exists:academic_years,name'],
-            'actual_capacity' => ["sometimes", "integer"],
-            'max_capacity' => ["required", "integer"],
-            'floor_id' => ["required", "integer", "exists:floors,id"]
+            'actual_capacity' => ['sometimes', 'integer'],
+            'max_capacity' => ['required', 'integer'],
+            'floor_id' => ['required', 'integer', 'exists:floors,id'],
         ];
     }
 }

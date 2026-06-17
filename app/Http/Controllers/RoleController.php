@@ -14,8 +14,11 @@ class RoleController extends Controller
     use HasCRUD;
 
     protected string $model = Role::class;
+
     protected string $storeRequest = StoreRoleRequest::class;
+
     protected string $updateRequest = UpdateRoleRequest::class;
+
     protected string $resource = RoleResource::class;
 
     public function store(StoreRoleRequest $request)
@@ -23,15 +26,16 @@ class RoleController extends Controller
 
         $data = $request->validated();
         $role = new Role([
-            'name' => $data["name"],
-            'guard_name' => 'web'
+            'name' => $data['name'],
+            'guard_name' => 'web',
         ]);
         if ($request->has('permissions')) {
-            foreach ($data["permissions"] as $permission) {
+            foreach ($data['permissions'] as $permission) {
                 $role->givePermissionTo(Permission::findOrCreate($permission, 'web'));
             }
         }
         $role->save();
+
         return response()->json($role, 201);
     }
 
@@ -40,13 +44,11 @@ class RoleController extends Controller
 
         $data = $request->validated();
         $role->update($data);
-        if ($request->has("permissions")) {
-            $role->syncPermissions($data["permissions"]);
+        if ($request->has('permissions')) {
+            $role->syncPermissions($data['permissions']);
         }
         $role->save();
 
-        return response()->json(["role" => $role]);
+        return response()->json(['role' => $role]);
     }
-
-
 }

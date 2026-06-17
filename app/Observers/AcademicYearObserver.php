@@ -47,9 +47,10 @@ class AcademicYearObserver
     {
         //
     }
-    public function saved(AcademicYear $academicYear):void
+
+    public function saved(AcademicYear $academicYear): void
     {
-        if ($academicYear->wasChanged('active')){
+        if ($academicYear->wasChanged('active')) {
             Cache::forget('academic_year.active');
         }
     }

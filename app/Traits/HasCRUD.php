@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-
 use App\Exceptions\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -11,8 +10,6 @@ use Illuminate\Support\Facades\Schema;
 
 trait HasCRUD
 {
-
-
     public function getQuery(): Builder
     {
 
@@ -22,23 +19,23 @@ trait HasCRUD
         if (property_exists($this, 'relationsToLoad')) {
             return ($this->model)::query()->with($this->relationsToLoad);
         }
+
         return ($this->model)::query();
 
     }
 
-
     /**
      * Display a listing of the resource.
+     *
      * @throws AuthorizationException
      */
-    public function index(Request $request){
-
+    public function index(Request $request)
+    {
 
         $query = $this->getQuery();
 
-
         if ($request->filled('search')) {
-            $searchTerm = '%' . $request->input('search') . '%';
+            $searchTerm = '%'.$request->input('search').'%';
             $searchableFields = property_exists($this, 'searchable') && is_array($this->searchable)
                 ? $this->searchable
                 : ['name'];
@@ -49,7 +46,7 @@ trait HasCRUD
                 }
             });
         }
-        if (property_exists($this, 'filterable') && !empty($this->filterable)) {
+        if (property_exists($this, 'filterable') && ! empty($this->filterable)) {
             $modelInstance = new $this->model;
             $tableColumns = Schema::getColumnListing($modelInstance->getTable());
 
@@ -65,7 +62,7 @@ trait HasCRUD
                         $filterValues = is_array($value) ? $value : [$value];
 
                         $query->whereHas($relation, function (Builder $q) use ($column, $filterValues, $value) {
-                            $value === "null" ?
+                            $value === 'null' ?
                                 $q->whereNull($column) :
                                 $q->whereIn($column, $filterValues);
                         });
@@ -76,13 +73,13 @@ trait HasCRUD
                     $filterValues = is_array($value) ? $value : [$value];
 
                     if (in_array($filterKey, $tableColumns)) {
-                        $value === "null" ?
+                        $value === 'null' ?
                             $query->whereNull($filterKey) :
                             $query->whereIn($filterKey, $filterValues);
                     } elseif (method_exists($modelInstance, $filterKey)) {
-                        $value === "null" ?
+                        $value === 'null' ?
                             $query->whereDoesntHave($filterKey) :
-                            $query->whereHas($filterKey, fn($q) => $q->whereIn('name', $filterValues));
+                            $query->whereHas($filterKey, fn ($q) => $q->whereIn('name', $filterValues));
                     }
                 }
             }
@@ -95,7 +92,7 @@ trait HasCRUD
             $data = $query->paginate($request->input('per_page', 30))->withQueryString();
         }
 
-        if (property_exists($this, "resource")) {
+        if (property_exists($this, 'resource')) {
             return ($this->resource)::collection($data);
         }
 
@@ -104,18 +101,19 @@ trait HasCRUD
 
     /**
      * Store a newly created resource in storage.
+     *
      * @throws AuthorizationException
      */
     public function store(Request $request)
     {
         $validated = app($this->storeRequest)->validated();
 
-
         $record = new ($this->model)($validated);
         if (class_basename($this->model) === 'User') {
-            $record->assignRole($validated["role"]);
+            $record->assignRole($validated['role']);
         }
         $record->save();
+
         return isset($this->resource)
             ? new $this->resource($record)
             : response()->json($record, 201);
@@ -123,6 +121,7 @@ trait HasCRUD
 
     /**
      * Display the specified resource.
+     *
      * @throws AuthorizationException
      */
     public function show(string $id)
@@ -136,6 +135,7 @@ trait HasCRUD
 
     /**
      * Update the specified resource in storage.
+     *
      * @throws AuthorizationException
      */
     public function update(Request $request, string $id)
@@ -147,7 +147,7 @@ trait HasCRUD
 
         if (class_basename($this->model) === 'User' && isset($validated['role'])) {
 
-            $record->syncRoles($validated["role"]);
+            $record->syncRoles($validated['role']);
         }
 
         return isset($this->resource)
@@ -157,6 +157,7 @@ trait HasCRUD
 
     /**
      * Remove the specified resource from storage.
+     *
      * @throws AuthorizationException
      */
     public function destroy(string $id)
@@ -166,7 +167,4 @@ trait HasCRUD
 
         return response()->json(null, 204);
     }
-
-
-
 }

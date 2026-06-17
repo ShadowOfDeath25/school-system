@@ -4,6 +4,9 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [react()],
+    server: {
+        allowedHosts: true
+    },
     resolve: {
         alias: {
             '@ui': path.resolve(__dirname, 'src/components/ui'),

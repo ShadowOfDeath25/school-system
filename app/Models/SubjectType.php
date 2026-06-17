@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\LogsActivityInArabic;
+use Illuminate\Database\Eloquent\Model;
 
 class SubjectType extends Model
 {
     use LogsActivityInArabic;
+
     protected $fillable = [
-        'name'
+        'name',
     ];
 }

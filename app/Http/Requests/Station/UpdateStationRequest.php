@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Station;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateStationRequest extends FormRequest
@@ -17,7 +18,7 @@ class UpdateStationRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -25,7 +26,7 @@ class UpdateStationRequest extends FormRequest
             'academic_year' => ['exists:academic_years,name'],
             'city' => ['string'],
             'neighborhood' => ['string'],
-            'value' => ['numeric', 'sometimes']
+            'value' => ['numeric', 'sometimes'],
         ];
     }
 }

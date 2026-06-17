@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Guardian;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Guardian>
+ * @extends Factory<Guardian>
  */
 class GuardianFactory extends Factory
 {
@@ -18,7 +19,7 @@ class GuardianFactory extends Factory
     {
         return [
             'name' => fake('ar_EG')->name(),
-            'phone_number' => '01' . $this->faker->randomElement(['0', '1', '2', '5']) . $this->faker->numerify('########'),
+            'phone_number' => '01'.$this->faker->randomElement(['0', '1', '2', '5']).$this->faker->numerify('########'),
             'job' => fake('ar_EG')->jobTitle(),
             'edu' => fake()->randomElement(['High School', 'Bachelor', 'Master']),
             'gender' => fake()->randomElement(['male', 'female']),

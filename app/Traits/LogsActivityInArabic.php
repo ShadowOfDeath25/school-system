@@ -11,8 +11,6 @@ trait LogsActivityInArabic
 
     /**
      * Set up default options for activity logging in Arabic.
-     *
-     * @return LogOptions
      */
     public function getActivitylogOptions(): LogOptions
     {
@@ -27,6 +25,7 @@ trait LogsActivityInArabic
             ->setDescriptionForEvent(function (string $eventName) {
                 // If the translations don't exist, we fallback to event name
                 $modelName = class_basename($this);
+
                 // "تم التعديل", "تمت الإضافة", etc.
                 return trans("activitylog.events.{$eventName}", ['model' => $modelName]);
             });

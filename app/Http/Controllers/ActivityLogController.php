@@ -4,19 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ActivityLog\ActivityLogIndexRequest;
 use App\Models\User;
-use App\Traits\HasFilters;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Spatie\Activitylog\Models\Activity;
 
 class ActivityLogController extends Controller
 {
-
-
     /**
      * Display a listing of the activity logs.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function index(ActivityLogIndexRequest $request)
     {
@@ -28,17 +25,15 @@ class ActivityLogController extends Controller
                 $query->whereDate('created_at', '<=', $request->end_date);
             })
             ->when($request->has('users'), function (Builder $query) use ($request) {
-                $query->whereIn('causer_id',$request->users);
+                $query->whereIn('causer_id', $request->users);
             })
             ->latest()
-            ->paginate(request()->input("perPage") ?? 30);
+            ->paginate(request()->input('perPage') ?? 30);
 
         $formattedLogs = $activities->map(function ($activity) {
             $userName = $activity->causer ? $activity->causer->name : 'نظام';
 
-
             $action = trans("activitylog.actions.{$activity->event}") ?? $activity->event;
-
 
             $modelClass = $activity->subject_type;
             $modelBaseName = class_basename($modelClass);
@@ -65,19 +60,21 @@ class ActivityLogController extends Controller
                 'current_page' => $activities->currentPage(),
                 'last_page' => $activities->lastPage(),
                 'total' => $activities->total(),
-            ]
+            ],
         ]);
     }
 
     public function delete(Activity $activity)
     {
         $activity->delete();
+
         return response()->noContent();
     }
 
     public function filters()
     {
-        $users = User::whereHas('activities')->distinct()->select(["id","name"])->get();
-        return response()->json(["users" => $users]);
+        $users = User::whereHas('activities')->distinct()->select(['id', 'name'])->get();
+
+        return response()->json(['users' => $users]);
     }
 }

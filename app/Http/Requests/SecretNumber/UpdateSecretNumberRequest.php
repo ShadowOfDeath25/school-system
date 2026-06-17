@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\SecretNumber;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSecretNumberRequest extends FormRequest
@@ -17,7 +18,7 @@ class UpdateSecretNumberRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -30,7 +31,7 @@ class UpdateSecretNumberRequest extends FormRequest
             'level' => ['string', 'max:255'],
             'starts_at' => ['numeric'],
             'ends_at' => ['numeric', 'gt:starts_at'],
-            'semester' => ['string', 'in:الأول,الثاني,طوال العام']
+            'semester' => ['string', 'in:الأول,الثاني,طوال العام'],
 
         ];
     }

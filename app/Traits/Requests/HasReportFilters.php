@@ -32,10 +32,11 @@ trait HasReportFilters
                 PaymentType::WITHDRAWAL->value,
             ])],
             'show_notes' => ['nullable', 'boolean'],
-            'grouped' => ['nullable', 'boolean']
+            'grouped' => ['nullable', 'boolean'],
         ];
 
     }
+
     protected function prepareForValidation(): void
     {
         $this->merge([
@@ -43,5 +44,4 @@ trait HasReportFilters
             'grouped' => filter_var($this->grouped, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE),
         ]);
     }
-
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\SecretNumber;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSecretNumberRequest extends FormRequest
@@ -17,7 +18,7 @@ class StoreSecretNumberRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -30,7 +31,7 @@ class StoreSecretNumberRequest extends FormRequest
             'level' => ['required', 'string', 'max:255'],
             'starts_at' => ['required', 'numeric'],
             'ends_at' => ['required', 'numeric', 'gt:starts_at'],
-            'semester' => ['required', 'string', 'in:الاول,الثاني,طوال العام']
+            'semester' => ['required', 'string', 'in:الاول,الثاني,طوال العام'],
         ];
     }
 }

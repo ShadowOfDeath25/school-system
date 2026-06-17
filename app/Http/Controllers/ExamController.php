@@ -23,9 +23,14 @@ class ExamController extends Controller
         'gradeSubject.subject.type',
         'gradeSubject.subject.name',
     ];
+
     protected array $relationsToLoad = ['gradeSubject.subject'];
+
     protected string $model = Exam::class;
+
     protected string $storeRequest = StoreExamRequest::class;
+
     protected string $updateRequest = UpdateExamRequest::class;
+
     protected string $resource = ExamResource::class;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Book;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBookRequest extends FormRequest
@@ -17,22 +18,22 @@ class UpdateBookRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'academic_year' => ['exists:academic_years,name'],
-            'imported_quantity' => ["integer"],
-            'available_quantity' => ["integer", "lte:imported_quantity", "min:1"],
-            'semester' => ["string"],
-            'price' => ["numeric"],
-            'buy_price' => ["numeric"],
-            'level' => ["string"],
-            'subject_id' => ["sometimes", "integer", "exists:subjects,id"],
-            'grade' => ["integer"],
-            'type' => ["string", 'unique:books,type'],
-            'language' => ['string', 'in:لغات,عربي']
+            'imported_quantity' => ['integer'],
+            'available_quantity' => ['integer', 'lte:imported_quantity', 'min:1'],
+            'semester' => ['string'],
+            'price' => ['numeric'],
+            'buy_price' => ['numeric'],
+            'level' => ['string'],
+            'subject_id' => ['sometimes', 'integer', 'exists:subjects,id'],
+            'grade' => ['integer'],
+            'type' => ['string', 'unique:books,type'],
+            'language' => ['string', 'in:لغات,عربي'],
         ];
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\AcademicYear;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreAcademicYearRequest extends FormRequest
 {
@@ -18,12 +18,12 @@ class StoreAcademicYearRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'name' => ['required', 'unique:academic_years,name', 'regex:/^\d{4}\/\d{4}$/']
+            'name' => ['required', 'unique:academic_years,name', 'regex:/^\d{4}\/\d{4}$/'],
         ];
     }
 }

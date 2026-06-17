@@ -15,23 +15,24 @@ class BookPurchaseResource extends JsonResource
     public function toArray(Request $request): array
     {
         $grades = [
-            1 => "الاول",
-            2 => "الثاني",
-            3 => "الثالث",
-            4 => "الرابع",
-            5 => "الخامس",
-            6 => "السادس",
+            1 => 'الاول',
+            2 => 'الثاني',
+            3 => 'الثالث',
+            4 => 'الرابع',
+            5 => 'الخامس',
+            6 => 'السادس',
         ];
+
         return [
-            "id" => $this->id,
-            "type" => $this->book->type,
-            "level" => $this->book->level,
-            "grade" => $grades[$this->book->grade],
-            "quantity" => $this->quantity,
+            'id' => $this->id,
+            'type' => $this->book->type,
+            'level' => $this->book->level,
+            'grade' => $grades[$this->book->grade],
+            'quantity' => $this->quantity,
             'price' => $this->book->price,
-            "total_price" => $this->quantity * $this->book->price,
-            "student_name" => $this->student->name_in_arabic,
-            "student" => $this->student
+            'total_price' => $this->quantity * $this->book->price,
+            'student_name' => $this->student->name_in_arabic,
+            'student' => $this->student,
         ];
     }
 }

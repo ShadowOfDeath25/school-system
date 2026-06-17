@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
-use App\Traits\LogsActivityInArabic;
 
 class Classroom extends Model
 {
@@ -22,7 +22,7 @@ class Classroom extends Model
         'max_capacity',
         'academic_year',
         'floor_id',
-        'leader'
+        'leader',
     ];
 
     public function students(): HasMany|Classroom

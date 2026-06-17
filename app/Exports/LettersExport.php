@@ -11,8 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 class LettersExport implements FromView, ShouldAutoSize, WithEvents
 {
-    public function __construct(public array $viewData)
-    {}
+    public function __construct(public array $viewData) {}
 
     public function view(): View
     {

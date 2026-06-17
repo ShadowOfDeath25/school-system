@@ -4,6 +4,7 @@ namespace App\Http\Requests\Student\Reports;
 
 use App\Enums\PaymentType;
 use App\Traits\Requests\HasReportFilters;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -22,7 +23,7 @@ class GenerateDailyPaymentsReportRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -30,7 +31,7 @@ class GenerateDailyPaymentsReportRequest extends FormRequest
             'date' => ['required', 'date', 'date_format:Y-m-d'],
             'type' => ['required', 'string', new Enum(PaymentType::class)],
             'academic_year' => ['required', 'string', 'exists:academic_years,name'],
-            'recipient_id' => ['sometimes', 'integer', 'exists:users,id']
+            'recipient_id' => ['sometimes', 'integer', 'exists:users,id'],
         ];
     }
 }

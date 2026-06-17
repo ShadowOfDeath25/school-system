@@ -17,23 +17,28 @@ class BookPurchaseController extends Controller
     }
     use HasFilters;
 
-
     protected string $model = BookPurchase::class;
+
     protected string $storeRequest = StoreBookPurchaseRequest::class;
+
     protected string $updateRequest = UpdateBookPurchaseRequest::class;
+
     protected string $resource = BookPurchaseResource::class;
+
     protected array $relationsToLoad = [
-        'book', 'student'
+        'book', 'student',
     ];
+
     protected array $filterable = [
         'book.academic_year',
         'book.semester',
-        "book.language",
-        "book.type",
-        "book.level",
-        "book.grade",
-        'student_id'
+        'book.language',
+        'book.type',
+        'book.level',
+        'book.grade',
+        'student_id',
     ];
+
     protected array $searchable = [
         'student.name_in_arabic',
     ];
@@ -44,12 +49,12 @@ class BookPurchaseController extends Controller
         $book = Book::findOrFail($data['book_id']);
 
         if ($book->available_quantity < $data['quantity']) {
-            return response()->json(["message" => $book->available_quantity === 0 ? "نفذت كمية هذه النسخة" : 'هذه الكمية غير متاحة'], 409);
+            return response()->json(['message' => $book->available_quantity === 0 ? 'نفذت كمية هذه النسخة' : 'هذه الكمية غير متاحة'], 409);
         }
         $book->available_quantity -= $data['quantity'];
         $book->save();
+
         return $this->baseStore($request);
 
     }
-
 }

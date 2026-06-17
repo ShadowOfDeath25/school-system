@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\ExamHall;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateExamHallRequest extends FormRequest
@@ -17,7 +18,7 @@ class UpdateExamHallRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -26,15 +27,15 @@ class UpdateExamHallRequest extends FormRequest
             'language' => ['string', 'max:255'],
             'floor_id' => ['exists:floors,id'],
             'capacity' => ['string'],
-            'grade' => ['string',],
+            'grade' => ['string'],
             'level' => ['string'],
             'building_id' => ['exists:buildings,id'],
             'semester' => ['string'],
-            'number' => ['string', ],
+            'number' => ['string'],
             'academic_year' => ['string'],
             'starts_at' => ['date'],
             'ends_at' => ['date'],
-            
+
         ];
     }
 }

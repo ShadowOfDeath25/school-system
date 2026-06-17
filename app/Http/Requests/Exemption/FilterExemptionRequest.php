@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Exemption;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FilterExemptionRequest extends FormRequest
@@ -17,14 +18,14 @@ class FilterExemptionRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'student_id' => ['exists:students,id', 'nullable', 'integer', 'sometimes'],
             'type' => ['sometimes', 'string', 'exists:exemptions,type'],
-            'globalOnly' => ['sometimes', 'boolean']
+            'globalOnly' => ['sometimes', 'boolean'],
         ];
     }
 }

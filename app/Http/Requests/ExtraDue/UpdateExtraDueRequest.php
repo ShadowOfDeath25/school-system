@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\ExtraDue;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateExtraDueRequest extends FormRequest
@@ -17,14 +18,14 @@ class UpdateExtraDueRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'note' => ['string', 'max:255'],
             'value' => ['numeric'],
-            'academic_year' => ['string', 'exists:academic_years,name']
+            'academic_year' => ['string', 'exists:academic_years,name'],
         ];
     }
 }

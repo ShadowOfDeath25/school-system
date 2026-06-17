@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Exemption;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreExemptionRequest extends FormRequest
@@ -17,14 +18,14 @@ class StoreExemptionRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
             'type' => ['required', 'string'],
             'value' => ['required', 'numeric'],
-            'student_id'=>['sometimes','integer','exists:students,id']
+            'student_id' => ['sometimes', 'integer', 'exists:students,id'],
         ];
     }
 }
