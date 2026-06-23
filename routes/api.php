@@ -58,6 +58,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::prefix('/students')->middleware('authorization:view student-reports')->name('students.')->group(function () {
 
             Route::get('summary', [StudentReportController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
+            Route::get('demographics', [StudentReportController::class, 'demographicsReport'])->name('demographics')->middleware('authorization:view student-reports');
             Route::prefix('/payments')->name('payments.')->group(function () {
 
                 Route::get('/daily', [StudentReportController::class, 'dailyPayments']);

@@ -6,12 +6,15 @@ use App\Enums\PaymentType;
 use App\Exports\ArrearsExport;
 use App\Exports\ArrearsGroupedExport;
 use App\Exports\DailyPaymentsExport;
+use App\Exports\DemographicsExport;
 use App\Exports\LettersExport;
 use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateDailyPaymentsReportRequest;
+use App\Http\Requests\Student\Reports\GenerateDemographicsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateLetterRequest;
 use App\Models\Payment;
 use App\Models\Student;
+use App\Services\DemographicsService;
 use App\Services\StudentReportService;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
@@ -180,6 +183,44 @@ class StudentReportController extends Controller
             'show_notes' => $validated['show_notes'] ?? false,
             'grouped' => $validated['grouped'] ?? false,
         ];
+    }
+
+    public function demographicsReport(
+        GenerateDemographicsReportRequest $request,
+        DemographicsService $demographicsService
+    ): JsonResponse|BinaryFileResponse {
+        $validated = $request->validated();
+
+        $levels = $demographicsService->getDemographicsReport(
+            academicYear: $validated['academic_year'] ?? null,
+            language: $validated['language'] ?? null,
+            level: $validated['level'] ?? null,
+            grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
+            classroom: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+        );
+
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+        $viewData = [
+            'levels' => $levels,
+            'title' => 'تقرير إحصائيات الطلاب',
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new DemographicsExport($viewData), 'demographics.xlsx');
+        }
+
+        Pdf::view('reports.demographics', $viewData)
+            ->format('a4')
+            ->orientation(Orientation::Landscape)
+            ->footerView('components.pdf-footer')
+            ->margins(10, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
+        ]);
     }
 
     public function dailyPayments(GenerateDailyPaymentsReportRequest $request): JsonResponse|BinaryFileResponse

@@ -5,6 +5,7 @@ import Withdrawn from "@pages/Students/Withdrawn.jsx";
 import PromoteStudents from "@pages/PromoteStudents/PromoteStudents.jsx";
 import StudentMarks from "@pages/PromoteStudents/StudentMarks.jsx";
 import PickStudent from "@pages/PromoteStudents/StudentPicker.jsx";
+import StudentReports from "@pages/StudentReports/StudentReports.jsx";
 import {Link} from "react-router-dom";
 import styles from "@ui/Page/style.module.css";
 
@@ -74,6 +75,16 @@ const routes = {
                 title: "اختر طالب",
                 action: "update students",
 
+            }
+        },
+        {
+            path: "reports",
+            element: <StudentReports/>,
+            handle: {
+                sidebar: {
+                    title: "التقارير",
+                },
+                action: "view student-reports"
             }
         },
         {

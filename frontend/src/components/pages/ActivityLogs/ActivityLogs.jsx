@@ -46,6 +46,7 @@ export default function ActivityLogs() {
                 resource={"activity-logs"}
                 editable={false}
                 searchable={false}
+                deletable={false}
                 filters={filters}
             />
         </Page>
