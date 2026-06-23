@@ -8,14 +8,17 @@ use App\Exports\ArrearsGroupedExport;
 use App\Exports\DailyPaymentsExport;
 use App\Exports\DemographicsExport;
 use App\Exports\LettersExport;
+use App\Exports\RosterExport;
 use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateDailyPaymentsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateDemographicsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateLetterRequest;
+use App\Http\Requests\Student\Reports\GenerateRosterReportRequest;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Services\DemographicsService;
 use App\Services\StudentReportService;
+use App\Services\StudentRosterService;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Enums\Format;
@@ -221,6 +224,82 @@ class StudentReportController extends Controller
             'uuid' => $uuid,
             'preview_url' => route('reports.preview', $uuid, true),
         ]);
+    }
+
+    public function roster(
+        GenerateRosterReportRequest $request,
+        StudentRosterService $rosterService
+    ): JsonResponse|BinaryFileResponse {
+        $validated = $request->validated();
+
+        if ($request->query('export') === 'excel') {
+            $rows = $rosterService->getAllRosterRows(
+                academicYear: $validated['academic_year'],
+                status: $validated['status'] ?? null,
+                religion: $validated['religion'] ?? null,
+                gender: $validated['gender'] ?? null,
+                language: $validated['language'] ?? null,
+                level: $validated['level'] ?? null,
+                grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
+                classroom: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+                search: $validated['search'] ?? null,
+                sortBy: $validated['sort_by'] ?? 'name_in_arabic',
+                sortDir: $validated['sort_dir'] ?? 'asc',
+            );
+
+            return Excel::download(new RosterExport([
+                'rows' => $rows,
+                'title' => 'كشف الطلاب',
+            ]), 'roster.xlsx');
+        }
+
+        if ($request->query('export') === 'pdf') {
+            $rows = $rosterService->getAllRosterRows(
+                academicYear: $validated['academic_year'],
+                status: $validated['status'] ?? null,
+                religion: $validated['religion'] ?? null,
+                gender: $validated['gender'] ?? null,
+                language: $validated['language'] ?? null,
+                level: $validated['level'] ?? null,
+                grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
+                classroom: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+                search: $validated['search'] ?? null,
+                sortBy: $validated['sort_by'] ?? 'name_in_arabic',
+                sortDir: $validated['sort_dir'] ?? 'asc',
+            );
+
+            ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+            Pdf::view('reports.roster', ['rows' => $rows, 'title' => 'كشف الطلاب'])
+                ->format('a4')
+                ->orientation(Orientation::Landscape)
+                ->footerView('components.pdf-footer')
+                ->margins(10, 5, 10, 5)
+                ->save(storage_path("app/$filePath"));
+
+            return response()->json([
+                'uuid' => $uuid,
+                'preview_url' => route('reports.preview', $uuid, true),
+            ]);
+        }
+
+        $result = $rosterService->getRoster(
+            academicYear: $validated['academic_year'],
+            status: $validated['status'] ?? null,
+            religion: $validated['religion'] ?? null,
+            gender: $validated['gender'] ?? null,
+            language: $validated['language'] ?? null,
+            level: $validated['level'] ?? null,
+            grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
+            classroom: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+            search: $validated['search'] ?? null,
+            sortBy: $validated['sort_by'] ?? 'name_in_arabic',
+            sortDir: $validated['sort_dir'] ?? 'asc',
+            perPage: $validated['per_page'] ?? 30,
+            page: $validated['page'] ?? 1,
+        );
+
+        return response()->json($result);
     }
 
     public function dailyPayments(GenerateDailyPaymentsReportRequest $request): JsonResponse|BinaryFileResponse

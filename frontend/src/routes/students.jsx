@@ -81,12 +81,11 @@ const routes = {
             path: "reports",
             element: <StudentReports/>,
             handle: {
-                sidebar: {
-                    title: "التقارير",
-                },
+                sidebar: { title: "التقارير" },
                 action: "view student-reports"
             }
         },
+
         {
             path: ":id/marks",
             element: <StudentMarks/>,

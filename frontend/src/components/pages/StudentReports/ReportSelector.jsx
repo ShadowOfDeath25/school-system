@@ -2,6 +2,7 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 
 const REPORT_TYPES = [
     { label: "إحصائيات الطلاب", value: "demographics" },
+    { label: "كشف الطلاب", value: "roster" },
 ];
 
 export default function ReportSelector({ value, onChange }) {

@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "./styles.module.css";
 import Page from "@ui/Page/Page.jsx";
 import SelectField from "@ui/SelectField/SelectField.jsx";
+import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import axiosClient from "../../../axiosClient.js";
 import { useGetAll } from "@hooks/api/useCrud.js";
@@ -42,21 +43,23 @@ export default function StudentReports() {
         return result;
     };
 
+    const endpoint = reportType === "roster" ? "/reports/students/roster" : "/reports/students/demographics";
+
     const handlePrint = async () => {
         const params = normalizeData();
         if (!params) return;
         try {
-            const response = await axiosClient.get("/reports/students/demographics", { params });
+            if (reportType === "roster") params.export = "pdf";
+            const response = await axiosClient.get(endpoint, { params });
             showPDFPreview({ url: response.data.preview_url });
         } catch {
-            // error handled by axios interceptor
         }
     };
 
     const handleExport = () => {
         const params = normalizeData();
         if (!params) return;
-        exportAsExcel("/reports/students/demographics", params);
+        exportAsExcel(endpoint, params);
     };
 
     const handleReset = () => {
@@ -65,7 +68,7 @@ export default function StudentReports() {
 
     return (
         <Page>
-            <form className={styles.container}>
+            <div className={styles.container}>
                 <h4 className={styles.title}>خيارات العرض</h4>
                 <div className={styles.body}>
                     <ReportSelector
@@ -112,7 +115,49 @@ export default function StudentReports() {
                         options={classrooms?.data?.map((c) => ({ label: c.name, value: c.id }))}
                         handleChange={handleChange}
                     />
+
+                    {reportType === "roster" && (
+                        <>
+                            <SelectField
+                                label={"الحالة"}
+                                options={[
+                                    { label: "الكل", value: "" },
+                                    { label: "مستجد", value: "مستجد" },
+                                    { label: "مقيد", value: "مقيد" },
+                                ]}
+                                placeholder={"الحالة"}
+                                value={formData.status ?? ""}
+                                handleChange={handleChange}
+                                name={"status"}
+                            />
+                            <SelectField
+                                label={"الديانة"}
+                                options={[
+                                    { label: "الكل", value: "" },
+                                    { label: "مسلم", value: "مسلم" },
+                                    { label: "مسيحي", value: "مسيحي" },
+                                ]}
+                                placeholder={"الديانة"}
+                                value={formData.religion ?? ""}
+                                handleChange={handleChange}
+                                name={"religion"}
+                            />
+                            <SelectField
+                                label={"النوع"}
+                                options={[
+                                    { label: "الكل", value: "" },
+                                    { label: "ذكر", value: "male" },
+                                    { label: "انثى", value: "female" },
+                                ]}
+                                placeholder={"النوع"}
+                                value={formData.gender ?? ""}
+                                handleChange={handleChange}
+                                name={"gender"}
+                            />
+                        </>
+                    )}
                 </div>
+
                 <div className={styles.actions}>
                     <Button variant={"contained"} onClick={handlePrint}>
                         طباعة
@@ -124,7 +169,7 @@ export default function StudentReports() {
                         اعادة تعيين
                     </Button>
                 </div>
-            </form>
+            </div>
         </Page>
     );
 }
