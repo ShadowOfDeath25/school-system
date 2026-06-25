@@ -8,6 +8,6 @@ class ExamObserver
 {
     public function saving(Exam $exam)
     {
-        $exam->marks = $exam->gradeSubject->exam_marks;
+        $exam->marks = $exam->gradeSubject?->component($exam->component_id)['marks'] ?? 0;
     }
 }

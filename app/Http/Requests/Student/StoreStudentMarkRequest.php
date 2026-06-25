@@ -35,17 +35,21 @@ class StoreStudentMarkRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $student = Student::find($this->student_id);
-            $exam = Exam::find($this->exam_id);
+            $exam = Exam::with('gradeSubject')->find($this->exam_id);
 
             if (! $student || ! $exam) {
                 return;
             }
 
-            if ($student->grade_id !== $exam->grade_id || $student->language !== $exam->language) {
+            if ($student->grade !== $exam->gradeSubject->grade_id || $student->language !== $exam->language) {
                 $validator->errors()->add(
                     'exam_id',
-                    'الامتحان المختار غير متاح لهذا الطالب'
+                    'Ø§Ù„Ø§Ù…ØªØ­Ø§Ù† Ø§Ù„Ù…Ø®ØªØ§Ø± ØºÙŠØ± Ù…ØªØ§Ø­ Ù„Ù‡Ø°Ø§ Ø§Ù„Ø·Ø§Ù„Ø¨'
                 );
+            }
+
+            if ((float) $this->marks > (float) $exam->marks) {
+                $validator->errors()->add('marks', 'لا يمكن إدخال درجة أكبر من الدرجة الكلية للمكون.');
             }
         });
     }

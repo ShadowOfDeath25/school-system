@@ -76,6 +76,22 @@
     border-color: var(--color-danger);
 }
 
+.modalInputWrapper {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+}
+
+.modalInputWrapper > div {
+    width: 100%;
+}
+
+.modalInputWrapper label {
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: right;
+}
+
 @media (max-width: 768px) {
     .inputWrapper {
         flex-direction: column;

@@ -1,6 +1,11 @@
-import {useInputModal} from "@contexts/InputModalContext.jsx";
+import {useState} from "react";
 import styles from '@ui/SubjectPicker/styles.module.css';
-import {Button} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, IconButton} from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import InputField from "@ui/InputField/InputField.jsx";
+import SelectField from "@ui/SelectField/SelectField.jsx";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
@@ -8,29 +13,249 @@ import {useQueryClient, useMutation} from "@tanstack/react-query";
 import {useCurrentUser} from "@hooks/api/auth.js";
 import {useConfirmModal} from "@contexts/ConfirmModalContext.jsx";
 import axiosClient from "../../../axiosClient.js";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from "@mui/material/IconButton";
 
-/**
- *
- * @param {Object} props
- * @param {Object} props.grade - Grade object
- * @param {string} [props.title] - Optional title for the picker
- * @param {Object} [props.config] - Configuration object
- * @param {string} [props.config.buttonText] - Text for the add button
- * @param {Array} [props.config.columns] - Array of column definitions [{key: string, label: string}]
- * @param {Array} [props.config.modalFields] - Optional custom modal fields.
- * @param {Function} [props.config.formatItemOption] - Optional function to format item options
- * @param {Object} [props.config.subjectParams] - Custom parameters for filtering subjects
- * @param {Object} [props.config.assignedParams] - Custom parameters for filtering the assigned subjects
- * @param {string} language - The language of the grade
- */
+const semesterOptions = [
+    {value: 'الاول', label: 'الأول'},
+    {value: 'الثاني', label: 'الثاني'},
+    {value: 'طوال العام', label: 'طوال العام'},
+];
+
+const semesterAliases = {
+    'Ø§Ù„Ø§ÙˆÙ„': 'الاول',
+    'Ø§Ù„Ø«Ø§Ù†ÙŠ': 'الثاني',
+    'Ø·ÙˆØ§Ù„ Ø§Ù„Ø¹Ø§Ù…': 'طوال العام',
+};
+
+const blankComponent = () => ({
+    id: '',
+    name: '',
+    marks: '',
+    is_final_exam: false,
+});
+
+const normalizeSemester = (semester) => semesterAliases[semester] ?? semester ?? '';
+
+const normalizeComponentId = (id, index) => {
+    const fallback = `component_${index + 1}`;
+    return (id || fallback)
+        .toString()
+        .trim()
+        .replace(/\s+/g, '_') || fallback;
+};
+
+const toEditorValues = ({subject, includeSubject}) => ({
+    subject_id: includeSubject ? '' : subject?.id,
+    min_marks: subject?.min_marks ?? 0,
+    added_to_total: subject ? !!subject.added_to_total : true,
+    added_to_report: subject ? !!subject.added_to_report : true,
+    semester: normalizeSemester(subject?.semester),
+});
+
+const toEditorComponents = (subject) => {
+    const components = subject?.components?.length ? subject.components : [blankComponent()];
+
+    return components.map((component, index) => ({
+        id: component.id ?? '',
+        name: component.name ?? '',
+        marks: component.marks ?? '',
+        is_final_exam: !!component.is_final_exam,
+    }));
+};
+
+function SubjectGradingModal({
+                                 open,
+                                 mode,
+                                 subjects,
+                                 formatItemOption,
+                                 subject,
+                                 onCancel,
+                                 onSave,
+                                 isLoading,
+                             }) {
+    const includeSubject = mode === 'create';
+    const [values, setValues] = useState(() => toEditorValues({subject, includeSubject}));
+    const [components, setComponents] = useState(() => toEditorComponents(subject));
+    const totalMarks = components.reduce((sum, component) => sum + Number(component.marks || 0), 0);
+
+    const updateValue = (event) => {
+        const {name, value, type, checked} = event.target;
+        setValues((current) => ({
+            ...current,
+            [name]: type === 'checkbox' ? checked : value,
+        }));
+    };
+
+    const updateComponent = (index, field, value) => {
+        setComponents((current) => current.map((component, componentIndex) => (
+            componentIndex === index ? {...component, [field]: value} : component
+        )));
+    };
+
+    const addComponent = () => {
+        setComponents((current) => [...current, blankComponent()]);
+    };
+
+    const removeComponent = (index) => {
+        setComponents((current) => current.length === 1
+            ? current
+            : current.filter((_, componentIndex) => componentIndex !== index)
+        );
+    };
+
+    const submit = (event) => {
+        event.preventDefault();
+        onSave({
+            ...values,
+            components: components.map((component, index) => ({
+                id: normalizeComponentId(component.id || component.name, index),
+                name: component.name,
+                marks: Number(component.marks),
+                is_final_exam: !!component.is_final_exam,
+            })),
+        });
+    };
+
+    return (
+        <Dialog
+            open={open}
+            onClose={onCancel}
+            fullWidth
+            maxWidth="md"
+            className="editModal"
+            disableEscapeKeyDown={isLoading}
+        >
+            <DialogContent className={styles.modalContent}>
+                <form id="subject-grading-form" className={styles.modalForm} onSubmit={submit}>
+                    {includeSubject && (
+                        <SelectField
+                            name="subject_id"
+                            label="المادة"
+                            placeholder="اختر المادة"
+                            value={values.subject_id}
+                            handleChange={updateValue}
+                            options={subjects?.data?.map(formatItemOption) || []}
+                            isModal
+                        />
+                    )}
+
+                    <div className={styles.modalGrid}>
+                        <InputField
+                            name="min_marks"
+                            type="number"
+                            label="درجة النجاح"
+                            placeholder="درجة النجاح"
+                            min={0}
+                            value={values.min_marks}
+                            handleChange={updateValue}
+                            isModal
+                        />
+                        <SelectField
+                            name="semester"
+                            label="الفصل الدراسي"
+                            placeholder="اختر الفصل الدراسي"
+                            value={values.semester}
+                            handleChange={updateValue}
+                            options={semesterOptions}
+                            isModal
+                        />
+                        <InputField
+                            name="added_to_total"
+                            type="checkbox"
+                            label="تضاف للمجموع"
+                            value={values.added_to_total}
+                            handleChange={updateValue}
+                            isModal
+                        />
+                        <InputField
+                            name="added_to_report"
+                            type="checkbox"
+                            label="تضاف للتقرير"
+                            value={values.added_to_report}
+                            handleChange={updateValue}
+                            isModal
+                        />
+                    </div>
+
+                    <div className={styles.componentsEditorHeader}>
+                        <h3>تقسيم الدرجات</h3>
+                        <Button
+                            type="button"
+                            variant="contained"
+                            color="primary"
+                            onClick={addComponent}
+                        >
+                            إضافة مكون
+                        </Button>
+                    </div>
+
+                    <div className={styles.componentsEditor}>
+                        {components.map((component, index) => (
+                            <div className={styles.componentRow} key={`${component.id || 'component'}-${index}`}>
+                                <div className={styles.componentField}>
+                                    <InputField
+                                        name={`component_name_${index}`}
+                                        type="text"
+                                        label="اسم المكون"
+                                        placeholder="اسم المكون"
+                                        value={component.name}
+                                        handleChange={(event) => updateComponent(index, 'name', event.target.value)}
+                                        isModal
+                                    />
+                                </div>
+                                <div className={styles.componentField}>
+                                    <InputField
+                                        name={`component_marks_${index}`}
+                                        type="number"
+                                        label="الدرجة"
+                                        placeholder="الدرجة"
+                                        min={1}
+                                        value={component.marks}
+                                        handleChange={(event) => updateComponent(index, 'marks', event.target.value)}
+                                        isModal
+                                    />
+                                </div>
+                                <label className={styles.finalExamToggle}>
+                                    <input
+                                        type="checkbox"
+                                        checked={!!component.is_final_exam}
+                                        onChange={(event) => updateComponent(index, 'is_final_exam', event.target.checked)}
+                                    />
+                                    <span>اختبار نهائي</span>
+                                </label>
+                                <IconButton
+                                    type="button"
+                                    onClick={() => removeComponent(index)}
+                                    disabled={components.length === 1}
+                                    className={styles.removeComponentButton}
+                                >
+                                    <DeleteIcon/>
+                                </IconButton>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className={styles.totalMarks}>
+                        إجمالي درجات المادة: {totalMarks}
+                    </div>
+                </form>
+            </DialogContent>
+            <DialogActions className={styles.modalActions}>
+                <Button onClick={onCancel} sx={{color: 'var(--primary-text-color)'}} disabled={isLoading}>
+                    إلغاء
+                </Button>
+                <Button form="subject-grading-form" type="submit" variant="contained" color="primary"
+                        disabled={isLoading}>
+                    {isLoading ? 'جاري الحفظ...' : 'حفظ'}
+                </Button>
+            </DialogActions>
+        </Dialog>
+    );
+}
+
 export default function SubjectPicker({grade, title, config = {}, language}) {
-    const {showInputModal, hideInputModal} = useInputModal();
     const endpoint = `grades/${grade?.id}/subjects`;
     const mutation = useCreate(endpoint);
-
+    const [editor, setEditor] = useState(null);
 
     const {
         data: subjects,
@@ -42,34 +267,66 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
 
     const {data: user, isLoading: userIsLoading} = useCurrentUser();
     const {confirm} = useConfirmModal();
+    const {showSnackbar} = useSnackbar();
+    const queryClient = useQueryClient();
+
+    const closeEditor = () => setEditor(null);
+
+    const validateEditorData = (data, mode) => {
+        if (mode === 'create' && !data.subject_id) {
+            showSnackbar('يرجى اختيار المادة', 'error');
+            return false;
+        }
+
+        if (!data.semester) {
+            showSnackbar('يرجى اختيار الفصل الدراسي', 'error');
+            return false;
+        }
+
+        if (!data.components.length) {
+            showSnackbar('يجب إضافة مكون واحد على الأقل', 'error');
+            return false;
+        }
+
+        if (data.components.some((component) => !component.name || Number(component.marks) <= 0)) {
+            showSnackbar('يرجى إدخال اسم ودرجة صحيحة لكل مكون', 'error');
+            return false;
+        }
+
+        if (!data.components.some((component) => component.is_final_exam)) {
+            showSnackbar('يجب تحديد مكون واحد على الأقل كاختبار نهائي', 'error');
+            return false;
+        }
+
+        return true;
+    };
 
     const deleteMutation = useMutation({
         mutationFn: (ids) => axiosClient.delete(endpoint, {data: {subjects: ids}}),
         onSuccess: () => {
-            showSnackbar("تم حذف المادة بنجاح");
+            showSnackbar('تم حذف المادة بنجاح');
             queryClient.invalidateQueries({queryKey: [endpoint]});
             queryClient.invalidateQueries({queryKey: [`grades/${grade?.id}/subjects/available`]});
         },
         onError: (error) => {
-            showSnackbar(error?.response?.data?.message ?? "حدث خطأ اثناء حذف المادة", "error");
+            showSnackbar(error?.response?.data?.message ?? 'حدث خطأ أثناء حذف المادة', 'error');
         }
     });
 
     const updateMutation = useMutation({
         mutationFn: (data) => axiosClient.put(endpoint, data),
         onSuccess: () => {
-            showSnackbar("تم تحديث المادة بنجاح");
-            hideInputModal();
+            showSnackbar('تم تحديث المادة بنجاح');
+            closeEditor();
             queryClient.invalidateQueries({queryKey: [endpoint]});
         },
         onError: (error) => {
-            showSnackbar(error?.response?.data?.message ?? "حدث خطأ اثناء تحديث المادة", "error");
+            showSnackbar(error?.response?.data?.message ?? 'حدث خطأ أثناء تحديث المادة', 'error');
         }
     });
 
-    const userCanEdit = user?.role.includes("Super Admin") || user?.permissions.includes(`update grade-subjects`);
-    const userCanDelete = user?.role.includes("Super Admin") || user?.permissions.includes(`delete grade-subjects`);
-
+    const userCanEdit = user?.role.includes('Super Admin') || user?.permissions.includes('update grade-subjects');
+    const userCanDelete = user?.role.includes('Super Admin') || user?.permissions.includes('delete grade-subjects');
 
     const {data: assignedSubjects, isLoading: isLoadingAssigned} = useGetAll(
         endpoint,
@@ -82,12 +339,9 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
         }
     );
 
-    const {showSnackbar} = useSnackbar();
-    const queryClient = useQueryClient();
-
     const defaultFormatItemOption = (item) => ({
         value: item.id,
-        label: item.name || item.type || `Subject ${item.id}`
+        label: item.name || item.type || `مادة ${item.id}`
     });
 
     const formatItemOption = config.formatItemOption || defaultFormatItemOption;
@@ -96,8 +350,21 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
         {key: 'name', label: 'اسم المادة'},
         {key: 'type', label: 'النوع'},
         {key: 'language', label: 'اللغة'},
-        {key: 'min_marks', label: 'الدرجة الصغرى'},
-        {key: 'max_marks', label: 'الدرجة النهائية'},
+        {key: 'min_marks', label: 'درجة النجاح'},
+        {key: 'total_marks', label: 'إجمالي الدرجات'},
+        {
+            key: 'components',
+            label: 'تقسيم الدرجات',
+            render: (subject) => (
+                <div className={styles.componentsList}>
+                    {subject.components?.map((component) => (
+                        <span key={component.id} className={styles.componentItem}>
+                            {component.name}: {component.marks} {component.is_final_exam ? ' - نهائي' : ''}
+                        </span>
+                    ))}
+                </div>
+            )
+        },
         {
             key: 'added_to_total',
             label: 'تضاف للمجموع',
@@ -109,167 +376,56 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
             render: (subject) => (subject.added_to_report ? 'نعم' : 'لا')
         },
         {key: 'semester', label: 'الفصل الدراسي'},
-        {key: 'classwork_marks', label: 'درجات اعمال السنة'},
-        {key: 'exam_marks', label: 'درجات الامتحان'},
     ];
 
-    const buttonText = config.buttonText || "إضافة مادة";
+    const buttonText = config.buttonText || 'إضافة مادة';
 
-    const handleItemAddition = () => {
-        showInputModal({
-            fields: config.modalFields ?? [
-                {
-                    name: "subject_id",
-                    type: "select",
-                    required: true,
-                    placeholder: "اختر المادة",
-                    label: "المادة",
-                    options: subjects?.data?.map(formatItemOption) || []
-                },
-                {
-                    name: "min_marks",
-                    type: "number",
-                    required: true,
-                    label: "الدرجة الصغري",
-                    placeholder: "الدرجة الصغري",
-                    min: 0
-                },
-                {
-                    name: "max_marks",
-                    type: "number",
-                    required: true,
-                    label: "الدرجة النهائية",
-                    placeholder: "الدرجة النهائية",
-                    min: 0
-                },
-                {
-                    name: "classwork_marks",
-                    type: "number",
-                    required: true,
-                    label: "درجة اعمال السنة",
-                    placeholder: "درجة اعمال السنة",
-                    min: 0
-                },
-                {
-                    name: "added_to_total",
-                    type: "checkbox",
-                    label: "تضاف للمجموع",
+    const handleSave = (data) => {
+        const mode = editor?.mode ?? 'create';
 
-                    value: false
-                },
-                {
-                    name: "added_to_report",
-                    type: "checkbox",
-                    label: "تضاف للتقرير",
+        if (!validateEditorData(data, mode)) {
+            return;
+        }
 
-                    value: false
-                },
-                {
-                    name: "semester",
-                    required: true,
-                    label: "الفصل الدراسي",
-                    type: "select",
-                    options: [
-                        {value: "الاول", label: "الاول"},
-                        {value: "الثاني", label: "الثاني"},
-                        {value: "طوال العام", label: "طوال العام"}
-                    ]
-                },
+        const payload = {
+            subject_id: mode === 'edit' ? editor.subject.id : data.subject_id,
+            min_marks: Number(data.min_marks ?? 0),
+            added_to_total: !!data.added_to_total,
+            added_to_report: !!data.added_to_report,
+            semester: data.semester,
+            language,
+            components: data.components,
+        };
 
+        if (mode === 'edit') {
+            updateMutation.mutate(payload);
+            return;
+        }
 
-            ],
-            onSave: (formData) => {
-                formData.language = language
-                mutation.mutate(formData, {
-                    onSuccess: () => {
-                        showSnackbar("تم اضافة المادة بنجاح");
-                        hideInputModal();
-                        queryClient.invalidateQueries({queryKey: [endpoint]});
-                        queryClient.invalidateQueries({queryKey: [`grades/${grade?.id}/subjects/available`]});
-                    },
-                    onError: (error) => {
-                        showSnackbar(
-                            error?.response?.data?.message ?? "حدث خطأ اثناء اضافة المادة",
-                            "error"
-                        );
-                    }
-                });
+        mutation.mutate(payload, {
+            onSuccess: () => {
+                showSnackbar('تم إضافة المادة بنجاح');
+                closeEditor();
+                queryClient.invalidateQueries({queryKey: [endpoint]});
+                queryClient.invalidateQueries({queryKey: [`grades/${grade?.id}/subjects/available`]});
             },
-            isLoading: mutation.isLoading,
-            buttonText: buttonText
+            onError: (error) => {
+                showSnackbar(
+                    error?.response?.data?.message ?? 'حدث خطأ أثناء إضافة المادة',
+                    'error'
+                );
+            }
         });
     };
 
     const handleRowDelete = async (id) => {
         const confirmed = await confirm({
-            message: "هل أنت متأكد من حذف هذه المادة؟",
+            message: 'هل أنت متأكد من حذف هذه المادة؟',
             warning: 'حذف هذه المادة قد يؤدي لحذف البيانات المرتبطة بها'
         });
         if (confirmed) {
             deleteMutation.mutate([id]);
         }
-    };
-
-    const handleEditClick = (subject) => {
-        showInputModal({
-            fields: [
-                {
-                    name: "min_marks",
-                    type: "number",
-                    required: true,
-                    label: "الدرجة الصغري",
-                    value: subject.min_marks,
-                    min: 0
-                },
-                {
-                    name: "max_marks",
-                    type: "number",
-                    required: true,
-                    label: "الدرجة النهائية",
-                    value: subject.max_marks,
-                    min: 0
-                },
-                {
-                    name: "classwork_marks",
-                    type: "number",
-                    required: true,
-                    label: "درجة اعمال السنة",
-                    value: subject.classwork_marks,
-                    min: 0
-                },
-                {
-                    name: "added_to_total",
-                    type: "checkbox",
-                    label: "تضاف للمجموع",
-                    value: !!subject.added_to_total
-                },
-                {
-                    name: "added_to_report",
-                    type: "checkbox",
-                    label: "تضاف للتقرير",
-                    value: !!subject.added_to_report
-                },
-                {
-                    name: "semester",
-                    required: true,
-                    label: "الفصل الدراسي",
-                    type: "select",
-                    value: subject.semester,
-                    options: [
-                        {value: "الاول", label: "الاول"},
-                        {value: "الثاني", label: "الثاني"},
-                        {value: "طوال العام", label: "طوال العام"}
-                    ]
-                },
-            ],
-            onSave: (formData) => {
-
-                formData.subject_id = subject.id;
-                updateMutation.mutate(formData);
-            },
-            isLoading: updateMutation.isLoading,
-            buttonText: "حفظ التغييرات"
-        });
     };
 
     if (isLoadingSubjects || isLoadingAssigned || userIsLoading) {
@@ -314,8 +470,8 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
                                 ))}
                                 {userCanEdit && (
                                     <td className={styles.cell}>
-                                        <IconButton onClick={() => handleEditClick(subject)}>
-                                            <EditIcon sx={{color: "var(--color-focus)"}}/>
+                                        <IconButton onClick={() => setEditor({mode: 'edit', subject})}>
+                                            <EditIcon sx={{color: 'var(--color-focus)'}}/>
                                         </IconButton>
                                     </td>
                                 )}
@@ -335,12 +491,26 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
                 <Button
                     variant="contained"
                     color="primary"
-                    onClick={handleItemAddition}
-                    sx={{width: "fit-content"}}
+                    onClick={() => setEditor({mode: 'create', subject: null})}
+                    sx={{width: 'fit-content'}}
                 >
                     {buttonText}
                 </Button>
             </div>
+
+            {editor && (
+                <SubjectGradingModal
+                    key={`${editor.mode}-${editor.subject?.id ?? 'new'}`}
+                    open={!!editor}
+                    mode={editor.mode}
+                    subject={editor.subject}
+                    subjects={subjects}
+                    formatItemOption={formatItemOption}
+                    onCancel={closeEditor}
+                    onSave={handleSave}
+                    isLoading={mutation.isLoading || updateMutation.isLoading}
+                />
+            )}
         </div>
     );
 }

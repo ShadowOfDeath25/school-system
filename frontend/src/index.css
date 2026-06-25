@@ -64,7 +64,25 @@ textarea {
 ul {
     list-style-position: inside;
 }
+::-webkit-scrollbar {
+    width: 6px;
+    height: 8px;
+    background: transparent;
+}
 
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(from var(--secondary-color) r g b / 0.25);
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(from var(--secondary-color) r g b / 0.5);
+}
 .serverError {
 
     height: 40vh;

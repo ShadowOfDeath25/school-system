@@ -14,18 +14,27 @@ class GradeSubjectResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $components = $this->pivot->components ?? [];
+        $totalMarks = collect($components)->sum(fn ($component) => (float) ($component['marks'] ?? 0));
+        $finalExamMarks = collect($components)
+            ->where('is_final_exam', true)
+            ->sum(fn ($component) => (float) ($component['marks'] ?? 0));
+
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'subject_id' => $this->id,
             'language' => $this->pivot->language,
             'type' => $this->type,
             'min_marks' => $this->pivot->min_marks,
-            'max_marks' => $this->pivot->max_marks,
+            'max_marks' => $totalMarks,
+            'total_marks' => $totalMarks,
             'added_to_total' => $this->pivot->added_to_total,
             'added_to_report' => $this->pivot->added_to_report,
             'semester' => $this->pivot->semester,
-            'classwork_marks' => $this->pivot->classwork_marks,
-            'exam_marks' => $this->pivot->exam_marks,
+            'components' => $components,
+            'exam_marks' => $finalExamMarks,
+            'final_exam_marks' => $finalExamMarks,
         ];
     }
 }

@@ -104,3 +104,154 @@
     font-weight: bold;
 
 }
+
+.componentsList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+    text-align: right;
+}
+
+.componentItem {
+    color: var(--primary-text-color);
+    font-size: .9rem;
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.modalContent {
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    direction: rtl;
+}
+
+.modalForm {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.modalGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.modalGrid > * {
+    min-width: 0;
+}
+
+.modalGrid > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+.modalGrid > div > label {
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: right;
+}
+
+.modalGrid > div > div {
+    width: 100% !important;
+}
+
+.componentsEditorHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-top: 1px solid rgba(255, 255, 255, .12);
+    padding-top: 14px;
+}
+
+.componentsEditorHeader h3 {
+    margin: 0;
+    color: var(--primary-text-color);
+    font-size: 1.05rem;
+}
+
+.componentsEditor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-height: 360px;
+    overflow-y: auto;
+    padding-inline-end: 4px;
+}
+
+.componentRow {
+    display: grid;
+    grid-template-columns: minmax(280px, 1.6fr) minmax(130px, .7fr) 128px 40px;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid rgba(191, 161, 92, 0.24);
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, .03);
+}
+
+.componentField {
+    min-width: 0;
+}
+
+.removeComponentButton {
+    color: var(--color-danger) !important;
+    align-self: end;
+    margin-bottom: 5px !important;
+}
+
+.finalExamToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    height: 42px;
+    margin-top: 24px;
+    color: var(--primary-text-color);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.finalExamToggle input {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.totalMarks {
+    color: var(--ternary-text-color);
+    font-weight: bold;
+    text-align: left;
+    padding-top: 4px;
+}
+
+.modalActions {
+    background-color: var(--primary-color);
+    direction: rtl;
+}
+
+@media (max-width: 780px) {
+    .modalGrid,
+    .componentRow {
+        grid-template-columns: 1fr;
+    }
+
+    .componentsEditorHeader {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .removeComponentButton {
+        justify-self: end;
+    }
+
+    .finalExamToggle {
+        margin-top: 0;
+    }
+}

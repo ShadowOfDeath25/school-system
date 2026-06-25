@@ -16,17 +16,17 @@ export default function ViewExams() {
                 additionalFields={[
                     {
                         name: "level",
-                        label: "المرحلة",
+                        label: "Ø§Ù„Ù…Ø±Ø­Ù„Ø©",
                         type: "select",
-                        placeholder: "اختر المرحلة",
+                        placeholder: "Ø§Ø®ØªØ± Ø§Ù„Ù…Ø±Ø­Ù„Ø©",
                         options: ClassroomHelper.LEVELS
                     },
                     {
                         name: "grade",
                         type: "select",
-                        label: "الصف",
+                        label: "Ø§Ù„ØµÙ",
                         dependency: 'level',
-                        placeholder: "اختر الصف",
+                        placeholder: "Ø§Ø®ØªØ± Ø§Ù„ØµÙ",
                         options: ClassroomHelper.getGradeOptionsByLevel,
                         disabled: (value) => !value
                     },
@@ -36,30 +36,31 @@ export default function ViewExams() {
                 resource={"exams"}
                 filters={filters}
                 fields={[
-                    {name: "name", label: "اسم الاختبار", editable: false},
-                    {name: "type", label: "نوع الاختبار", editable: false},
+                    {name: "name", label: "Ø§Ø³Ù… Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±", editable: false},
+                    {name: "type", label: "Ù†ÙˆØ¹ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±", editable: false},
+                    {name: "component_name", label: "مكون الدرجات", editable: false},
                     {
                         name: "marks",
-                        label: "الدرجة العظمي",
+                        label: "Ø§Ù„Ø¯Ø±Ø¬Ø© Ø§Ù„Ø¹Ø¸Ù…ÙŠ",
                         editable:false,
                         type: "number",
                         required: true,
-                        placeholder: "الدرجة العظمي",
+                        placeholder: "Ø§Ù„Ø¯Ø±Ø¬Ø© Ø§Ù„Ø¹Ø¸Ù…ÙŠ",
                     },
                     {
                         name: "date",
-                        label: "موعد الاختبار",
+                        label: "Ù…ÙˆØ¹Ø¯ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±",
                         type: "datetime-local",
                         required: true,
                         viewable: false
                     },
-                    {name: "formatted_date", label: "موعد الاختبار", editable: false},
+                    {name: "formatted_date", label: "Ù…ÙˆØ¹Ø¯ Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±", editable: false},
                     {
                         name: "duration_in_hours",
-                        label: "مدة الاختبار",
+                        label: "Ù…Ø¯Ø© Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±",
                         type: "number",
                         required: true,
-                        placeholder: "مدة الاختبار"
+                        placeholder: "Ù…Ø¯Ø© Ø§Ù„Ø§Ø®ØªØ¨Ø§Ø±"
                     },
                 ]}
             />

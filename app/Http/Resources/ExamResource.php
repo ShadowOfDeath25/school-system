@@ -17,6 +17,7 @@ class ExamResource extends JsonResource
     {
         Carbon::setLocale('ar');
         $this->load('gradeSubject.subject');
+        $component = $this->gradeSubject->component($this->component_id);
 
         return [
             'id' => $this->id,
@@ -24,6 +25,9 @@ class ExamResource extends JsonResource
             'level' => $this->level,
             'formatted_date' => (new Carbon($this->date))->translatedFormat('h:i a - d/m/Y'),
             'subject' => $this->gradeSubject->subject->name,
+            'component_id' => $this->component_id,
+            'component_name' => $component['name'] ?? null,
+            'component' => $component,
             'academic_year' => $this->academic_year,
             'grade' => $this->gradeSubject->grade,
             'type' => $this->type,
@@ -33,7 +37,6 @@ class ExamResource extends JsonResource
             'semester' => $this->semester,
             'language' => $this->language,
             'date' => $this->date,
-
         ];
     }
 }

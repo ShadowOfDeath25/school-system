@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('exams', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(GradeSubject::class, 'grade_subject_id')->constrained()->cascadeOnDelete();
+            $table->string('component_id');
             $table->string('academic_year');
             $table->string('name');
             $table->dateTime('date');

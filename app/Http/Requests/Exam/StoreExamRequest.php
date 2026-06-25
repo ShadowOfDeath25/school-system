@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Exam;
 
+use App\Models\GradeSubject;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -23,16 +24,28 @@ class StoreExamRequest extends FormRequest
     public function rules(): array
     {
         return [
-
             'name' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
-            'language' => ['required', 'string', 'in:عربي,لغات', 'max:255'],
+            'language' => ['required', 'string', 'in:Ø¹Ø±Ø¨ÙŠ,Ù„ØºØ§Øª', 'max:255'],
             'duration_in_hours' => ['required', 'numeric'],
-            'type' => ['required', 'string', 'in:دور اول,دور تاني', 'max:255'],
+            'type' => ['required', 'string', 'in:Ø¯ÙˆØ± Ø§ÙˆÙ„,Ø¯ÙˆØ± ØªØ§Ù†ÙŠ', 'max:255'],
             'academic_year' => ['required', 'string', 'exists:academic_years,name'],
             'grade_subject_id' => ['required', 'exists:grade_subject,id'],
-            'semester' => ['required', 'string', 'in:الاول,الثاني'],
+            'component_id' => ['required', 'string'],
+            'semester' => ['required', 'string', 'in:Ø§Ù„Ø§ÙˆÙ„,Ø§Ù„Ø«Ø§Ù†ÙŠ'],
         ];
+    }
 
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $gradeSubject = GradeSubject::find($this->grade_subject_id);
+
+            if (! $gradeSubject || $gradeSubject->component($this->component_id)) {
+                return;
+            }
+
+            $validator->errors()->add('component_id', 'المكون المختار غير موجود لهذه المادة.');
+        });
     }
 }

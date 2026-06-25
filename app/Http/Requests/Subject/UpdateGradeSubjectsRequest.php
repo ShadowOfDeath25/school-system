@@ -23,12 +23,15 @@ class UpdateGradeSubjectsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'min_marks' => ['numeric'],
-            'subject_id' => ['exists:subjects,id'],
-            'max_marks' => ['numeric', 'gt:min_marks'],
+            'min_marks' => ['numeric', 'min:0'],
+            'subject_id' => ['required', 'exists:subjects,id'],
+            'components' => ['array', 'min:1'],
+            'components.*.id' => ['nullable', 'string', 'max:255'],
+            'components.*.name' => ['required_with:components', 'string', 'max:255'],
+            'components.*.marks' => ['required_with:components', 'numeric', 'gt:0'],
+            'components.*.is_final_exam' => ['required_with:components', 'boolean'],
             'added_to_total' => ['boolean'],
             'added_to_report' => ['boolean'],
-            'classwork_marks' => ['numeric', 'lt:max_marks'],
             'semester' => ['string', 'in:الاول,الثاني,طوال العام'],
             'language' => ['string', 'in:عربي,لغات'],
         ];

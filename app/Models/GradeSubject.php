@@ -20,12 +20,34 @@ class GradeSubject extends Pivot
         'added_to_report',
         'semester',
         'language',
-        'classwork_marks',
+        'components',
     ];
 
-    public function getExamMarksAttribute()
+    protected $casts = [
+        'components' => 'array',
+        'added_to_total' => 'boolean',
+        'added_to_report' => 'boolean',
+    ];
+
+    public function getTotalMarksAttribute(): float|int
     {
-        return $this->max_marks - $this->classwork_marks;
+        return collect($this->components ?? [])->sum(fn ($component) => (float) ($component['marks'] ?? 0));
+    }
+
+    public function getExamMarksAttribute(): float|int
+    {
+        return collect($this->components ?? [])
+            ->where('is_final_exam', true)
+            ->sum(fn ($component) => (float) ($component['marks'] ?? 0));
+    }
+
+    public function component(?string $componentId): ?array
+    {
+        if (! $componentId) {
+            return null;
+        }
+
+        return collect($this->components ?? [])->firstWhere('id', $componentId);
     }
 
     public function subject(): BelongsTo

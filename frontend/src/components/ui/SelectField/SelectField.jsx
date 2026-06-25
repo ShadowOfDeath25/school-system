@@ -14,6 +14,7 @@ export default function SelectField({
     options = [],
     multiple = false,
     disabled = false,
+    isModal = false,
 }) {
     const isInvalid = isValid === false;
 
@@ -29,7 +30,7 @@ export default function SelectField({
 
 
     return (
-        <div className={`${styles.inputWrapper} ${label ? '' : styles.noLabel}`}>
+        <div className={`${styles.inputWrapper} ${label ? '' : styles.noLabel} ${isModal ? styles.modalInputWrapper : ''}`}>
             {label && <label htmlFor={id}>{label}</label>}
             <div className={styles.selectContainer}>
                 <Select

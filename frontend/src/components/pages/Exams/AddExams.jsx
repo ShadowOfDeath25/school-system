@@ -1,7 +1,6 @@
 import Page from "@ui/Page/Page.jsx";
 import Form from "@ui/Form/Form.jsx";
 import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
-import { SubjectHelper } from "@utils/helpers/SubjectHelper.js";
 import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { useState } from "react";
@@ -11,11 +10,11 @@ export default function AddExams() {
     const [formData, setFormData] = useState({});
     const { data: subjects } = useGetAll(`grades/${formData.grade}/subjects`, { language: formData.language }, {
         enabled: !!(formData.language && formData.grade)
-    })
+    });
+    const selectedSubject = subjects?.data?.find((subject) => Number(subject.id) === Number(formData.grade_subject_id));
     const { data: academicYears = [] } = useGetAll('academic-years', {}, {
         select: (data) => data?.data?.map((academicYear) => academicYear.name)
-    })
-    console.log(formData)
+    });
     const mutation = useCreate('exams');
     const { showSnackbar } = useSnackbar();
     const [serverErrors, setServerErrors] = useState(null);
@@ -28,7 +27,7 @@ export default function AddExams() {
             type: "select",
             required: true,
             placeholder: "اختر الفصل الدراسي",
-            options: ["الاول", "الثاني"]
+            options: ["Ø§Ù„Ø§ÙˆÙ„", "Ø§Ù„Ø«Ø§Ù†ÙŠ"]
         },
         ClassroomHelper.FIELDS.LANGUAGE,
         ClassroomHelper.FIELDS.LEVEL,
@@ -45,24 +44,36 @@ export default function AddExams() {
                     .map(subject => ({ label: subject.name, value: subject.id })) : [],
             disabled: (values) => values.some(value => !value)
         },
+        {
+            name: "component_id",
+            label: "مكون الدرجات",
+            type: "select",
+            placeholder: "اختر المكون",
+            required: true,
+            dependency: 'grade_subject_id',
+            options: () => selectedSubject?.components?.map((component) => ({
+                label: `${component.name} - ${component.marks} درجة`,
+                value: component.id,
+            })) ?? [],
+            disabled: (value) => !value
+        },
         ExamHelper.FIELDS.TYPE,
         ExamHelper.FIELDS.DATE,
         ExamHelper.FIELDS.DURATION_IN_HOURS,
-    ]
-
+    ];
 
     const onSubmit = (data) => {
         setServerErrors(null);
         mutation.mutate(data, {
             onSuccess: () => {
-                showSnackbar('تمت اضافة الاختبار بنجاح')
+                showSnackbar('تمت إضافة الاختبار بنجاح');
             },
             onError: (error) => {
-                showSnackbar('حدث خطأ أثناء إضافة الاختبار', 'error')
-                setServerErrors(error?.response?.data?.errors)
+                showSnackbar('حدث خطأ أثناء إضافة الاختبار', 'error');
+                setServerErrors(error?.response?.data?.errors);
             }
-        })
-    }
+        });
+    };
 
     return (<>
         <Page>

@@ -5,9 +5,9 @@
     box-shadow: var(--container-box-shadow);
     border-top: var(--container-border);
     color: var(--primary-text-color);
-    /*overflow-x: auto;*/
-    scrollbar-width: none;
-    overflow-y: hidden;
+    overflow-x: auto;
+
+    overflow-y: auto;
     padding: 20px;
 
 }
