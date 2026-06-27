@@ -32,6 +32,6 @@ class Subject extends Model
     {
         return $this->BelongsToMany(Grade::class)
             ->using(GradeSubject::class)
-            ->withPivot(['min_marks', 'max_marks', 'grade_id', 'added_to_total', 'added_to_report', 'semester', 'components']);
+            ->withPivot(['id', 'min_marks', 'max_marks', 'grade_id', 'added_to_total', 'added_to_report', 'semester', 'components']);
     }
 }

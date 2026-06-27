@@ -22,6 +22,7 @@ class GradeSubjectResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'grade_subject_id' => $this->pivot->id,
             'name' => $this->name,
             'subject_id' => $this->id,
             'language' => $this->pivot->language,

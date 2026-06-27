@@ -1,93 +1,91 @@
 const LEVELS = [
-    'رياض اطفال',
+    'رياض أطفال',
     'ابتدائي',
     'اعدادي'
 ];
 
 const LANGUAGES = [
     'لغات',
-    "عربي"
+    'عربي'
 ];
 
 const GRADES = {
-    "رياض اطفال": [
-        {label: "الأول", value: 1},
-        {label: "الثاني", value: 2},
+    'رياض أطفال': [
+        {label: 'الأول', value: 1},
+        {label: 'الثاني', value: 2},
     ],
-    "ابتدائي": [
-        {label: "الاول", value: 3},
-        {label: "الثاني", value: 4},
-        {label: "الثالث", value: 5},
-        {label: "الرابع", value: 6},
-        {label: "الخامس", value: 7},
-        {label: "السادس", value: 8},
+    'ابتدائي': [
+        {label: 'الاول', value: 3},
+        {label: 'الثاني', value: 4},
+        {label: 'الثالث', value: 5},
+        {label: 'الرابع', value: 6},
+        {label: 'الخامس', value: 7},
+        {label: 'السادس', value: 8},
     ],
-    "اعدادي": [
-        {label: "الأول", value: 9},
-        {label: "الثاني", value: 10},
-        {label: "الثالث", value: 11},
+    'اعدادي': [
+        {label: 'الأول', value: 9},
+        {label: 'الثاني', value: 10},
+        {label: 'الثالث', value: 11},
     ],
 };
 
 const FIELDS = {
     LEVEL: {
-        name: "level",
-        label: "المرحلة",
-        placeholder: "اختر مرحلة",
-        type: "select",
+        name: 'level',
+        label: 'المرحلة',
+        placeholder: 'اختر المرحلة',
+        type: 'select',
         required: true,
         options: LEVELS
     },
     LANGUAGE: {
-        name: "language",
-        label: "اللغة",
-        placeholder: "اختر اللغة",
-        type: "radio",
+        name: 'language',
+        label: 'اللغة',
+        placeholder: 'اختر اللغة',
+        type: 'radio',
         required: true,
         options: LANGUAGES
     },
     ACADEMIC_YEAR: {
-        name: "academic_year",
-        label: "العام الدراسي",
-        placeholder: "اختر العام الدراسي",
-        type: "select",
+        name: 'academic_year',
+        label: 'العام الدراسي',
+        placeholder: 'اختر العام الدراسي',
+        type: 'select',
         required: true,
         options: []
     },
     MAX_CAPACITY: {
-        name: "max_capacity",
-        type: "number",
+        name: 'max_capacity',
+        type: 'number',
         required: true,
-        placeholder: "الطاقة الاستيعابية",
-        label: "الطاقة الاستيعابية"
+        placeholder: 'الطاقة الاستيعابية',
+        label: 'الطاقة الاستيعابية'
     },
     GRADE: {
-        name: "grade",
-        placeholder: "اختر الصف",
-        label: "الصف",
-        type: "select",
+        name: 'grade',
+        placeholder: 'اختر الصف',
+        label: 'الصف',
+        type: 'select',
         required: true,
         options: (value) => ClassroomHelper.getGradeOptionsByLevel(value),
         disabled: (value) => !value,
         dependency: 'level'
     },
     LEADER: {
-        name: "leader",
-        placeholder: "رائد الفصل",
-        type: "text",
+        name: 'leader',
+        placeholder: 'رائد الفصل',
+        type: 'text',
         required: false,
-        label: "رائد الفصل"
+        label: 'رائد الفصل'
     },
     CLASSROOM: {
-        name: "classroom",
-        type: "select",
+        name: 'classroom',
+        type: 'select',
         multiple: true,
-        placeholder: "اختر الفصل",
-        label: "الفصل",
+        placeholder: 'اختر الفصل',
+        label: 'الفصل',
         disabled: (values) => values.some(value => !value),
-
-
-        dependency: ["classroom.grade", "classroom.level"]
+        dependency: ['classroom.grade', 'classroom.level']
     }
 };
 
@@ -96,8 +94,6 @@ export const ClassroomHelper = {
     LANGUAGES,
     GRADES,
     FIELDS,
-
-
     getGradeOptionsByLevel: (arg) => {
         let level;
         if (typeof arg === 'string') {
@@ -108,7 +104,5 @@ export const ClassroomHelper = {
 
         return GRADES[level] || [];
     },
-    getAllFields: () => {
-        return Object.values(FIELDS)
-    }
+    getAllFields: () => Object.values(FIELDS)
 };

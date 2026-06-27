@@ -32,10 +32,9 @@ export default function Table({
     const {confirm} = useConfirmModal();
     const {showSnackbar} = useSnackbar();
     const {t} = useTranslation();
-    const {showInputModal,  hideInputModal} = useInputModal();
+    const {showInputModal, hideInputModal} = useInputModal();
 
     const updateMutation = useUpdate(resource);
-
     const deleteMutation = useDelete(resource);
 
     useEffect(() => {
@@ -97,13 +96,13 @@ export default function Table({
         const confirmed = await confirm({
             message: "هل أنت متأكد من حذف هذا العنصر؟",
             warning: 'حذف هذا العنصر قد يؤدي لحذف كل العناصر المرتبطة به'
-        })
+        });
         if (confirmed) {
             deleteMutation.mutate(id, {
                 onSuccess: () => {
-                    showSnackbar("تم حذف العنصر بنجاح")
+                    showSnackbar("تم حذف العنصر بنجاح");
                 }, onError: (error) => {
-                    showSnackbar(`حدث خطأ أثناء حذف العنصر: ${error.response.data.message}`, "error")
+                    showSnackbar(`حدث خطأ أثناء حذف العنصر: ${error.response.data.message}`, "error");
                 }
             });
         }
@@ -116,19 +115,17 @@ export default function Table({
             fields: modalFields,
             item: item,
             onSave: (formData) => {
-                console.log(formData)
                 updateMutation.mutate({...formData, id: item.id}, {
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
                         hideInputModal();
                     }, onError: () => {
-                        showSnackbar("حدث خطأ اثناء تحديث العنصر", "error")
+                        showSnackbar("حدث خطأ أثناء تحديث العنصر", "error");
                     }
                 });
             }, isLoading: updateMutation.isLoading, serverErrors: updateMutation.error?.response?.data?.errors,
         });
     };
-
 
     const userCanEdit = editable && user?.role.includes("Super Admin") || user?.permissions.includes(`update ${resource}`);
     const userCanDelete = deletable && user?.role.includes("Super Admin") || user?.permissions.includes(`delete ${resource}`);
@@ -171,7 +168,7 @@ export default function Table({
                 setPerPage={setPerPage}
                 searchable={searchable}
             />
-            <div className={styles. tableContainer}>
+            <div className={styles.tableContainer}>
                 <TablePresenter
                     data={tableData}
                     columnKeys={columnKeys}

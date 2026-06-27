@@ -5,6 +5,7 @@ namespace App\Http\Requests\Exam;
 use App\Models\GradeSubject;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateExamRequest extends FormRequest
 {
@@ -26,13 +27,13 @@ class UpdateExamRequest extends FormRequest
         return [
             'name' => ['string', 'max:255'],
             'date' => ['date'],
-            'language' => ['string', 'in:Ø¹Ø±Ø¨ÙŠ,Ù„ØºØ§Øª', 'max:255'],
+            'language' => ['string', Rule::in(['عربي', 'لغات', 'Ø¹Ø±Ø¨ÙŠ', 'Ù„ØºØ§Øª']), 'max:255'],
             'duration_in_hours' => ['numeric'],
-            'type' => ['string', 'in:Ø¯ÙˆØ± Ø§ÙˆÙ„,Ø¯ÙˆØ± ØªØ§Ù†ÙŠ', 'max:255'],
+            'type' => ['string', Rule::in(['دور اول', 'دور أول', 'دور ثاني', 'دور تاني', 'Ø¯ÙˆØ± Ø§ÙˆÙ„', 'Ø¯ÙˆØ± Ø«Ø§Ù†ÙŠ', 'Ø¯ÙˆØ± ØªØ§Ù†ÙŠ']), 'max:255'],
             'academic_year' => ['string', 'exists:academic_years,name'],
             'grade_subject_id' => ['exists:grade_subject,id'],
             'component_id' => ['string'],
-            'semester' => ['string', 'in:Ø§Ù„Ø§ÙˆÙ„,Ø§Ù„Ø«Ø§Ù†ÙŠ'],
+            'semester' => ['string', Rule::in(['الاول', 'الأول', 'الثاني', 'Ø§Ù„Ø§ÙˆÙ„', 'Ø§Ù„Ø£ÙˆÙ„', 'Ø§Ù„Ø«Ø§Ù†ÙŠ'])],
         ];
     }
 

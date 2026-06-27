@@ -5,13 +5,42 @@ import { useCreate, useGetAll } from "@hooks/api/useCrud.js";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { useState } from "react";
 import { ExamHelper } from "@helpers/ExamHelper.js";
+const firstSemesterValues = new Set(['الاول', 'الأول', 'Ø§Ù„Ø§ÙˆÙ„', 'Ø§Ù„Ø£ÙˆÙ„']);
+const secondSemesterValues = new Set(['الثاني', 'Ø§Ù„Ø«Ø§Ù†ÙŠ']);
+
+const getSemesterComponentSuffix = (semester) => {
+    if (firstSemesterValues.has(semester)) {
+        return '_first_semester';
+    }
+
+    if (secondSemesterValues.has(semester)) {
+        return '_second_semester';
+    }
+
+    return null;
+};
+
+const filterComponentsBySemester = (components = [], semester) => {
+    const suffix = getSemesterComponentSuffix(semester);
+
+    if (!suffix) {
+        return components;
+    }
+
+    const semesterComponents = components.filter((component) => component.id?.endsWith(suffix));
+
+    return semesterComponents.length ? semesterComponents : components.filter((component) => (
+        !component.id?.endsWith('_first_semester') && !component.id?.endsWith('_second_semester')
+    ));
+};
 
 export default function AddExams() {
     const [formData, setFormData] = useState({});
     const { data: subjects } = useGetAll(`grades/${formData.grade}/subjects`, { language: formData.language }, {
         enabled: !!(formData.language && formData.grade)
     });
-    const selectedSubject = subjects?.data?.find((subject) => Number(subject.id) === Number(formData.grade_subject_id));
+    const selectedSubject = subjects?.data?.find((subject) => Number(subject.grade_subject_id) === Number(formData.grade_subject_id));
+    const semesterComponents = filterComponentsBySemester(selectedSubject?.components, formData.semester);
     const { data: academicYears = [] } = useGetAll('academic-years', {}, {
         select: (data) => data?.data?.map((academicYear) => academicYear.name)
     });
@@ -27,7 +56,7 @@ export default function AddExams() {
             type: "select",
             required: true,
             placeholder: "اختر الفصل الدراسي",
-            options: ["Ø§Ù„Ø§ÙˆÙ„", "Ø§Ù„Ø«Ø§Ù†ÙŠ"]
+            options: ["الأول", "الثاني"]
         },
         ClassroomHelper.FIELDS.LANGUAGE,
         ClassroomHelper.FIELDS.LEVEL,
@@ -41,21 +70,21 @@ export default function AddExams() {
             dependency: ['grade', 'language'],
             options: () =>
                 subjects?.data ? subjects?.data
-                    .map(subject => ({ label: subject.name, value: subject.id })) : [],
+                    .map(subject => ({ label: subject.name, value: subject.grade_subject_id })) : [],
             disabled: (values) => values.some(value => !value)
         },
         {
             name: "component_id",
-            label: "مكون الدرجات",
+            label: "فئة الاختبار",
             type: "select",
             placeholder: "اختر المكون",
             required: true,
-            dependency: 'grade_subject_id',
-            options: () => selectedSubject?.components?.map((component) => ({
+            dependency: ['grade_subject_id', 'semester'],
+            options: () => semesterComponents.map((component) => ({
                 label: `${component.name} - ${component.marks} درجة`,
                 value: component.id,
             })) ?? [],
-            disabled: (value) => !value
+            disabled: (values) => values.some(value => !value)
         },
         ExamHelper.FIELDS.TYPE,
         ExamHelper.FIELDS.DATE,

@@ -16,6 +16,7 @@ class Exam extends Model
 
     protected $fillable = [
         'grade_subject_id',
+        'component_id',
         'academic_year',
         'name',
         'date',
@@ -37,5 +38,10 @@ class Exam extends Model
             ->using(ExamStudent::class)
             ->withPivot('marks')
             ->using(ExamStudent::class);
+    }
+
+    public function getComponentAttribute(): ?array
+    {
+        return $this->gradeSubject?->component($this->component_id);
     }
 }

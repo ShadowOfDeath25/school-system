@@ -43,6 +43,48 @@ const normalizeComponentId = (id, index) => {
         .replace(/\s+/g, '_') || fallback;
 };
 
+const isYearLongSemester = (semester) => normalizeSemester(semester) === 'طوال العام';
+
+const isExpandedSemesterComponent = (component) => (
+    component.id?.endsWith('_first_semester') || component.id?.endsWith('_second_semester')
+);
+
+const getDisplayedTotalMarks = (subject) => {
+    const total = Number(subject.total_marks ?? 0);
+    return isYearLongSemester(subject.semester) ? total / 2 : total;
+};
+const serializeComponents = (components, semester) => {
+    const normalizedComponents = components.map((component, index) => ({
+        id: normalizeComponentId(component.id, index),
+        name: component.name,
+        marks: Number(component.marks),
+        is_final_exam: !!component.is_final_exam,
+    }));
+
+    if (!isYearLongSemester(semester)) {
+        return normalizedComponents;
+    }
+
+    return normalizedComponents.flatMap((component) => {
+        if (isExpandedSemesterComponent(component)) {
+            return [component];
+        }
+
+        return [
+            {
+                ...component,
+                id: `${component.id}_first_semester`,
+                name: `${component.name} - الأول`,
+            },
+            {
+                ...component,
+                id: `${component.id}_second_semester`,
+                name: `${component.name} - الثاني`,
+            },
+        ];
+    });
+};
+
 const toEditorValues = ({subject, includeSubject}) => ({
     subject_id: includeSubject ? '' : subject?.id,
     min_marks: subject?.min_marks ?? 0,
@@ -75,7 +117,12 @@ function SubjectGradingModal({
     const includeSubject = mode === 'create';
     const [values, setValues] = useState(() => toEditorValues({subject, includeSubject}));
     const [components, setComponents] = useState(() => toEditorComponents(subject));
-    const totalMarks = components.reduce((sum, component) => sum + Number(component.marks || 0), 0);
+    const storedTotalMarks = serializeComponents(components, values.semester)
+        .reduce((sum, component) => sum + Number(component.marks || 0), 0);
+    const totalMarks = isYearLongSemester(values.semester) ? storedTotalMarks / 2 : storedTotalMarks;
+    const totalMarksLabel = isYearLongSemester(values.semester)
+        ? 'إجمالي درجات الفصل الواحد'
+        : 'إجمالي درجات المادة';
 
     const updateValue = (event) => {
         const {name, value, type, checked} = event.target;
@@ -106,12 +153,7 @@ function SubjectGradingModal({
         event.preventDefault();
         onSave({
             ...values,
-            components: components.map((component, index) => ({
-                id: normalizeComponentId(component.id || component.name, index),
-                name: component.name,
-                marks: Number(component.marks),
-                is_final_exam: !!component.is_final_exam,
-            })),
+            components: serializeComponents(components, values.semester),
         });
     };
 
@@ -235,7 +277,7 @@ function SubjectGradingModal({
                     </div>
 
                     <div className={styles.totalMarks}>
-                        إجمالي درجات المادة: {totalMarks}
+                        {totalMarksLabel}: {totalMarks}
                     </div>
                 </form>
             </DialogContent>
@@ -351,7 +393,7 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
         {key: 'type', label: 'النوع'},
         {key: 'language', label: 'اللغة'},
         {key: 'min_marks', label: 'درجة النجاح'},
-        {key: 'total_marks', label: 'إجمالي الدرجات'},
+        {key: 'total_marks', label: 'إجمالي الدرجات', render: getDisplayedTotalMarks},
         {
             key: 'components',
             label: 'تقسيم الدرجات',

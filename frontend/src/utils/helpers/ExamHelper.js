@@ -1,55 +1,55 @@
 const TYPES = [
-    "دور اول",
-    "دور ثاني"
-]
+    'دور اول',
+    'دور ثاني'
+];
+
 const FIELDS = {
     NAME: {
-        name: "name",
-        label: "اسم الاختبار",
-        type: "text",
-        placeholder: "اسم الاختبار",
+        name: 'name',
+        label: 'اسم الاختبار',
+        type: 'text',
+        placeholder: 'اسم الاختبار',
         required: true,
     },
     TYPE: {
-        name: "type",
-        label: "نوع الاختبار",
-        placeholder: "نوع الاختبار",
-        type: "select",
+        name: 'type',
+        label: 'نوع الاختبار',
+        placeholder: 'نوع الاختبار',
+        type: 'select',
         required: true,
         options: TYPES
     },
     DATE: {
-        name: "date",
-        label: "موعد الاختبار",
-        type: "datetime-local",
+        name: 'date',
+        label: 'موعد الاختبار',
+        type: 'datetime-local',
         required: true,
     },
     DURATION_IN_HOURS: {
-        name: "duration_in_hours",
-        label: "المدة بالساعات",
-        placeholder: "المدة بالساعات",
-        type: "number",
+        name: 'duration_in_hours',
+        label: 'المدة بالساعات',
+        placeholder: 'المدة بالساعات',
+        type: 'number',
         required: true,
     },
     MIN_MARKS: {
-        name: "min_marks",
-        label: "الدرجة الصغري",
-        type: "number",
-        placeholder: 'الدرجة الصغري',
+        name: 'min_marks',
+        label: 'الدرجة الصغرى',
+        type: 'number',
+        placeholder: 'الدرجة الصغرى',
         required: true,
     },
     MAX_MARKS: {
-        name: "max_marks",
-        label: "الدرجة العظمي",
-        type: "number",
-        placeholder: 'الدرجة العظمي',
+        name: 'max_marks',
+        label: 'الدرجة العظمى',
+        type: 'number',
+        placeholder: 'الدرجة العظمى',
         required: true,
     },
-}
+};
+
 export const ExamHelper = {
     TYPES,
     FIELDS,
-    getALlFields: () => {
-        return Object.values(FIELDS)
-    }
-}
+    getALlFields: () => Object.values(FIELDS)
+};

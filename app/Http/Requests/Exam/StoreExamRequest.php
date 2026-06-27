@@ -5,6 +5,7 @@ namespace App\Http\Requests\Exam;
 use App\Models\GradeSubject;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreExamRequest extends FormRequest
 {
@@ -26,13 +27,13 @@ class StoreExamRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'date' => ['required', 'date'],
-            'language' => ['required', 'string', 'in:Ø¹Ø±Ø¨ÙŠ,Ù„ØºØ§Øª', 'max:255'],
+            'language' => ['required', 'string', Rule::in(['عربي', 'لغات', 'Ø¹Ø±Ø¨ÙŠ', 'Ù„ØºØ§Øª']), 'max:255'],
             'duration_in_hours' => ['required', 'numeric'],
-            'type' => ['required', 'string', 'in:Ø¯ÙˆØ± Ø§ÙˆÙ„,Ø¯ÙˆØ± ØªØ§Ù†ÙŠ', 'max:255'],
+            'type' => ['required', 'string', Rule::in(['دور اول', 'دور أول', 'دور ثاني', 'دور تاني', 'Ø¯ÙˆØ± Ø§ÙˆÙ„', 'Ø¯ÙˆØ± Ø«Ø§Ù†ÙŠ', 'Ø¯ÙˆØ± ØªØ§Ù†ÙŠ']), 'max:255'],
             'academic_year' => ['required', 'string', 'exists:academic_years,name'],
             'grade_subject_id' => ['required', 'exists:grade_subject,id'],
             'component_id' => ['required', 'string'],
-            'semester' => ['required', 'string', 'in:Ø§Ù„Ø§ÙˆÙ„,Ø§Ù„Ø«Ø§Ù†ÙŠ'],
+            'semester' => ['required', 'string', Rule::in(['الاول', 'الأول', 'الثاني', 'Ø§Ù„Ø§ÙˆÙ„', 'Ø§Ù„Ø£ÙˆÙ„', 'Ø§Ù„Ø«Ø§Ù†ÙŠ'])],
         ];
     }
 
