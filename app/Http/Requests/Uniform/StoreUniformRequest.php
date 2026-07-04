@@ -31,7 +31,7 @@ class StoreUniformRequest extends FormRequest
             'buy_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric'],
             'piece' => ['required', 'string'],
-            'level' => ['required', 'string', 'in:ابتدائي,اعدادي,رياض اطفال'],
+            'level' => ['required', 'string', 'in:ابتدائي,اعدادي,رياض أطفال'],
         ];
     }
 }

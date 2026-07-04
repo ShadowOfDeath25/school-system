@@ -7,7 +7,7 @@ use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[ObservedBy(ExamObserver::class)]
 class Exam extends Model
@@ -32,12 +32,9 @@ class Exam extends Model
         return $this->belongsTo(GradeSubject::class);
     }
 
-    public function students(): BelongsToMany
+    public function marks(): HasMany
     {
-        return $this->belongsToMany(Student::class)
-            ->using(ExamStudent::class)
-            ->withPivot('marks')
-            ->using(ExamStudent::class);
+        return $this->hasMany(Marks::class);
     }
 
     public function getComponentAttribute(): ?array

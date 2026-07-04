@@ -15,7 +15,7 @@ class PaymentValueSeeder extends Seeder
         $academicYears = AcademicYear::pluck('name')->toArray();
 
         $levelSpecificData = [
-            'رياض اطفال' => [
+            'رياض أطفال' => [
                 ['type' => 'مصروفات دراسية', 'language' => 'عربي', 'value' => 3000],
                 ['type' => 'مصروفات دراسية', 'language' => 'لغات', 'value' => 5000],
                 ['type' => 'مصروفات ادارية', 'language' => 'لغات', 'value' => 250],

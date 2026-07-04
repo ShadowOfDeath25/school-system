@@ -14,11 +14,11 @@ class GradeSeeder extends Seeder
     {
         $grades = [
             [
-                'name' => 'الاول رياض اطفال',
+                'name' => 'الاول رياض أطفال',
                 'grade' => 1,
             ],
             [
-                'name' => 'الثاني رياض اطفال',
+                'name' => 'الثاني رياض أطفال',
                 'grade' => 2,
             ],
             [

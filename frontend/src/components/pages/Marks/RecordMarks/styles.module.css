@@ -1,0 +1,170 @@
+.studentHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 20px;
+    background-color: var(--primary-color);
+    border-top: var(--container-border);
+    box-shadow: var(--container-box-shadow);
+    color: var(--primary-text-color);
+}
+
+.studentHeader h3 {
+    font-size: 1.4rem;
+}
+
+.studentMeta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    color: var(--ternary-text-color);
+    font-size: 0.95rem;
+}
+
+.studentMeta span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.semesterSection {
+    margin-top: 20px;
+}
+
+.semesterTitle {
+
+    padding: 12px 0;
+
+    margin-bottom: 0;
+}
+
+.marksTable {
+    border-top: var(--container-border);
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--primary-color);
+    color: var(--primary-text-color);
+    box-shadow: var(--container-box-shadow);
+}
+
+.marksTable thead {
+    position: sticky;
+    top: 0;
+    background-color: var(--primary-color);
+    z-index: 1;
+}
+
+.marksTable th {
+    text-align: start;
+    padding: 12px 10px;
+    border-bottom: 2px solid var(--secondary-color);
+    font-weight: 600;
+}
+
+.marksTable tbody tr {
+    border-bottom: 1px solid rgba(191, 161, 92, 0.24);
+}
+
+.marksTable tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.marksTable td {
+    padding: 10px;
+    height: 60px;
+}
+
+.maxMarksCell {
+    text-align: center;
+    color: var(--ternary-text-color);
+    font-weight: 600;
+    direction: ltr;
+}
+
+.marksCell {
+    min-width: 160px;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.marksInput {
+    width: 100px;
+    padding: 8px 12px;
+    border: 2px solid var(--secondary-color);
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--primary-text-color);
+    font-size: 1rem;
+    font-weight: 600;
+    direction: ltr;
+    text-align: center;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.marksInput:focus {
+    outline: none;
+    border-color: var(--color-focus);
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.marksInput::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.marksInput::-webkit-inner-spin-button,
+.marksInput::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.marksInput[type=number] {
+    -moz-appearance: textfield;
+}
+
+.performanceLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 20px 0;
+}
+
+.saveButton {
+    padding: 12px 40px;
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.saveButton:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.saveButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.emptyState {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    background-color: var(--primary-color);
+    border-top: var(--container-border);
+    box-shadow: var(--container-box-shadow);
+    color: var(--primary-text-color);
+}

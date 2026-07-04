@@ -17,7 +17,7 @@ class GenerateRosterReportRequest extends FormRequest
         return [
             'academic_year' => ['required', 'string', 'max:255'],
             'language' => ['nullable', 'string', Rule::in(['عربي', 'لغات'])],
-            'level' => ['nullable', 'string', Rule::in(['ابتدائي', 'اعدادي', 'رياض اطفال'])],
+            'level' => ['nullable', 'string', Rule::in(['ابتدائي', 'اعدادي', 'رياض أطفال'])],
             'grade' => ['nullable', 'integer', 'min:1', 'max:12'],
             'classroom' => ['nullable', 'integer', 'exists:classrooms,id'],
             'status' => ['nullable', 'string', Rule::in(['مستجد', 'مقيد'])],

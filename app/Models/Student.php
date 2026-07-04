@@ -163,12 +163,9 @@ class Student extends Model
         );
     }
 
-    public function exams(): BelongsToMany
+    public function marks(): HasMany
     {
-        return $this->belongsToMany(Exam::class)
-            ->using(ExamStudent::class)
-            ->withPivot('marks')
-            ->using(ExamStudent::class);
+        return $this->hasMany(Marks::class);
     }
 
     public function getRequiredExamsAttribute()
@@ -181,8 +178,8 @@ class Student extends Model
             $q->where('grade_id', $this->grade)
                 ->where('language', $this->language);
         })
-            ->whereDoesntHave('students', function ($q) {
-                $q->where('students.id', $this->id);
+            ->whereDoesntHave('marks', function ($q) {
+                $q->where('marks.student_id', $this->id);
             })
             ->get();
 

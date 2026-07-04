@@ -23,7 +23,7 @@ class UpdateSeatNumberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'level' => ['string', 'max:255', 'in:ابتدائي,رياض اطفال,اعدادي'],
+            'level' => ['string', 'max:255', 'in:ابتدائي,رياض أطفال,اعدادي'],
             'grade' => ['integer'],
             'academic_year' => ['exists:academic_years,name'],
             'language' => ['string', 'max:255', 'in:عربي,لغات'],

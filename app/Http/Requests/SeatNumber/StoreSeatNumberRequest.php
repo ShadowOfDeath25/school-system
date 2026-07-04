@@ -23,7 +23,7 @@ class StoreSeatNumberRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'level' => ['required', 'string', 'max:255', 'in:ابتدائي,رياض اطفال,اعدادي'],
+            'level' => ['required', 'string', 'max:255', 'in:ابتدائي,رياض أطفال,اعدادي'],
             'grade' => ['required', 'integer', 'max:255'],
             'academic_year' => ['required', 'exists:academic_years,name'],
             'language' => ['required', 'string', 'max:255', 'in:عربي,لغات'],

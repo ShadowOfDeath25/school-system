@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Traits\LogsActivityInArabic;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class ExamStudent extends Pivot
+class Marks extends Model
 {
     use LogsActivityInArabic;
 
@@ -14,15 +14,21 @@ class ExamStudent extends Pivot
         'student_id',
         'exam_id',
         'marks',
+        'component_id',
+        'academic_year',
     ];
 
-    public function exam(): BelongsTo
-    {
-        return $this->belongsTo(Exam::class);
-    }
+    protected $casts = [
+        'marks' => 'decimal:1',
+    ];
 
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
+    }
+
+    public function exam(): BelongsTo
+    {
+        return $this->belongsTo(Exam::class);
     }
 }

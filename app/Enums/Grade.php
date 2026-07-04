@@ -19,8 +19,8 @@ enum Grade: int
     public function label(): string
     {
         return match ($this) {
-            self::FIRST => 'الاول رياض اطفال',
-            self::SECOND => 'الثاني رياض اطفال',
+            self::FIRST => 'الاول رياض أطفال',
+            self::SECOND => 'الثاني رياض أطفال',
             self::THIRD => 'الاول الابتدائي',
             self::FOURTH => 'الثاني الابدتائي',
             self::FIFTH => 'الثالث الابتدائي',

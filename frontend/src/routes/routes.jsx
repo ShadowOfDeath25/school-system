@@ -14,6 +14,7 @@ import incomesRoutes from '@routes/incomes.jsx'
 import bankAccountsRoutes from '@routes/bankAccounts.jsx'
 import busesRoutes from "@routes/buses.jsx";
 import paymentsRoutes from "@routes/payments.jsx";
+import marksRoutes from "@routes/marks.jsx";
 import dashboardRoutes from "@routes/dashboard.jsx"
 
 
@@ -35,4 +36,5 @@ export const appRoutes = [
     bankAccountsRoutes,
     busesRoutes,
     paymentsRoutes,
+    marksRoutes,
 ];

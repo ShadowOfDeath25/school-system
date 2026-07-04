@@ -17,9 +17,9 @@ class SeatNumberFactory extends Factory
      */
     public function definition(): array
     {
-        $level = fake()->randomElement(['اعدادي', 'ابتدائي', 'رياض اطفال']);
+        $level = fake()->randomElement(['اعدادي', 'ابتدائي', 'رياض أطفال']);
         $grades = [
-            'رياض اطفال' => fake()->numberBetween(1, 2),
+            'رياض أطفال' => fake()->numberBetween(1, 2),
             'ابتدائي' => fake()->numberBetween(1, 6),
             'اعدادي' => fake()->numberBetween(1, 3),
         ];

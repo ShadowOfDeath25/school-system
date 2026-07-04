@@ -32,7 +32,7 @@ class UpdateStudentRequest extends FormRequest
             'withdrawn' => ['sometimes', 'boolean'],
             'classroom_id' => ['nullable', 'sometimes', 'numeric', 'exists:classrooms,id'],
             'grade' => ['numeric', 'min:1', 'max:11'],
-            'level' => ['string', 'in:ابتدائي,اعدادي,رياض اطفال'],
+            'level' => ['string', 'in:ابتدائي,اعدادي,رياض أطفال'],
             'guardians' => ['sometimes', 'array'],
             'guardians.*.name' => ['required', 'string', 'max:255'],
             'guardians.*.phone_number' => ['required', 'string', 'max:20', 'distinct'],

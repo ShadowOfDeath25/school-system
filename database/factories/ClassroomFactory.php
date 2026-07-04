@@ -19,7 +19,7 @@ class ClassroomFactory extends Factory
     public function definition(): array
     {
         $gradesMap = [
-            'رياض اطفال' => [1, 2],
+            'رياض أطفال' => [1, 2],
             'ابتدائي' => [3, 4, 5, 6, 7, 8],
             'اعدادي' => [9, 10, 11],
         ];
@@ -39,9 +39,9 @@ class ClassroomFactory extends Factory
             $grade = array_rand($missingGrades);
             $level = $missingGrades[$grade];
         } else {
-            $level = $this->faker->randomElement(['ابتدائي', 'اعدادي', 'رياض اطفال']);
+            $level = $this->faker->randomElement(['ابتدائي', 'اعدادي', 'رياض أطفال']);
             $grade = match ($level) {
-                'رياض اطفال' => $this->faker->numberBetween(1, 2),
+                'رياض أطفال' => $this->faker->numberBetween(1, 2),
                 'ابتدائي' => $this->faker->numberBetween(3, 8),
                 'اعدادي' => $this->faker->numberBetween(9, 11),
             };
