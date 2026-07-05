@@ -35,6 +35,13 @@ class SeatNumberController extends Controller
 
     protected string $resource = SeatNumberResource::class;
 
+    public function update(Request $request, string $id): JsonResponse
+    {
+        return response()->json([
+            'message' => 'لا يمكن تعديل نطاق أرقام الجلوس. قم بحذف النطاق وإضافته من جديد',
+        ], 405);
+    }
+
     public function store(Request $request)
     {
         $validated = app($this->storeRequest)->validated();

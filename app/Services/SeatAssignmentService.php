@@ -68,13 +68,24 @@ class SeatAssignmentService
                 ->orderByRaw('name_in_arabic COLLATE utf8mb4_unicode_ci ASC')
                 ->get(['id', 'name_in_arabic']);
 
-            $totalSeats = $config->ends_at - $config->starts_at + 1;
+            $maxAssigned = StudentSeatAssignment::where('seat_number_id', $config->id)
+                ->where('academic_year', $academicYear)
+                ->max('assigned_number');
+
+            if ($maxAssigned !== null) {
+                $currentNumber = $maxAssigned + 1;
+                $availableSeats = $config->ends_at - $maxAssigned;
+            } else {
+                $currentNumber = $config->starts_at;
+                $availableSeats = $config->ends_at - $config->starts_at + 1;
+            }
+
             $needed = $sortedStudents->count();
 
-            if ($needed > $totalSeats) {
+            if ($needed > $availableSeats) {
                 $results['errors'][] = [
                     'group' => "{$config->level}/G{$config->grade}/{$config->language}",
-                    'message' => "تحتاج {$needed} مقاعد لكن المتاح {$totalSeats} فقط",
+                    'message' => "تحتاج {$needed} مقاعد لكن المتاح {$availableSeats} فقط",
                 ];
 
                 continue;
@@ -82,7 +93,6 @@ class SeatAssignmentService
 
             $now = now();
             $assignments = [];
-            $currentNumber = $config->starts_at;
 
             foreach ($sortedStudents as $student) {
                 $assignments[] = [

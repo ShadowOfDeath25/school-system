@@ -2,15 +2,10 @@ import Page from "@ui/Page/Page.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import Table from "@ui/Table/Table.jsx";
 import { useState } from "react";
-import { useGetAll } from "@hooks/api/useCrud.js";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
-import { SeatNumberHelper } from "@helpers/SeatNumberHelper.js";
 
 export default function ViewSeatNumbers() {
     const [filters, setFilters] = useState();
-    const { data: academicYears = [] } = useGetAll('academic-years', {}, {
-        select: (data) => data?.data?.map((academicYear) => academicYear.name)
-    });
     const filterFields = [
         {
             ...ClassroomHelper.FIELDS.LANGUAGE,
@@ -18,11 +13,6 @@ export default function ViewSeatNumbers() {
         },
         ClassroomHelper.FIELDS.LEVEL,
         ClassroomHelper.FIELDS.GRADE
-    ]
-    const editFields = [
-        { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
-        SeatNumberHelper.FIELDS.STARTS_AT,
-        SeatNumberHelper.FIELDS.ENDS_AT,
     ]
     return (
         <>
@@ -35,10 +25,8 @@ export default function ViewSeatNumbers() {
                 <Table
                     resource={'seat-numbers'}
                     filters={filters}
-                    editFields={editFields}
+                    editable={false}
                 />
-
-
             </Page>
         </>
     );
