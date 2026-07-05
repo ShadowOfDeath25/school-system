@@ -26,7 +26,7 @@ export default function AddSeatNumbers() {
     const onSumbit = (data) => {
         mutation.mutate(data, {
             onSuccess: () => {
-                showSnackbar('تم اضافة أرقام الجلوس بنجاح')
+                showSnackbar('تم اضافة وتوزيع أرقام الجلوس بنجاح')
             },
             onError: (error) => {
                 setServerErrors(error?.response?.data?.errors)

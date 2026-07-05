@@ -1,5 +1,3 @@
-import {validator} from "@utils/validator.js";
-
 const FIELDS = {
     STARTS_AT: {
         name: "starts_at",
@@ -15,9 +13,19 @@ const FIELDS = {
         required: true,
         dependency: "starts_at",
         placeholder: "تنتهي عند",
-        validator: validator.seatNumbers.ends_at,
+        validator: (endsAt, startsAt) => Number(endsAt) > Number(startsAt),
         error: "هذا الرقم يجب يكون اكبر من رقم البداية"
-    }
+    },
+    STUDENT_NAME: {
+        name: "student_name",
+        type: "text",
+        label: "اسم الطالب",
+    },
+    SEAT_NUMBER: {
+        name: "seat_number",
+        type: "number",
+        label: "رقم الجلوس",
+    },
 }
 
 export const SeatNumberHelper = {

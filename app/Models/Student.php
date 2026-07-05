@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[ObservedBy([StudentObserver::class])]
 class Student extends Model
@@ -166,6 +167,17 @@ class Student extends Model
     public function marks(): HasMany
     {
         return $this->hasMany(Marks::class);
+    }
+
+    public function seatAssignments(): HasMany
+    {
+        return $this->hasMany(StudentSeatAssignment::class);
+    }
+
+    public function seatAssignmentForYear(string $academicYear): HasOne
+    {
+        return $this->hasOne(StudentSeatAssignment::class)
+            ->where('academic_year', $academicYear);
     }
 
     public function getRequiredExamsAttribute()

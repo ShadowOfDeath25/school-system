@@ -2,24 +2,16 @@
 
 namespace App\Http\Requests\SeatNumber;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Models\SeatNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSeatNumberRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -27,7 +19,23 @@ class StoreSeatNumberRequest extends FormRequest
             'grade' => ['required', 'integer', 'max:255'],
             'academic_year' => ['required', 'exists:academic_years,name'],
             'language' => ['required', 'string', 'max:255', 'in:عربي,لغات'],
-            'starts_at' => ['required', 'numeric'],
+            'starts_at' => [
+                'required',
+                'numeric',
+                function ($attribute, $value, $fail) {
+                    $overlap = SeatNumber::where('level', $this->level)
+                        ->where('grade', (string) $this->grade)
+                        ->where('language', $this->language)
+                        ->where('academic_year', $this->academic_year)
+                        ->where('starts_at', '<=', (int) $this->ends_at)
+                        ->where('ends_at', '>=', (int) $value)
+                        ->exists();
+
+                    if ($overlap) {
+                        $fail('نطاق أرقام الجلوس هذا يتداخل مع نطاق موجود مسبقاً لنفس المجموعة');
+                    }
+                },
+            ],
             'ends_at' => ['required', 'numeric'],
         ];
     }

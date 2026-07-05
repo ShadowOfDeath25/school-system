@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class SeatNumber extends Model
 {
@@ -18,4 +19,9 @@ class SeatNumber extends Model
         'starts_at',
         'ends_at',
     ];
+
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(StudentSeatAssignment::class, 'seat_number_id');
+    }
 }

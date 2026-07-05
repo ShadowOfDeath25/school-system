@@ -1,5 +1,6 @@
 import ViewSeatNumbers from "@pages/SeatNumbers/ViewSeatNumbers.jsx";
 import AddSeatNumbers from "@pages/SeatNumbers/AddSeatNumbers.jsx";
+import ViewSeatAssignments from "@pages/SeatNumbers/ViewSeatAssignments.jsx";
 
 const routes = {
     path: 'seat-numbers',
@@ -29,6 +30,16 @@ const routes = {
                     title: "اضافة ارقام الجلوس",
                 },
                 action: "create seat-numbers"
+            }
+        },
+        {
+            path: 'assignments',
+            element: <ViewSeatAssignments/>,
+            handle: {
+                sidebar: {
+                    title: "توزيع أرقام الجلوس",
+                },
+                action: "view seat-numbers"
             }
         }
     ]
