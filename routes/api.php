@@ -109,6 +109,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('buildings', BuildingController::class);
         Route::apiResource('floors', FloorController::class);
         Route::apiResource('exam-halls', ExamHallController::class);
+        Route::post('secret-numbers/assign', [SecretNumberController::class, 'assign'])->name('secret-numbers.assign')->middleware('authorization:create secret-numbers');
         Route::apiResource('secret-numbers', SecretNumberController::class)->withFilters();
         Route::apiResource('exams', ExamController::class)->withFilters();
         Route::post('seat-numbers/assign', [SeatNumberController::class, 'assign'])->name('seat-numbers.assign')->middleware('authorization:create seat-numbers');
@@ -124,6 +125,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('extra-dues', ExtraDueController::class)->withFilters();
         Route::apiResource('exemptions', ExemptionController::class);
         Route::get('marks/student/{student}/exams', [MarksController::class, 'studentExams'])->middleware('authorization:view marks');
+        Route::get('marks/secret-assignments/filters', [MarksController::class, 'secretAssignmentFilters'])->middleware('authorization:view marks');
+        Route::get('marks/secret-assignments', [MarksController::class, 'allSecretAssignments'])->middleware('authorization:view marks');
         Route::apiResource('marks', MarksController::class)->withFilters();
         Route::patch('/users/{user}/roles', UserController::class.'@assignRole')->name('users.roles.assign');
         Route::put('/users/{user}/roles', UserController::class.'@syncRole')->name('users.roles.sync');

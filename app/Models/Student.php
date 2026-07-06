@@ -180,6 +180,18 @@ class Student extends Model
             ->where('academic_year', $academicYear);
     }
 
+    public function secretAssignments(): HasMany
+    {
+        return $this->hasMany(StudentSecretAssignment::class);
+    }
+
+    public function secretAssignmentForYear(string $academicYear, string $semester): HasOne
+    {
+        return $this->hasOne(StudentSecretAssignment::class)
+            ->where('academic_year', $academicYear)
+            ->where('semester', $semester);
+    }
+
     public function getRequiredExamsAttribute()
     {
         if (! $this->classroom_id) {

@@ -97,10 +97,7 @@ export default function RecordMarks() {
     }
 
     const breadcrumbsLinks = [
-        <Link to={"/marks"} className={styles.breadcrumbLink}>الفصول الدراسية</Link>,
-        ...(state?.classroom?.id
-            ? [<Link to={`/marks/classrooms/${state.classroom.id}`} state={state} className={styles.breadcrumbLink}>اختر طالب</Link>]
-            : []),
+        <Link to={"/marks"} className={styles.breadcrumbLink}>الأرقام السرية</Link>,
     ];
 
     const dirtyCount = Object.keys(dirty).length;
@@ -117,9 +114,8 @@ export default function RecordMarks() {
         <Page breadcrumbsLinks={breadcrumbsLinks}>
             {student && (
                 <div className={localStyles.studentHeader}>
-                    <h3>{student.name_in_arabic}</h3>
+                    <h3>{state?.secret_number ? `الرقم السري: ${state.secret_number}` : "تسجيل الدرجات"}</h3>
                     <div className={localStyles.studentMeta}>
-                        <span>رقم القيد: {student.reg_number}</span>
                         <span>الصف: {student.grade_name}</span>
                         <span>المرحلة: {student.level}</span>
                         <span>اللغة: {student.language}</span>

@@ -2,24 +2,16 @@
 
 namespace App\Http\Requests\SecretNumber;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Models\SecretNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreSecretNumberRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -29,7 +21,24 @@ class StoreSecretNumberRequest extends FormRequest
             'academic_year' => ['required', 'exists:academic_years,name'],
             'language' => ['required', 'string', 'max:255', 'in:عربي,لغات'],
             'level' => ['required', 'string', 'max:255'],
-            'starts_at' => ['required', 'numeric'],
+            'starts_at' => [
+                'required',
+                'numeric',
+                function ($attribute, $value, $fail) {
+                    $overlap = SecretNumber::where('level', $this->level)
+                        ->where('grade', (string) $this->grade)
+                        ->where('language', $this->language)
+                        ->where('academic_year', $this->academic_year)
+                        ->where('semester', $this->semester)
+                        ->where('starts_at', '<=', (int) $this->ends_at)
+                        ->where('ends_at', '>=', (int) $value)
+                        ->exists();
+
+                    if ($overlap) {
+                        $fail('نطاق الأرقام السرية هذا يتداخل مع نطاق موجود مسبقاً لنفس المجموعة');
+                    }
+                },
+            ],
             'ends_at' => ['required', 'numeric', 'gt:starts_at'],
             'semester' => ['required', 'string', 'in:الاول,الثاني,طوال العام'],
         ];

@@ -1,42 +1,32 @@
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import Page from "@ui/Page/Page.jsx";
-import Table from "@ui/Table/Table.jsx";
-import {useNavigate} from "react-router";
 import Filters from "@ui/Filters/Filters.jsx";
-import {useState} from "react";
-import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
-import {useGet, useGetAll} from "@hooks/api/useCrud.js";
+import Table from "@ui/Table/Table.jsx";
 
-export default function ClassroomPicker() {
+export default function MarksIndex() {
     const navigate = useNavigate();
     const [filters, setFilters] = useState({});
-    const {data:academicYears} = useGetAll("academic-years");
-    const handleRowClick = (row) => {
-        navigate(`classrooms/${row.id}`, {
-            state: {classroom: row}
-        });
-    };
 
     return (
         <Page>
             <Filters
-                resource={"classrooms"}
-                onSubmit={(filters) => setFilters(filters)}
-                fields={[
-                    {
-                        ...ClassroomHelper.FIELDS.ACADEMIC_YEAR,
-                        options: academicYears?.data?.map((year) => ({ value: year.name, label: year.name }))
-                    },
-                    ClassroomHelper.FIELDS.LANGUAGE,
-                    ClassroomHelper.FIELDS.LEVEL,
-                    ClassroomHelper.FIELDS.GRADE,
-                ]}
+                resource={"marks/secret-assignments"}
+                onSubmit={(f) => setFilters(f)}
+                labels={{ academic_year: "العام الدراسي" }}
             />
             <Table
+                resource={"marks/secret-assignments"}
                 filters={filters}
-                resource={'classrooms'}
-                onClick={handleRowClick}
+                fields={[
+                    { name: "assigned_number", label: "الرقم السري" },
+                    { name: "academic_year", label: "العام الدراسي" },
+                ]}
                 editable={false}
                 deletable={false}
+                onClick={(row) => navigate(`/marks/record/${row.student_id}`, {
+                    state: { secret_number: row.assigned_number }
+                })}
             />
         </Page>
     );

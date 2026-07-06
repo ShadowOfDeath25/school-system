@@ -1,5 +1,4 @@
-import ClassroomPicker from "@pages/Marks/ClassroomPicker.jsx";
-import StudentPicker from "@pages/Marks/StudentPicker.jsx";
+import MarksIndex from "@pages/Marks/ClassroomPicker.jsx";
 import RecordMarks from "@pages/Marks/RecordMarks/RecordMarks.jsx";
 
 const routes = {
@@ -13,17 +12,9 @@ const routes = {
     children: [
         {
             index: true,
-            element: <ClassroomPicker />,
+            element: <MarksIndex />,
             handle: {
                 sidebar: { title: "تسجيل الدرجات" },
-                action: "view marks",
-            },
-        },
-        {
-            path: "classrooms/:id",
-            element: <StudentPicker />,
-            handle: {
-                title: "اختر طالب",
                 action: "view marks",
             },
         },

@@ -20,6 +20,7 @@ export default function ViewSecretNumber() {
                 <Table
                     resource={"secret-numbers"}
                     filters={filters}
+                    editable={false}
 
                     fields={
                         [

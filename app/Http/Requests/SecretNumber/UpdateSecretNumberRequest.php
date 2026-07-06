@@ -2,24 +2,16 @@
 
 namespace App\Http\Requests\SecretNumber;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Models\SecretNumber;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSecretNumberRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -32,7 +24,39 @@ class UpdateSecretNumberRequest extends FormRequest
             'starts_at' => ['numeric'],
             'ends_at' => ['numeric', 'gt:starts_at'],
             'semester' => ['string', 'in:الأول,الثاني,طوال العام'],
-
         ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $record = SecretNumber::find((int) $this->route('secret_number'));
+
+            if (! $record) {
+                return;
+            }
+
+            $level = $this->level ?? $record->level;
+            $grade = $this->grade ?? $record->grade;
+            $language = $this->language ?? $record->language;
+            $academicYear = $this->academic_year ?? $record->academic_year;
+            $semester = $this->semester ?? $record->semester;
+            $startsAt = $this->starts_at ?? $record->starts_at;
+            $endsAt = $this->ends_at ?? $record->ends_at;
+
+            $overlap = SecretNumber::where('level', $level)
+                ->where('grade', (string) $grade)
+                ->where('language', $language)
+                ->where('academic_year', $academicYear)
+                ->where('semester', $semester)
+                ->where('id', '!=', $record->id)
+                ->where('starts_at', '<=', (int) $endsAt)
+                ->where('ends_at', '>=', (int) $startsAt)
+                ->exists();
+
+            if ($overlap) {
+                $validator->errors()->add('starts_at', 'نطاق الأرقام السرية هذا يتداخل مع نطاق موجود مسبقاً لنفس المجموعة');
+            }
+        });
     }
 }
