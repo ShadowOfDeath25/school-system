@@ -2,40 +2,27 @@
 
 namespace App\Http\Requests\ExamHall;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreExamHallRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-
-            'language' => ['required', 'string', 'max:255'],
-            'floor_id' => ['required', 'exists:floors,id'],
-            'capacity' => ['required', 'string'],
-            'grade' => ['required', 'string'],
-            'level' => ['required', 'string'],
-            'building_id' => ['required', 'exists:buildings,id'],
-            'semester' => ['required', 'string'],
-            'number' => ['required', 'string'],
-            'academic_year' => ['required', 'string'],
-            'starts_at' => ['required', 'date'],
-            'ends_at' => ['required', 'date'],
-
+            'classroom_id' => [
+                'required',
+                'exists:classrooms,id',
+                Rule::unique('exam_halls')
+                    ->where('academic_year', $this->input('academic_year', \App\Models\AcademicYear::activeCached()?->name)),
+            ],
+            'capacity' => 'required|integer|min:1',
+            'academic_year' => 'nullable|exists:academic_years,name',
         ];
     }
 }

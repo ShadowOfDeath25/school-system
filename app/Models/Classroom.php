@@ -30,6 +30,11 @@ class Classroom extends Model
         return $this->hasMany(Student::class, 'classroom_id');
     }
 
+    public function examHalls(): HasMany|Classroom
+    {
+        return $this->hasMany(ExamHall::class);
+    }
+
     public function scopeActive(Builder|EloquentBuilder $q): Builder|EloquentBuilder
     {
         return $q->where('academic_year', AcademicYear::activeCached()->name);

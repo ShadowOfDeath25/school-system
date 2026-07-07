@@ -16,7 +16,7 @@ import busesRoutes from "@routes/buses.jsx";
 import paymentsRoutes from "@routes/payments.jsx";
 import marksRoutes from "@routes/marks.jsx";
 import dashboardRoutes from "@routes/dashboard.jsx"
-
+import examHallsRoutes from "@routes/examHalls.jsx";
 
 export const appRoutes = [
     dashboardRoutes,
@@ -37,4 +37,5 @@ export const appRoutes = [
     busesRoutes,
     paymentsRoutes,
     marksRoutes,
+    examHallsRoutes
 ];

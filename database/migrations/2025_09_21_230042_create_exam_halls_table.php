@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Classroom;
 use App\Models\Floor;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,17 +15,12 @@ return new class extends Migration
     {
         Schema::create('exam_halls', function (Blueprint $table) {
             $table->id();
-            $table->string('language');
-            $table->string('grade');
-            $table->string('level');
-            $table->string('capacity');
-            $table->foreignIdFor(Floor::class)->constrained()->cascadeOnDelete();
-            $table->string('semester');
-            $table->string('number');
+            $table->integer('capacity');
             $table->string('academic_year');
-            $table->date('starts_at');
-            $table->date('ends_at');
+            $table->integer('number')->unique();
+            $table->foreignIdFor(Classroom::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
+
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('examhalls');
+        Schema::dropIfExists('exam_halls');
     }
 };

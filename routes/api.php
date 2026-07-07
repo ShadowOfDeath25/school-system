@@ -108,7 +108,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('subjects', SubjectController::class)->withFilters();
         Route::apiResource('buildings', BuildingController::class);
         Route::apiResource('floors', FloorController::class);
-        Route::apiResource('exam-halls', ExamHallController::class);
+        Route::apiResource('exam-halls', ExamHallController::class)->withFilters();
         Route::post('secret-numbers/assign', [SecretNumberController::class, 'assign'])->name('secret-numbers.assign')->middleware('authorization:create secret-numbers');
         Route::apiResource('secret-numbers', SecretNumberController::class)->withFilters();
         Route::apiResource('exams', ExamController::class)->withFilters();
