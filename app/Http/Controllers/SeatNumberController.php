@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExamCandidatesExport;
 use App\Http\Requests\SeatAssignment\TriggerAssignmentRequest;
 use App\Http\Requests\SeatNumber\StoreSeatNumberRequest;
 use App\Http\Requests\SeatNumber\UpdateSeatNumberRequest;
+use App\Http\Requests\Student\Reports\GenerateExamCandidatesRequest;
 use App\Http\Resources\SeatNumberResource;
 use App\Http\Resources\StudentSeatAssignmentResource;
+use App\Models\ExamHall;
 use App\Models\SeatNumber;
 use App\Models\StudentSeatAssignment;
 use App\Services\SeatAssignmentService;
@@ -14,6 +17,9 @@ use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Spatie\LaravelPdf\Enums\Orientation;
+use Spatie\LaravelPdf\Facades\Pdf;
 
 class SeatNumberController extends Controller
 {
@@ -120,5 +126,67 @@ class SeatNumberController extends Controller
         $assignments = $query->orderBy('assigned_number')->paginate($perPage);
 
         return StudentSeatAssignmentResource::collection($assignments);
+    }
+
+    public function candidates(GenerateExamCandidatesRequest $request): JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $filters = $request->filters();
+
+        $examHalls = ExamHall::with('classroom:id,name')
+            ->where('academic_year', $filters['academicYear'])
+            ->orderBy('number')
+            ->get();
+
+        $allAssignments = StudentSeatAssignment::query()
+            ->where('academic_year', $filters['academicYear'])
+            ->with('student')
+            ->get()
+            ->filter(fn ($a) => $a->student)
+            ->filter(fn ($a) => !$filters['level'] || $a->student->level === $filters['level'])
+            ->filter(fn ($a) => !$filters['grade'] || $a->student->grade === $filters['grade'])
+            ->filter(fn ($a) => !$filters['language'] || $a->student->language === $filters['language'])
+            ->filter(fn ($a) => !$filters['classroomId'] || $a->student->classroom_id === $filters['classroomId'])
+            ->sortBy('assigned_number')
+            ->values();
+
+        $groups = [];
+        $offset = 0;
+
+        foreach ($examHalls as $hall) {
+            $hallAssignments = $allAssignments->slice($offset, $hall->capacity);
+
+            $groups[] = [
+                'classroom_name' => $hall->classroom->name,
+                'exam_hall_number' => $hall->number,
+                'assignments' => $hallAssignments,
+            ];
+
+            $offset += $hall->capacity;
+        }
+
+        $grouped = collect($groups);
+
+        $viewData = [
+            'classrooms' => $grouped,
+            'academicYear' => $filters['academicYear'],
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new ExamCandidatesExport($viewData), 'exam_candidates.xlsx');
+        }
+
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+        Pdf::view('reports.exam_candidates', $viewData)
+            ->format('a4')
+            ->orientation(Orientation::Landscape)
+            ->footerView('components.pdf-footer')
+            ->margins(10, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
+        ]);
     }
 }

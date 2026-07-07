@@ -1,4 +1,5 @@
 import AddExamHalls from "@pages/ExamHalls/AddExamHalls.jsx";
+import ExamCandidates from "@pages/ExamHalls/ExamCandidates.jsx";
 import ViewExamHalls from "@pages/ExamHalls/ViewExamHalls.jsx";
 
 const routes = {
@@ -28,6 +29,16 @@ const routes = {
                     title: "إضافة لجنة"
                 },
                 action: "create exam-halls"
+            }
+        },
+        {
+            path: "exam-candidates",
+            element: <ExamCandidates/>,
+            handle: {
+                sidebar: {
+                    title: "كشف اللجان"
+                },
+                action: "view exam-halls"
             }
         }
     ]
