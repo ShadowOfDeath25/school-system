@@ -169,7 +169,7 @@ export default function RecordMarks() {
                                                     value={currentMark}
                                                     onChange={(e) => handleMarkChange(exam.exam_id, e.target.value)}
                                                     className={localStyles.marksInput}
-                                                    style={{ borderLeft: `4px solid ${color}` }}
+                                                    style={{ border: `4px solid ${color}` }}
                                                     placeholder="—"
                                                 />
                                                 {numericMark !== null && (

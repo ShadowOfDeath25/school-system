@@ -41,6 +41,7 @@
 .marksTable {
     border-top: var(--container-border);
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
     background-color: var(--primary-color);
     color: var(--primary-text-color);
@@ -55,7 +56,7 @@
 }
 
 .marksTable th {
-    text-align: start;
+    text-align: center;
     padding: 12px 10px;
     border-bottom: 2px solid var(--secondary-color);
     font-weight: 600;
@@ -72,13 +73,14 @@
 .marksTable td {
     padding: 10px;
     height: 60px;
+    text-align:center;
 }
 
 .maxMarksCell {
     text-align: center;
     color: var(--ternary-text-color);
     font-weight: 600;
-    direction: ltr;
+    direction: rtl;
 }
 
 .marksCell {
@@ -88,6 +90,7 @@
 .inputWrapper {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 }
 
