@@ -16,10 +16,12 @@ class Marks extends Model
         'marks',
         'component_id',
         'academic_year',
+        'round',
     ];
 
     protected $casts = [
         'marks' => 'decimal:1',
+        'round' => 'string',
     ];
 
     public function student(): BelongsTo

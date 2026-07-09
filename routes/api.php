@@ -26,6 +26,7 @@ use App\Http\Controllers\MarksController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentValueController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PromotionController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SeatNumberController;
@@ -85,6 +86,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('{grade}/subjects', [GradeController::class, 'deleteSubjects'])->middleware('authorization:delete grade-subjects')->name('delete-subjects');
         Route::get('{grade}/subjects', [GradeController::class, 'getSubjects'])->name('get-subjects')->middleware('authorization:view grade-subjects');
         Route::get('{grade}/subjects/available', [GradeController::class, 'getAvailableSubjects'])->middleware('authorization:view grade-subjects')->name('get-available-subjects');
+    });
+    Route::prefix('promotion')->name('promotion.')->group(function () {
+        Route::get('preview', [PromotionController::class, 'preview'])->middleware('authorization:view promotion');
+        Route::post('execute', [PromotionController::class, 'execute'])->middleware('authorization:create promotion');
+        Route::post('supplementary-exam/resolve', [PromotionController::class, 'resolveSupplementaryExam'])->middleware('authorization:update promotion');
+        Route::post('batches/{batch}/rollback', [PromotionController::class, 'rollback'])->middleware('authorization:delete promotion');
+        Route::get('batches', [PromotionController::class, 'batches'])->middleware('authorization:view promotion');
+        Route::get('batches/{batch}', [PromotionController::class, 'showBatch'])->middleware('authorization:view promotion');
     });
     Route::middleware(['authorization'])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();

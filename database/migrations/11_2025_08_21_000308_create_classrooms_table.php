@@ -20,7 +20,8 @@ return new class extends Migration
             $table->integer('grade');
             $table->integer('class_number');
             $table->integer('max_capacity');
-            $table->foreignIdFor(Floor::class)->constrained()->cascadeOnDelete();
+            $table->integer('actual_capacity')->nullable();
+            $table->foreignIdFor(Floor::class)->nullable()->constrained()->cascadeOnDelete();
             $table->string('leader')->nullable();
             $table->string('academic_year');
             $table->timestamps();
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('classes');
+        Schema::dropIfExists('classrooms');
     }
 };

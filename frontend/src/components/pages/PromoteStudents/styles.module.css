@@ -1,0 +1,229 @@
+.container {
+    background: var(--primary-color);
+    border-top: var(--container-border);
+    box-shadow: var(--container-box-shadow);
+    padding: 20px;
+}
+
+.filters {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content:center;
+    flex-wrap: wrap;
+}
+
+.filterItem {
+    min-width: 180px;
+    flex: 1;
+}
+
+.filterActions {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.statsRow {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.tableSection {
+    overflow-x: auto;
+}
+
+.tableSection table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+}
+
+.tableSection th {
+    text-align: right;
+    padding: 12px 10px;
+    border-bottom: 2px solid var(--secondary-color);
+    color: var(--primary-text-color);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.tableSection td {
+    padding: 10px;
+    border-bottom: 2px solid rgba(191, 161, 92, 0.24);
+    color: var(--primary-text-color);
+}
+
+.tableSection tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.pill {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: clamp(0.8125rem, 0.4vw + 0.7rem, 0.9375rem);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.pillPassed {
+    background: rgba(46, 125, 50, 0.2);
+    color: #66bb6a;
+}
+
+.pillSupplementary {
+    background: rgba(191, 161, 92, 0.2);
+    color: var(--secondary-color);
+}
+
+.pillRepeat {
+    background: rgba(190, 67, 74, 0.2);
+    color: var(--color-danger);
+}
+
+.pillGraduated {
+    background: rgba(1, 118, 250, 0.15);
+    color: var(--color-focus);
+}
+
+.pillPending {
+    background: rgba(191, 161, 92, 0.15);
+    color: var(--ternary-text-color);
+}
+
+.pillCompleted {
+    background: rgba(46, 125, 50, 0.2);
+    color: #66bb6a;
+}
+
+.pillRolledBack {
+    background: rgba(190, 67, 74, 0.2);
+    color: var(--color-danger);
+}
+
+.button {
+    font-size: 16px;
+    border-radius: 10px;
+    width: clamp(100px, 10vw, 200px);
+    padding: 10px;
+    background-color: var(--primary-text-color);
+    border: 1px solid transparent;
+    color: black;
+    cursor: pointer;
+}
+
+.button:hover {
+    border: 1px solid var(--primary-text-color);
+    color: var(--primary-text-color);
+    background-color: transparent;
+}
+
+.button:disabled {
+    background-color: grey;
+    color: white;
+    border: gray;
+    cursor: not-allowed;
+}
+
+.buttonInline {
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 6px 16px;
+    background-color: var(--primary-text-color);
+    border: 1px solid transparent;
+    color: black;
+    cursor: pointer;
+}
+
+.buttonInline:hover {
+    border: 1px solid var(--primary-text-color);
+    color: var(--primary-text-color);
+    background-color: transparent;
+}
+
+.buttonInline:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.buttonDanger {
+    background-color: transparent;
+    border: 1px solid var(--color-danger);
+    color: var(--color-danger);
+}
+
+.buttonDanger:hover {
+    background-color: var(--color-danger);
+    border: 1px solid var(--color-danger);
+    color: var(--primary-text-color);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.studentHeader {
+    margin-bottom: 16px;
+}
+
+.studentHeader h3 {
+    margin: 0 0 8px;
+}
+
+.studentHeader p {
+    margin: 0;
+    color: var(--ternary-text-color);
+    font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+}
+
+.subjectRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(191, 161, 92, 0.24);
+}
+
+.subjectRow:last-child {
+    border-bottom: none;
+}
+
+.subjectRow label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.subjectRow input[type="radio"] {
+    accent-color: var(--secondary-color);
+}
+
+.resolveSection {
+    margin-top: 16px;
+}
+
+.resolveSection h4 {
+    margin: 0 0 12px;
+    color: var(--ternary-text-color);
+}
+
+.sectionTitle {
+    margin: 0 0 16px;
+    color: var(--primary-text-color);
+    font-weight: 600;
+}
+
+.emptyState {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--ternary-text-color);
+}
+
+.emptyState h3 {
+    margin: 0;
+}

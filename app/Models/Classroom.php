@@ -21,6 +21,7 @@ class Classroom extends Model
         'actual_capacity',
         'max_capacity',
         'academic_year',
+        'name',
         'floor_id',
         'leader',
     ];

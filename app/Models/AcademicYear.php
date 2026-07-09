@@ -6,6 +6,7 @@ use App\Observers\AcademicYearObserver;
 use App\Traits\LogsActivityInArabic;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 #[ObservedBy([AcademicYearObserver::class])]
 class AcademicYear extends Model
 {
-    use LogsActivityInArabic;
+    use HasFactory, LogsActivityInArabic;
 
     protected $fillable = [
         'name',

@@ -22,7 +22,7 @@ enum Grade: int
             self::FIRST => 'الاول رياض أطفال',
             self::SECOND => 'الثاني رياض أطفال',
             self::THIRD => 'الاول الابتدائي',
-            self::FOURTH => 'الثاني الابدتائي',
+            self::FOURTH => 'الثاني الابتدائي',
             self::FIFTH => 'الثالث الابتدائي',
             self::SIXTH => 'الرابع الابتدائي',
             self::SEVENTH => 'الخامس الابتدائي',

@@ -11,9 +11,11 @@ class GradeSubject extends Pivot
 {
     use LogsActivityInArabic;
 
+    protected $table = 'grade_subject';
+
     protected $fillable = [
         'subject_id',
-        'grade',
+        'grade_id',
         'min_marks',
         'max_marks',
         'added_to_total',

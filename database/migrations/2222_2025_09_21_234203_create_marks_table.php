@@ -19,7 +19,8 @@ return new class extends Migration {
             $table->decimal('marks', 8, 1)->nullable();
             $table->string('component_id');
             $table->string('academic_year');
-            $table->unique(['student_id', 'exam_id', 'component_id']);
+            $table->string('round')->default('first');
+            $table->unique(['student_id', 'exam_id', 'component_id', 'round'], 'marks_student_exam_component_round_unique');
             $table->timestamps();
         });
     }
