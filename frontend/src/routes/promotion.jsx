@@ -1,5 +1,7 @@
 import PromotionDashboard from "@pages/PromoteStudents/PromotionDashboard.jsx";
 import BatchHistory from "@pages/PromoteStudents/BatchHistory.jsx";
+import BatchDetail from "@pages/PromoteStudents/BatchDetail.jsx";
+import SupplementaryExamResolution from "@pages/PromoteStudents/SupplementaryExamResolution.jsx";
 import GraduationReport from "@pages/PromoteStudents/GraduationReport.jsx";
 
 const routes = {
@@ -29,6 +31,28 @@ const routes = {
                     title: "سجل الترقيات",
                 },
                 action: "view promotion",
+            },
+        },
+        {
+            path: "batches/:batchId",
+            element: <BatchDetail />,
+            handle: {
+                sidebar: {
+                    title: "تفاصيل الترقية",
+                    hidden: true,
+                },
+                action: "view promotion",
+            },
+        },
+        {
+            path: "batches/:batchId/supplementary-exam/:studentId",
+            element: <SupplementaryExamResolution />,
+            handle: {
+                sidebar: {
+                    title: "نتيجة الدور الثاني",
+                    hidden: true,
+                },
+                action: "update promotion",
             },
         },
         {
