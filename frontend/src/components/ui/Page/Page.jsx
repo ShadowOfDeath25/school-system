@@ -1,3 +1,4 @@
+import React from "react";
 import styles from './style.module.css';
 import Breadcrumbs from "@mui/material/Breadcrumbs";
 import {useMatches} from "react-router";
@@ -7,7 +8,9 @@ export default function Page({children, breadcrumbsLinks}) {
     const matches = useMatches()
     const breadcrumbs =breadcrumbsLinks?
         [
-            ...breadcrumbsLinks,
+            ...breadcrumbsLinks.map((link) =>
+                React.cloneElement(link, { className: styles.breadcrumbLink })
+            ),
             <Link
                 className={styles.breadcrumbLink}
                 to={matches[matches.length - 1].pathname}

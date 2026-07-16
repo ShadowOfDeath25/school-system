@@ -16,8 +16,17 @@ export default function SupplementaryExamResolution() {
     const [results, setResults] = useState({});
 
     useEffect(() => {
-        axiosClient.get(`/promotion/batches/${batchId}`)
-            .then((batchRes) => {
+        let cancelled = false;
+
+        const fetchData = async () => {
+            try {
+                const [batchRes, subjectsRes] = await Promise.all([
+                    axiosClient.get(`/promotion/batches/${batchId}`),
+                    axiosClient.get(`/promotion/batches/${batchId}/students/${studentId}/supplementary-subjects`),
+                ]);
+
+                if (cancelled) return;
+
                 const data = batchRes.data.data;
                 const batchStudent = data?.batch_students?.find(
                     (bs) => bs.student_id === Number(studentId)
@@ -29,12 +38,20 @@ export default function SupplementaryExamResolution() {
                         grade: batchStudent.student_grade,
                     });
                 }
+
+                setSubjects(subjectsRes.data.subjects || []);
                 setLoading(false);
-            })
-            .catch(() => {
-                showSnackbar("حدث خطأ أثناء تحميل البيانات", "error");
-                setLoading(false);
-            });
+            } catch {
+                if (!cancelled) {
+                    showSnackbar("حدث خطأ أثناء تحميل البيانات", "error");
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchData();
+
+        return () => { cancelled = true; };
     }, [batchId, studentId]);
 
     const toggleSubject = (gradeSubjectId, passed) => {
@@ -103,7 +120,12 @@ export default function SupplementaryExamResolution() {
                         <h4>المواد</h4>
                         {subjects.map((subject) => (
                             <div key={subject.grade_subject_id} className={styles.subjectRow}>
-                                <span style={{ flex: 1 }}>{subject.name}</span>
+                                <span style={{ flex: 1 }}>
+                                    {subject.subject_name}
+                                    {subject.passed && (
+                                        <span style={{ color: 'green', marginRight: 10, fontSize: '0.85rem' }}>(ناجح)</span>
+                                    )}
+                                </span>
                                 <label>
                                     <input
                                         type="radio"

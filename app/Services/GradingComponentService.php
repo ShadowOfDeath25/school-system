@@ -25,7 +25,7 @@ class GradingComponentService
             ->all();
     }
 
-    public function validate(array $components): array
+    public function validate(array $components, ?float $minMarks = null): array
     {
         $components = $this->normalize($components);
         $errors = [];
@@ -51,6 +51,13 @@ class GradingComponentService
         $duplicateIds = collect($components)->pluck('id')->duplicates();
         if ($duplicateIds->isNotEmpty()) {
             $errors['components'] = ['معرفات المكونات يجب ألا تتكرر.'];
+        }
+
+        if ($minMarks !== null) {
+            $totalMarks = $this->totalMarks($components);
+            if ($minMarks > $totalMarks) {
+                $errors['min_marks'] = ['الحد الأدنى للدرجات لا يمكن أن يكون أكبر من مجموع درجات المكونات.'];
+            }
         }
 
         if ($errors !== []) {

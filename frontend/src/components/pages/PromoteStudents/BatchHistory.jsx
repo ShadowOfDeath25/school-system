@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Page from "@ui/Page/Page.jsx";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
+import { useConfirmModal } from "@contexts/ConfirmModalContext.jsx";
 import styles from "./styles.module.css";
 import axiosClient from "../../../axiosClient.js";
 
@@ -20,6 +21,7 @@ const STATUS_PILLS = {
 
 export default function BatchHistory() {
     const { showSnackbar } = useSnackbar();
+    const { confirm } = useConfirmModal();
     const [batches, setBatches] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -114,8 +116,11 @@ export default function BatchHistory() {
                                                 {batch.status === "completed" && (
                                                     <button
                                                         className={`${styles.buttonInline} ${styles.buttonDanger}`}
-                                                        onClick={() => {
-                                                            if (window.confirm("هل أنت متأكد من التراجع عن هذه الترقية؟")) {
+                                                        onClick={async () => {
+                                                            const confirmed = await confirm({
+                                                                message: "هل أنت متأكد من التراجع عن هذه الترقية؟",
+                                                            });
+                                                            if (confirmed) {
                                                                 handleRollback(batch.id);
                                                             }
                                                         }}

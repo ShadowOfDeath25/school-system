@@ -15,7 +15,7 @@ const routes = {
     children: [
         {
             index: true,
-            element: <PromotionDashboard />,
+            element: <PromotionDashboard/>,
             handle: {
                 sidebar: {
                     title: "الترقية",
@@ -25,44 +25,37 @@ const routes = {
         },
         {
             path: "batches",
-            element: <BatchHistory />,
+            element: <BatchHistory/>,
             handle: {
                 sidebar: {
                     title: "سجل الترقيات",
+
                 },
                 action: "view promotion",
             },
         },
         {
             path: "batches/:batchId",
-            element: <BatchDetail />,
+            element: <BatchDetail/>,
             handle: {
-                sidebar: {
-                    title: "تفاصيل الترقية",
-                    hidden: true,
-                },
+                title: "تفاصيل الترقية",
                 action: "view promotion",
             },
         },
         {
             path: "batches/:batchId/supplementary-exam/:studentId",
-            element: <SupplementaryExamResolution />,
+            element: <SupplementaryExamResolution/>,
             handle: {
-                sidebar: {
-                    title: "نتيجة الدور الثاني",
-                    hidden: true,
-                },
+                title: "نتيجة الدور الثاني",
                 action: "update promotion",
             },
         },
         {
             path: "graduation/:batchId",
-            element: <GraduationReport />,
+            element: <GraduationReport/>,
             handle: {
-                sidebar: {
-                    title: "تقارير التخرج",
-                    hidden: true,
-                },
+                title: "تقارير التخرج",
+
                 action: "view promotion",
             },
         },

@@ -34,7 +34,9 @@ class PromotionEligibilityService
         foreach ($gradeSubjects as $gs) {
             $totalMarks = (float) ($subjects->firstWhere('grade_subject_id', $gs->id)?->total ?? 0);
             $minMarks = (float) $gs->min_marks;
-            $passed = $totalMarks >= $minMarks;
+            $achievableMax = $gs->total_marks;
+            $effectiveMin = $achievableMax > 0 ? min($minMarks, $achievableMax) : $minMarks;
+            $passed = $totalMarks >= $effectiveMin;
             $hasExams = Exam::where('grade_subject_id', $gs->id)
                 ->where('academic_year', $fromYear->name)
                 ->exists();
@@ -108,7 +110,7 @@ class PromotionEligibilityService
 
         $query = Student::query()
             ->where('grade', $grade)
-            ->where('withdrawn', false)
+            ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
             ->where(function ($q) {
                 $q->where('status', '!=', 'graduated')
                     ->orWhereNull('status');

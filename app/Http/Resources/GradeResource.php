@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\Grade;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,7 +18,7 @@ class GradeResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'grade' => $this->grade,
+            'grade' => Grade::from($this->grade),
         ];
     }
 }

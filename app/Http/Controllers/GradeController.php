@@ -17,7 +17,7 @@ class GradeController extends Controller
     public function assignSubjects(Grade $grade, AssignSubjectsToGradeRequest $request, GradingComponentService $components)
     {
         $subjectData = $request->validated();
-        $subjectData['components'] = $components->validate($subjectData['components'] ?? []);
+        $subjectData['components'] = $components->validate($subjectData['components'] ?? [], $subjectData['min_marks'] ?? null);
         $subjectData['max_marks'] = $components->totalMarks($subjectData['components']);
 
         $grade->subjects()->attach($subjectData['subject_id'], $subjectData);
@@ -35,7 +35,7 @@ class GradeController extends Controller
         $subjectData = $request->validated();
 
         if (array_key_exists('components', $subjectData)) {
-            $subjectData['components'] = $components->validate($subjectData['components']);
+            $subjectData['components'] = $components->validate($subjectData['components'], $subjectData['min_marks'] ?? null);
             $subjectData['max_marks'] = $components->totalMarks($subjectData['components']);
         }
 

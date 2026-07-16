@@ -39,7 +39,7 @@ class SeatAssignmentService
                 ->where('level', $config->level)
                 ->where('grade', (int) $config->grade)
                 ->where('language', $config->language)
-                ->where('withdrawn', false)
+                ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
                 ->whereNotNull('classroom_id')
                 ->get();
 

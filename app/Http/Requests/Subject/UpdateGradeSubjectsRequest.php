@@ -36,4 +36,24 @@ class UpdateGradeSubjectsRequest extends FormRequest
             'language' => ['string', 'in:عربي,لغات'],
         ];
     }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            $components = $this->input('components', []);
+
+            if (! $this->filled('min_marks') || empty($components)) {
+                return;
+            }
+
+            $totalMarks = collect($components)->sum(fn ($c) => (float) ($c['marks'] ?? 0));
+
+            if ((float) $this->min_marks > $totalMarks) {
+                $validator->errors()->add(
+                    'min_marks',
+                    'الحد الأدنى للدرجات لا يمكن أن يكون أكبر من مجموع درجات المكونات.'
+                );
+            }
+        });
+    }
 }

@@ -6,6 +6,7 @@ use App\Models\AcademicYear;
 use App\Models\PromotionBatch;
 use App\Models\PromotionBatchStudent;
 use App\Models\Student;
+use App\Models\StudentSecretAssignment;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -57,7 +58,7 @@ class PromotionEngineService
             ]);
 
             $query = Student::where('grade', $grade)
-                ->where('withdrawn', false)
+                ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
                 ->where(function ($q) {
                     $q->where('status', '!=', 'graduated')
                         ->orWhereNull('status');
@@ -168,6 +169,36 @@ class PromotionEngineService
                 $batchStudent->update(['second_round_passed' => false]);
                 $batch->increment('repeated_count');
             }
+        });
+    }
+
+    /**
+     * @throws Throwable
+     */
+    public function promoteSecondRoundStudent(PromotionBatch $batch, Student $student): void
+    {
+        DB::transaction(function () use ($batch, $student) {
+            $batchStudent = PromotionBatchStudent::where('promotion_batch_id', $batch->id)
+                ->where('student_id', $student->id)
+                ->where('decision', 'دور_ثاني')
+                ->whereNull('second_round_passed')
+                ->firstOrFail();
+
+            $toAcademicYear = $batch->to_academic_year;
+            $targetGrade = $student->grade + 1;
+            $classroom = $this->allocator->allocate($student, $targetGrade, $toAcademicYear);
+
+            $this->enrollment->enrollStudent(
+                $student, $batch, 'promoted', $targetGrade, $classroom, $toAcademicYear,
+                notes: 'دور ثاني - نجح',
+            );
+
+            StudentSecretAssignment::where('student_id', $student->id)
+                ->where('academic_year', $batch->from_academic_year)
+                ->delete();
+
+            $batchStudent->update(['second_round_passed' => true]);
+            $batch->increment('promoted_count');
         });
     }
 

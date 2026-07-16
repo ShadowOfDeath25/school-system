@@ -94,6 +94,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('batches/{batch}/rollback', [PromotionController::class, 'rollback'])->middleware('authorization:delete promotion');
         Route::get('batches', [PromotionController::class, 'batches'])->middleware('authorization:view promotion');
         Route::get('batches/{batch}', [PromotionController::class, 'showBatch'])->middleware('authorization:view promotion');
+        Route::get('batches/{batch}/students/{student}/supplementary-subjects', [PromotionController::class, 'supplementarySubjects'])->middleware('authorization:view promotion');
     });
     Route::middleware(['authorization'])->group(function () {
         Route::apiResource('roles', RoleController::class)->withFilters();
@@ -135,6 +136,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('extra-dues', ExtraDueController::class)->withFilters();
         Route::apiResource('exemptions', ExemptionController::class);
         Route::get('marks/student/{student}/exams', [MarksController::class, 'studentExams'])->middleware('authorization:view marks');
+        Route::get('marks/second-round/students', [MarksController::class, 'secondRoundStudents'])->middleware('authorization:view marks');
+        Route::post('marks/second-round/{student}/promote', [MarksController::class, 'promoteSecondRound'])->middleware('authorization:update promotion');
+        Route::get('marks/second-round/filters', [MarksController::class, 'secondRoundFilters'])->middleware('authorization:view marks');
         Route::get('marks/secret-assignments/filters', [MarksController::class, 'secretAssignmentFilters'])->middleware('authorization:view marks');
         Route::get('marks/secret-assignments', [MarksController::class, 'allSecretAssignments'])->middleware('authorization:view marks');
         Route::apiResource('marks', MarksController::class)->withFilters();

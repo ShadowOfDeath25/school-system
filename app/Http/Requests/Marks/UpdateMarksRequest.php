@@ -4,6 +4,7 @@ namespace App\Http\Requests\Marks;
 
 use App\Models\AcademicYear;
 use App\Models\Exam;
+use App\Models\Marks;
 use App\Models\Student;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -38,9 +39,16 @@ class UpdateMarksRequest extends FormRequest
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
-            $componentId = $this->input('component_id', $this->route('mark')?->component_id);
-            $studentId = $this->input('student_id', $this->route('mark')?->student_id);
-            $examId = $this->input('exam_id', $this->route('mark')?->exam_id);
+            $mark = null;
+            $markParam = $this->route('mark');
+
+            if ($markParam) {
+                $mark = is_object($markParam) ? $markParam : Marks::find($markParam);
+            }
+
+            $componentId = $this->input('component_id', $mark?->component_id);
+            $studentId = $this->input('student_id', $mark?->student_id);
+            $examId = $this->input('exam_id', $mark?->exam_id);
 
             if (! $componentId || ! $studentId || ! $examId) {
                 return;

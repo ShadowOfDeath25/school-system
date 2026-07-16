@@ -70,6 +70,68 @@
     background-color: rgba(255, 255, 255, 0.05);
 }
 
+.groupRow {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.groupRow:hover {
+    background-color: rgba(191, 161, 92, 0.12) !important;
+}
+
+.groupRowExpanded {
+    background-color: rgba(191, 161, 92, 0.08);
+}
+
+.componentRow td {
+    padding: 6px 10px;
+    height: 48px;
+}
+
+.componentRow:last-child {
+    border-bottom: 2px solid var(--secondary-color);
+}
+
+.componentNameCell {
+    font-size: 0.9rem;
+    color: var(--ternary-text-color);
+}
+
+.totalMarksCell {
+    text-align: center;
+    direction: rtl;
+}
+
+.totalMarkValue {
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.performanceCell {
+    text-align: center;
+}
+
+.performanceBadge {
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.chevronCell {
+    text-align: center;
+    width: 40px;
+}
+
+.chevron {
+    display: inline-block;
+    font-size: 0.7rem;
+    color: var(--ternary-text-color);
+    transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
 .marksTable td {
     padding: 10px;
     height: 60px;
@@ -137,6 +199,7 @@
 .actions {
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
     padding: 20px 0;
 }
 
@@ -157,6 +220,27 @@
 }
 
 .saveButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.promoteButton {
+    padding: 12px 40px;
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.promoteButton:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.promoteButton:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }

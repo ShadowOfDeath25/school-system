@@ -31,6 +31,7 @@ class StoreMarksRequest extends FormRequest
             'exam_id' => ['required', 'exists:exams,id'],
             'marks' => ['nullable', 'numeric', 'min:0'],
             'component_id' => ['required', 'string'],
+            'round' => ['nullable', 'string', 'in:first,second'],
             'academic_year' => ['string', 'exists:academic_years,name'],
         ];
     }

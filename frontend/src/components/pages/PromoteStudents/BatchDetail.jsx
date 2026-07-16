@@ -42,7 +42,7 @@ export default function BatchDetail() {
                 setBatch(batchRes.data.data);
                 const map = {};
                 (gradesRes.data.data || []).forEach((g) => {
-                    map[g.grade] = g.name;
+                    map[g.id] = g.name;
                 });
                 setGradeMap(map);
             })
@@ -133,7 +133,6 @@ export default function BatchDetail() {
                                     <th>إلى صف</th>
                                     <th>القرار</th>
                                     <th>دور ثاني</th>
-                                    <th>الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -160,18 +159,6 @@ export default function BatchDetail() {
                                             ) : (
                                                 "—"
                                             )}
-                                        </td>
-                                        <td>
-                                            <div className={styles.actions}>
-                                                {s.decision === "دور_ثاني" && s.second_round_passed === null && (
-                                                    <Link
-                                                        to={`/promotion/batches/${batchId}/supplementary-exam/${s.student_id}`}
-                                                        className={styles.buttonInline}
-                                                    >
-                                                        حل الدور الثاني
-                                                    </Link>
-                                                )}
-                                            </div>
                                         </td>
                                     </tr>
                                 ))}

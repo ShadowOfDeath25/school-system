@@ -1,11 +1,16 @@
 import Page from "@ui/Page/Page.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
 import Table from "@ui/Table/Table.jsx";
+import SelectField from "@ui/SelectField/SelectField.jsx";
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import { useState } from "react";
+import styles from './styles.module.css';
 import { useQueryClient } from "@tanstack/react-query";
 import { useGetAll } from "@hooks/api/useCrud.js";
-import { useConfirmModal } from "@contexts/ConfirmModalContext.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 import { SeatNumberHelper } from "@helpers/SeatNumberHelper.js";
@@ -13,7 +18,8 @@ import axiosClient from "../../../axiosClient.js"
 
 export default function ViewSeatAssignments() {
     const [filters, setFilters] = useState({});
-    const { confirm } = useConfirmModal();
+    const [assignModalOpen, setAssignModalOpen] = useState(false);
+    const [selectedAcademicYear, setSelectedAcademicYear] = useState('');
     const { showSnackbar } = useSnackbar();
     const queryClient = useQueryClient();
 
@@ -37,16 +43,22 @@ export default function ViewSeatAssignments() {
         { name: "language", label: "اللغة" },
     ];
 
-    const handleAssign = async () => {
-        const confirmed = await confirm({
-            message: "هل أنت متأكد من توزيع أرقام الجلوس؟",
-            warning: "سيتم توزيع الأرقام على جميع الطلاب حسب المجموعات المحددة في أرقام الجلوس",
-        });
-        if (!confirmed) return;
+    const handleAssign = () => {
+        setSelectedAcademicYear('');
+        setAssignModalOpen(true);
+    };
+
+    const handleConfirmAssign = async () => {
+        if (!selectedAcademicYear) {
+            showSnackbar('يرجى اختيار العام الدراسي', 'error');
+            return;
+        }
+
+        setAssignModalOpen(false);
 
         try {
             const response = await axiosClient.post('/seat-numbers/assign', {
-                academic_year: filters?.academic_year,
+                academic_year: selectedAcademicYear,
                 level: filters?.level,
                 grade: filters?.grade,
                 language: filters?.language,
@@ -76,6 +88,30 @@ export default function ViewSeatAssignments() {
                     توزيع أرقام الجلوس
                 </Button>
             </div>
+            <Dialog
+                open={assignModalOpen}
+                onClose={() => setAssignModalOpen(false)}
+                className={"seatAssignmentModal"}
+                fullWidth
+                maxWidth="sm"
+            >
+                <DialogTitle className={styles.title}>اختيار العام الدراسي</DialogTitle>
+                <DialogContent className={styles.content}>
+                    <SelectField
+                        name="academic_year"
+                        label="العام الدراسي"
+                        placeholder="اختر العام الدراسي"
+                        value={selectedAcademicYear}
+                        handleChange={(e) => setSelectedAcademicYear(e.target.value)}
+                        options={academicYears}
+                        isModal
+                    />
+                </DialogContent>
+                <DialogActions className={styles.actions}>
+                    <Button onClick={() => setAssignModalOpen(false)} sx={{color: 'var(--primary-text-color)'}}>إلغاء</Button>
+                    <Button onClick={handleConfirmAssign} variant="contained" color="primary">تأكيد</Button>
+                </DialogActions>
+            </Dialog>
             <Table
                 resource={'seat-numbers/assignments'}
                 filters={filters}

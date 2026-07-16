@@ -3,6 +3,7 @@
     border-top: var(--container-border);
     box-shadow: var(--container-box-shadow);
     padding: 20px;
+    color: var(--primary-text-color);
 }
 
 .filters {

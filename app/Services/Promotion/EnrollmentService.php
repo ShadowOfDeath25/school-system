@@ -7,6 +7,8 @@ use App\Models\PromotionBatch;
 use App\Models\PromotionBatchStudent;
 use App\Models\Student;
 use App\Models\StudentEnrollment;
+use App\Models\StudentSeatAssignment;
+use App\Models\StudentSecretAssignment;
 use Illuminate\Support\Facades\DB;
 
 class EnrollmentService
@@ -53,6 +55,14 @@ class EnrollmentService
             ]);
 
             $this->updateStudentRecord($student, $toGrade, $toClassroom, $status);
+
+            StudentSeatAssignment::where('student_id', $student->id)
+                ->where('academic_year', $toAcademicYear)
+                ->delete();
+
+            StudentSecretAssignment::where('student_id', $student->id)
+                ->where('academic_year', $toAcademicYear)
+                ->delete();
 
             return $enrollment;
         });

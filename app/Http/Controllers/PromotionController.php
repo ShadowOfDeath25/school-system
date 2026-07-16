@@ -6,8 +6,10 @@ use App\Http\Requests\Promotion\ExecutePromotionRequest;
 use App\Http\Requests\Promotion\PreviewPromotionRequest;
 use App\Http\Requests\Promotion\ResolveSupplementaryExamRequest;
 use App\Http\Resources\PromotionBatchResource;
+use App\Models\AcademicYear;
 use App\Models\PromotionBatch;
 use App\Models\Student;
+use App\Services\Promotion\PromotionEligibilityService;
 use App\Services\Promotion\PromotionEngineService;
 use App\Services\Promotion\RollbackService;
 use Illuminate\Http\JsonResponse;
@@ -88,6 +90,24 @@ class PromotionController extends Controller
         );
 
         return response()->json(['message' => 'تم تحديث نتيجة الدور الثاني بنجاح']);
+    }
+
+    public function supplementarySubjects(PromotionBatch $batch, Student $student): JsonResponse
+    {
+        $fromYear = AcademicYear::where('name', $batch->from_academic_year)->firstOrFail();
+
+        $eligibility = app(PromotionEligibilityService::class);
+        $result = $eligibility->evaluateStudent($student, $fromYear);
+
+        $subjects = $result['subjects']->map(fn ($s) => [
+            'grade_subject_id' => $s['grade_subject_id'],
+            'subject_name' => $s['subject_name'],
+            'total_marks' => $s['total_marks'],
+            'min_marks' => $s['min_marks'],
+            'passed' => $s['passed'],
+        ])->values();
+
+        return response()->json(['subjects' => $subjects]);
     }
 
     public function rollback(PromotionBatch $batch, Request $request): JsonResponse

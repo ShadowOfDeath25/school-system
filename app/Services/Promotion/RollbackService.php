@@ -4,6 +4,8 @@ namespace App\Services\Promotion;
 
 use App\Models\PromotionBatch;
 use App\Models\StudentEnrollment;
+use App\Models\StudentSeatAssignment;
+use App\Models\StudentSecretAssignment;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -31,6 +33,14 @@ class RollbackService
                     'classroom_id' => $batchStudent->from_classroom_id,
                     'status' => 'active',
                 ]);
+
+                StudentSeatAssignment::where('student_id', $batchStudent->student_id)
+                    ->where('academic_year', $batch->to_academic_year)
+                    ->delete();
+
+                StudentSecretAssignment::where('student_id', $batchStudent->student_id)
+                    ->where('academic_year', $batch->to_academic_year)
+                    ->delete();
 
                 StudentEnrollment::where('student_id', $batchStudent->student_id)
                     ->where('from_academic_year', $batch->from_academic_year)
