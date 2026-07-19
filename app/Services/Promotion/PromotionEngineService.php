@@ -10,6 +10,7 @@ use App\Models\StudentSecretAssignment;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
 use Throwable;
 
 class PromotionEngineService
@@ -200,6 +201,23 @@ class PromotionEngineService
             $batchStudent->update(['second_round_passed' => true]);
             $batch->increment('promoted_count');
         });
+    }
+
+    public function validateMarksCompleteness(int $grade, string $fromYear): ?Collection
+    {
+        $languages = Student::where('grade', $grade)
+            ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
+            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->distinct()
+            ->pluck('language');
+
+        $allMissing = collect();
+        foreach ($languages as $language) {
+            $missing = $this->eligibility->getStudentsWithMissingMarks($grade, $language, $fromYear);
+            $allMissing = $allMissing->concat($missing);
+        }
+
+        return $allMissing->isNotEmpty() ? $allMissing : null;
     }
 
     private function determineNextAcademicYear(string $fromName): AcademicYear

@@ -43,6 +43,7 @@ export default function PromotionDashboard() {
     const [previewData, setPreviewData] = useState(null);
     const [showExecuteModal, setShowExecuteModal] = useState(false);
     const [executeLoading, setExecuteLoading] = useState(false);
+    const [incompleteMarks, setIncompleteMarks] = useState(null);
 
     const computeNextYear = (year) => {
         if (!year) return "";
@@ -95,12 +96,20 @@ export default function PromotionDashboard() {
             setShowExecuteModal(false);
             setPreviewData(null);
         } catch (err) {
-            const msg = err.response?.data?.message || "حدث خطأ أثناء تنفيذ الترقية";
-            showSnackbar(msg, "error");
+            const incomplete = err.response?.data?.errors?.marks_incomplete;
+            if (incomplete) {
+                setIncompleteMarks(incomplete);
+                setShowExecuteModal(false);
+            } else {
+                const msg = err.response?.data?.message || "حدث خطأ أثناء تنفيذ الترقية";
+                showSnackbar(msg, "error");
+            }
         } finally {
             setExecuteLoading(false);
         }
     };
+
+    const handleIncompleteClose = () => setIncompleteMarks(null);
 
     const breakdown = previewData?.breakdown || {};
     const yearOptions = academicYears;
@@ -212,6 +221,34 @@ export default function PromotionDashboard() {
                     message={`تنفيذ الترقية للعام ${fromYear} ← ${toYear}؟ سيتم ترقية ${breakdown.total || 0} طالب. سيتم إنشاء العام الدراسي ${toYear} تلقائياً إذا لم يكن موجوداً.`}
                     warning="لا يمكن التراجع عن هذه العملية بسهولة."
                 />
+            )}
+
+            {incompleteMarks && (
+                <div className={styles.overlay} onClick={handleIncompleteClose}>
+                    <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+                        <h3>طلاب بدرجات ناقصة</h3>
+                        <p>يجب تسجيل درجات الدور الأول لجميع المواد قبل تنفيذ الترقية. الطلاب التالية درجاتهم ناقصة:</p>
+                        <table className={styles.table}>
+                            <thead>
+                                <tr>
+                                    <th>الاسم</th>
+                                    <th>الرقم السري</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {incompleteMarks.map((s) => (
+                                    <tr key={s.id}>
+                                        <td>{s.name}</td>
+                                        <td dir="ltr">{s.assigned_number}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 16 }}>
+                            <button className={styles.buttonOutline} onClick={handleIncompleteClose}>إغلاق</button>
+                        </div>
+                    </div>
+                </div>
             )}
         </Page>
     );

@@ -6,6 +6,7 @@ use App\Models\AcademicYear;
 use App\Models\Exam;
 use App\Models\GradeSubject;
 use App\Models\Student;
+use App\Models\StudentSecretAssignment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -102,6 +103,58 @@ class PromotionEligibilityService
         }
 
         return 'repeat';
+    }
+
+    public function getStudentsWithMissingMarks(int $grade, string $language, string $fromYear): Collection
+    {
+        $year = AcademicYear::where('name', $fromYear)->firstOrFail();
+        $now = $year->name;
+
+        $gradeSubjectIds = GradeSubject::whereHas('grade', fn ($q) => $q->where('grade', $grade))
+            ->where('language', $language)
+            ->pluck('id');
+
+        $expectedExamIds = Exam::whereIn('grade_subject_id', $gradeSubjectIds)
+            ->where('academic_year', $now)
+            ->pluck('id');
+
+        if ($expectedExamIds->isEmpty()) {
+            return collect();
+        }
+
+        $students = Student::query()
+            ->where('grade', $grade)
+            ->where('language', $language)
+            ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
+            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->get();
+
+        $secretNumbers = StudentSecretAssignment::where('academic_year', $now)
+            ->whereIn('student_id', $students->pluck('id'))
+            ->get()
+            ->groupBy('student_id')
+            ->map(fn ($group) => $group->pluck('assigned_number')->unique()->implode('، '));
+
+        $existingMarks = DB::table('marks')
+            ->whereIn('student_id', $students->pluck('id'))
+            ->where('academic_year', $now)
+            ->where('round', 'first')
+            ->whereIn('exam_id', $expectedExamIds)
+            ->select('student_id', 'exam_id')
+            ->distinct()
+            ->get()
+            ->groupBy('student_id');
+
+        return $students->filter(function (Student $s) use ($expectedExamIds, $existingMarks) {
+            $markedExamIds = $existingMarks->get($s->id)?->pluck('exam_id') ?? collect();
+            return $expectedExamIds->diff($markedExamIds)->isNotEmpty();
+        })->map(function (Student $s) use ($secretNumbers) {
+            return [
+                'id' => $s->id,
+                'name' => $s->name_in_arabic,
+                'assigned_number' => $secretNumbers->get($s->id, '—'),
+            ];
+        })->values();
     }
 
     public function preview(string $fromYear, int $grade, ?string $language): Collection

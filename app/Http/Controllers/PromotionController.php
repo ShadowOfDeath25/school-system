@@ -65,9 +65,22 @@ class PromotionController extends Controller
 
     public function execute(ExecutePromotionRequest $request): JsonResponse
     {
+        $grade = (int) $request->input('grade');
+        $fromYear = $request->input('from_academic_year');
+
+        $incomplete = $this->engine->validateMarksCompleteness($grade, $fromYear);
+        if ($incomplete) {
+            return response()->json([
+                'message' => 'يجب تسجيل درجات الدور الأول لجميع المواد قبل تنفيذ الترقية',
+                'errors' => [
+                    'marks_incomplete' => $incomplete->values()->toArray(),
+                ],
+            ], 422);
+        }
+
         $batch = $this->engine->execute(
-            $request->input('from_academic_year'),
-            (int) $request->input('grade'),
+            $fromYear,
+            $grade,
             $request->input('student_ids'),
             $request->user(),
         );
