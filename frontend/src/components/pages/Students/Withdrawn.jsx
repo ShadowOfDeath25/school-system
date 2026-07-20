@@ -15,7 +15,7 @@ export default function Withdrawn() {
     });
     const [filters, setFilters] = useState();
     const mutation = useUpdate('students');
-    const { showEditModal, hideEditModal } = useInputModal();
+    const { showInputModal, hideInputModal } = useInputModal();
     const { showSnackbar } = useSnackbar();
     const filterFields = [
         {
@@ -58,7 +58,7 @@ export default function Withdrawn() {
         }
     ]
     const handleEnroll = (student) => {
-        showEditModal({
+        showInputModal({
             fields: [
                 { ...ClassroomHelper.FIELDS.ACADEMIC_YEAR, options: academicYears },
                 ClassroomHelper.FIELDS.LANGUAGE,
@@ -81,10 +81,10 @@ export default function Withdrawn() {
                 mutation.mutate({ classroom_id: payload.classroom, id: student.id }, {
                     onSuccess: () => {
                         showSnackbar('تم الحاق الطالب بالفصل بنجاح')
-                        hideEditModal();
+                        hideInputModal();
                     }, onError: () => {
                         showSnackbar('حدث خطأ اثناء الحاق الطالب بالفصل', 'error')
-                        hideEditModal()
+                        hideInputModal()
                     },
                 })
             }

@@ -23,6 +23,7 @@ use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\IncomeTypeController;
 use App\Http\Controllers\MarksController;
+use App\Http\Controllers\MarksReportController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentValueController;
 use App\Http\Controllers\PermissionController;
@@ -60,6 +61,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('summary', [StudentReportController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
             Route::get('demographics', [StudentReportController::class, 'demographicsReport'])->name('demographics')->middleware('authorization:view student-reports');
             Route::get('roster', [StudentReportController::class, 'roster'])->name('roster')->middleware('authorization:view student-reports');
+            Route::get('marks/class', [MarksReportController::class, 'classReport'])->name('marks.class')->middleware('authorization:view student-reports');
             Route::get('exam-candidates', [SeatNumberController::class, 'candidates'])->name('exam-candidates')->middleware('authorization:view student-reports');
             Route::prefix('/payments')->name('payments.')->group(function () {
 

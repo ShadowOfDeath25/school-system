@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             ExemptionSeeder::class,
             SubjectTypeSeeder::class,
             SubjectSeeder::class,
+            ComprehensivePromotionTestSeeder::class,
         ]);
 
     }

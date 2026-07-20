@@ -1,6 +1,7 @@
 import MarksIndex from "@pages/Marks/ClassroomPicker.jsx";
 import RecordMarks from "@pages/Marks/RecordMarks/RecordMarks.jsx";
 import SecondRoundStudents from "@pages/Marks/SecondRoundStudents.jsx";
+import MarksReports from "@pages/Marks/MarksReports/MarksReports.jsx";
 
 const routes = {
     path: "marks",
@@ -33,6 +34,14 @@ const routes = {
             handle: {
                 title: "تسجيل الدرجات",
                 action: "update marks",
+            },
+        },
+        {
+            path: "marks-report",
+            element: <MarksReports />,
+            handle: {
+                sidebar: { title: "تقارير الدرجات" },
+                action: "view student-reports",
             },
         },
     ],

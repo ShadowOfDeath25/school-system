@@ -164,6 +164,12 @@
     opacity: 0.6;
 }
 
+.summary {
+    margin: 8px 0;
+    font-size: 14px;
+    color: var(--ternary-text-color);
+}
+
 @media (max-width: 768px) {
     .body {
         grid-template-columns: 1fr !important;
