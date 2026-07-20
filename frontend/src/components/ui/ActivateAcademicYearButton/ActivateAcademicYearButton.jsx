@@ -18,7 +18,7 @@ export default function ActivateAcademicYearButton({row}) {
     }
     return (
         <Activity mode={row.active === "نعم" ? "hidden" : "visible"}>
-            <Button variant={"contained"} onClick={onClick}>
+            <Button variant={"contained"} color="primary" onClick={onClick}>
                 تعيين كالعام الدراسي الحالي
             </Button>
         </Activity>

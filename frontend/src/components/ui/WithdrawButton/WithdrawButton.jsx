@@ -25,7 +25,7 @@ export default function WithdrawButton({student, children}) {
             <Button
                 onClick={() => handleWithdraw(student)}
                 variant={"contained"}
-                sx={{backgroundColor: "var(--color-danger)"}}
+                sx={{backgroundColor: "var(--btn-danger-bg)"}}
             >
                 {children ? children : "سحب الملف"}
             </Button>

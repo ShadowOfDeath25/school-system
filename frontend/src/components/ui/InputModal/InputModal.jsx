@@ -104,7 +104,7 @@ export default function InputModal({
 
                 </DialogContent>
                 <DialogActions className={styles.actions}>
-                    <Button onClick={onCancel} sx={{color: 'var(--primary-text-color)'}}
+                    <Button onClick={onCancel} sx={{color: 'var(--btn-ghost-text)'}}
                             disabled={isLoading}>إلغاء</Button>
                     <Button form="input-form" type="submit" autoFocus variant="contained" color="primary"
                             disabled={isLoading || !areAllRequiredFieldsFilled}>

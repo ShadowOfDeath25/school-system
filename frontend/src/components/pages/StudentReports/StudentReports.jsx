@@ -227,14 +227,14 @@ export default function StudentReports() {
 
                 <div className={styles.actions}>
                     {isMarksReport && (
-                        <Button variant={"contained"} color={"info"} onClick={handleView} disabled={loading}>
+                        <Button variant={"contained"} color="primary" onClick={handleView} disabled={loading}>
                             {loading ? "جاري التحميل..." : "عرض"}
                         </Button>
                     )}
-                    <Button variant={"contained"} onClick={handlePrint}>
+                    <Button variant={"contained"} color="primary" onClick={handlePrint}>
                         طباعة
                     </Button>
-                    <Button variant={"contained"} color={"success"} onClick={handleExport}>
+                    <Button variant="outlined" color="primary" onClick={handleExport}>
                         تصدير ك EXCEL
                     </Button>
                     <Button variant={"contained"} color={"error"} onClick={handleReset}>

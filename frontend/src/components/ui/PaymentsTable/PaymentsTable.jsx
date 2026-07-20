@@ -206,6 +206,7 @@ export default function PaymentsTable({ student, type, types, academicYear, btnT
             <div className={styles.toolbar}>
                 <Button
                     variant={"contained"}
+                    color="primary"
                     onClick={handlePaymentAddition}
                 >
                     {btnText}

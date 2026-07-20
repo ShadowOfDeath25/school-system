@@ -282,7 +282,7 @@ function SubjectGradingModal({
                 </form>
             </DialogContent>
             <DialogActions className={styles.modalActions}>
-                <Button onClick={onCancel} sx={{color: 'var(--primary-text-color)'}} disabled={isLoading}>
+                <Button onClick={onCancel} sx={{color: 'var(--btn-ghost-text)'}} disabled={isLoading}>
                     إلغاء
                 </Button>
                 <Button form="subject-grading-form" type="submit" variant="contained" color="primary"

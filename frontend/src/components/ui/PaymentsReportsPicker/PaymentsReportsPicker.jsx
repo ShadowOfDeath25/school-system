@@ -172,6 +172,7 @@ export default function PaymentsReportsPicker() {
                 <div className={styles.actions}>
                     <Button
                         variant={"contained"}
+                        color="primary"
                         onClick={handleSubmit}
                     >
                         طباعة
@@ -179,8 +180,8 @@ export default function PaymentsReportsPicker() {
                     <Activity
                         mode={["arrears-letters", "letters"].includes(formData.reportSubType) ? "hidden" : "visible"}>
                         <Button
-                            variant={"contained"}
-                            color={"success"}
+                            variant="outlined"
+                            color="primary"
                             onClick={() => {
                                 exportAsExcel(
                                     `reports/students/payments/${formData.reportSubType}`,

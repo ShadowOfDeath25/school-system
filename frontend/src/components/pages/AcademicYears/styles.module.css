@@ -68,21 +68,19 @@
         border-radius: 10px;
         width: clamp(100px, 10vw, 200px);
         padding: 10px;
-        background-color: var(--primary-text-color);
+        background-color: var(--btn-primary-bg);
         border: 1px solid transparent;
-        color: black;
+        color: var(--btn-primary-text);
         cursor: pointer;
 
         &:hover {
-            border: 1px solid var(--primary-text-color);
-            color: var(--primary-text-color);
-            background-color: transparent;
+            background-color: var(--btn-primary-hover-bg);
+            color: var(--btn-primary-text);
         }
 
         &:disabled {
-            background-color: grey;
-            color: white;
-            border: gray;
+            background-color: var(--btn-disabled-bg);
+            color: var(--btn-disabled-text);
             cursor: not-allowed;
         }
     }

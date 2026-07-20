@@ -109,22 +109,20 @@
     border-radius: 10px;
     width: clamp(100px, 10vw, 200px);
     padding: 10px;
-    background-color: var(--primary-text-color);
+    background-color: var(--btn-primary-bg);
     border: 1px solid transparent;
-    color: black;
+    color: var(--btn-primary-text);
     cursor: pointer;
 }
 
 .button:hover {
-    border: 1px solid var(--primary-text-color);
-    color: var(--primary-text-color);
-    background-color: transparent;
+    background-color: var(--btn-primary-hover-bg);
+    color: var(--btn-primary-text);
 }
 
 .button:disabled {
-    background-color: grey;
-    color: white;
-    border: gray;
+    background-color: var(--btn-disabled-bg);
+    color: var(--btn-disabled-text);
     cursor: not-allowed;
 }
 
@@ -132,16 +130,15 @@
     font-size: 14px;
     border-radius: 10px;
     padding: 6px 16px;
-    background-color: var(--primary-text-color);
+    background-color: var(--btn-primary-bg);
     border: 1px solid transparent;
-    color: black;
+    color: var(--btn-primary-text);
     cursor: pointer;
 }
 
 .buttonInline:hover {
-    border: 1px solid var(--primary-text-color);
-    color: var(--primary-text-color);
-    background-color: transparent;
+    background-color: var(--btn-primary-hover-bg);
+    color: var(--btn-primary-text);
 }
 
 .buttonInline:disabled {
@@ -151,14 +148,14 @@
 
 .buttonDanger {
     background-color: transparent;
-    border: 1px solid var(--color-danger);
-    color: var(--color-danger);
+    border: 1px solid var(--btn-danger-bg);
+    color: var(--btn-danger-bg);
 }
 
 .buttonDanger:hover {
-    background-color: var(--color-danger);
-    border: 1px solid var(--color-danger);
-    color: var(--primary-text-color);
+    background-color: var(--btn-danger-bg);
+    border: 1px solid var(--btn-danger-bg);
+    color: var(--btn-danger-text);
 }
 
 .actions {
@@ -290,12 +287,12 @@
     border-radius: 10px;
     padding: 10px 20px;
     background: transparent;
-    border: 1px solid var(--secondary-color);
-    color: var(--secondary-color);
+    border: 1px solid var(--btn-outline-border);
+    color: var(--btn-outline-text);
     cursor: pointer;
 }
 
 .buttonOutline:hover {
-    background: var(--secondary-color);
-    color: var(--primary-color);
+    background: var(--btn-outline-hover-bg);
+    color: var(--btn-outline-hover-text);
 }

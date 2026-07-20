@@ -32,6 +32,26 @@ html, body, #root {
     --color-focus: #0176fa;
     --container-box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.2);
     --container-border: 5px solid var(--secondary-color);
+
+    /* Button system — gold-as-primary */
+    --btn-primary-bg: #bfa15c;
+    --btn-primary-text: #1b223c;
+    --btn-primary-hover-bg: #a88a3e;
+
+    --btn-outline-border: #bfa15c;
+    --btn-outline-text: #bfa15c;
+    --btn-outline-hover-bg: #bfa15c;
+    --btn-outline-hover-text: #1b223c;
+
+    --btn-danger-bg: #be434a;
+    --btn-danger-text: #fefffe;
+    --btn-danger-hover-bg: #a83339;
+
+    --btn-ghost-text: #bfa15c;
+    --btn-ghost-hover-bg: rgba(191, 161, 92, 0.1);
+
+    --btn-disabled-bg: rgba(255, 255, 255, 0.1);
+    --btn-disabled-text: rgba(255, 255, 255, 0.35);
 }
 
 

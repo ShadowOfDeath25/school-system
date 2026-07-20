@@ -108,7 +108,7 @@ export default function ViewSeatAssignments() {
                     />
                 </DialogContent>
                 <DialogActions className={styles.actions}>
-                    <Button onClick={() => setAssignModalOpen(false)} sx={{color: 'var(--primary-text-color)'}}>إلغاء</Button>
+                    <Button onClick={() => setAssignModalOpen(false)} sx={{color: 'var(--btn-ghost-text)'}}>إلغاء</Button>
                     <Button onClick={handleConfirmAssign} variant="contained" color="primary">تأكيد</Button>
                 </DialogActions>
             </Dialog>
