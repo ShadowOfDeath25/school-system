@@ -1,6 +1,7 @@
+import Button from "@mui/material/Button";
 import styles from "./styles.module.css";
 
-export default function StudentMarksTable({ data }) {
+export default function StudentMarksTable({ data, onPrintCertificate }) {
     const { subjects, students } = data;
 
     if (!subjects?.length) {
@@ -19,6 +20,9 @@ export default function StudentMarksTable({ data }) {
                                 {s.name}<br /><small>({s.max})</small>
                             </th>
                         ))}
+                        {onPrintCertificate && (
+                            <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle", width: 60 }}>شهادة</th>
+                        )}
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +39,18 @@ export default function StudentMarksTable({ data }) {
                                     {m.display}
                                 </td>
                             ))}
+                            {onPrintCertificate && (
+                                <td className={styles.td} style={{ textAlign: "center" }}>
+                                    <Button
+                                        size="small"
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => onPrintCertificate(student.id)}
+                                    >
+                                        عرض الشهادة
+                                    </Button>
+                                </td>
+                            )}
                         </tr>
                     ))}
                 </tbody>

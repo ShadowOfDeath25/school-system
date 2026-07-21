@@ -2,6 +2,7 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 
 const MARKS_REPORT_TYPES = [
     { label: "كشف درجات الطلاب", value: "class_marks" },
+    { label: "شهادات الطلبة", value: "certificates" },
 ];
 
 export default function MarksReportSelector({ value, onChange }) {

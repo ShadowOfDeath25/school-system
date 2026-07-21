@@ -123,6 +123,7 @@ class MarksReportService
             });
 
             return [
+                'id' => $s->id,
                 'name' => $s->name_in_arabic,
                 'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
                 'marks' => $marks,
@@ -148,8 +149,8 @@ class MarksReportService
     {
         if ($pct === null) return '#7f8c8d';
         return match (true) {
-            $pct >= 90 => '#2ecc71',
-            $pct >= 70 => '#3498db',
+            $pct >= 85 => '#3498db',
+            $pct >= 65 => '#2ecc71',
             $pct >= 50 => '#f39c12',
             default    => '#e74c3c',
         };
