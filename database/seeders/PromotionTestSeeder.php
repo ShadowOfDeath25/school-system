@@ -30,30 +30,49 @@ class PromotionTestSeeder extends Seeder
         $grade3 = Grade::firstOrCreate(['grade' => 3], ['name' => 'الاول الابتدائي']);
         $grade11 = Grade::firstOrCreate(['grade' => 11], ['name' => 'الثالث الاعدادي']);
 
-        $subjectNames = ['اللغة العربية', 'الرياضيات', 'العلوم', 'الدراسات الاجتماعية'];
+        $allSubjectNames = ['اللغة العربية', 'الرياضيات', 'العلوم', 'الدراسات الاجتماعية', 'التربية الفنية', 'الحاسب الآلي'];
         $subjects = [];
-        foreach ($subjectNames as $name) {
+        foreach ($allSubjectNames as $name) {
             $subjects[$name] = Subject::firstOrCreate(
                 ['name' => $name, 'language' => $lang],
                 ['type' => 'عام']
             );
         }
 
-        $components = [['id' => 'final', 'name' => 'الامتحان النهائي', 'marks' => 50, 'is_final_exam' => true]];
+        $subjectSemesters = [
+            'اللغة العربية'      => 'طوال العام',
+            'الرياضيات'          => 'طوال العام',
+            'العلوم'             => 'الأول',
+            'الدراسات الاجتماعية' => 'الأول',
+            'التربية الفنية'     => 'الثاني',
+            'الحاسب الآلي'       => 'الثاني',
+        ];
+
+        $semesterConfig = [
+            'الأول'       => ['min_marks' => 25, 'max_marks' => 50],
+            'الثاني'      => ['min_marks' => 20, 'max_marks' => 40],
+            'طوال العام'  => ['min_marks' => 25, 'max_marks' => 50],
+        ];
 
         $gradeSubjectIds = [];
         foreach ([3 => $grade3, 11 => $grade11] as $gNum => $grade) {
-            foreach ($subjects as $name => $subject) {
+            foreach ($subjectSemesters as $name => $semester) {
+                $cfg = $semesterConfig[$semester];
                 $gsId = DB::table('grade_subject')->insertGetId([
-                    'subject_id' => $subject->id,
+                    'subject_id' => $subjects[$name]->id,
                     'grade_id' => $grade->id,
                     'language' => $lang,
-                    'min_marks' => 25,
-                    'max_marks' => 50,
+                    'min_marks' => $cfg['min_marks'],
+                    'max_marks' => $cfg['max_marks'],
                     'added_to_total' => true,
                     'added_to_report' => true,
-                    'semester' => 'الأول',
-                    'components' => json_encode($components),
+                    'semester' => $semester,
+                    'components' => $semester === 'طوال العام'
+                        ? json_encode([
+                            ['id' => 'first_final', 'name' => 'الامتحان النهائي الفصل الأول', 'marks' => $cfg['max_marks'] / 2, 'is_final_exam' => true],
+                            ['id' => 'second_final', 'name' => 'الامتحان النهائي الفصل الثاني', 'marks' => $cfg['max_marks'] / 2, 'is_final_exam' => true],
+                          ])
+                        : json_encode([['id' => 'final', 'name' => 'الامتحان النهائي', 'marks' => $cfg['max_marks'], 'is_final_exam' => true]]),
                 ]);
                 $gradeSubjectIds[$gNum][$name] = $gsId;
             }
@@ -62,19 +81,28 @@ class PromotionTestSeeder extends Seeder
         $examIds = [];
         foreach ($gradeSubjectIds as $gNum => $subjectMap) {
             foreach ($subjectMap as $name => $gsId) {
-                $examId = DB::table('exams')->insertGetId([
-                    'grade_subject_id' => $gsId,
-                    'component_id' => 'final',
-                    'academic_year' => $year,
-                    'name' => 'الامتحان النهائي',
-                    'date' => '2026-05-01 09:00:00',
-                    'type' => 'امتحان',
-                    'marks' => 50,
-                    'language' => $lang,
-                    'semester' => 'الأول',
-                    'duration_in_hours' => 2,
-                ]);
-                $examIds[$gNum][$name] = $examId;
+                $gsSemester = $subjectSemesters[$name];
+                $cfg = $semesterConfig[$gsSemester];
+                $examSemesters = $gsSemester === 'طوال العام' ? ['الأول', 'الثاني'] : [$gsSemester];
+                $examIds[$gNum][$name] = [];
+                foreach ($examSemesters as $examSemester) {
+                    $componentId = $gsSemester === 'طوال العام'
+                        ? ($examSemester === 'الأول' ? 'first_final' : 'second_final')
+                        : 'final';
+                    $examId = DB::table('exams')->insertGetId([
+                        'grade_subject_id' => $gsId,
+                        'component_id' => $componentId,
+                        'academic_year' => $year,
+                        'name' => 'الامتحان النهائي ' . ($gsSemester === 'طوال العام' ? $examSemester : ''),
+                        'date' => $examSemester === 'الأول' ? '2026-05-01 09:00:00' : '2026-01-15 09:00:00',
+                        'type' => 'امتحان',
+                        'marks' => $cfg['max_marks'] / ($gsSemester === 'طوال العام' ? 2 : 1),
+                        'language' => $lang,
+                        'semester' => $examSemester,
+                        'duration_in_hours' => 2,
+                    ]);
+                    $examIds[$gNum][$name][$examSemester] = $examId;
+                }
             }
         }
 
@@ -150,15 +178,25 @@ class PromotionTestSeeder extends Seeder
             ]);
 
             if ($data['marks']) {
-                foreach ($data['marks'] as $subjName => $markValue) {
-                    DB::table('marks')->insert([
-                        'student_id' => $student->id,
-                        'exam_id' => $examIds[$gNum][$subjName],
-                        'marks' => $markValue,
-                        'component_id' => 'final',
-                        'academic_year' => $year,
-                        'round' => 'first',
-                    ]);
+                $allMarks = array_merge($data['marks'], ['التربية الفنية' => 33, 'الحاسب الآلي' => 28]);
+                foreach ($subjectSemesters as $subjName => $gsSemester) {
+                    $markValue = $allMarks[$subjName] ?? null;
+                    if ($markValue === null) continue;
+                    $examSemesters = $gsSemester === 'طوال العام' ? ['الأول', 'الثاني'] : [$gsSemester];
+                    foreach ($examSemesters as $examSemester) {
+                        $componentId = $gsSemester === 'طوال العام'
+                            ? ($examSemester === 'الأول' ? 'first_final' : 'second_final')
+                            : 'final';
+                        $semesterMark = $gsSemester === 'طوال العام' ? $markValue / 2 : $markValue;
+                        DB::table('marks')->insert([
+                            'student_id' => $student->id,
+                            'exam_id' => $examIds[$gNum][$subjName][$examSemester],
+                            'marks' => $semesterMark,
+                            'component_id' => $componentId,
+                            'academic_year' => $year,
+                            'round' => 'first',
+                        ]);
+                    }
                 }
             }
         }

@@ -37,6 +37,8 @@ class CertificateController extends Controller
             'academic_year', 'promotion_batch_id', 'student_id', 'grade', 'language', 'level', 'classroom_id', 'semester',
         ]));
 
+        $data['semester'] = $request->input('semester', 'both');
+
         if (empty($data['students'])) {
             return response()->json(['message' => 'لا توجد بيانات للشهادات'], 404);
         }

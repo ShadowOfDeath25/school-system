@@ -7,6 +7,7 @@ use App\Models\GradeSubject;
 use App\Models\PromotionBatch;
 use App\Models\PromotionBatchStudent;
 use App\Models\Student;
+use App\Models\StudentSeatAssignment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -68,12 +69,16 @@ class CertificateService
         $gradeSubjects = GradeSubject::with('subject')
             ->whereHas('grade', fn ($q) => $q->where('grade', $student->grade))
             ->where('language', $student->language)
-            ->when($semester !== 'both', fn ($q) => $q->where('semester', $semester))
+            ->when($semester !== 'both', fn ($q) => $q->whereIn('semester', [$semester, 'طوال العام']))
             ->get();
 
         if ($gradeSubjects->isEmpty()) {
             return null;
         }
+
+        $seatAssignment = StudentSeatAssignment::where('student_id', $student->id)
+            ->where('academic_year', $academicYear)
+            ->first();
 
         $gsIds = $gradeSubjects->pluck('id');
 
@@ -83,10 +88,11 @@ class CertificateService
             ->whereIn('exams.grade_subject_id', $gsIds)
             ->where('marks.academic_year', $academicYear)
             ->where('marks.round', 'first')
-            ->select('exams.grade_subject_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
-            ->groupBy('exams.grade_subject_id')
+            ->when($semester !== 'both', fn ($q) => $q->where('exams.semester', $semester))
+            ->select('exams.grade_subject_id', 'exams.semester', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('exams.grade_subject_id', 'exams.semester')
             ->get()
-            ->keyBy('grade_subject_id')
+            ->keyBy(fn ($r) => $r->grade_subject_id . '|' . $r->semester)
             ->map(fn ($r) => (float) $r->total);
 
         $secondRoundGS = DB::table('marks')
@@ -107,38 +113,104 @@ class CertificateService
             ->where('rolled_back', false)
             ->exists();
 
-        $subjects = $gradeSubjects->map(function (GradeSubject $gs) use ($firstRoundMarks, $secondRoundGS, $passedSecondRound) {
-            $firstTotal = (float) ($firstRoundMarks->get($gs->id, 0));
-            $hasAnyMark = $firstRoundMarks->has($gs->id);
-            $hasSecond = $secondRoundGS->contains($gs->id);
-            $maxMarks = (float) $gs->total_marks;
-            $minMarks = (float) $gs->min_marks;
+        if ($semester === 'both') {
+            $subjects = $gradeSubjects->map(function (GradeSubject $gs) use ($firstRoundMarks, $secondRoundGS, $passedSecondRound) {
+                $firstData = $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, 'الأول');
+                $secondData = $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, 'الثاني');
 
-            if (!$hasAnyMark && !$hasSecond) {
-                $effective = null;
-                $passed = false;
-            } else {
-                $effective = $firstTotal;
-                if ($passedSecondRound && $hasSecond && $firstTotal < $minMarks) {
-                    $effective = $minMarks;
+                $hasFirst = $firstData['marks'] !== null;
+                $hasSecond = $secondData['marks'] !== null;
+
+                // Whole-year subjects have components split across semesters,
+                // so per-semester max/min is half of the total
+                $isWholeYear = $gs->semester === 'طوال العام';
+                $firstMax = $isWholeYear ? $firstData['max'] / 2 : $firstData['max'];
+                $secondMax = $isWholeYear ? $secondData['max'] / 2 : $secondData['max'];
+                $firstMin = $isWholeYear ? $firstData['min'] / 2 : $firstData['min'];
+                $secondMin = $isWholeYear ? $secondData['min'] / 2 : $secondData['min'];
+
+                // Recompute per-semester grade_label, color, and passed using correct per-semester max/min
+                if ($hasFirst) {
+                    $firstPct = $firstMax > 0 ? (($firstData['marks'] ?? 0) / $firstMax) * 100 : null;
+                    $firstData['color'] = $this->markColor($firstPct);
+                    $firstData['grade_label'] = match (true) {
+                        $firstPct === null => '—',
+                        $firstPct >= 85 => 'ممتاز',
+                        $firstPct >= 65 => 'جيد جداً',
+                        $firstPct >= 50 => 'مقبول',
+                        default        => 'ضعيف',
+                    };
+                    $firstData['passed'] = ($firstData['marks'] ?? 0) >= $firstMin;
                 }
-                $minThreshold = $maxMarks > 0 ? min($minMarks, $maxMarks) : $minMarks;
-                $passed = $effective >= $minThreshold;
-            }
+                if ($hasSecond) {
+                    $secondPct = $secondMax > 0 ? (($secondData['marks'] ?? 0) / $secondMax) * 100 : null;
+                    $secondData['color'] = $this->markColor($secondPct);
+                    $secondData['grade_label'] = match (true) {
+                        $secondPct === null => '—',
+                        $secondPct >= 85 => 'ممتاز',
+                        $secondPct >= 65 => 'جيد جداً',
+                        $secondPct >= 50 => 'مقبول',
+                        default        => 'ضعيف',
+                    };
+                    $secondData['passed'] = ($secondData['marks'] ?? 0) >= $secondMin;
+                }
 
-            $pct = ($maxMarks > 0 && $effective !== null) ? ($effective / $maxMarks) * 100 : null;
-            $color = $this->markColor($pct);
+                if ($hasFirst && $hasSecond) {
+                    $combinedMax = $firstMax + $secondMax;
+                    $combinedMin = $firstMin + $secondMin;
+                    $combinedMarks = ((float) ($firstData['marks'] ?? 0)) + ((float) ($secondData['marks'] ?? 0));
+                } elseif ($hasFirst) {
+                    $combinedMax = $firstMax;
+                    $combinedMin = $firstMin;
+                    $combinedMarks = $firstData['marks'];
+                } elseif ($hasSecond) {
+                    $combinedMax = $secondMax;
+                    $combinedMin = $secondMin;
+                    $combinedMarks = $secondData['marks'];
+                } else {
+                    $combinedMax = $firstMax;
+                    $combinedMin = $firstMin;
+                    $combinedMarks = null;
+                }
 
-            return [
-                'name' => $gs->subject?->name,
-                'max' => $maxMarks,
-                'min' => $minMarks,
-                'marks' => $effective,
-                'color' => $color,
-                'passed' => $passed,
-                'added_to_total' => $gs->added_to_total,
-            ];
-        });
+                $pct = $combinedMax > 0 && $combinedMarks !== null ? ($combinedMarks / $combinedMax) * 100 : null;
+                $color = $this->markColor($pct);
+                $gradeLabel = match (true) {
+                    $pct === null => '—',
+                    $pct >= 85 => 'ممتاز',
+                    $pct >= 65 => 'جيد جداً',
+                    $pct >= 50 => 'مقبول',
+                    default    => 'ضعيف',
+                };
+                $passed = $combinedMarks !== null && $combinedMarks >= $combinedMin;
+
+                $emptySub = ['max' => 0, 'min' => 0, 'marks' => null, 'color' => '#999', 'grade_label' => '—', 'passed' => false];
+                $firstSub = $hasFirst ? array_merge($firstData, ['max' => $firstMax, 'min' => $firstMin]) : $emptySub;
+                $secondSub = $hasSecond ? array_merge($secondData, ['max' => $secondMax, 'min' => $secondMin]) : $emptySub;
+
+                return [
+                    'name' => $gs->subject?->name,
+                    'max' => $combinedMax,
+                    'min' => $combinedMin,
+                    'marks' => $combinedMarks,
+                    'color' => $color,
+                    'grade_label' => $gradeLabel,
+                    'passed' => $passed,
+                    'added_to_total' => $gs->added_to_total,
+                    'first' => $firstSub,
+                    'second' => $secondSub,
+                    'has_first' => $hasFirst,
+                    'has_second' => $hasSecond,
+                ];
+            });
+        } else {
+            $subjects = $gradeSubjects->map(function (GradeSubject $gs) use ($firstRoundMarks, $secondRoundGS, $passedSecondRound, $semester) {
+                return $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, $semester) + [
+                    'name' => $gs->subject?->name,
+                    'added_to_total' => $gs->added_to_total,
+                ];
+            });
+        }
 
         $category = $this->determineCategory($student, $subjects, $academicYear);
 
@@ -152,10 +224,14 @@ class CertificateService
             'grade' => $student->grade,
             'grade_name' => Grade::where('grade', $student->grade)->value('name'),
             'language' => $student->language,
+            'classroom_name' => $student->classroom?->name,
+            'seat_number' => $seatAssignment?->assigned_number,
+            'academic_year' => $academicYear,
             'subjects' => $subjects->values()->all(),
             'total_max' => $totalMax,
             'total_min' => $totalMin,
             'total_marks' => $totalMarks,
+            'grade_label' => $this->calculateGradeLabel($totalMarks, $totalMax),
             'category' => $category,
             'category_text' => $this->getCategoryText($category, $student->grade),
         ];
@@ -195,14 +271,67 @@ class CertificateService
         };
     }
 
+    private function computeSubjectData(GradeSubject $gs, Collection $firstRoundMarks, Collection $secondRoundGS, bool $passedSecondRound, string $semester): array
+    {
+        $key = $gs->id . '|' . $semester;
+        $firstTotal = (float) ($firstRoundMarks->get($key, 0));
+        $hasAnyMark = $firstRoundMarks->has($key);
+        $hasSecond = $secondRoundGS->contains($gs->id);
+        $maxMarks = (float) $gs->total_marks;
+        $minMarks = (float) $gs->min_marks;
+
+        if (!$hasAnyMark && !$hasSecond) {
+            $effective = null;
+            $passed = false;
+        } else {
+            $effective = $firstTotal;
+            if ($passedSecondRound && $hasSecond && $firstTotal < $minMarks) {
+                $effective = $minMarks;
+            }
+            $minThreshold = $maxMarks > 0 ? min($minMarks, $maxMarks) : $minMarks;
+            $passed = $effective >= $minThreshold;
+        }
+
+        $pct = ($maxMarks > 0 && $effective !== null) ? ($effective / $maxMarks) * 100 : null;
+        $color = $this->markColor($pct);
+        $gradeLabel = match (true) {
+            $pct === null => '—',
+            $pct >= 85 => 'ممتاز',
+            $pct >= 65 => 'جيد جداً',
+            $pct >= 50 => 'مقبول',
+            default    => 'ضعيف',
+        };
+
+        return [
+            'max' => $maxMarks,
+            'min' => $minMarks,
+            'marks' => $effective,
+            'color' => $color,
+            'grade_label' => $gradeLabel,
+            'passed' => $passed,
+        ];
+    }
+
     private function markColor(?float $pct): string
     {
-        if ($pct === null) return '#7f8c8d';
         return match (true) {
+            $pct === null => '#999',
             $pct >= 85 => '#3498db',
             $pct >= 65 => '#2ecc71',
             $pct >= 50 => '#f39c12',
             default    => '#e74c3c',
+        };
+    }
+
+    private function calculateGradeLabel(float $totalMarks, float $totalMax): string
+    {
+        if ($totalMax <= 0) return '—';
+        $pct = ($totalMarks / $totalMax) * 100;
+        return match (true) {
+            $pct >= 85 => 'ممتاز',
+            $pct >= 65 => 'جيد جداً',
+            $pct >= 50 => 'مقبول',
+            default    => 'ضعيف',
         };
     }
 

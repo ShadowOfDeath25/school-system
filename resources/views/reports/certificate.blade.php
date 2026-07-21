@@ -105,6 +105,7 @@
                     <span>{{ config('app.school_data.administration') }}</span>
                     <span>{{ config('app.school_data.name') }}</span>
                 </div>
+                <div style="flex:1;text-align:center;font-weight:bold;font-size:14px">شهادة درجات</div>
                 <div class="cert-logo">
                     @php $logo = public_path('logo.svg'); @endphp
                     @inlinedImage($logo)
@@ -113,67 +114,137 @@
 
             <div class="cert-student-name">
                 الطالب / {{ $student['name'] }}
-                <span style="display:block;font-size:11px;font-weight:normal;color:#555;margin-top:2mm">{{ $student['grade_name'] }}</span>
+                <span style="display:block;font-size:11px;font-weight:normal;color:#555;margin-top:2mm">
+                    {{ $student['grade_name'] }} — {{ $student['classroom_name'] ?? '—' }}
+                </span>
+                <span style="display:block;font-size:10px;font-weight:normal;color:#777;margin-top:1mm">
+                    العام الدراسي: {{ $student['academic_year'] }}
+                    | رقم الجلوس: {{ $student['seat_number'] ?? '—' }}
+                    | التقدير: {{ $student['grade_label'] }}
+                </span>
             </div>
 
             @php
                 $mainSubjects = collect($student['subjects'])->where('added_to_total', true)->values();
                 $extraSubjects = collect($student['subjects'])->where('added_to_total', false)->values();
+                $isBoth = ($semester ?? 'both') === 'both';
             @endphp
             <table class="cert-table">
                 <thead>
                     <tr>
                         <th style="width:26%">المادة</th>
                         @foreach ($mainSubjects as $subject)
-                            <th>{{ $subject['name'] }}</th>
+                            <th colspan="{{ $isBoth ? 2 : 1 }}">{{ $subject['name'] }}</th>
                         @endforeach
                         <th style="background-color:#f0f0f0">المجموع</th>
                         @foreach ($extraSubjects as $subject)
-                            <th>{{ $subject['name'] }}</th>
+                            <th colspan="{{ $isBoth ? 2 : 1 }}">{{ $subject['name'] }}</th>
                         @endforeach
                     </tr>
+                    @if ($isBoth)
+                    <tr>
+                        <th style="width:26%;font-size:9px;color:#555">الفصل الدراسي</th>
+                        @foreach ($mainSubjects as $subject)
+                            <th style="font-size:9px;color:#555">الأول</th>
+                            <th style="font-size:9px;color:#555">الثاني</th>
+                        @endforeach
+                        <th style="background-color:#f0f0f0"></th>
+                        @foreach ($extraSubjects as $subject)
+                            <th style="font-size:9px;color:#555">الأول</th>
+                            <th style="font-size:9px;color:#555">الثاني</th>
+                        @endforeach
+                    </tr>
+                    @endif
                 </thead>
                 <tbody>
                     <tr>
                         <th style="background-color:#f0f0f0;font-weight:bold">الدرجة الصغرى</th>
                         @foreach ($mainSubjects as $subject)
-                            <td>{{ $subject['min'] }}</td>
+                            @if ($isBoth)
+                                <td>{{ $subject['first']['min'] }}</td>
+                                <td>{{ $subject['second']['min'] }}</td>
+                            @else
+                                <td>{{ $subject['min'] }}</td>
+                            @endif
                         @endforeach
                         <th style="background-color:#f0f0f0;font-weight:bold">{{ $student['total_min'] }}</th>
                         @foreach ($extraSubjects as $subject)
-                            <td>{{ $subject['min'] }}</td>
+                            @if ($isBoth)
+                                <td>{{ $subject['first']['min'] }}</td>
+                                <td>{{ $subject['second']['min'] }}</td>
+                            @else
+                                <td>{{ $subject['min'] }}</td>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
                         <th style="background-color:#f0f0f0;font-weight:bold">الدرجة العظمى</th>
                         @foreach ($mainSubjects as $subject)
-                            <td>{{ $subject['max'] }}</td>
+                            @if ($isBoth)
+                                <td>{{ $subject['first']['max'] }}</td>
+                                <td>{{ $subject['second']['max'] }}</td>
+                            @else
+                                <td>{{ $subject['max'] }}</td>
+                            @endif
                         @endforeach
                         <th style="background-color:#f0f0f0;font-weight:bold">{{ $student['total_max'] }}</th>
                         @foreach ($extraSubjects as $subject)
-                            <td>{{ $subject['max'] }}</td>
+                            @if ($isBoth)
+                                <td>{{ $subject['first']['max'] }}</td>
+                                <td>{{ $subject['second']['max'] }}</td>
+                            @else
+                                <td>{{ $subject['max'] }}</td>
+                            @endif
                         @endforeach
                     </tr>
                     <tr>
                         <th style="background-color:#f0f0f0;font-weight:bold">الدرجة</th>
                         @foreach ($mainSubjects as $subject)
-                            <td style="font-weight:bold">
-                                {{ $subject['marks'] ?? '—' }}
-                            </td>
+                            @if ($isBoth)
+                                <td style="font-weight:bold">{{ $subject['first']['marks'] ?? '—' }}</td>
+                                <td style="font-weight:bold">{{ $subject['second']['marks'] ?? '—' }}</td>
+                            @else
+                                <td style="font-weight:bold">{{ $subject['marks'] ?? '—' }}</td>
+                            @endif
                         @endforeach
                         <th style="background-color:#f0f0f0;font-weight:bold">{{ $student['total_marks'] }}</th>
                         @foreach ($extraSubjects as $subject)
-                            <td style="font-weight:bold">
-                                {{ $subject['marks'] ?? '—' }}
-                            </td>
+                            @if ($isBoth)
+                                <td style="font-weight:bold">{{ $subject['first']['marks'] ?? '—' }}</td>
+                                <td style="font-weight:bold">{{ $subject['second']['marks'] ?? '—' }}</td>
+                            @else
+                                <td style="font-weight:bold">{{ $subject['marks'] ?? '—' }}</td>
+                            @endif
+                        @endforeach
+                    </tr>
+                    <tr>
+                        <th style="background-color:#f0f0f0;font-weight:bold">التقدير</th>
+                        @foreach ($mainSubjects as $subject)
+                            @if ($isBoth)
+                                <td style="font-weight:bold">{{ $subject['first']['grade_label'] }}</td>
+                                <td style="font-weight:bold">{{ $subject['second']['grade_label'] }}</td>
+                            @else
+                                <td style="font-weight:bold">{{ $subject['grade_label'] }}</td>
+                            @endif
+                        @endforeach
+                        <th style="background-color:#f0f0f0;font-weight:bold">{{ $student['grade_label'] }}</th>
+                        @foreach ($extraSubjects as $subject)
+                            @if ($isBoth)
+                                <td style="font-weight:bold">{{ $subject['first']['grade_label'] }}</td>
+                                <td style="font-weight:bold">{{ $subject['second']['grade_label'] }}</td>
+                            @else
+                                <td style="font-weight:bold">{{ $subject['grade_label'] }}</td>
+                            @endif
                         @endforeach
                     </tr>
                 </tbody>
             </table>
 
+            @if (($semester ?? 'both') !== 'الأول' && $student['category'] !== 'graduated')
             <div class="cert-result">
                 {{ $student['category_text'] }}
             </div>
+            @endif
         </div>
     @endforeach
 </body>
