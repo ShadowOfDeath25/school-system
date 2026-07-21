@@ -57,7 +57,23 @@ export default function MarksReports() {
         return result;
     };
 
+    const normalizeCertificateData = () => {
+        const result = {};
+        for (const key of ["academic_year", "semester", "language", "level", "grade", "classroom_id"]) {
+            const val = formData[key];
+            if (val !== undefined && val !== "" && val !== null && val !== "الكل") {
+                result[key] = val;
+            }
+        }
+        if (!result.academic_year) return null;
+        return result;
+    };
+
     const handleView = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
         const params = normalizeData();
         if (!params) return;
         setLoading(true);
@@ -72,6 +88,10 @@ export default function MarksReports() {
     };
 
     const handlePrint = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
         const params = normalizeData();
         if (!params) return;
         try {
@@ -84,9 +104,48 @@ export default function MarksReports() {
     };
 
     const handleExport = () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
         const params = normalizeData();
         if (!params) return;
         exportAsExcel("/reports/students/marks/class", params);
+    };
+
+    const handleSingleCertificate = async (studentId) => {
+        const academicYear = formData.academic_year;
+        if (!academicYear) {
+            showSnackbar("يجب اختيار عام دراسي", "error");
+            return;
+        }
+        try {
+            const params = {
+                academic_year: academicYear,
+                semester: formData.semester || "both",
+                student_id: studentId,
+                export: "pdf",
+            };
+            const response = await axiosClient.get("/reports/students/certificates", { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل الشهادة", "error");
+        }
+    };
+
+    const handleViewCertificates = async () => {
+        const params = normalizeCertificateData();
+        if (!params) return;
+        setLoading(true);
+        try {
+            params.export = "pdf";
+            const response = await axiosClient.get("/reports/students/certificates", { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل الشهادات", "error");
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleReset = () => {
@@ -94,7 +153,10 @@ export default function MarksReports() {
         setReportData(null);
     };
 
-    const filters = reportType === "class_marks" && (
+    const showFilters = reportType === "class_marks" || reportType === "certificates";
+    const isCertificates = reportType === "certificates";
+
+    const filterContent = (
         <div className={styles.body}>
             <SelectField
                 label={"العام الدراسي"}
@@ -106,7 +168,7 @@ export default function MarksReports() {
             />
             <SelectField
                 label={"اللغة"}
-                        options={["عربي", "لغات"]}
+                options={isCertificates ? ["عربي", "لغات", "الكل"] : ["عربي", "لغات"]}
                 placeholder={"اختر اللغة"}
                 value={formData.language}
                 handleChange={handleChange}
@@ -146,7 +208,16 @@ export default function MarksReports() {
         </div>
     );
 
-    const actions = reportType === "class_marks" && (
+    const actions = isCertificates ? (
+        <div className={styles.actions}>
+            <Button variant={"contained"} color="primary" onClick={handleViewCertificates} disabled={loading}>
+                {loading ? "جاري التحميل..." : "عرض الشهادات"}
+            </Button>
+            <Button variant={"contained"} color={"error"} onClick={handleReset}>
+                اعادة تعيين
+            </Button>
+        </div>
+    ) : (
         <div className={styles.actions}>
             <Button variant={"contained"} color="primary" onClick={handleView} disabled={loading}>
                 {loading ? "جاري التحميل..." : "عرض"}
@@ -176,7 +247,7 @@ export default function MarksReports() {
                 إجمالي الطلاب: {reportData.totals.students_count}
                 {" | "}عدد المواد: {reportData.totals.subjects_count}
             </p>
-            <StudentMarksTable data={reportData} />
+            <StudentMarksTable data={reportData} onPrintCertificate={handleSingleCertificate} />
         </div>
     );
 
@@ -191,9 +262,9 @@ export default function MarksReports() {
                     />
                 </div>
             </div>
-            {reportType === "class_marks" && (
+            {showFilters && (
                 <div className={styles.container} style={{ marginTop: 16 }}>
-                    {filters}
+                    {filterContent}
                     {actions}
                 </div>
             )}

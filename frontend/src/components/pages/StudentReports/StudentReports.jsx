@@ -70,6 +70,10 @@ export default function StudentReports() {
     const legacyEndpoint = reportType === "roster" ? "/reports/students/roster" : "/reports/students/demographics";
 
     const handleView = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
         const params = normalizeData();
         if (!params) return;
         setLoading(true);
@@ -84,6 +88,10 @@ export default function StudentReports() {
     };
 
     const handlePrint = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
         if (isMarksReport) {
             const params = normalizeData();
             if (!params) return;
@@ -108,12 +116,36 @@ export default function StudentReports() {
     };
 
     const handleExport = () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
         const params = normalizeData();
         if (!params) return;
         if (isMarksReport) {
             exportAsExcel("/reports/students/marks/class", params);
         } else {
             exportAsExcel(legacyEndpoint, params);
+        }
+    };
+
+    const handleSingleCertificate = async (studentId) => {
+        const academicYear = formData.academic_year;
+        if (!academicYear) {
+            showSnackbar("يجب اختيار عام دراسي", "error");
+            return;
+        }
+        try {
+            const params = {
+                academic_year: academicYear,
+                semester: formData.semester || "both",
+                student_id: studentId,
+                export: "pdf",
+            };
+            const response = await axiosClient.get("/reports/students/certificates", { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل الشهادة", "error");
         }
     };
 
@@ -256,7 +288,7 @@ export default function StudentReports() {
                         إجمالي الطلاب: {reportData.totals.students_count}
                         {" | "}عدد المواد: {reportData.totals.subjects_count}
                     </p>
-                    <StudentMarksTable data={reportData} />
+                    <StudentMarksTable data={reportData} onPrintCertificate={handleSingleCertificate} />
                 </div>
             )}
         </Page>
