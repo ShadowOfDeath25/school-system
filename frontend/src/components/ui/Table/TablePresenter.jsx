@@ -1,8 +1,17 @@
 import styles from './styles.module.css';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {get} from 'lodash';
 import IconButton from "@mui/material/IconButton";
+
+const get = (obj, path, defaultValue) => {
+  const keys = Array.isArray(path) ? path : path.split('.');
+  let result = obj;
+  for (const key of keys) {
+    if (result == null) return defaultValue;
+    result = result[key];
+  }
+  return result !== undefined ? result : defaultValue;
+};
 
 export default function TablePresenter({
                                            data,
