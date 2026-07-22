@@ -1,0 +1,134 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(45deg, #0F1B3A 0% 40%, #1F2F5C 100%);
+  position: relative;
+  overflow: hidden;
+  direction: rtl;
+}
+
+.watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(8rem, 30vw, 30rem);
+  font-weight: 300;
+  color: rgba(191, 161, 92, 0.06);
+  user-select: none;
+  pointer-events: none;
+  transform: rotate(-8deg) translateX(5%);
+  line-height: 1;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  z-index: 1;
+  animation: fadeIn 0.8s ease-out;
+}
+
+.errorCode {
+  font-size: clamp(5rem, 15vw, 12rem);
+  font-weight: 700;
+  color: var(--secondary-color);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin: 0;
+}
+
+.divider {
+  width: 80px;
+  height: 3px;
+  background-color: var(--secondary-color);
+  border-radius: 2px;
+  animation: drawIn 0.8s ease-out 0.3s both;
+}
+
+.heading {
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 500;
+  color: var(--primary-text-color);
+  margin: 0;
+}
+
+.description {
+  font-size: clamp(0.9rem, 1.4vw, 1.05rem);
+  color: rgba(254, 255, 254, 0.55);
+  text-align: center;
+  line-height: 1.9;
+  margin: 0;
+  max-width: 360px;
+}
+
+.button {
+  margin-top: 16px;
+  padding: 12px 36px;
+  border: 2px solid var(--secondary-color);
+  background: transparent;
+  color: var(--secondary-color);
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.button:hover {
+  background-color: var(--secondary-color);
+  color: #1b223c;
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drawIn {
+  from { width: 0; }
+  to { width: 80px; }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 0 32px;
+    gap: 20px;
+  }
+
+  .errorCode {
+    font-size: clamp(4rem, 25vw, 6rem);
+  }
+
+  .divider {
+    width: 60px;
+  }
+
+  .button {
+    padding: 12px 28px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    animation: none;
+  }
+
+  .divider {
+    animation: none;
+  }
+}

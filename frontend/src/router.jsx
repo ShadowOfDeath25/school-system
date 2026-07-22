@@ -6,6 +6,7 @@ import DefaultLayout from '@layouts/Default/DefaultLayout';
 import RootLayout from '@layouts/Root/RootLayout';
 import GuestRoute from "@components/guards/GuestRoute.jsx";
 import { appRoutes } from '@routes/routes.jsx';
+import NotFoundPage from '@pages/NotFoundPage/NotFoundPage';
 
 export const routes = [
     {
@@ -40,6 +41,10 @@ export const routes = [
                 ]
             }
         ]
+    },
+    {
+        path: '*',
+        element: <NotFoundPage />
     }
 ]
 const router = createBrowserRouter(routes);
