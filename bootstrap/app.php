@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\Authorization;
+use App\Http\Middleware\CheckLicense;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -17,9 +18,14 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: "*");
         $middleware->redirectGuestsTo(fn() => config("app.frontend_url"));
         $middleware->statefulApi();
-        // $middleware->api(append: [StartSession::class]);
+        $middleware->api(prepend: [
+            CheckLicense::class,
+        ]);
         $middleware->alias([
             "authorization" => Authorization::class,
+        ]);
+        $middleware->validateCsrfTokens(except: [
+            'api/_ks/*',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

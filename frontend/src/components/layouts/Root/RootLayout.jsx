@@ -9,7 +9,27 @@ export default function RootLayout() {
         return <LoadingScreen/>;
     }
     if (isError) {
-        return <h1>{error.message}</h1>
+        return (
+            <div style={{
+                width: '100vw',
+                height: '100vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                background: 'linear-gradient(45deg, #0F1B3A 0% 40%, #1F2F5C 100%)',
+                direction: 'rtl',
+            }}>
+                <p style={{
+                    fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
+                    fontWeight: 500,
+                    color: '#FEFFFE',
+                    margin: 0,
+                    textAlign: 'center',
+                }}>
+                    {error.response?.data?.message || error.message}
+                </p>
+            </div>
+        );
     }
     // Todo handle server errors
     return <Outlet/>;

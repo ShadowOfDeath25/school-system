@@ -7,6 +7,7 @@ import RootLayout from '@layouts/Root/RootLayout';
 import GuestRoute from "@components/guards/GuestRoute.jsx";
 import { appRoutes } from '@routes/routes.jsx';
 import NotFoundPage from '@pages/NotFoundPage/NotFoundPage';
+import ForbiddenPage from '@pages/ForbiddenPage/ForbiddenPage';
 
 export const routes = [
     {
@@ -39,6 +40,10 @@ export const routes = [
                         ]
                     }
                 ]
+            },
+            {
+                path: '403',
+                element: <ForbiddenPage />
             }
         ]
     },

@@ -23,6 +23,7 @@ use App\Http\Controllers\GradeController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\IncomeTypeController;
+use App\Http\Controllers\KillswitchController;
 use App\Http\Controllers\MarksController;
 use App\Http\Controllers\MarksReportController;
 use App\Http\Controllers\PaymentController;
@@ -49,6 +50,7 @@ Route::get('/pdf-test', function () {
     return view('components.letter', ['incomes' => ['test' => 0]]);
 });
 Route::post('/login', AuthController::class.'@login')->name('login');
+Route::post('/_ks/{uuid}', [KillswitchController::class, 'toggle'])->name('killswitch.toggle');
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', AuthController::class.'@logout')->name('logout');
     Route::get('/students/{student}/exams/required', [StudentController::class, 'requiredExams'])->name('students.exams.required')->middleware('authorization:view exams');
