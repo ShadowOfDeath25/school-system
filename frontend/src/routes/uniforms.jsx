@@ -14,12 +14,7 @@ const routes = {
                 title: "واردات الزي",
             }, action: "view uniforms"
         }
-    }, {
-        path: "buy", element: <BuyUniforms/>, handle: {
-            sidebar: {
-                title: "صرف الزي",
-            }, action: 'create uniform-purchases'
-        }
+
     }, {
         path: 'add', element: <AddUniforms/>, handle: {
             sidebar: {

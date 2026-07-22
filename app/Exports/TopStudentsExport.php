@@ -9,18 +9,13 @@ use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-class StudentMarksExport implements FromView, ShouldAutoSize, WithEvents
+class TopStudentsExport implements FromView, ShouldAutoSize, WithEvents
 {
-    public function __construct(
-        public array $viewData,
-        public bool $detailed = false,
-    ) {}
+    public function __construct(public array $viewData) {}
 
     public function view(): View
     {
-        $this->viewData['detailed'] = $this->detailed;
-
-        return view('reports.excel.student_marks', $this->viewData);
+        return view('reports.excel.top_students', $this->viewData);
     }
 
     public function registerEvents(): array

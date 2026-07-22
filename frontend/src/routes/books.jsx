@@ -23,16 +23,6 @@ const routes = {
             }
         },
         {
-            path: "buy",
-            element: <BuyBooks/>,
-            handle: {
-                sidebar: {
-                    title: "صرف الكتب",
-                },
-                action: 'create book-purchases'
-            }
-        },
-        {
             path: 'add',
             element: <AddBooks/>,
             handle: {

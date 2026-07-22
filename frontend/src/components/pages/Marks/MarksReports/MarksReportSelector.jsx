@@ -2,6 +2,8 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 
 const MARKS_REPORT_TYPES = [
     { label: "كشف درجات الطلاب", value: "class_marks" },
+    { label: "كشف درجات الطلاب (تفصيلي)", value: "class_marks_detailed" },
+    { label: "أوائل الطلاب", value: "top_students" },
     { label: "شهادات الطلبة", value: "certificates" },
 ];
 

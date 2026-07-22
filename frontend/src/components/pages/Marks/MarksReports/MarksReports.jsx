@@ -10,6 +10,7 @@ import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { useExport } from "@hooks/useExport.js";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 import StudentMarksTable from "@pages/StudentReports/StudentMarksTable.jsx";
+import TopStudentsTable from "./TopStudentsTable.jsx";
 import MarksReportSelector from "./MarksReportSelector.jsx";
 
 const SEMESTER_OPTIONS = [
@@ -76,6 +77,7 @@ export default function MarksReports() {
         }
         const params = normalizeData();
         if (!params) return;
+        if (isDetailed) params.detailed = 1;
         setLoading(true);
         try {
             const response = await axiosClient.get("/reports/students/marks/class", { params });
@@ -94,6 +96,7 @@ export default function MarksReports() {
         }
         const params = normalizeData();
         if (!params) return;
+        if (isDetailed) params.detailed = 1;
         try {
             params.export = "pdf";
             const response = await axiosClient.get("/reports/students/marks/class", { params });
@@ -110,7 +113,40 @@ export default function MarksReports() {
         }
         const params = normalizeData();
         if (!params) return;
+        if (isDetailed) params.detailed = 1;
         exportAsExcel("/reports/students/marks/class", params);
+    };
+
+    const handleViewTopStudents = async () => {
+        const params = normalizeData();
+        if (!params) return;
+        setLoading(true);
+        try {
+            const response = await axiosClient.get("/reports/students/marks/top-students", { params });
+            setReportData(response.data);
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل البيانات", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handlePrintTopStudents = async () => {
+        const params = normalizeData();
+        if (!params) return;
+        try {
+            params.export = "pdf";
+            const response = await axiosClient.get("/reports/students/marks/top-students", { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل التقرير", "error");
+        }
+    };
+
+    const handleExportTopStudents = () => {
+        const params = normalizeData();
+        if (!params) return;
+        exportAsExcel("/reports/students/marks/top-students", params);
     };
 
     const handleSingleCertificate = async (studentId) => {
@@ -153,8 +189,10 @@ export default function MarksReports() {
         setReportData(null);
     };
 
-    const showFilters = reportType === "class_marks" || reportType === "certificates";
+    const showFilters = reportType === "class_marks" || reportType === "class_marks_detailed" || reportType === "certificates" || reportType === "top_students";
     const isCertificates = reportType === "certificates";
+    const isDetailed = reportType === "class_marks_detailed";
+    const isTopStudents = reportType === "top_students";
 
     const filterContent = (
         <div className={styles.body}>
@@ -188,15 +226,17 @@ export default function MarksReports() {
                 handleChange={handleChange}
                 name={"grade"}
             />
-            <SelectField
-                label={"الفصل"}
-                placeholder={"اختر الفصل"}
-                value={formData.classroom_id}
-                name={"classroom_id"}
-                disabled={!(formData.level && formData.grade && formData.language && formData.academic_year)}
-                options={classrooms?.data?.map((c) => ({ label: c.name, value: c.id }))}
-                handleChange={handleChange}
-            />
+            {!isTopStudents && (
+                <SelectField
+                    label={"الفصل"}
+                    placeholder={"اختر الفصل"}
+                    value={formData.classroom_id}
+                    name={"classroom_id"}
+                    disabled={!(formData.level && formData.grade && formData.language && formData.academic_year)}
+                    options={classrooms?.data?.map((c) => ({ label: c.name, value: c.id }))}
+                    handleChange={handleChange}
+                />
+            )}
             <SelectField
                 label={"الفصل الدراسي"}
                 options={SEMESTER_OPTIONS}
@@ -212,6 +252,21 @@ export default function MarksReports() {
         <div className={styles.actions}>
             <Button variant={"contained"} color="primary" onClick={handleViewCertificates} disabled={loading}>
                 {loading ? "جاري التحميل..." : "عرض الشهادات"}
+            </Button>
+            <Button variant={"contained"} color={"error"} onClick={handleReset}>
+                اعادة تعيين
+            </Button>
+        </div>
+    ) : isTopStudents ? (
+        <div className={styles.actions}>
+            <Button variant={"contained"} color="primary" onClick={handleViewTopStudents} disabled={loading}>
+                {loading ? "جاري التحميل..." : "عرض"}
+            </Button>
+            <Button variant={"contained"} color="primary" onClick={handlePrintTopStudents}>
+                طباعة
+            </Button>
+            <Button variant="outlined" color="primary" onClick={handleExportTopStudents}>
+                تصدير ك EXCEL
             </Button>
             <Button variant={"contained"} color={"error"} onClick={handleReset}>
                 اعادة تعيين
@@ -234,12 +289,15 @@ export default function MarksReports() {
         </div>
     );
 
-    const results = reportData && reportType === "class_marks" && (
+    const results = reportData && (reportType === "class_marks" || reportType === "class_marks_detailed") && (
         <div className={styles.container} style={{ marginTop: 16 }}>
             <h4 className={styles.title}>
                 كشف درجات الطلاب — {reportData.grade_name} — {reportData.language}
                 {reportData.semester !== "both" && (
                     <> — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}</>
+                )}
+                {isDetailed && reportData.classroom_name && (
+                    <> — الفصل الدراسي: {reportData.classroom_name}</>
                 )}
                 {" — "}{reportData.academic_year}
             </h4>
@@ -247,7 +305,20 @@ export default function MarksReports() {
                 إجمالي الطلاب: {reportData.totals.students_count}
                 {" | "}عدد المواد: {reportData.totals.subjects_count}
             </p>
-            <StudentMarksTable data={reportData} onPrintCertificate={handleSingleCertificate} />
+            <StudentMarksTable data={reportData} detailed={reportType === "class_marks_detailed"} onPrintCertificate={handleSingleCertificate} />
+        </div>
+    );
+
+    const topStudentsResults = reportData && isTopStudents && (
+        <div className={styles.container} style={{ marginTop: 16 }}>
+            <h4 className={styles.title}>
+                أوائل الطلاب — {reportData.level} — {reportData.language}
+                {reportData.semester !== "both" && (
+                    <> — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}</>
+                )}
+                {" — "}{reportData.academic_year}
+            </h4>
+            <TopStudentsTable data={reportData} />
         </div>
     );
 
@@ -269,6 +340,7 @@ export default function MarksReports() {
                 </div>
             )}
             {results}
+            {topStudentsResults}
         </Page>
     );
 }

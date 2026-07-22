@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import styles from "./styles.module.css";
 
-export default function StudentMarksTable({ data, onPrintCertificate }) {
+export default function StudentMarksTable({ data, detailed, onPrintCertificate }) {
     const { subjects, students } = data;
 
     if (!subjects?.length) {
@@ -12,18 +12,44 @@ export default function StudentMarksTable({ data, onPrintCertificate }) {
         <div className={styles.tableWrapper}>
             <table className={styles.table}>
                 <thead>
-                    <tr>
-                        <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الطالب</th>
-                        <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>رقم الجلوس</th>
-                        {subjects.map((s, i) => (
-                            <th key={i} className={styles.th}>
-                                {s.name}<br /><small>({s.max})</small>
-                            </th>
-                        ))}
-                        {onPrintCertificate && (
-                            <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle", width: 60 }}>شهادة</th>
-                        )}
-                    </tr>
+                    {detailed && subjects[0]?.components ? (
+                        <>
+                            <tr>
+                                <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الطالب</th>
+                                <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>رقم الجلوس</th>
+                                {subjects.map((s, i) => (
+                                    <th key={i} className={styles.th} colSpan={s.components.length}>
+                                        {s.name}<br /><small>({s.max})</small>
+                                    </th>
+                                ))}
+                                {onPrintCertificate && (
+                                    <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle", width: 60 }}>شهادة</th>
+                                )}
+                            </tr>
+                            <tr>
+                                {subjects.map((s) =>
+                                    s.components.map((c, ci) => (
+                                        <th key={`${s.id}-${ci}`} className={styles.th}>
+                                            {c.name}<br /><small>({c.marks})</small>
+                                        </th>
+                                    ))
+                                )}
+                            </tr>
+                        </>
+                    ) : (
+                        <tr>
+                            <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الطالب</th>
+                            <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>رقم الجلوس</th>
+                            {subjects.map((s, i) => (
+                                <th key={i} className={styles.th}>
+                                    {s.name}<br /><small>({s.max})</small>
+                                </th>
+                            ))}
+                            {onPrintCertificate && (
+                                <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle", width: 60 }}>شهادة</th>
+                            )}
+                        </tr>
+                    )}
                 </thead>
                 <tbody>
                     {students.map((student, si) => (

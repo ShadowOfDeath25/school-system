@@ -2,6 +2,11 @@ import MarksIndex from "@pages/Marks/ClassroomPicker.jsx";
 import RecordMarks from "@pages/Marks/RecordMarks/RecordMarks.jsx";
 import SecondRoundStudents from "@pages/Marks/SecondRoundStudents.jsx";
 import MarksReports from "@pages/Marks/MarksReports/MarksReports.jsx";
+import PromotionDashboard from "@pages/PromoteStudents/PromotionDashboard.jsx";
+import BatchHistory from "@pages/PromoteStudents/BatchHistory.jsx";
+import BatchDetail from "@pages/PromoteStudents/BatchDetail.jsx";
+import SupplementaryExamResolution from "@pages/PromoteStudents/SupplementaryExamResolution.jsx";
+import GraduationReport from "@pages/PromoteStudents/GraduationReport.jsx";
 
 const routes = {
     path: "marks",
@@ -42,6 +47,52 @@ const routes = {
             handle: {
                 sidebar: { title: "تقارير الدرجات" },
                 action: "view student-reports",
+            },
+        },
+        {
+            path:'promotion',
+            element: <PromotionDashboard/>,
+            handle: {
+                sidebar: {
+                    title: "الترقية",
+                },
+                action: "view promotion",
+            },
+        },
+        {
+            path: "promotions/batches",
+            element: <BatchHistory/>,
+            handle: {
+                sidebar: {
+                    title: "سجل الترقيات",
+
+                },
+                action: "view promotion",
+            },
+        },
+        {
+            path: "promotions/batches/:batchId",
+            element: <BatchDetail/>,
+            handle: {
+                title: "تفاصيل الترقية",
+                action: "view promotion",
+            },
+        },
+        {
+            path: "promotions/batches/:batchId/supplementary-exam/:studentId",
+            element: <SupplementaryExamResolution/>,
+            handle: {
+                title: "نتيجة الدور الثاني",
+                action: "update promotion",
+            },
+        },
+        {
+            path: "promotions/graduation/:batchId",
+            element: <GraduationReport/>,
+            handle: {
+                title: "تقارير التخرج",
+
+                action: "view promotion",
             },
         },
     ],

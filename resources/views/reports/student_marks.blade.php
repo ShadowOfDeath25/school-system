@@ -7,19 +7,41 @@
         @if ($semester !== 'both')
             — الفصل {{ $semester === 'الأول' ? 'الدراسي الأول' : 'الدراسي الثاني' }}
         @endif
+        @if ($detailed && ($classroom_name ?? false))
+            — الفصل الدراسي: {{ $classroom_name }}
+        @endif
         — العام: {{ $academic_year }}
     </p>
 </x-pdf-header>
 
 <table class="table table-bordered" style="margin-top:10px;font-size:12px">
     <thead>
-        <tr>
-            <th rowspan="2" style="vertical-align:middle">الطالب</th>
-            <th rowspan="2" style="vertical-align:middle">رقم الجلوس</th>
-            @foreach ($subjects as $subj)
-                <th>{{ $subj['name'] }}<br><small>({{ $subj['max'] }})</small></th>
-            @endforeach
-        </tr>
+        @if ($detailed ?? false)
+            <tr>
+                <th rowspan="2" style="vertical-align:middle">الطالب</th>
+                <th rowspan="2" style="vertical-align:middle">رقم الجلوس</th>
+                @foreach ($subjects as $subj)
+                    <th colspan="{{ count($subj['components']) }}">
+                        {{ $subj['name'] }}<br><small>({{ $subj['max'] }})</small>
+                    </th>
+                @endforeach
+            </tr>
+            <tr>
+                @foreach ($subjects as $subj)
+                    @foreach ($subj['components'] as $comp)
+                        <th>{{ $comp['name'] }}<br><small>({{ $comp['marks'] }})</small></th>
+                    @endforeach
+                @endforeach
+            </tr>
+        @else
+            <tr>
+                <th rowspan="2" style="vertical-align:middle">الطالب</th>
+                <th rowspan="2" style="vertical-align:middle">رقم الجلوس</th>
+                @foreach ($subjects as $subj)
+                    <th>{{ $subj['name'] }}<br><small>({{ $subj['max'] }})</small></th>
+                @endforeach
+            </tr>
+        @endif
     </thead>
     <tbody>
         @forelse ($students as $student)
@@ -34,7 +56,7 @@
             </tr>
         @empty
             <tr>
-                <td colspan="{{ count($subjects) + 2 }}" style="text-align:center;color:#7f8c8d">
+                <td colspan="{{ $totals['columns_count'] ?? count($subjects) + 2 }}" style="text-align:center;color:#7f8c8d">
                     لا توجد بيانات
                 </td>
             </tr>
