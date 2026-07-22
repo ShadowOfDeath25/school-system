@@ -43,6 +43,7 @@ export default function AddUniforms() {
                         UniformHelper.FIELDS.IMPORTED_QUANTITY,
                         UniformHelper.FIELDS.SIZE,
                         UniformHelper.FIELDS.PIECE,
+                        ClassroomHelper.FIELDS.LEVEL,
                         ClassroomHelper.FIELDS.GRADE
                     ]}
                     onFormSubmit={handleSubmit}

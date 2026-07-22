@@ -13,7 +13,7 @@ const FIELDS = {
         name: "sell_price", label: "سعر البيع", type: "number", required: true, placeholder: "سعر البيع"
     },
     IMPORTED_QUANTITY: {
-        name: "imported_quantity", label: "الكمية الواردة", type: "number", required: true, placeholder: "السعر"
+        name: "imported_quantity", label: "الكمية الواردة", type: "number", required: true, placeholder: "الكمية الواردة"
     },
     PIECE: {
         name: "piece", label: "القطعة", type: "text", required: true, placeholder: "القطعة"
