@@ -6,9 +6,6 @@
                 @if ($semester !== 'both')
                     — الفصل {{ $semester === 'الأول' ? 'الدراسي الأول' : 'الدراسي الثاني' }}
                 @endif
-                @if ($detailed && ($classroom_name ?? false))
-                    — الفصل الدراسي: {{ $classroom_name }}
-                @endif
                 — {{ $academic_year }}
             </th>
         </tr>
@@ -16,11 +13,13 @@
             <tr>
                 <th style="font-weight:bold;background-color:#e0e0e0;border:1px solid #999">الطالب</th>
                 <th style="font-weight:bold;background-color:#e0e0e0;border:1px solid #999">رقم الجلوس</th>
+                <th style="font-weight:bold;background-color:#e0e0e0;border:1px solid #999">الفصل الدراسي</th>
                 @foreach ($subjects as $subj)
                     <th colspan="{{ count($subj['components']) }}" style="font-weight:bold;background-color:#e0e0e0;border:1px solid #999">{{ $subj['name'] }}</th>
                 @endforeach
             </tr>
             <tr>
+                <th style="border:1px solid #999"></th>
                 <th style="border:1px solid #999"></th>
                 <th style="border:1px solid #999"></th>
                 @foreach ($subjects as $subj)
@@ -51,6 +50,7 @@
             <tr>
                 <td style="border:1px solid #999">{{ $student['name'] }}</td>
                 <td style="text-align:center;border:1px solid #999">{{ $student['seat_number'] ?? '—' }}</td>
+                <td style="text-align:center;border:1px solid #999">{{ $student['classroom_name'] ?? '—' }}</td>
                 @foreach ($student['marks'] as $mark)
                     <td style="text-align:center;background-color:{{ $mark['color'] }};color:#fff;font-weight:bold;border:1px solid #999">{{ $mark['display'] }}</td>
                 @endforeach

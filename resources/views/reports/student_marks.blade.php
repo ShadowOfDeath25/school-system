@@ -7,9 +7,6 @@
         @if ($semester !== 'both')
             — الفصل {{ $semester === 'الأول' ? 'الدراسي الأول' : 'الدراسي الثاني' }}
         @endif
-        @if ($detailed && ($classroom_name ?? false))
-            — الفصل الدراسي: {{ $classroom_name }}
-        @endif
         — العام: {{ $academic_year }}
     </p>
 </x-pdf-header>
@@ -20,6 +17,7 @@
             <tr>
                 <th rowspan="2" style="vertical-align:middle">الطالب</th>
                 <th rowspan="2" style="vertical-align:middle">رقم الجلوس</th>
+                <th rowspan="2" style="vertical-align:middle">الفصل الدراسي</th>
                 @foreach ($subjects as $subj)
                     <th colspan="{{ count($subj['components']) }}">
                         {{ $subj['name'] }}<br><small>({{ $subj['max'] }})</small>
@@ -48,6 +46,7 @@
             <tr>
                 <td>{{ $student['name'] }}</td>
                 <td style="text-align:center">{{ $student['seat_number'] ?? '—' }}</td>
+                <td style="text-align:center">{{ $student['classroom_name'] ?? '—' }}</td>
                 @foreach ($student['marks'] as $mark)
                     <td style="text-align:center;color:{{ $mark['color'] }};font-weight:bold">
                         {{ $mark['display'] }}

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Classroom;
 use App\Models\Grade;
 use App\Models\GradeSubject;
 use App\Models\PromotionBatchStudent;
@@ -39,7 +38,8 @@ class MarksReportService
 
         $gsIds = $gradeSubjects->pluck('id');
 
-        $students = Student::where('grade', $grade)
+        $students = Student::with('classroom')
+            ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
             ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
@@ -212,6 +212,7 @@ class MarksReportService
                 'id' => $s->id,
                 'name' => $s->name_in_arabic,
                 'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
+                'classroom_name' => $s->classroom?->name,
                 'marks' => $marks,
             ];
         });
@@ -222,14 +223,13 @@ class MarksReportService
             'grade' => $grade,
             'language' => $language,
             'semester' => $semester,
-            'classroom_name' => $detailed && $classroomId ? Classroom::find($classroomId)?->name : null,
             'subjects' => $subjectList,
             'students' => $studentRows,
             'totals' => [
                 'students_count' => $sorted->count(),
                 'subjects_count' => $subjectList->count(),
                 'columns_count' => $detailed
-                    ? collect($subjectList)->sum(fn ($s) => count($s['components'])) + 2
+                    ? collect($subjectList)->sum(fn ($s) => count($s['components'])) + 3
                     : count($subjectList) + 2,
             ],
         ];

@@ -296,9 +296,6 @@ export default function MarksReports() {
                 {reportData.semester !== "both" && (
                     <> — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}</>
                 )}
-                {isDetailed && reportData.classroom_name && (
-                    <> — الفصل الدراسي: {reportData.classroom_name}</>
-                )}
                 {" — "}{reportData.academic_year}
             </h4>
             <p className={styles.summary}>

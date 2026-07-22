@@ -17,6 +17,7 @@ export default function StudentMarksTable({ data, detailed, onPrintCertificate }
                             <tr>
                                 <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الطالب</th>
                                 <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>رقم الجلوس</th>
+                                <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الفصل الدراسي</th>
                                 {subjects.map((s, i) => (
                                     <th key={i} className={styles.th} colSpan={s.components.length}>
                                         {s.name}<br /><small>({s.max})</small>
@@ -56,6 +57,7 @@ export default function StudentMarksTable({ data, detailed, onPrintCertificate }
                         <tr key={si} className={si % 2 === 0 ? styles.trEven : styles.trOdd}>
                             <td className={styles.td}>{student.name}</td>
                             <td className={styles.td}>{student.seat_number ?? "—"}</td>
+                            {detailed && <td className={styles.td}>{student.classroom_name ?? "—"}</td>}
                             {student.marks.map((m, mi) => (
                                 <td
                                     key={mi}
