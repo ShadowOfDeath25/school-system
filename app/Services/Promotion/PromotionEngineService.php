@@ -61,7 +61,7 @@ class PromotionEngineService
             $query = Student::where('grade', $grade)
                 ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
                 ->where(function ($q) {
-                    $q->where('status', '!=', 'graduated')
+                    $q->where('status', '!=', 'متخرج')
                         ->orWhereNull('status');
                 });
 
@@ -207,7 +207,7 @@ class PromotionEngineService
     {
         $languages = Student::where('grade', $grade)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
-            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->where(fn ($q) => $q->where('status', '!=', 'متخرج')->orWhereNull('status'))
             ->distinct()
             ->pluck('language');
 

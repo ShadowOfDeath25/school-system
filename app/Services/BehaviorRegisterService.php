@@ -33,7 +33,7 @@ class BehaviorRegisterService
         }
 
         $classroomQuery = Classroom::with(['students' => function ($query) {
-            $query->where(fn ($sq) => $sq->where('status', '!=', 'graduated')->orWhereNull('status'))
+            $query->where(fn ($sq) => $sq->where('status', '!=', 'متخرج')->orWhereNull('status'))
                 ->orderBy('name_in_arabic');
         }])
             ->where('academic_year', $academicYear)

@@ -46,7 +46,7 @@ it('executes promotion for passing students', function () {
         'grade' => 5,
         'language' => 'عربي',
         'level' => 'ابتدائي',
-        'status' => 'active',
+        'status' => 'نشط',
         'withdrawn' => false,
     ]);
 
@@ -81,12 +81,12 @@ it('executes promotion for passing students', function () {
 it('processes mixed results in a single batch', function () {
     $passingStudent = Student::factory()->create([
         'grade' => 5, 'language' => 'عربي', 'level' => 'ابتدائي',
-        'status' => 'active', 'withdrawn' => false,
+        'status' => 'نشط', 'withdrawn' => false,
     ]);
 
     $failingStudent = Student::factory()->create([
         'grade' => 5, 'language' => 'عربي', 'level' => 'ابتدائي',
-        'status' => 'active', 'withdrawn' => false,
+        'status' => 'نشط', 'withdrawn' => false,
     ]);
 
     $exam = Exam::factory()->create([
@@ -132,7 +132,7 @@ it('prevents duplicate batch for same year pair', function () {
 it('rolls back a batch correctly', function () {
     $student = Student::factory()->create([
         'grade' => 5, 'language' => 'عربي', 'level' => 'ابتدائي',
-        'status' => 'active', 'withdrawn' => false,
+        'status' => 'نشط', 'withdrawn' => false,
     ]);
 
     $exam = Exam::factory()->create([
@@ -163,5 +163,5 @@ it('rolls back a batch correctly', function () {
 
     $student->refresh();
     expect($student->grade)->toBe(5);
-    expect($student->status)->toBe('active');
+    expect($student->status)->toBe('نشط');
 });

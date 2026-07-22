@@ -203,7 +203,7 @@ class ComprehensivePromotionTestSeeder extends Seeder
 
         foreach ($definitions as $data) {
             $isWithdrawn = $data['withdrawn'] ?? false;
-            $status = $data['status'] ?? 'active';
+            $status = $data['status'] ?? 'نشط';
             $level = getLevel($data['grade']);
 
             $student = Student::create([
@@ -257,7 +257,7 @@ class ComprehensivePromotionTestSeeder extends Seeder
             ['name' => 'حدود ناجح 3', 'grade' => 3, 'lang' => 'عربي', 'expected' => 'passed', 'marks' => ['اللغة العربية' => 25, 'اللغة الإنجليزية' => 25, 'الرياضيات' => 25, 'العلوم' => 25, 'الدراسات الاجتماعية' => 25]],
             ['name' => 'حدود راسب 3', 'grade' => 3, 'lang' => 'عربي', 'expected' => 'دور_ثاني', 'marks' => ['اللغة العربية' => 24, 'اللغة الإنجليزية' => 30, 'الرياضيات' => 35, 'العلوم' => 28, 'الدراسات الاجتماعية' => 32]],
             ['name' => 'منسحب 3', 'grade' => 3, 'lang' => 'عربي', 'expected' => 'excluded', 'marks' => null, 'withdrawn' => true],
-            ['name' => 'متخرج سابقاً 3', 'grade' => 3, 'lang' => 'عربي', 'expected' => 'excluded', 'marks' => null, 'status' => 'graduated'],
+            ['name' => 'متخرج سابقاً 3', 'grade' => 3, 'lang' => 'عربي', 'expected' => 'excluded', 'marks' => null, 'status' => 'متخرج'],
             ['name' => 'بلا درجات 3', 'grade' => 3, 'lang' => 'عربي', 'expected' => 'incomplete', 'marks' => null],
 
             // ===== Grade 3 (Primary 1) - لغات (level: ابتدائي, min_marks=25) =====

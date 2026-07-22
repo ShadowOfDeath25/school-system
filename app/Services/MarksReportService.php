@@ -43,7 +43,7 @@ class MarksReportService
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
-            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->where(fn ($q) => $q->where('status', '!=', 'متخرج')->orWhereNull('status'))
             ->when($classroomId, fn ($q) => $q->where('classroom_id', $classroomId))
             ->get();
 
@@ -291,7 +291,7 @@ class MarksReportService
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
-            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->where(fn ($q) => $q->where('status', '!=', 'متخرج')->orWhereNull('status'))
             ->when($classroomId, fn ($q) => $q->where('classroom_id', $classroomId))
             ->get();
 
@@ -491,7 +491,7 @@ class MarksReportService
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
-            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->where(fn ($q) => $q->where('status', '!=', 'متخرج')->orWhereNull('status'))
             ->when($classroomId, fn ($q) => $q->where('classroom_id', $classroomId))
             ->get();
 
@@ -687,7 +687,7 @@ class MarksReportService
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
-            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->where(fn ($q) => $q->where('status', '!=', 'متخرج')->orWhereNull('status'))
             ->get();
 
         if ($students->isEmpty()) {
@@ -856,7 +856,7 @@ class MarksReportService
             ->whereIn('grade', $gradesInLevel)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
-            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->where(fn ($q) => $q->where('status', '!=', 'متخرج')->orWhereNull('status'))
             ->get();
 
         if ($students->isEmpty()) {

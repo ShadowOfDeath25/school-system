@@ -144,7 +144,7 @@ class PromotionTestSeeder extends Seeder
             ['name' => 'طالب راسب 3', 'marks' => ['اللغة العربية' => 15, 'الرياضيات' => 12, 'العلوم' => 20, 'الدراسات الاجتماعية' => 30], 'expected' => 'repeat'],
             ['name' => 'طالب راسب 4', 'marks' => ['اللغة العربية' => 10, 'الرياضيات' => 8, 'العلوم' => 15, 'الدراسات الاجتماعية' => 12], 'expected' => 'repeat'],
             ['name' => 'طالب منسحب', 'marks' => null, 'withdrawn' => true, 'expected' => 'excluded'],
-            ['name' => 'طالب متخرج سابقاً', 'marks' => ['اللغة العربية' => 30, 'الرياضيات' => 28, 'العلوم' => 32, 'الدراسات الاجتماعية' => 25], 'status' => 'graduated', 'expected' => 'excluded'],
+            ['name' => 'طالب متخرج سابقاً', 'marks' => ['اللغة العربية' => 30, 'الرياضيات' => 28, 'العلوم' => 32, 'الدراسات الاجتماعية' => 25], 'status' => 'متخرج', 'expected' => 'excluded'],
             ['name' => 'طالب بلا درجات', 'marks' => null, 'expected' => 'incomplete'],
             ['name' => 'طالب متخرج أ', 'marks' => ['اللغة العربية' => 45, 'الرياضيات' => 40, 'العلوم' => 38, 'الدراسات الاجتماعية' => 35], 'grade' => 11, 'expected' => 'graduated'],
             ['name' => 'طالب متخرج ب', 'marks' => ['اللغة العربية' => 35, 'الرياضيات' => 30, 'العلوم' => 28, 'الدراسات الاجتماعية' => 25], 'grade' => 11, 'expected' => 'graduated'],
@@ -169,7 +169,7 @@ class PromotionTestSeeder extends Seeder
                 'grade' => $data['grade'] ?? 3,
                 'classroom_id' => ($data['withdrawn'] ?? false) ? null : $classroom->id,
                 'withdrawn' => $data['withdrawn'] ?? false,
-                'status' => $data['status'] ?? 'active',
+                'status' => $data['status'] ?? 'نشط',
             ]);
 
             DB::table('guardian_student')->insert([

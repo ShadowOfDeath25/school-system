@@ -31,7 +31,7 @@ class RollbackService
                 $student->update([
                     'grade' => $batchStudent->from_grade,
                     'classroom_id' => $batchStudent->from_classroom_id,
-                    'status' => 'active',
+                    'status' => 'نشط',
                 ]);
 
                 StudentSeatAssignment::where('student_id', $batchStudent->student_id)

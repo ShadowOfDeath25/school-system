@@ -33,7 +33,7 @@ it('evaluates a student who passed all subjects as passed', function () {
     $student = Student::factory()->create([
         'grade' => 5,
         'language' => 'عربي',
-        'status' => 'active',
+        'status' => 'نشط',
         'withdrawn' => false,
     ]);
 
@@ -64,7 +64,7 @@ it('evaluates a student who failed one subject as دور_ثاني_eligible', fun
     $student = Student::factory()->create([
         'grade' => 5,
         'language' => 'عربي',
-        'status' => 'active',
+        'status' => 'نشط',
         'withdrawn' => false,
     ]);
 
@@ -95,7 +95,7 @@ it('evaluates a grade 11 student who passed as graduated', function () {
     $student = Student::factory()->create([
         'grade' => 11,
         'language' => 'عربي',
-        'status' => 'active',
+        'status' => 'نشط',
         'withdrawn' => false,
     ]);
 
@@ -126,7 +126,7 @@ it('evaluates a student with no marks as repeat', function () {
     $student = Student::factory()->create([
         'grade' => 5,
         'language' => 'عربي',
-        'status' => 'active',
+        'status' => 'نشط',
         'withdrawn' => false,
     ]);
 
@@ -152,7 +152,7 @@ it('excludes already graduated students from preview', function () {
         'grade' => 5,
         'language' => 'عربي',
         'withdrawn' => false,
-        'status' => 'graduated',
+        'status' => 'متخرج',
     ]);
 
     $results = $this->service->preview($this->year->name, 5, 'عربي');

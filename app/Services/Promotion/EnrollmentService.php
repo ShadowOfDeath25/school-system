@@ -81,7 +81,7 @@ class EnrollmentService
         }
 
         if ($status !== null) {
-            $data['status'] = $status === 'graduated' ? 'graduated' : 'active';
+            $data['status'] = $status === 'graduated' ? 'متخرج' : 'نشط';
         }
 
         if (! empty($data)) {

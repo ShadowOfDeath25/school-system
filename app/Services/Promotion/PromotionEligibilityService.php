@@ -126,7 +126,7 @@ class PromotionEligibilityService
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
-            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->where(fn ($q) => $q->where('status', '!=', 'متخرج')->orWhereNull('status'))
             ->get();
 
         $secretNumbers = StudentSecretAssignment::where('academic_year', $now)
@@ -165,7 +165,7 @@ class PromotionEligibilityService
             ->where('grade', $grade)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
             ->where(function ($q) {
-                $q->where('status', '!=', 'graduated')
+                $q->where('status', '!=', 'متخرج')
                     ->orWhereNull('status');
             });
 
