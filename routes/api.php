@@ -62,10 +62,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('summary', [StudentReportController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
             Route::get('demographics', [StudentReportController::class, 'demographicsReport'])->name('demographics')->middleware('authorization:view student-reports');
             Route::get('roster', [StudentReportController::class, 'roster'])->name('roster')->middleware('authorization:view student-reports');
+            Route::get('stats', [StudentReportController::class, 'studentStatsReport'])->name('stats')->middleware('authorization:view student-reports');
             Route::get('marks/class', [MarksReportController::class, 'classReport'])->name('marks.class')->middleware('authorization:view student-reports');
+            Route::get('marks/final-exam', [MarksReportController::class, 'finalExamReport'])->name('marks.final-exam')->middleware('authorization:view student-reports');
+            Route::get('marks/year-work', [MarksReportController::class, 'yearWorkReport'])->name('marks.year-work')->middleware('authorization:view student-reports');
+            Route::get('marks/classroom-statistics', [MarksReportController::class, 'classroomStatisticsReport'])->name('marks.classroom-statistics')->middleware('authorization:view student-reports');
             Route::get('marks/top-students', [MarksReportController::class, 'topStudentsReport'])->name('marks.top-students')->middleware('authorization:view student-reports');
             Route::get('certificates', [CertificateController::class, 'print'])->name('certificates')->middleware('authorization:view student-reports');
             Route::get('exam-candidates', [SeatNumberController::class, 'candidates'])->name('exam-candidates')->middleware('authorization:view student-reports');
+            Route::get('behavior-register', [StudentReportController::class, 'behaviorRegister'])->name('behavior-register')->middleware('authorization:view student-reports');
             Route::prefix('/payments')->name('payments.')->group(function () {
 
                 Route::get('/daily', [StudentReportController::class, 'dailyPayments']);

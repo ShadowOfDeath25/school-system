@@ -13,9 +13,19 @@ class DemographicsService
         ?string $level = null,
         ?int $grade = null,
         ?int $classroom = null,
+        ?string $noteFilter = null,
     ): Collection {
-        $classrooms = Classroom::with(['students' => function ($q) {
+        $classrooms = Classroom::with(['students' => function ($q) use ($noteFilter) {
             $q->select('id', 'classroom_id', 'gender', 'religion');
+            if ($noteFilter) {
+                if ($noteFilter === 'لا يوجد') {
+                    $q->where(function ($q2) {
+                        $q2->whereNull('note')->orWhere('note', '');
+                    });
+                } else {
+                    $q->where('note', $noteFilter);
+                }
+            }
         }])
             ->when($academicYear, fn ($q) => $q->where('academic_year', $academicYear))
             ->when($language, fn ($q) => $q->where('language', $language))

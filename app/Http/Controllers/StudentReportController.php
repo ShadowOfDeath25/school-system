@@ -5,20 +5,26 @@ namespace App\Http\Controllers;
 use App\Enums\PaymentType;
 use App\Exports\ArrearsExport;
 use App\Exports\ArrearsGroupedExport;
+use App\Exports\BehaviorRegisterExport;
 use App\Exports\DailyPaymentsExport;
 use App\Exports\DemographicsExport;
 use App\Exports\LettersExport;
 use App\Exports\RosterExport;
+use App\Exports\StudentStatsExport;
 use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
+use App\Http\Requests\Student\Reports\GenerateBehaviorRegisterRequest;
 use App\Http\Requests\Student\Reports\GenerateDailyPaymentsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateDemographicsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateLetterRequest;
 use App\Http\Requests\Student\Reports\GenerateRosterReportRequest;
+use App\Http\Requests\Student\Reports\GenerateStudentStatsRequest;
+use App\Services\BehaviorRegisterService;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Services\DemographicsService;
 use App\Services\StudentReportService;
 use App\Services\StudentRosterService;
+use App\Services\StudentStatsService;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Enums\Format;
@@ -200,6 +206,7 @@ class StudentReportController extends Controller
             level: $validated['level'] ?? null,
             grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
             classroom: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+            noteFilter: $request->input('note_filter'),
         );
 
         ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
@@ -226,11 +233,55 @@ class StudentReportController extends Controller
         ]);
     }
 
+    public function studentStatsReport(
+        GenerateStudentStatsRequest $request,
+        StudentStatsService $studentStatsService
+    ): JsonResponse|BinaryFileResponse {
+        $validated = $request->validated();
+
+        $classrooms = $studentStatsService->getStudentStats(
+            academicYear: $validated['academic_year'] ?? null,
+            language: $validated['language'] ?? null,
+            level: $validated['level'] ?? null,
+            grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
+            classroom: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+            noteFilter: $request->input('note_filter'),
+        );
+
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+        $gradeLabel = \App\Enums\Grade::from((int) $validated['grade'])->label();
+
+        $viewData = [
+            'classrooms' => $classrooms,
+            'gradeLabel' => $gradeLabel,
+            'title' => 'إحصاءات الفصول - '.$gradeLabel,
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new StudentStatsExport($viewData), 'student_stats.xlsx');
+        }
+
+        Pdf::view('reports.student_stats', $viewData)
+            ->format('a4')
+            ->orientation(Orientation::Landscape)
+            ->footerView('components.pdf-footer')
+            ->margins(10, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
+        ]);
+    }
+
     public function roster(
         GenerateRosterReportRequest $request,
         StudentRosterService $rosterService
     ): JsonResponse|BinaryFileResponse {
         $validated = $request->validated();
+
+        $noteFilter = $request->input('note_filter');
 
         if ($request->query('export') === 'excel') {
             $rows = $rosterService->getAllRosterRows(
@@ -245,6 +296,7 @@ class StudentReportController extends Controller
                 search: $validated['search'] ?? null,
                 sortBy: $validated['sort_by'] ?? 'name_in_arabic',
                 sortDir: $validated['sort_dir'] ?? 'asc',
+                noteFilter: $noteFilter,
             );
 
             return Excel::download(new RosterExport([
@@ -266,6 +318,7 @@ class StudentReportController extends Controller
                 search: $validated['search'] ?? null,
                 sortBy: $validated['sort_by'] ?? 'name_in_arabic',
                 sortDir: $validated['sort_dir'] ?? 'asc',
+                noteFilter: $noteFilter,
             );
 
             ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
@@ -297,6 +350,7 @@ class StudentReportController extends Controller
             sortDir: $validated['sort_dir'] ?? 'asc',
             perPage: $validated['per_page'] ?? 30,
             page: $validated['page'] ?? 1,
+            noteFilter: $noteFilter,
         );
 
         return response()->json($result);
@@ -355,6 +409,45 @@ class StudentReportController extends Controller
             ->format(Format::A4)
             ->footerView('components.pdf-footer')
             ->margins(5, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
+        ]);
+    }
+
+    public function behaviorRegister(
+        GenerateBehaviorRegisterRequest $request,
+        BehaviorRegisterService $service
+    ): JsonResponse|BinaryFileResponse {
+        $validated = $request->validated();
+
+        $data = $service->getData(
+            academicYear: $validated['academic_year'],
+            month: (int) $validated['month'],
+            language: $validated['language'] ?? null,
+            level: $validated['level'] ?? null,
+            grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
+            classroomId: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+        );
+
+        $viewData = [
+            'data' => $data,
+            'title' => 'دفتر 5 سلوك - '.$data['monthName'].' '.$data['year'],
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new BehaviorRegisterExport($viewData), 'behavior_register.xlsx');
+        }
+
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+        Pdf::view('reports.behavior_register', $viewData)
+            ->format('a4')
+            ->orientation(Orientation::Landscape)
+            ->footerView('components.pdf-footer')
+            ->margins(10, 5, 10, 5)
             ->save(storage_path("app/$filePath"));
 
         return response()->json([

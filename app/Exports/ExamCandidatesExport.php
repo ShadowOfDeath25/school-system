@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class ExamCandidatesExport implements FromView, ShouldAutoSize, WithEvents
 {
@@ -29,6 +30,20 @@ class ExamCandidatesExport implements FromView, ShouldAutoSize, WithEvents
                     ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
 
                 $sheet->getParent()->getActiveSheet()->setRightToLeft(true);
+
+                $sheet->getStyle($sheet->calculateWorksheetDimension())
+                    ->applyFromArray([
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => Border::BORDER_THIN,
+                                'color' => ['argb' => 'FF000000'],
+                            ],
+                            'outline' => [
+                                'borderStyle' => Border::BORDER_MEDIUM,
+                                'color' => ['argb' => 'FF000000'],
+                            ],
+                        ],
+                    ]);
             },
         ];
     }

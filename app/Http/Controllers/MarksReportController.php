@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ClassroomStatisticsExport;
+use App\Exports\FinalExamMarksExport;
 use App\Exports\StudentMarksExport;
 use App\Exports\TopStudentsExport;
+use App\Exports\YearWorkMarksExport;
 use App\Models\AcademicYear;
 use App\Models\Student;
 use App\Services\MarksReportService;
@@ -32,6 +35,8 @@ class MarksReportController extends Controller
         $semester = $request->input('semester', 'both');
         $classroomId = $request->input('classroom_id') ? (int) $request->input('classroom_id') : null;
         $detailed = $request->boolean('detailed', false);
+        $scoreFilter = $request->input('score_filter');
+        $noteFilter = $request->input('note_filter');
 
         $data = $this->reportService->getClassReportData(
             academicYear: $academicYear,
@@ -40,6 +45,8 @@ class MarksReportController extends Controller
             semester: $semester,
             classroomId: $classroomId,
             detailed: $detailed,
+            scoreFilter: $scoreFilter,
+            noteFilter: $noteFilter,
         );
 
         $data['detailed'] = $detailed;
@@ -64,6 +71,150 @@ class MarksReportController extends Controller
             return Excel::download(
                 new StudentMarksExport($data, $detailed),
                 $detailed ? 'student_marks_detailed.xlsx' : 'student_marks.xlsx',
+            );
+        }
+
+        return response()->json($data);
+    }
+
+    public function finalExamReport(Request $request): JsonResponse|BinaryFileResponse
+    {
+        $academicYear = $request->input('academic_year', AcademicYear::activeCached()?->name);
+        $validated = $request->validate([
+            'language' => 'required|string',
+            'semester' => 'required|string|in:الأول,الثاني',
+        ]);
+        $grade = (int) $request->input('grade');
+        $language = $validated['language'];
+        $semester = $validated['semester'];
+        $classroomId = $request->input('classroom_id') ? (int) $request->input('classroom_id') : null;
+        $scoreFilter = $request->input('score_filter');
+        $noteFilter = $request->input('note_filter');
+
+        $data = $this->reportService->getFinalExamReportData(
+            academicYear: $academicYear,
+            grade: $grade,
+            language: $language,
+            semester: $semester,
+            classroomId: $classroomId,
+            scoreFilter: $scoreFilter,
+            noteFilter: $noteFilter,
+        );
+
+        if ($request->query('export') === 'pdf') {
+            ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+            Pdf::view('reports.final_exam_marks', $data)
+                ->format('a4')
+                ->orientation(Orientation::Landscape)
+                ->footerView('components.pdf-footer')
+                ->margins(10, 5, 10, 5)
+                ->save(storage_path("app/$filePath"));
+
+            return response()->json([
+                'uuid' => $uuid,
+                'preview_url' => route('reports.preview', $uuid, true),
+            ]);
+        }
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(
+                new FinalExamMarksExport($data),
+                'final_exam_marks.xlsx',
+            );
+        }
+
+        return response()->json($data);
+    }
+
+    public function yearWorkReport(Request $request): JsonResponse|BinaryFileResponse
+    {
+        $academicYear = $request->input('academic_year', AcademicYear::activeCached()?->name);
+        $validated = $request->validate([
+            'language' => 'required|string',
+            'semester' => 'required|string|in:الأول,الثاني',
+        ]);
+        $grade = (int) $request->input('grade');
+        $language = $validated['language'];
+        $semester = $validated['semester'];
+        $classroomId = $request->input('classroom_id') ? (int) $request->input('classroom_id') : null;
+        $scoreFilter = $request->input('score_filter');
+        $noteFilter = $request->input('note_filter');
+
+        $data = $this->reportService->getYearWorkReportData(
+            academicYear: $academicYear,
+            grade: $grade,
+            language: $language,
+            semester: $semester,
+            classroomId: $classroomId,
+            scoreFilter: $scoreFilter,
+            noteFilter: $noteFilter,
+        );
+
+        if ($request->query('export') === 'pdf') {
+            ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+            Pdf::view('reports.year_work_marks', $data)
+                ->format('a4')
+                ->orientation(Orientation::Landscape)
+                ->footerView('components.pdf-footer')
+                ->margins(10, 5, 10, 5)
+                ->save(storage_path("app/$filePath"));
+
+            return response()->json([
+                'uuid' => $uuid,
+                'preview_url' => route('reports.preview', $uuid, true),
+            ]);
+        }
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(
+                new YearWorkMarksExport($data),
+                'year_work_marks.xlsx',
+            );
+        }
+
+        return response()->json($data);
+    }
+
+    public function classroomStatisticsReport(Request $request): JsonResponse|BinaryFileResponse
+    {
+        $academicYear = $request->input('academic_year', AcademicYear::activeCached()?->name);
+        $validated = $request->validate([
+            'language' => 'required|string',
+            'semester' => 'required|string|in:الأول,الثاني',
+        ]);
+        $grade = (int) $request->input('grade');
+        $language = $validated['language'];
+        $semester = $validated['semester'];
+
+        $data = $this->reportService->getClassroomStatisticsData(
+            academicYear: $academicYear,
+            grade: $grade,
+            language: $language,
+            semester: $semester,
+        );
+
+        if ($request->query('export') === 'pdf') {
+            ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+            Pdf::view('reports.classroom_statistics', $data)
+                ->format('a4')
+                ->orientation(Orientation::Landscape)
+                ->footerView('components.pdf-footer')
+                ->margins(10, 5, 10, 5)
+                ->save(storage_path("app/$filePath"));
+
+            return response()->json([
+                'uuid' => $uuid,
+                'preview_url' => route('reports.preview', $uuid, true),
+            ]);
+        }
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(
+                new ClassroomStatisticsExport($data),
+                'classroom_statistics.xlsx',
             );
         }
 

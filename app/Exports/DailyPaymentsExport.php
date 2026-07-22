@@ -8,6 +8,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class DailyPaymentsExport implements FromView, ShouldAutoSize, WithEvents
 {
@@ -22,12 +23,25 @@ class DailyPaymentsExport implements FromView, ShouldAutoSize, WithEvents
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-                $event->sheet->getDelegate()->getStyle($event->sheet->calculateWorksheetDimension())
+                $sheet = $event->sheet->getDelegate();
+                $sheet->getStyle($sheet->calculateWorksheetDimension())
                     ->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-                $event->sheet->getDelegate()->getParent()
-                    ->getActiveSheet()
-                    ->setRightToLeft(true);
+                $sheet->getParent()->getActiveSheet()->setRightToLeft(true);
+
+                $sheet->getStyle($sheet->calculateWorksheetDimension())
+                    ->applyFromArray([
+                        'borders' => [
+                            'allBorders' => [
+                                'borderStyle' => Border::BORDER_THIN,
+                                'color' => ['argb' => 'FF000000'],
+                            ],
+                            'outline' => [
+                                'borderStyle' => Border::BORDER_MEDIUM,
+                                'color' => ['argb' => 'FF000000'],
+                            ],
+                        ],
+                    ]);
             },
         ];
     }

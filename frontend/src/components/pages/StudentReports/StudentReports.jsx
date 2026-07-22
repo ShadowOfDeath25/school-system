@@ -11,12 +11,28 @@ import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { useExport } from "@hooks/useExport.js";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 import ReportSelector from "./ReportSelector.jsx";
-import StudentMarksTable from "./StudentMarksTable.jsx";
 
-const SEMESTER_OPTIONS = [
-    { value: "both", label: "الفصلين" },
-    { value: "الأول", label: "الفصل الدراسي الأول" },
-    { value: "الثاني", label: "الفصل الدراسي الثاني" },
+const NOTE_FILTER_OPTIONS = [
+    { value: "", label: "الكل" },
+    { value: "لا يوجد", label: "لا يوجد" },
+    { value: "ابناء عاملين", label: "ابناء عاملين" },
+    { value: "دمج", label: "دمج" },
+    { value: "يتيم", label: "يتيم" },
+];
+
+const MONTH_OPTIONS = [
+    { value: "1", label: "يناير" },
+    { value: "2", label: "فبراير" },
+    { value: "3", label: "مارس" },
+    { value: "4", label: "أبريل" },
+    { value: "5", label: "مايو" },
+    { value: "6", label: "يونيو" },
+    { value: "7", label: "يوليو" },
+    { value: "8", label: "أغسطس" },
+    { value: "9", label: "سبتمبر" },
+    { value: "10", label: "أكتوبر" },
+    { value: "11", label: "نوفمبر" },
+    { value: "12", label: "ديسمبر" },
 ];
 
 export default function StudentReports() {
@@ -28,7 +44,8 @@ export default function StudentReports() {
     const [formData, setFormData] = useState({
         grade: urlGrade || "",
         language: urlLanguage || "",
-        semester: "both",
+        note_filter: "",
+        month: "",
     });
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -63,55 +80,30 @@ export default function StudentReports() {
         const result = { ...rest };
         if (language) result.language = language;
         if (!result.academic_year) return null;
+        if (!result.note_filter) delete result.note_filter;
+        if (!result.month) delete result.month;
         return result;
     };
 
-    const isMarksReport = reportType === "student_marks";
-    const legacyEndpoint = reportType === "roster" ? "/reports/students/roster" : "/reports/students/demographics";
-
-    const handleView = async () => {
-        if (!formData.grade) {
-            showSnackbar("يجب اختيار صف دراسي", "error");
-            return;
-        }
-        const params = normalizeData();
-        if (!params) return;
-        setLoading(true);
-        try {
-            const response = await axiosClient.get("/reports/students/marks/class", { params });
-            setReportData(response.data);
-        } catch (error) {
-            showSnackbar(error?.response?.data?.message || "فشل تحميل البيانات", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
+    const legacyEndpoint = reportType === "roster" ? "/reports/students/roster" : reportType === "student_stats" ? "/reports/students/stats" : reportType === "behavior_register" ? "/reports/students/behavior-register" : "/reports/students/demographics";
 
     const handlePrint = async () => {
         if (!formData.grade) {
             showSnackbar("يجب اختيار صف دراسي", "error");
             return;
         }
-        if (isMarksReport) {
-            const params = normalizeData();
-            if (!params) return;
-            try {
-                params.export = "pdf";
-                const response = await axiosClient.get("/reports/students/marks/class", { params });
-                showPDFPreview({ url: response.data.preview_url });
-            } catch (error) {
-                showSnackbar(error?.response?.data?.message || "فشل تحميل التقرير", "error");
-            }
-        } else {
-            const params = normalizeData();
-            if (!params) return;
-            try {
-                if (reportType === "roster") params.export = "pdf";
-                const response = await axiosClient.get(legacyEndpoint, { params });
-                showPDFPreview({ url: response.data.preview_url });
-            } catch (error) {
-                showSnackbar(error?.response?.data?.message || "فشل تحميل التقرير", "error");
-            }
+        if (reportType === "behavior_register" && !formData.month) {
+            showSnackbar("يجب اختيار الشهر", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        try {
+            if (reportType === "roster") params.export = "pdf";
+            const response = await axiosClient.get(legacyEndpoint, { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل التقرير", "error");
         }
     };
 
@@ -122,35 +114,11 @@ export default function StudentReports() {
         }
         const params = normalizeData();
         if (!params) return;
-        if (isMarksReport) {
-            exportAsExcel("/reports/students/marks/class", params);
-        } else {
-            exportAsExcel(legacyEndpoint, params);
-        }
-    };
-
-    const handleSingleCertificate = async (studentId) => {
-        const academicYear = formData.academic_year;
-        if (!academicYear) {
-            showSnackbar("يجب اختيار عام دراسي", "error");
-            return;
-        }
-        try {
-            const params = {
-                academic_year: academicYear,
-                semester: formData.semester || "both",
-                student_id: studentId,
-                export: "pdf",
-            };
-            const response = await axiosClient.get("/reports/students/certificates", { params });
-            showPDFPreview({ url: response.data.preview_url });
-        } catch (error) {
-            showSnackbar(error?.response?.data?.message || "فشل تحميل الشهادة", "error");
-        }
+        exportAsExcel(legacyEndpoint, params);
     };
 
     const handleReset = () => {
-        setFormData({ semester: "both" });
+        setFormData({ note_filter: "" });
         setReportData(null);
     };
 
@@ -197,21 +165,30 @@ export default function StudentReports() {
                     <SelectField
                         label={"الفصل"}
                         placeholder={"اختر الفصل"}
-                        value={formData.classroom_id}
-                        name={"classroom_id"}
+                        value={formData.classroom}
+                        name={"classroom"}
                         disabled={!(formData.level && formData.grade && formData.language && formData.academic_year)}
                         options={classrooms?.data?.map((c) => ({ label: c.name, value: c.id }))}
                         handleChange={handleChange}
                     />
 
-                    {isMarksReport && (
+                    <SelectField
+                        label={"علامة مميزة"}
+                        options={NOTE_FILTER_OPTIONS}
+                        placeholder={"اختر العلامة"}
+                        value={formData.note_filter}
+                        handleChange={handleChange}
+                        name={"note_filter"}
+                    />
+
+                    {reportType === "behavior_register" && (
                         <SelectField
-                            label={"الفصل الدراسي"}
-                            options={SEMESTER_OPTIONS}
-                            placeholder={"اختر الفصل الدراسي"}
-                            value={formData.semester}
+                            label={"الشهر"}
+                            options={MONTH_OPTIONS}
+                            placeholder={"اختر الشهر"}
+                            value={formData.month}
                             handleChange={handleChange}
-                            name={"semester"}
+                            name={"month"}
                         />
                     )}
 
@@ -258,11 +235,6 @@ export default function StudentReports() {
                 </div>
 
                 <div className={styles.actions}>
-                    {isMarksReport && (
-                        <Button variant={"contained"} color="primary" onClick={handleView} disabled={loading}>
-                            {loading ? "جاري التحميل..." : "عرض"}
-                        </Button>
-                    )}
                     <Button variant={"contained"} color="primary" onClick={handlePrint}>
                         طباعة
                     </Button>
@@ -274,23 +246,6 @@ export default function StudentReports() {
                     </Button>
                 </div>
             </div>
-
-            {reportData && (
-                <div className={styles.container} style={{ marginTop: 16 }}>
-                    <h4 className={styles.title}>
-                        كشف درجات الطلاب — {reportData.grade_name} — {reportData.language}
-                        {reportData.semester !== "both" && (
-                            <> — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}</>
-                        )}
-                        {" — "}{reportData.academic_year}
-                    </h4>
-                    <p className={styles.summary}>
-                        إجمالي الطلاب: {reportData.totals.students_count}
-                        {" | "}عدد المواد: {reportData.totals.subjects_count}
-                    </p>
-                    <StudentMarksTable data={reportData} onPrintCertificate={handleSingleCertificate} />
-                </div>
-            )}
         </Page>
     );
 }

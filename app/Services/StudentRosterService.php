@@ -22,6 +22,7 @@ class StudentRosterService
         string $sortDir = 'asc',
         int $perPage = 30,
         int $page = 1,
+        ?string $noteFilter = null,
     ): array {
 
         $academicYearParts = explode(' - ', $academicYear);
@@ -64,6 +65,16 @@ class StudentRosterService
             $query->where('classroom_id', $classroom);
         }
 
+        if ($noteFilter) {
+            if ($noteFilter === 'لا يوجد') {
+                $query->where(function ($q) {
+                    $q->whereNull('note')->orWhere('note', '');
+                });
+            } else {
+                $query->where('note', $noteFilter);
+            }
+        }
+
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name_in_arabic', 'like', "%{$search}%")
@@ -81,7 +92,7 @@ class StudentRosterService
             return $this->formatStudentRow($student, $referenceDate);
         });
 
-        $summary = $this->getSummary($academicYear, $status, $religion, $gender, $language, $level, $grade, $classroom);
+        $summary = $this->getSummary($academicYear, $status, $religion, $gender, $language, $level, $grade, $classroom, $noteFilter);
 
         return [
             'data' => $rows,
@@ -107,6 +118,7 @@ class StudentRosterService
         ?string $search = null,
         string $sortBy = 'name_in_arabic',
         string $sortDir = 'asc',
+        ?string $noteFilter = null,
     ): Collection {
         $academicYearParts = explode(' - ', $academicYear);
         $startYear = (int) trim($academicYearParts[0]);
@@ -140,6 +152,15 @@ class StudentRosterService
         }
         if ($classroom) {
             $query->where('classroom_id', $classroom);
+        }
+        if ($noteFilter) {
+            if ($noteFilter === 'لا يوجد') {
+                $query->where(function ($q) {
+                    $q->whereNull('note')->orWhere('note', '');
+                });
+            } else {
+                $query->where('note', $noteFilter);
+            }
         }
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -198,6 +219,7 @@ class StudentRosterService
         ?string $level,
         ?int $grade,
         ?int $classroom,
+        ?string $noteFilter = null,
     ): array {
         $query = Student::whereHas('classroom', function ($q) use ($academicYear) {
             $q->where('academic_year', $academicYear);
@@ -223,6 +245,15 @@ class StudentRosterService
         }
         if ($classroom) {
             $query->where('classroom_id', $classroom);
+        }
+        if ($noteFilter) {
+            if ($noteFilter === 'لا يوجد') {
+                $query->where(function ($q) {
+                    $q->whereNull('note')->orWhere('note', '');
+                });
+            } else {
+                $query->where('note', $noteFilter);
+            }
         }
 
         $allStudents = $query->get(['id', 'gender', 'religion', 'status']);

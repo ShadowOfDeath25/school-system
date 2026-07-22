@@ -11,6 +11,7 @@ import { useExport } from "@hooks/useExport.js";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 import StudentMarksTable from "@pages/StudentReports/StudentMarksTable.jsx";
 import TopStudentsTable from "./TopStudentsTable.jsx";
+import ClassroomStatisticsTable from "./ClassroomStatisticsTable.jsx";
 import MarksReportSelector from "./MarksReportSelector.jsx";
 
 const SEMESTER_OPTIONS = [
@@ -19,9 +20,30 @@ const SEMESTER_OPTIONS = [
     { value: "الثاني", label: "الفصل الدراسي الثاني" },
 ];
 
+const FINAL_EXAM_SEMESTER_OPTIONS = [
+    { value: "الأول", label: "الفصل الدراسي الأول" },
+    { value: "الثاني", label: "الفصل الدراسي الثاني" },
+];
+
+const SCORE_FILTER_OPTIONS = [
+    { value: "", label: "الكل" },
+    { value: "85+", label: "85% فأكثر" },
+    { value: "65+", label: "65% فأكثر" },
+    { value: "50+", label: "50% فأكثر" },
+    { value: "below_50", label: "أقل من 50%" },
+];
+
+const NOTE_FILTER_OPTIONS = [
+    { value: "", label: "الكل" },
+    { value: "لا يوجد", label: "لا يوجد" },
+    { value: "ابناء عاملين", label: "ابناء عاملين" },
+    { value: "دمج", label: "دمج" },
+    { value: "يتيم", label: "يتيم" },
+];
+
 export default function MarksReports() {
     const [reportType, setReportType] = useState("class_marks");
-    const [formData, setFormData] = useState({ semester: "both" });
+    const [formData, setFormData] = useState({ semester: "both", score_filter: "", note_filter: "" });
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { showPDFPreview } = usePDFPreview();
@@ -30,6 +52,9 @@ export default function MarksReports() {
 
     useEffect(() => {
         setReportData(null);
+        if ((reportType === "final_exam_marks" || reportType === "year_work_marks" || reportType === "classroom_statistics") && formData.semester === "both") {
+            setFormData((prev) => ({ ...prev, semester: "الأول" }));
+        }
     }, [reportType]);
 
     const { data: academicYears = [] } = useGetAll("academic-years", {}, {
@@ -55,6 +80,8 @@ export default function MarksReports() {
         const result = { ...rest };
         if (language && language !== "الكل") result.language = language;
         if (!result.academic_year) return null;
+        if (!result.score_filter) delete result.score_filter;
+        if (!result.note_filter) delete result.note_filter;
         return result;
     };
 
@@ -115,6 +142,174 @@ export default function MarksReports() {
         if (!params) return;
         if (isDetailed) params.detailed = 1;
         exportAsExcel("/reports/students/marks/class", params);
+    };
+
+    const handleViewFinalExam = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        setLoading(true);
+        try {
+            const response = await axiosClient.get("/reports/students/marks/final-exam", { params });
+            setReportData(response.data);
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل البيانات", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handlePrintFinalExam = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        try {
+            params.export = "pdf";
+            const response = await axiosClient.get("/reports/students/marks/final-exam", { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل التقرير", "error");
+        }
+    };
+
+    const handleExportFinalExam = () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        exportAsExcel("/reports/students/marks/final-exam", params);
+    };
+
+    const handleViewYearWork = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        setLoading(true);
+        try {
+            const response = await axiosClient.get("/reports/students/marks/year-work", { params });
+            setReportData(response.data);
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل البيانات", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handlePrintYearWork = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        try {
+            params.export = "pdf";
+            const response = await axiosClient.get("/reports/students/marks/year-work", { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل التقرير", "error");
+        }
+    };
+
+    const handleExportYearWork = () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        exportAsExcel("/reports/students/marks/year-work", params);
+    };
+
+    const handleViewClassroomStats = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        setLoading(true);
+        try {
+            const response = await axiosClient.get("/reports/students/marks/classroom-statistics", { params });
+            setReportData(response.data);
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل البيانات", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handlePrintClassroomStats = async () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        try {
+            params.export = "pdf";
+            const response = await axiosClient.get("/reports/students/marks/classroom-statistics", { params });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar(error?.response?.data?.message || "فشل تحميل التقرير", "error");
+        }
+    };
+
+    const handleExportClassroomStats = () => {
+        if (!formData.grade) {
+            showSnackbar("يجب اختيار صف دراسي", "error");
+            return;
+        }
+        if (!formData.semester || formData.semester === "both") {
+            showSnackbar("يجب اختيار فصل دراسي محدد", "error");
+            return;
+        }
+        const params = normalizeData();
+        if (!params) return;
+        exportAsExcel("/reports/students/marks/classroom-statistics", params);
     };
 
     const handleViewTopStudents = async () => {
@@ -185,14 +380,18 @@ export default function MarksReports() {
     };
 
     const handleReset = () => {
-        setFormData({ semester: "both" });
+        setFormData({ semester: isSingleSemester ? "الأول" : "both", score_filter: "", note_filter: "" });
         setReportData(null);
     };
 
-    const showFilters = reportType === "class_marks" || reportType === "class_marks_detailed" || reportType === "certificates" || reportType === "top_students";
+    const showFilters = reportType === "class_marks" || reportType === "class_marks_detailed" || reportType === "certificates" || reportType === "top_students" || reportType === "final_exam_marks" || reportType === "year_work_marks" || reportType === "classroom_statistics";
     const isCertificates = reportType === "certificates";
     const isDetailed = reportType === "class_marks_detailed";
     const isTopStudents = reportType === "top_students";
+    const isFinalExam = reportType === "final_exam_marks";
+    const isYearWork = reportType === "year_work_marks";
+    const isClassroomStats = reportType === "classroom_statistics";
+    const isSingleSemester = isFinalExam || isYearWork || isClassroomStats;
 
     const filterContent = (
         <div className={styles.body}>
@@ -226,7 +425,7 @@ export default function MarksReports() {
                 handleChange={handleChange}
                 name={"grade"}
             />
-            {!isTopStudents && (
+            {!isTopStudents && !isClassroomStats && (
                 <SelectField
                     label={"الفصل"}
                     placeholder={"اختر الفصل"}
@@ -237,11 +436,31 @@ export default function MarksReports() {
                     handleChange={handleChange}
                 />
             )}
+            {!isTopStudents && !isCertificates && !isClassroomStats && (
+                <SelectField
+                    label={"نسبة النجاح"}
+                    options={SCORE_FILTER_OPTIONS}
+                    placeholder={"اختر النسبة"}
+                    value={formData.score_filter}
+                    handleChange={handleChange}
+                    name={"score_filter"}
+                />
+            )}
+            {!isTopStudents && !isCertificates && !isClassroomStats && (
+                <SelectField
+                    label={"علامة مميزة"}
+                    options={NOTE_FILTER_OPTIONS}
+                    placeholder={"اختر العلامة"}
+                    value={formData.note_filter}
+                    handleChange={handleChange}
+                    name={"note_filter"}
+                />
+            )}
             <SelectField
                 label={"الفصل الدراسي"}
-                options={SEMESTER_OPTIONS}
+                options={isSingleSemester ? FINAL_EXAM_SEMESTER_OPTIONS : SEMESTER_OPTIONS}
                 placeholder={"اختر الفصل الدراسي"}
-                value={formData.semester}
+                value={isSingleSemester && formData.semester === "both" ? "" : formData.semester}
                 handleChange={handleChange}
                 name={"semester"}
             />
@@ -252,6 +471,51 @@ export default function MarksReports() {
         <div className={styles.actions}>
             <Button variant={"contained"} color="primary" onClick={handleViewCertificates} disabled={loading}>
                 {loading ? "جاري التحميل..." : "عرض الشهادات"}
+            </Button>
+            <Button variant={"contained"} color={"error"} onClick={handleReset}>
+                اعادة تعيين
+            </Button>
+        </div>
+    ) : isFinalExam ? (
+        <div className={styles.actions}>
+            <Button variant={"contained"} color="primary" onClick={handleViewFinalExam} disabled={loading}>
+                {loading ? "جاري التحميل..." : "عرض"}
+            </Button>
+            <Button variant={"contained"} color="primary" onClick={handlePrintFinalExam}>
+                طباعة
+            </Button>
+            <Button variant="outlined" color="primary" onClick={handleExportFinalExam}>
+                تصدير ك EXCEL
+            </Button>
+            <Button variant={"contained"} color={"error"} onClick={handleReset}>
+                اعادة تعيين
+            </Button>
+        </div>
+    ) : isYearWork ? (
+        <div className={styles.actions}>
+            <Button variant={"contained"} color="primary" onClick={handleViewYearWork} disabled={loading}>
+                {loading ? "جاري التحميل..." : "عرض"}
+            </Button>
+            <Button variant={"contained"} color="primary" onClick={handlePrintYearWork}>
+                طباعة
+            </Button>
+            <Button variant="outlined" color="primary" onClick={handleExportYearWork}>
+                تصدير ك EXCEL
+            </Button>
+            <Button variant={"contained"} color={"error"} onClick={handleReset}>
+                اعادة تعيين
+            </Button>
+        </div>
+    ) : isClassroomStats ? (
+        <div className={styles.actions}>
+            <Button variant={"contained"} color="primary" onClick={handleViewClassroomStats} disabled={loading}>
+                {loading ? "جاري التحميل..." : "عرض"}
+            </Button>
+            <Button variant={"contained"} color="primary" onClick={handlePrintClassroomStats}>
+                طباعة
+            </Button>
+            <Button variant="outlined" color="primary" onClick={handleExportClassroomStats}>
+                تصدير ك EXCEL
             </Button>
             <Button variant={"contained"} color={"error"} onClick={handleReset}>
                 اعادة تعيين
@@ -289,10 +553,16 @@ export default function MarksReports() {
         </div>
     );
 
-    const results = reportData && (reportType === "class_marks" || reportType === "class_marks_detailed") && (
+    const getTitle = () => {
+        if (isFinalExam) return "نتائج امتحانات نهاية الفصل";
+        if (isYearWork) return "كشف اعمال السنة";
+        return "كشف درجات الطلاب";
+    };
+
+    const results = reportData && (reportType === "class_marks" || reportType === "class_marks_detailed" || isFinalExam || isYearWork) && (
         <div className={styles.container} style={{ marginTop: 16 }}>
             <h4 className={styles.title}>
-                كشف درجات الطلاب — {reportData.grade_name} — {reportData.language}
+                {getTitle()} — {reportData.grade_name} — {reportData.language}
                 {reportData.semester !== "both" && (
                     <> — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}</>
                 )}
@@ -302,7 +572,22 @@ export default function MarksReports() {
                 إجمالي الطلاب: {reportData.totals.students_count}
                 {" | "}عدد المواد: {reportData.totals.subjects_count}
             </p>
-            <StudentMarksTable data={reportData} detailed={reportType === "class_marks_detailed"} onPrintCertificate={handleSingleCertificate} />
+            <StudentMarksTable data={reportData} detailed={true} onPrintCertificate={handleSingleCertificate} />
+        </div>
+    );
+
+    const classroomStatsResults = reportData && isClassroomStats && (
+        <div className={styles.container} style={{ marginTop: 16 }}>
+            <h4 className={styles.title}>
+                احصائيات الفصول — {reportData.grade_name} — {reportData.language}
+                — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}
+                {" — "}{reportData.academic_year}
+            </h4>
+            <p className={styles.summary}>
+                عدد الفصول: {reportData.totals.classrooms_count}
+                {" | "}عدد المواد: {reportData.totals.subjects_count}
+            </p>
+            <ClassroomStatisticsTable data={reportData} />
         </div>
     );
 
@@ -337,6 +622,7 @@ export default function MarksReports() {
                 </div>
             )}
             {results}
+            {classroomStatsResults}
             {topStudentsResults}
         </Page>
     );

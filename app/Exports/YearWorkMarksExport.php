@@ -10,13 +10,15 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-class RosterExport implements FromView, ShouldAutoSize, WithEvents
+class YearWorkMarksExport implements FromView, ShouldAutoSize, WithEvents
 {
-    public function __construct(public array $viewData) {}
+    public function __construct(
+        public array $viewData,
+    ) {}
 
     public function view(): View
     {
-        return view('reports.excel.roster', $this->viewData);
+        return view('reports.excel.year_work_marks', $this->viewData);
     }
 
     public function registerEvents(): array
@@ -24,11 +26,9 @@ class RosterExport implements FromView, ShouldAutoSize, WithEvents
         return [
             AfterSheet::class => function (AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
-
                 $sheet->getStyle($sheet->calculateWorksheetDimension())
                     ->getAlignment()
                     ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-
                 $sheet->getParent()->getActiveSheet()->setRightToLeft(true);
 
                 $sheet->getStyle($sheet->calculateWorksheetDimension())
@@ -44,9 +44,6 @@ class RosterExport implements FromView, ShouldAutoSize, WithEvents
                             ],
                         ],
                     ]);
-
-                $sheet->getStyle('D:D')->getNumberFormat()->setFormatCode('@');
-                $sheet->getStyle('N:N')->getNumberFormat()->setFormatCode('@');
             },
         ];
     }

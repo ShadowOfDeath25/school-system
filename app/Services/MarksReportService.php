@@ -7,12 +7,13 @@ use App\Models\GradeSubject;
 use App\Models\PromotionBatchStudent;
 use App\Models\Student;
 use App\Models\StudentSeatAssignment;
+use App\Models\Classroom;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class MarksReportService
 {
-    public function getClassReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, bool $detailed = false): array
+    public function getClassReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, bool $detailed = false, ?string $scoreFilter = null, ?string $noteFilter = null): array
     {
         $gradeSubjects = GradeSubject::with(['exams', 'subject'])
             ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
@@ -48,6 +49,20 @@ class MarksReportService
 
         if ($students->isEmpty()) {
             return $this->emptyResponse($academicYear, $grade, $language, $semester, $detailed);
+        }
+
+        if ($scoreFilter !== null) {
+            $students = $this->filterByScore($students, $gsIds, $academicYear, $scoreFilter);
+            if ($students->isEmpty()) {
+                return $this->emptyResponse($academicYear, $grade, $language, $semester, $detailed);
+            }
+        }
+
+        if ($noteFilter !== null && $noteFilter !== '') {
+            $students = $this->filterByNote($students, $noteFilter);
+            if ($students->isEmpty()) {
+                return $this->emptyResponse($academicYear, $grade, $language, $semester, $detailed);
+            }
         }
 
         $studentIds = $students->pluck('id');
@@ -235,6 +250,562 @@ class MarksReportService
         ];
     }
 
+    public function getFinalExamReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, ?string $scoreFilter = null, ?string $noteFilter = null): array
+    {
+        $gradeSubjects = GradeSubject::with(['exams', 'subject'])
+            ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
+            ->where('language', $language)
+            ->where('semester', $semester)
+            ->get();
+
+        if ($gradeSubjects->isEmpty()) {
+            return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+        }
+
+        $subjectList = $gradeSubjects->map(function ($gs) {
+            $finalComponents = collect($gs->components ?? [])
+                ->where('is_final_exam', true)
+                ->values()
+                ->toArray();
+
+            if (empty($finalComponents)) {
+                return null;
+            }
+
+            return [
+                'id' => $gs->id,
+                'name' => $gs->subject?->name,
+                'max' => (float) collect($finalComponents)->sum('marks'),
+                'components' => $finalComponents,
+            ];
+        })->filter()->values();
+
+        if ($subjectList->isEmpty()) {
+            return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+        }
+
+        $gsIds = $gradeSubjects->pluck('id');
+        $finalComponentIds = $subjectList->flatMap(fn ($s) => collect($s['components'])->pluck('id'))->unique()->values();
+
+        $students = Student::with('classroom')
+            ->where('grade', $grade)
+            ->where('language', $language)
+            ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
+            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->when($classroomId, fn ($q) => $q->where('classroom_id', $classroomId))
+            ->get();
+
+        if ($students->isEmpty()) {
+            return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+        }
+
+        if ($scoreFilter !== null) {
+            $students = $this->filterByScore($students, $gsIds, $academicYear, $scoreFilter);
+            if ($students->isEmpty()) {
+                return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+            }
+        }
+
+        if ($noteFilter !== null && $noteFilter !== '') {
+            $students = $this->filterByNote($students, $noteFilter);
+            if ($students->isEmpty()) {
+                return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+            }
+        }
+
+        $studentIds = $students->pluck('id');
+
+        $firstRound = DB::table('marks')
+            ->join('exams', 'marks.exam_id', '=', 'exams.id')
+            ->whereIn('marks.student_id', $studentIds)
+            ->whereIn('exams.grade_subject_id', $gsIds)
+            ->where('marks.academic_year', $academicYear)
+            ->where('marks.round', 'first')
+            ->select('marks.student_id', 'exams.grade_subject_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id', 'exams.grade_subject_id')
+            ->get();
+
+        $secondRound = DB::table('marks')
+            ->join('exams', 'marks.exam_id', '=', 'exams.id')
+            ->whereIn('marks.student_id', $studentIds)
+            ->whereIn('exams.grade_subject_id', $gsIds)
+            ->where('marks.academic_year', $academicYear)
+            ->where('marks.round', 'second')
+            ->whereIn('marks.component_id', $finalComponentIds)
+            ->select('marks.student_id', 'exams.grade_subject_id')
+            ->distinct()
+            ->get()
+            ->groupBy('student_id')
+            ->map(fn ($group) => $group->pluck('grade_subject_id'));
+
+        $passedSecondRound = PromotionBatchStudent::whereIn('student_id', $studentIds)
+            ->where('decision', 'دور_ثاني')
+            ->where('second_round_passed', true)
+            ->whereHas('batch', fn ($q) => $q->where('from_academic_year', $academicYear))
+            ->where('rolled_back', false)
+            ->pluck('student_id')
+            ->toArray();
+
+        $firstRoundByStudent = $firstRound->groupBy('student_id')
+            ->map(fn ($group) => $group->groupBy('grade_subject_id')
+                ->map(fn ($byGS) => $byGS->keyBy('component_id')->map(fn ($r) => (float) $r->total)));
+
+        $seatNumbers = StudentSeatAssignment::whereIn('student_id', $studentIds)
+            ->where('academic_year', $academicYear)
+            ->get()
+            ->keyBy('student_id');
+
+        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers) {
+            return $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+        })->values();
+
+        $studentRows = $sorted->map(function (Student $s) use ($subjectList, $firstRoundByStudent, $secondRound, $passedSecondRound, $gradeSubjects, $seatNumbers) {
+            $studentMarks = $firstRoundByStudent->get($s->id, collect());
+            $secondRoundGS = $secondRound->get($s->id, collect());
+
+            $marks = collect();
+            foreach ($subjectList as $subj) {
+                $gs = $gradeSubjects->firstWhere('id', $subj['id']);
+                $minMarks = $gs?->min_marks ?? 0;
+                $maxMarks = $subj['max'];
+                $components = $subj['components'] ?? [];
+
+                $subjectMarks = $studentMarks->get($subj['id'], collect());
+                $hasSecond = $secondRoundGS->contains($subj['id']);
+                $hasAnyMark = $subjectMarks->isNotEmpty() || $hasSecond;
+
+                if (!$hasAnyMark) {
+                    foreach ($components as $comp) {
+                        $marks->push([
+                            'value' => null,
+                            'display' => '—',
+                            'color' => '#7f8c8d',
+                            'component_id' => $comp['id'] ?? null,
+                            'component_name' => $comp['name'] ?? $subj['name'],
+                            'component_max' => (float) ($comp['marks'] ?? 0),
+                        ]);
+                    }
+                    continue;
+                }
+
+                $rawTotal = 0;
+                $rawComponents = [];
+                foreach ($components as $comp) {
+                    $compRaw = (float) ($subjectMarks->get($comp['id']) ?? 0);
+                    $rawComponents[] = [
+                        'value' => $compRaw,
+                        'component_id' => $comp['id'] ?? null,
+                        'component_name' => $comp['name'] ?? $subj['name'],
+                        'component_max' => (float) ($comp['marks'] ?? 0),
+                    ];
+                    $rawTotal += $compRaw;
+                }
+
+                $effectiveTotal = $rawTotal;
+                if (in_array($s->id, $passedSecondRound) && $hasSecond && $rawTotal < $minMarks) {
+                    $effectiveTotal = $minMarks;
+                }
+
+                $color = $this->markColor($maxMarks > 0 ? ($effectiveTotal / $maxMarks) * 100 : null);
+                $bump = $effectiveTotal - $rawTotal;
+
+                foreach ($rawComponents as $comp) {
+                    $compValue = $comp['value'];
+                    if ($bump > 0 && $maxMarks > 0) {
+                        $compValue += ($comp['component_max'] / $maxMarks) * $bump;
+                    }
+                    $marks->push([
+                        'value' => $compValue,
+                        'display' => is_float($compValue) || is_int($compValue) ? round($compValue, 1) : $compValue,
+                        'color' => $color,
+                        'component_id' => $comp['component_id'],
+                        'component_name' => $comp['component_name'],
+                        'component_max' => $comp['component_max'],
+                    ]);
+                }
+            }
+
+            return [
+                'id' => $s->id,
+                'name' => $s->name_in_arabic,
+                'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
+                'classroom_name' => $s->classroom?->name,
+                'marks' => $marks,
+            ];
+        });
+
+        return [
+            'academic_year' => $academicYear,
+            'grade_name' => Grade::where('grade', $grade)->value('name'),
+            'grade' => $grade,
+            'language' => $language,
+            'semester' => $semester,
+            'subjects' => $subjectList,
+            'students' => $studentRows,
+            'totals' => [
+                'students_count' => $sorted->count(),
+                'subjects_count' => $subjectList->count(),
+                'columns_count' => collect($subjectList)->sum(fn ($s) => count($s['components'])) + 3,
+            ],
+        ];
+    }
+
+    public function getYearWorkReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, ?string $scoreFilter = null, ?string $noteFilter = null): array
+    {
+        $gradeSubjects = GradeSubject::with(['exams', 'subject'])
+            ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
+            ->where('language', $language)
+            ->where('semester', $semester)
+            ->get();
+
+        if ($gradeSubjects->isEmpty()) {
+            return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+        }
+
+        $subjectList = $gradeSubjects->map(function ($gs) {
+            $workComponents = collect($gs->components ?? [])
+                ->reject(fn ($c) => ($c['is_final_exam'] ?? false) === true)
+                ->values()
+                ->toArray();
+
+            if (empty($workComponents)) {
+                return null;
+            }
+
+            return [
+                'id' => $gs->id,
+                'name' => $gs->subject?->name,
+                'max' => (float) collect($workComponents)->sum('marks'),
+                'components' => $workComponents,
+            ];
+        })->filter()->values();
+
+        if ($subjectList->isEmpty()) {
+            return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+        }
+
+        $gsIds = $gradeSubjects->pluck('id');
+        $workComponentIds = $subjectList->flatMap(fn ($s) => collect($s['components'])->pluck('id'))->unique()->values();
+
+        $students = Student::with('classroom')
+            ->where('grade', $grade)
+            ->where('language', $language)
+            ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
+            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->when($classroomId, fn ($q) => $q->where('classroom_id', $classroomId))
+            ->get();
+
+        if ($students->isEmpty()) {
+            return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+        }
+
+        if ($scoreFilter !== null) {
+            $students = $this->filterByScore($students, $gsIds, $academicYear, $scoreFilter);
+            if ($students->isEmpty()) {
+                return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+            }
+        }
+
+        if ($noteFilter !== null && $noteFilter !== '') {
+            $students = $this->filterByNote($students, $noteFilter);
+            if ($students->isEmpty()) {
+                return $this->emptyResponse($academicYear, $grade, $language, $semester, true);
+            }
+        }
+
+        $studentIds = $students->pluck('id');
+
+        $firstRound = DB::table('marks')
+            ->join('exams', 'marks.exam_id', '=', 'exams.id')
+            ->whereIn('marks.student_id', $studentIds)
+            ->whereIn('exams.grade_subject_id', $gsIds)
+            ->whereIn('marks.component_id', $workComponentIds)
+            ->where('marks.academic_year', $academicYear)
+            ->where('marks.round', 'first')
+            ->select('marks.student_id', 'exams.grade_subject_id', 'marks.component_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id', 'exams.grade_subject_id', 'marks.component_id')
+            ->get();
+
+        $secondRound = DB::table('marks')
+            ->join('exams', 'marks.exam_id', '=', 'exams.id')
+            ->whereIn('marks.student_id', $studentIds)
+            ->whereIn('exams.grade_subject_id', $gsIds)
+            ->where('marks.academic_year', $academicYear)
+            ->where('marks.round', 'second')
+            ->whereIn('marks.component_id', $workComponentIds)
+            ->select('marks.student_id', 'exams.grade_subject_id')
+            ->distinct()
+            ->get()
+            ->groupBy('student_id')
+            ->map(fn ($group) => $group->pluck('grade_subject_id'));
+
+        $passedSecondRound = PromotionBatchStudent::whereIn('student_id', $studentIds)
+            ->where('decision', 'دور_ثاني')
+            ->where('second_round_passed', true)
+            ->whereHas('batch', fn ($q) => $q->where('from_academic_year', $academicYear))
+            ->where('rolled_back', false)
+            ->pluck('student_id')
+            ->toArray();
+
+        $firstRoundByStudent = $firstRound->groupBy('student_id')
+            ->map(fn ($group) => $group->groupBy('grade_subject_id')
+                ->map(fn ($byGS) => $byGS->keyBy('component_id')->map(fn ($r) => (float) $r->total)));
+
+        $seatNumbers = StudentSeatAssignment::whereIn('student_id', $studentIds)
+            ->where('academic_year', $academicYear)
+            ->get()
+            ->keyBy('student_id');
+
+        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers) {
+            return $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+        })->values();
+
+        $studentRows = $sorted->map(function (Student $s) use ($subjectList, $firstRoundByStudent, $secondRound, $passedSecondRound, $gradeSubjects, $seatNumbers) {
+            $studentMarks = $firstRoundByStudent->get($s->id, collect());
+            $secondRoundGS = $secondRound->get($s->id, collect());
+
+            $marks = collect();
+            foreach ($subjectList as $subj) {
+                $gs = $gradeSubjects->firstWhere('id', $subj['id']);
+                $minMarks = $gs?->min_marks ?? 0;
+                $maxMarks = $subj['max'];
+                $components = $subj['components'] ?? [];
+
+                $subjectMarks = $studentMarks->get($subj['id'], collect());
+                $hasSecond = $secondRoundGS->contains($subj['id']);
+                $hasAnyMark = $subjectMarks->isNotEmpty() || $hasSecond;
+
+                if (!$hasAnyMark) {
+                    foreach ($components as $comp) {
+                        $marks->push([
+                            'value' => null,
+                            'display' => '—',
+                            'color' => '#7f8c8d',
+                            'component_id' => $comp['id'] ?? null,
+                            'component_name' => $comp['name'] ?? $subj['name'],
+                            'component_max' => (float) ($comp['marks'] ?? 0),
+                        ]);
+                    }
+                    continue;
+                }
+
+                $rawTotal = 0;
+                $rawComponents = [];
+                foreach ($components as $comp) {
+                    $compRaw = (float) ($subjectMarks->get($comp['id']) ?? 0);
+                    $rawComponents[] = [
+                        'value' => $compRaw,
+                        'component_id' => $comp['id'] ?? null,
+                        'component_name' => $comp['name'] ?? $subj['name'],
+                        'component_max' => (float) ($comp['marks'] ?? 0),
+                    ];
+                    $rawTotal += $compRaw;
+                }
+
+                $effectiveTotal = $rawTotal;
+                if (in_array($s->id, $passedSecondRound) && $hasSecond && $rawTotal < $minMarks) {
+                    $effectiveTotal = $minMarks;
+                }
+
+                $color = $this->markColor($maxMarks > 0 ? ($effectiveTotal / $maxMarks) * 100 : null);
+                $bump = $effectiveTotal - $rawTotal;
+
+                foreach ($rawComponents as $comp) {
+                    $compValue = $comp['value'];
+                    if ($bump > 0 && $maxMarks > 0) {
+                        $compValue += ($comp['component_max'] / $maxMarks) * $bump;
+                    }
+                    $marks->push([
+                        'value' => $compValue,
+                        'display' => is_float($compValue) || is_int($compValue) ? round($compValue, 1) : $compValue,
+                        'color' => $color,
+                        'component_id' => $comp['component_id'],
+                        'component_name' => $comp['component_name'],
+                        'component_max' => $comp['component_max'],
+                    ]);
+                }
+            }
+
+            return [
+                'id' => $s->id,
+                'name' => $s->name_in_arabic,
+                'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
+                'classroom_name' => $s->classroom?->name,
+                'marks' => $marks,
+            ];
+        });
+
+        return [
+            'academic_year' => $academicYear,
+            'grade_name' => Grade::where('grade', $grade)->value('name'),
+            'grade' => $grade,
+            'language' => $language,
+            'semester' => $semester,
+            'subjects' => $subjectList,
+            'students' => $studentRows,
+            'totals' => [
+                'students_count' => $sorted->count(),
+                'subjects_count' => $subjectList->count(),
+                'columns_count' => collect($subjectList)->sum(fn ($s) => count($s['components'])) + 3,
+            ],
+        ];
+    }
+
+    public function getClassroomStatisticsData(string $academicYear, int $grade, string $language, string $semester): array
+    {
+        $gradeSubjects = GradeSubject::with('subject')
+            ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
+            ->where('language', $language)
+            ->where('semester', $semester)
+            ->get();
+
+        if ($gradeSubjects->isEmpty()) {
+            return $this->emptyClassroomStatsResponse($academicYear, $grade, $language, $semester);
+        }
+
+        $gsIds = $gradeSubjects->pluck('id');
+
+        $subjectList = $gradeSubjects->map(fn ($gs) => [
+            'id' => $gs->id,
+            'name' => $gs->subject?->name,
+            'max' => (float) $gs->total_marks,
+            'min_marks' => (float) ($gs->min_marks ?? 0),
+        ])->values();
+
+        $classrooms = Classroom::where('grade', $grade)
+            ->where('language', $language)
+            ->where('academic_year', $academicYear)
+            ->orderBy('name')
+            ->get();
+
+        if ($classrooms->isEmpty()) {
+            return $this->emptyClassroomStatsResponse($academicYear, $grade, $language, $semester);
+        }
+
+        $students = Student::with('classroom')
+            ->whereIn('classroom_id', $classrooms->pluck('id'))
+            ->where('grade', $grade)
+            ->where('language', $language)
+            ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
+            ->where(fn ($q) => $q->where('status', '!=', 'graduated')->orWhereNull('status'))
+            ->get();
+
+        if ($students->isEmpty()) {
+            return $this->emptyClassroomStatsResponse($academicYear, $grade, $language, $semester);
+        }
+
+        $studentIds = $students->pluck('id');
+
+        $firstRound = DB::table('marks')
+            ->join('exams', 'marks.exam_id', '=', 'exams.id')
+            ->whereIn('marks.student_id', $studentIds)
+            ->whereIn('exams.grade_subject_id', $gsIds)
+            ->where('marks.academic_year', $academicYear)
+            ->where('marks.round', 'first')
+            ->select('marks.student_id', 'exams.grade_subject_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id', 'exams.grade_subject_id')
+            ->get();
+
+        $secondRound = DB::table('marks')
+            ->join('exams', 'marks.exam_id', '=', 'exams.id')
+            ->whereIn('marks.student_id', $studentIds)
+            ->whereIn('exams.grade_subject_id', $gsIds)
+            ->where('marks.academic_year', $academicYear)
+            ->where('marks.round', 'second')
+            ->select('marks.student_id', 'exams.grade_subject_id')
+            ->distinct()
+            ->get()
+            ->groupBy('student_id')
+            ->map(fn ($group) => $group->pluck('grade_subject_id'));
+
+        $passedSecondRound = PromotionBatchStudent::whereIn('student_id', $studentIds)
+            ->where('decision', 'دور_ثاني')
+            ->where('second_round_passed', true)
+            ->whereHas('batch', fn ($q) => $q->where('from_academic_year', $academicYear))
+            ->where('rolled_back', false)
+            ->pluck('student_id')
+            ->toArray();
+
+        $firstRoundByStudent = $firstRound->groupBy('student_id')
+            ->map(fn ($group) => $group->keyBy('grade_subject_id')->map(fn ($r) => (float) $r->total));
+
+        $studentsByClassroom = $students->groupBy('classroom_id');
+
+        $classroomRows = $classrooms->map(function (Classroom $classroom) use ($studentsByClassroom, $subjectList, $firstRoundByStudent, $secondRound, $passedSecondRound) {
+            $classroomStudents = $studentsByClassroom->get($classroom->id, collect());
+            $totalStudents = $classroomStudents->count();
+
+            $subjectStats = $subjectList->map(function ($subj) use ($classroomStudents, $firstRoundByStudent, $secondRound, $passedSecondRound) {
+                $attempted = 0;
+                $succeeded = 0;
+                $minMarks = $subj['min_marks'];
+
+                foreach ($classroomStudents as $student) {
+                    $studentTotal = $firstRoundByStudent->get($student->id)?->get($subj['id']);
+                    $hasAnyMark = $studentTotal !== null;
+                    $hasSecond = $secondRound->get($student->id, collect())->contains($subj['id']);
+
+                    if (!$hasAnyMark && !$hasSecond) {
+                        continue;
+                    }
+
+                    $attempted++;
+                    $effective = $hasAnyMark ? $studentTotal : 0;
+                    if (in_array($student->id, $passedSecondRound) && $hasSecond && $effective < $minMarks) {
+                        $effective = $minMarks;
+                    }
+
+                    if ($effective >= $minMarks) {
+                        $succeeded++;
+                    }
+                }
+
+                return [
+                    'subject_id' => $subj['id'],
+                    'attempted' => $attempted,
+                    'succeeded' => $succeeded,
+                    'percentage' => $attempted > 0 ? round(($succeeded / $attempted) * 100, 1) : 0,
+                ];
+            })->values();
+
+            return [
+                'name' => $classroom->name,
+                'total_students' => $totalStudents,
+                'subject_stats' => $subjectStats,
+            ];
+        })->filter(fn ($r) => $r['total_students'] > 0)->values();
+
+        $totalsRow = [
+            'name' => 'الجملة',
+            'total_students' => $classroomRows->sum('total_students'),
+            'subject_stats' => $subjectList->map(function ($subj) use ($classroomRows) {
+                $totalAttempted = collect($classroomRows)->sum(fn ($r) => collect($r['subject_stats'])->firstWhere('subject_id', $subj['id'])['attempted'] ?? 0);
+                $totalSucceeded = collect($classroomRows)->sum(fn ($r) => collect($r['subject_stats'])->firstWhere('subject_id', $subj['id'])['succeeded'] ?? 0);
+                return [
+                    'subject_id' => $subj['id'],
+                    'attempted' => $totalAttempted,
+                    'succeeded' => $totalSucceeded,
+                    'percentage' => $totalAttempted > 0 ? round(($totalSucceeded / $totalAttempted) * 100, 1) : 0,
+                ];
+            })->values(),
+        ];
+
+        return [
+            'academic_year' => $academicYear,
+            'grade_name' => Grade::where('grade', $grade)->value('name'),
+            'grade' => $grade,
+            'language' => $language,
+            'semester' => $semester,
+            'subjects' => $subjectList,
+            'classrooms' => $classroomRows,
+            'totals_row' => $totalsRow,
+            'totals' => [
+                'classrooms_count' => $classroomRows->count(),
+                'subjects_count' => $subjectList->count(),
+            ],
+        ];
+    }
+
     public function getTopStudentsData(
         string $academicYear,
         string $language,
@@ -366,6 +937,76 @@ class MarksReportService
             'level' => $level,
             'grades' => $gradesData,
         ];
+    }
+
+    private function emptyClassroomStatsResponse(string $academicYear, int $grade, string $language, string $semester): array
+    {
+        return [
+            'academic_year' => $academicYear,
+            'grade_name' => Grade::where('grade', $grade)->value('name'),
+            'grade' => $grade,
+            'language' => $language,
+            'semester' => $semester,
+            'subjects' => [],
+            'classrooms' => [],
+            'totals' => [
+                'classrooms_count' => 0,
+                'subjects_count' => 0,
+            ],
+        ];
+    }
+
+    private function filterByScore(Collection $students, Collection $gsIds, string $academicYear, string $scoreFilter): Collection
+    {
+        $addedToTotalGS = GradeSubject::whereIn('id', $gsIds)
+            ->where('added_to_total', true)
+            ->get();
+
+        if ($addedToTotalGS->isEmpty()) {
+            return $students;
+        }
+
+        $addedToTotalIds = $addedToTotalGS->pluck('id');
+        $maxTotal = (float) $addedToTotalGS->sum('total_marks');
+
+        if ($maxTotal <= 0) {
+            return $students;
+        }
+
+        $studentIds = $students->pluck('id');
+
+        $totals = DB::table('marks')
+            ->join('exams', 'marks.exam_id', '=', 'exams.id')
+            ->whereIn('marks.student_id', $studentIds)
+            ->whereIn('exams.grade_subject_id', $addedToTotalIds)
+            ->where('marks.academic_year', $academicYear)
+            ->where('marks.round', 'first')
+            ->select('marks.student_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id')
+            ->get()
+            ->keyBy('student_id')
+            ->map(fn ($r) => (float) $r->total);
+
+        return $students->filter(function (Student $s) use ($totals, $maxTotal, $scoreFilter) {
+            $pct = $maxTotal > 0 ? ($totals->get($s->id, 0) / $maxTotal) * 100 : 0;
+            return match ($scoreFilter) {
+                '85+'      => $pct >= 85,
+                '65+'      => $pct >= 65,
+                '50+'      => $pct >= 50,
+                'below_50' => $pct < 50,
+                default    => true,
+            };
+        })->values();
+    }
+
+    private function filterByNote(Collection $students, string $noteFilter): Collection
+    {
+        return $students->filter(function (Student $s) use ($noteFilter) {
+            if ($noteFilter === 'لا يوجد') {
+                return empty($s->note);
+            }
+            return $s->note === $noteFilter;
+        })->values();
     }
 
     private function markColor(?float $pct): string
