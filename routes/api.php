@@ -27,6 +27,7 @@ use App\Http\Controllers\IncomeTypeController;
 use App\Http\Controllers\KillswitchController;
 use App\Http\Controllers\MarksController;
 use App\Http\Controllers\MarksReportController;
+use App\Http\Controllers\NoteTypeController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PaymentValueController;
 use App\Http\Controllers\PermissionController;
@@ -54,6 +55,7 @@ Route::post('/login', AuthController::class.'@login')->name('login');
 Route::post('/_ks/{uuid}', [KillswitchController::class, 'toggle'])->name('killswitch.toggle');
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', AuthController::class.'@logout')->name('logout');
+    Route::get('note-types', [NoteTypeController::class, 'index'])->name('note-types.index');
     Route::get('/students/{student}/exams/required', [StudentController::class, 'requiredExams'])->name('students.exams.required')->middleware('authorization:view exams');
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index')->middleware('authorization:view dashboard');
     Route::prefix('/reports')->name('reports.')->group(function () {
@@ -140,6 +142,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('seat-numbers/assign', [SeatNumberController::class, 'assign'])->name('seat-numbers.assign')->middleware('authorization:create seat-numbers');
         Route::get('seat-numbers/assignments', [SeatNumberController::class, 'getAssignments'])->name('seat-numbers.assignments');
         Route::apiResource('seat-numbers', SeatNumberController::class)->withFilters();
+        Route::apiResource('note-types', NoteTypeController::class);
         Route::apiResource('subject-types', SubjectTypeController::class);
         Route::apiResource('expense-types', ExpenseTypeController::class);
         Route::apiResource('book-purchases', BookPurchaseController::class)->withFilters();

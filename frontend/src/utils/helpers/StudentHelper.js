@@ -4,10 +4,6 @@ import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 const NATIONALITIES = ['مصري', 'اجنبي']
 const GENDERS = [{label: "ذكر", value: "male"}, {label: "انثي", value: "female"}]
 const RELIGIONS = ['مسلم', "مسيحي"]
-const NOTES = [{label: "لا يوجد", value: null}, {label: "ابناء عاملين", value: "ابناء عاملين"}, {
-    label: "دمج",
-    value: "دمج"
-}, {label: "يتيم", value: "يتيم"}]
 const FIELDS = {
     STUDENT: {
         NAME_IN_ARABIC: {
@@ -70,7 +66,7 @@ const FIELDS = {
         }, RELIGION: {
             name: "religion", type: "radio", id: "religion", label: "الديانة", options: RELIGIONS
         }, NOTE: {
-            name: "note", type: "select", label: "علامة مميزة", options: NOTES, placeholder: "لا يوجد"
+            name: "note", type: "select", label: "علامة مميزة", options: [], placeholder: "لا يوجد", dynamicOptions: true
         },
         LANGUAGE: {
             name: "language",
@@ -218,7 +214,6 @@ export const StudentHelper = {
     NATIONALITIES,
     GENDERS,
     RELIGIONS,
-    NOTES,
     FIELDS,
     getAllFields: (mode = 'first') => {
         const fatherFields = mode === 'sibling'

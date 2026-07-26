@@ -3,13 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\Exemption;
+use App\Models\NoteType;
 use Illuminate\Database\Seeder;
 
 class ExemptionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $items = [
@@ -19,10 +17,18 @@ class ExemptionSeeder extends Seeder
             'توأم' => '1000',
         ];
         foreach ($items as $key => $value) {
-            Exemption::create([
-                'type' => $key,
-                'value' => $value,
-            ]);
+            Exemption::firstOrCreate(
+                ['type' => $key],
+                ['value' => $value]
+            );
         }
+
+        $existingTypes = Exemption::pluck('type');
+        NoteType::whereNotIn('name', $existingTypes)->each(function ($noteType) {
+            Exemption::firstOrCreate(
+                ['type' => $noteType->name],
+                ['value' => 0]
+            );
+        });
     }
 }

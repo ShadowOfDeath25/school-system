@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Classroom;
 use App\Models\Guardian;
+use App\Models\NoteType;
 use App\Models\Student;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -37,7 +38,9 @@ class StudentFactory extends Factory
             'nid' => $this->faker->unique()->numerify('##############'),
             'birth_date' => $this->faker->dateTimeBetween('-13 years', '-5 years'),
             'birth_address' => fake()->city(),
-            'note' => $this->faker->optional(0.2)->randomElement([null, 'ابناء عاملين', 'دمج', 'يتيم']),
+            'note' => $this->faker->optional(0.2)->randomElement(
+                NoteType::pluck('name')->push(null)->all()
+            ),
             'level' => $level,
             'grade' => $grade,
             'gender' => $gender,

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
 //            StudentSeeder::class,
 //            SeatNumberSeeder::class,
 //            SecretNumberSeeder::class,
+            NoteTypeSeeder::class,
             ExemptionSeeder::class,
             SubjectTypeSeeder::class,
             SubjectSeeder::class,

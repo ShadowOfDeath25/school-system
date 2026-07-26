@@ -12,6 +12,17 @@ const ENTRY_MODES = [
     {label: "له أخ في المدرسة", value: "sibling"}
 ]
 
+const injectNoteOptions = (sections, noteTypes) => {
+    if (!noteTypes) return sections;
+    const noteOptions = [{label: "لا يوجد", value: null}, ...noteTypes];
+    return sections.map(section => ({
+        ...section,
+        fields: section.fields.map(field =>
+            field.name === "note" ? {...field, options: noteOptions} : field
+        )
+    }));
+};
+
 export default function AddStudents() {
     const creationMutation = useCreate("students");
     const {showSnackbar} = useSnackbar();
@@ -34,7 +45,13 @@ export default function AddStudents() {
             value: classroom.id
         }))
     });
-    console.log(classrooms ?? "no classrooms")
+
+    const {data: noteTypes} = useGetAll("note-types", {activeOnly: true}, {
+        select: (data) => data?.data.map(nt => ({
+            label: nt.name,
+            value: nt.name
+        }))
+    });
 
     const handleFormDataChange = (newData) => {
         if (newData.level !== classroomParameters.level || newData.grade !== classroomParameters.grade || newData.language !== classroomParameters.language) {
@@ -158,7 +175,7 @@ export default function AddStudents() {
             )}
             <Form
                 key={entryMode + (mixedParentData ? JSON.stringify(mixedParentData) : '')}
-                fields={[...getFormFields(),
+                fields={injectNoteOptions([...getFormFields(),
                     {
                         title: "الحاق بفصل",
                         fields: [
@@ -172,7 +189,7 @@ export default function AddStudents() {
                             }
                         ]
                     }
-                ]}
+                ], noteTypes)}
                 serverErrors={serverErrors}
                 onFormSubmit={onFormSubmit}
                 formStateRef={formStateRef}

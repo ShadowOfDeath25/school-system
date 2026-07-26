@@ -3,6 +3,8 @@ import ViewStudents from "@pages/Students/ViewStudents.jsx";
 import NotEnrolled from "@pages/Students/NotEnrolled.jsx";
 import Withdrawn from "@pages/Students/Withdrawn.jsx";
 import StudentReports from "@pages/StudentReports/StudentReports.jsx";
+import ViewNoteTypes from "@pages/NoteTypes/ViewNoteTypes.jsx";
+import ViewGradeAges from "@pages/GradeAges/ViewGradeAges.jsx";
 
 
 const routes = {
@@ -54,7 +56,26 @@ const routes = {
                 action: "update students"
             }
         },
-
+        {
+            path: "grade-ages",
+            element: <ViewGradeAges/>,
+            handle: {
+                sidebar: {
+                    title: "الحد الادني للأعمار",
+                },
+                action: "view grade-ages"
+            }
+        },
+        {
+            path: "notes",
+            element: <ViewNoteTypes/>,
+            handle: {
+                sidebar: {
+                    title: "العلامات المميزة",
+                },
+                action: "view note-types"
+            }
+        },
         {
             path: "reports",
             element: <StudentReports/>,

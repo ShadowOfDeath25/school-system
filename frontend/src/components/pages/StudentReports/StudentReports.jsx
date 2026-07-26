@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import styles from "./styles.module.css";
 import Page from "@ui/Page/Page.jsx";
@@ -11,14 +11,6 @@ import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { useExport } from "@hooks/useExport.js";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 import ReportSelector from "./ReportSelector.jsx";
-
-const NOTE_FILTER_OPTIONS = [
-    { value: "", label: "الكل" },
-    { value: "لا يوجد", label: "لا يوجد" },
-    { value: "ابناء عاملين", label: "ابناء عاملين" },
-    { value: "دمج", label: "دمج" },
-    { value: "يتيم", label: "يتيم" },
-];
 
 const MONTH_OPTIONS = [
     { value: "1", label: "يناير" },
@@ -70,6 +62,18 @@ export default function StudentReports() {
     }, {
         disabled: !(formData.level && formData.grade && formData.language && formData.academic_year),
     });
+
+    const { data: noteTypes } = useGetAll("note-types", { activeOnly: true }, {
+        select: (data) => data?.data?.map(nt => ({ value: nt.name, label: nt.name })) ?? [],
+    });
+
+    const noteFilterOptions = useMemo(() => {
+        return [
+            { value: "", label: "الكل" },
+            { value: "لا يوجد", label: "لا يوجد" },
+            ...(noteTypes ?? []),
+        ];
+    }, [noteTypes]);
 
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -174,7 +178,7 @@ export default function StudentReports() {
 
                     <SelectField
                         label={"علامة مميزة"}
-                        options={NOTE_FILTER_OPTIONS}
+                        options={noteFilterOptions}
                         placeholder={"اختر العلامة"}
                         value={formData.note_filter}
                         handleChange={handleChange}

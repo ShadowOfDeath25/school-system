@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import styles from "@pages/StudentReports/styles.module.css";
 import Page from "@ui/Page/Page.jsx";
 import SelectField from "@ui/SelectField/SelectField.jsx";
@@ -33,14 +33,6 @@ const SCORE_FILTER_OPTIONS = [
     { value: "below_50", label: "أقل من 50%" },
 ];
 
-const NOTE_FILTER_OPTIONS = [
-    { value: "", label: "الكل" },
-    { value: "لا يوجد", label: "لا يوجد" },
-    { value: "ابناء عاملين", label: "ابناء عاملين" },
-    { value: "دمج", label: "دمج" },
-    { value: "يتيم", label: "يتيم" },
-];
-
 export default function MarksReports() {
     const [reportType, setReportType] = useState("class_marks");
     const [formData, setFormData] = useState({ semester: "both", score_filter: "", note_filter: "" });
@@ -70,6 +62,18 @@ export default function MarksReports() {
     }, {
         disabled: !(formData.level && formData.grade && formData.language && formData.academic_year),
     });
+
+    const { data: noteTypes } = useGetAll("note-types", { activeOnly: true }, {
+        select: (data) => data?.data?.map(nt => ({ value: nt.name, label: nt.name })) ?? [],
+    });
+
+    const noteFilterOptions = useMemo(() => {
+        return [
+            { value: "", label: "الكل" },
+            { value: "لا يوجد", label: "لا يوجد" },
+            ...(noteTypes ?? []),
+        ];
+    }, [noteTypes]);
 
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -449,7 +453,7 @@ export default function MarksReports() {
             {!isTopStudents && !isCertificates && !isClassroomStats && (
                 <SelectField
                     label={"علامة مميزة"}
-                    options={NOTE_FILTER_OPTIONS}
+                    options={noteFilterOptions}
                     placeholder={"اختر العلامة"}
                     value={formData.note_filter}
                     handleChange={handleChange}

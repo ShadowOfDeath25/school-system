@@ -1,6 +1,6 @@
 import Page from "@ui/Page/Page.jsx";
 import Filters from "@ui/Filters/Filters.jsx";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Table from "@ui/Table/Table.jsx";
 import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
 import { StudentHelper } from "@utils/helpers/StudentHelper.js";
@@ -10,6 +10,9 @@ import { useGetAll } from "../../../hooks/api/useCrud.js";
 export default function ViewStudents() {
     const [tableFilters, setTableFilters] = useState(null);
     const { data: classrooms } = useGetAll("classrooms", { all: "true" });
+    const { data: noteTypes } = useGetAll("note-types", { activeOnly: true }, {
+        select: (data) => data?.data?.map(nt => ({ label: nt.name, value: nt.name })) ?? []
+    });
     const fields = [
         {
             name: "reg_number",
@@ -60,6 +63,18 @@ export default function ViewStudents() {
 
     ]
 
+    const editFields = useMemo(() => {
+        const fields = StudentHelper.getAllFields();
+        if (!noteTypes || noteTypes.length === 0) return fields;
+        const noteOptions = [{label: "لا يوجد", value: null}, ...noteTypes];
+        return fields.map(section => ({
+            ...section,
+            fields: section.fields.map(field =>
+                field.name === "note" ? {...field, options: noteOptions} : field
+            )
+        }));
+    }, [noteTypes]);
+
     const withdrawButton = {
         header: "سحب الملف", content: (student) => <WithdrawButton student={student} />
     }
@@ -75,7 +90,7 @@ export default function ViewStudents() {
                 resource={"students"}
                 filters={tableFilters}
                 fields={fields}
-                editFields={StudentHelper.getAllFields()}
+                editFields={editFields}
             >
                 {withdrawButton}
             </Table>
