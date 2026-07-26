@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Student;
 
+use App\Rules\AgeForGrade;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -18,7 +19,7 @@ class StoreStudentRequest extends FormRequest
             'name_in_arabic' => ['required', 'string'],
             'name_in_english' => ['required', 'string'],
             'nid' => ['required', 'string', 'regex:/^[0-9]{14}$/', 'unique:students,nid'],
-            'birth_date' => ['required', 'date'],
+            'birth_date' => ['required', 'date', new AgeForGrade],
             'birth_address' => ['required', 'string'],
             'language' => ['required', 'string', 'in:عربي,لغات'],
             'status' => ['string', 'required'],
@@ -40,10 +41,10 @@ class StoreStudentRequest extends FormRequest
             'parents.*.gender' => ['required', 'string', Rule::in(['male', 'female'])],
             'parents.*.nid' => ['required', 'string', 'regex:/^[0-9]{14}$/'],
             'guardian_type' => ['required', 'string', Rule::in(['father', 'mother', 'other'])],
-            'guardian_relationship' => ['required_if:guardian_type,other', 'string', 'max:255'],
-            'guardian_name' => ['required_if:guardian_type,other', 'string', 'max:255'],
-            'guardian_nid' => ['required_if:guardian_type,other', 'string', 'regex:/^[0-9]{14}$/'],
-            'guardian_phone_number' => ['required_if:guardian_type,other', 'string', 'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/'],
+            'guardian_relationship' => ['required_if:guardian_type,other', 'nullable', 'string', 'max:255'],
+            'guardian_name' => ['required_if:guardian_type,other', 'nullable', 'string', 'max:255'],
+            'guardian_nid' => ['required_if:guardian_type,other', 'nullable', 'string', 'regex:/^[0-9]{14}$/'],
+            'guardian_phone_number' => ['required_if:guardian_type,other', 'nullable', 'string', 'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/'],
             'guardian_job' => ['nullable', 'string', 'max:255'],
             'guardian_edu' => ['nullable', 'string', 'max:255'],
         ];

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Student;
 
+use App\Rules\AgeForGrade;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -20,7 +21,7 @@ class UpdateStudentRequest extends FormRequest
             'name_in_arabic' => ['sometimes', 'string'],
             'name_in_english' => ['sometimes', 'string'],
             'nid' => ['sometimes', 'string', 'regex:/^[0-9]{14}$/', Rule::unique('students')->ignore($studentId)],
-            'birth_date' => ['sometimes', 'date'],
+            'birth_date' => ['sometimes', 'date', new AgeForGrade],
             'birth_address' => ['sometimes', 'string'],
             'language' => ['string', 'in:عربي,لغات'],
             'gender' => ['sometimes', 'string', Rule::in(['female', 'male'])],
@@ -41,10 +42,10 @@ class UpdateStudentRequest extends FormRequest
             'parents.*.gender' => ['required', 'string', Rule::in(['female', 'male'])],
             'parents.*.nid' => ['required', 'string', 'regex:/^[0-9]{14}$/'],
             'guardian_type' => ['sometimes', 'string', Rule::in(['father', 'mother', 'other'])],
-            'guardian_relationship' => ['required_if:guardian_type,other', 'string', 'max:255'],
-            'guardian_name' => ['required_if:guardian_type,other', 'string', 'max:255'],
-            'guardian_nid' => ['required_if:guardian_type,other', 'string', 'regex:/^[0-9]{14}$/'],
-            'guardian_phone_number' => ['required_if:guardian_type,other', 'string', 'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/'],
+            'guardian_relationship' => ['required_if:guardian_type,other', 'nullable', 'string', 'max:255'],
+            'guardian_name' => ['required_if:guardian_type,other', 'nullable', 'string', 'max:255'],
+            'guardian_nid' => ['required_if:guardian_type,other', 'nullable', 'string', 'regex:/^[0-9]{14}$/'],
+            'guardian_phone_number' => ['required_if:guardian_type,other', 'nullable', 'string', 'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/'],
             'guardian_job' => ['nullable', 'string', 'max:255'],
             'guardian_edu' => ['nullable', 'string', 'max:255'],
         ];

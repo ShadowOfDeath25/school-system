@@ -48,6 +48,9 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
     const handleChange = useCallback((e) => {
         const {name, value, type, checked} = e.target;
         const fieldValue = type === 'checkbox' ? checked : value;
+
+        setErrors({});
+
         setFormData(prevData => {
             const newFormData = {...prevData, [name]: fieldValue};
 
@@ -74,14 +77,16 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
         setErrors(prev => ({...prev, [name]: error}));
     }, [validateField, formData, touched]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e, {validateFields} = {}) => {
         e.preventDefault();
 
-        setTouched(fields.reduce((acc, field) => ({...acc, [field.name]: true}), {}));
+        const activeFields = validateFields || fields;
+
+        setTouched(activeFields.reduce((acc, field) => ({...acc, [field.name]: true}), {}));
 
         let isFormValid = true;
         const newErrors = {};
-        for (const field of fields) {
+        for (const field of activeFields) {
             const error = validateField(field.name, formData[field.name], formData);
             newErrors[field.name] = error;
             if (error) {
@@ -102,11 +107,7 @@ const useForm = ({initialValues, fields, onSubmit, serverErrors}) => {
             ...prevData,
             [name]: value
         }));
-        setErrors(prev => {
-            const newErrors = {...prev};
-            delete newErrors[name];
-            return newErrors;
-        });
+        setErrors({});
         setTouched(prev => {
             const newTouched = {...prev};
             delete newTouched[name];

@@ -41,19 +41,23 @@ export default function InputModal({
     }, [fields, item]);
     const values = useMemo(() => {
         const temp = {}
+        const assignValue = (field) => {
+            if (field.type === 'age') {
+                temp[`${field.name}_years`] = item?.[`${field.name}_years`] ?? '';
+                temp[`${field.name}_months`] = item?.[`${field.name}_months`] ?? '';
+            } else {
+                temp[field.name] = field.value ?? '';
+            }
+        }
         if (isSectioned) {
             fieldsWithValues.forEach(section => {
-                section.fields.forEach((field) => {
-                    temp[field.name] = field.value;
-                })
+                section.fields.forEach(assignValue)
             })
         } else {
-            fieldsWithValues.forEach((field) => {
-                temp[field.name] = field.value;
-            })
+            fieldsWithValues.forEach(assignValue)
         }
         return temp;
-    }, [fieldsWithValues])
+    }, [fieldsWithValues, isSectioned, item])
 
     const [formValues, setFormValues] = useState(values);
 

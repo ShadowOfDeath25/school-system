@@ -52,6 +52,8 @@ export default function AddStudents() {
             if (key.startsWith('guardian_') && data['guardian_type'] === 'other') {
                 if (!guardianData) guardianData = {};
                 guardianData[key.replace('guardian_', '')] = data[key];
+            } else if (key.startsWith('guardian_') && key !== 'guardian_type') {
+                continue;
             } else if (key.includes('father')) {
                 fatherData[key.replace('father_', '')] = data[key];
             } else if (key.includes('mother')) {

@@ -2,6 +2,7 @@ import InputField from "@ui/InputField/InputField.jsx";
 import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
 import RadioField from "@ui/RadioField/RadioField.jsx";
+import AgeField from "@ui/AgeField/AgeField.jsx";
 import useForm from "@hooks/useForm.js";
 import { useEffect, useMemo, useRef } from "react";
 
@@ -28,7 +29,12 @@ export default function Form({
 
     const initialValues = useMemo(() =>
         allFields.reduce((acc, field) => {
-            acc[field.name] = field.value ?? (field.multiple ? [] : "");
+            if (field.type === 'age') {
+                acc[`${field.name}_years`] = "";
+                acc[`${field.name}_months`] = "";
+            } else {
+                acc[field.name] = field.value ?? (field.multiple ? [] : "");
+            }
             return acc;
         }, {}), [allFields]);
 
@@ -48,7 +54,12 @@ export default function Form({
         if (onFormSubmit) {
             onFormSubmit(formData);
         }
-    } : internalForm.handleSubmit;
+    } : (e) => {
+        const visibleFields = allFields.filter(
+            f => typeof f.visible !== 'function' || f.visible(formData)
+        );
+        internalForm.handleSubmit(e, {validateFields: visibleFields});
+    };
     const setFieldValue = isControlled ? (name, value) => setExternalValues(prev => ({
         ...prev,
         [name]: value
@@ -94,6 +105,13 @@ export default function Form({
 
     const hasEmptyRequiredFields = allFields.some(field => {
         if (!field.required) return false;
+        if (typeof field.visible === 'function' && !field.visible(formData)) return false;
+        if (field.type === 'age') {
+            const yearsVal = formData[`${field.name}_years`];
+            const monthsVal = formData[`${field.name}_months`];
+            return yearsVal === '' || yearsVal === null || yearsVal === undefined ||
+                   monthsVal === '' || monthsVal === null || monthsVal === undefined;
+        }
         const value = formData[field.name];
         if (Array.isArray(value)) {
             return value.length === 0;
@@ -111,6 +129,9 @@ export default function Form({
         const commonProps = {
             ...field,
             value: formData[field.name],
+            formData: formData,
+            formErrors: errors,
+            setFieldValue: setFieldValue,
             handleChange: (e) => {
                 if (typeof field.handleChange === 'function') field.handleChange(e)
                 handleChange(e)
@@ -137,6 +158,8 @@ export default function Form({
                 return <SelectField key={field.id || field.name} {...commonProps} />;
             case 'radio':
                 return <RadioField key={field.id || field.name} {...commonProps} />;
+            case 'age':
+                return <AgeField key={field.id || field.name} {...commonProps} />;
             default:
                 return <InputField key={field.id || field.name} {...commonProps} />;
         }

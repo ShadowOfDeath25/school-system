@@ -19,6 +19,7 @@ use App\Http\Controllers\ExpenseTypeController;
 use App\Http\Controllers\ExtraDueController;
 use App\Http\Controllers\FinancialReportsController;
 use App\Http\Controllers\FloorController;
+use App\Http\Controllers\GradeAgeController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\GuardianController;
 use App\Http\Controllers\IncomeController;
@@ -115,6 +116,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
         Route::match(['put', 'patch'], 'academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
 
+        Route::apiResource('grade-ages', GradeAgeController::class)->withFilters();
         Route::apiResource('buses', BusController::class)->withFilters();
         Route::apiResource('books', BookController::class)->withFilters();
         Route::apiResource('parents', GuardianController::class)->withFilters();
