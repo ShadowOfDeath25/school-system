@@ -19,6 +19,7 @@ class StudentEnrollment extends Model
         'from_academic_year',
         'to_academic_year',
         'status',
+        'reason',
         'enrolled_at',
     ];
 

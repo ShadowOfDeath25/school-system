@@ -75,6 +75,8 @@ export default function AddStudents() {
                 fatherData[key.replace('father_', '')] = data[key];
             } else if (key.includes('mother')) {
                 motherData[key.replace("mother_", "")] = data[key];
+            } else if (key === 'transferred_in' || key === 'previous_school' || key === 'transfer_notes') {
+                continue;
             } else {
                 normalizedData[key] = data[key];
             }
@@ -90,7 +92,10 @@ export default function AddStudents() {
         }
 
         normalizedData.parents = parents;
-        normalizedData.status = "مستجد";
+        normalizedData.status = data.transferred_in ? "مقيد" : "مستجد";
+        normalizedData.transferred_in = data.transferred_in ? true : false;
+        normalizedData.previous_school = data.previous_school || null;
+        normalizedData.transfer_notes = data.transfer_notes || null;
         normalizedData.parent_mode = entryMode;
 
         if (entryMode === 'mixed' && mixedParentData) {
@@ -187,6 +192,13 @@ export default function AddStudents() {
                                 multiple: false
 
                             }
+                        ]
+                    },
+                    {
+                        title: "تحويل الي المدرسة",
+                        fields: [
+                            StudentHelper.FIELDS.TRANSFER.TRANSFERRED_IN,
+                            ...Object.values(StudentHelper.FIELDS.TRANSFER).filter(f => f.name !== 'transferred_in')
                         ]
                     }
                 ], noteTypes)}

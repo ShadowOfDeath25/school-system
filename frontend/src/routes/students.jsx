@@ -5,6 +5,8 @@ import Withdrawn from "@pages/Students/Withdrawn.jsx";
 import StudentReports from "@pages/StudentReports/StudentReports.jsx";
 import ViewNoteTypes from "@pages/NoteTypes/ViewNoteTypes.jsx";
 import ViewGradeAges from "@pages/GradeAges/ViewGradeAges.jsx";
+import TransferOut from "@pages/Transfers/TransferOut.jsx";
+import TransferHistory from "@pages/Transfers/TransferHistory.jsx";
 
 
 const routes = {
@@ -82,6 +84,26 @@ const routes = {
             handle: {
                 sidebar: {title: "التقارير"},
                 action: "view student-reports"
+            }
+        },
+        {
+            path: "transfers/outgoing",
+            element: <TransferOut/>,
+            handle: {
+                sidebar: {
+                    title: "تحويل من المدرسة",
+                },
+                action: "transfer students"
+            }
+        },
+        {
+            path: "transfers/history",
+            element: <TransferHistory/>,
+            handle: {
+                sidebar: {
+                    title: "سجل التحويلات",
+                },
+                action: "transfer students"
             }
         },
 

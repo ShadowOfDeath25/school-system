@@ -41,6 +41,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\StudentReportController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\SubjectTypeController;
+use App\Http\Controllers\TransferController;
 use App\Http\Controllers\UniformController;
 use App\Http\Controllers\UniformPurchaseController;
 use App\Http\Controllers\UserController;
@@ -123,6 +124,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('books', BookController::class)->withFilters();
         Route::apiResource('parents', GuardianController::class)->withFilters();
         Route::apiResource('students', StudentController::class)->withFilters();
+        Route::post('transfers/outgoing', [TransferController::class, 'storeOutgoing'])->middleware('authorization:transfer students');
+        Route::get('transfers/history', [TransferController::class, 'history'])->middleware('authorization:transfer students');
+        Route::get('transfers/filters', [TransferController::class, 'filters'])->middleware('authorization:transfer students');
         Route::apiResource('stations', StationController::class);
         Route::apiResource('classrooms', ClassroomController::class)->withFilters();
         Route::get('students/{student}/payments', [StudentController::class, 'getPayments']);

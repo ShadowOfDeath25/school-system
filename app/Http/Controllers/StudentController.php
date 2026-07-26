@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Student\StoreStudentRequest;
 use App\Http\Requests\Student\UpdateStudentRequest;
 use App\Http\Resources\StudentResource;
+use App\Models\AcademicYear;
 use App\Models\Classroom;
 use App\Models\Guardian;
 use App\Models\Student;
+use App\Models\StudentTransfer;
 use App\Services\StudentPaymentsService;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
@@ -53,6 +55,12 @@ class StudentController extends Controller
             });
         }
 
+        if (request()->has('transferred_out')) {
+            $query->where('transferred_out', true);
+        } elseif (! request()->has('includeTransferredOut')) {
+            $query->where('transferred_out', false);
+        }
+
         return $query;
     }
 
@@ -75,6 +83,9 @@ class StudentController extends Controller
         Arr::pull($validated, 'guardian_phone_number');
         Arr::pull($validated, 'guardian_job');
         Arr::pull($validated, 'guardian_edu');
+        $transferredIn = Arr::pull($validated, 'transferred_in', false);
+        $previousSchool = Arr::pull($validated, 'previous_school');
+        $transferNotes = Arr::pull($validated, 'transfer_notes');
         $studentData = $validated;
 
         if ($parentMode === 'sibling') {
@@ -123,7 +134,7 @@ class StudentController extends Controller
             }
         }
 
-        $student = DB::transaction(function () use ($studentData, $parentData, $parentMode, $existingNids, $guardianType) {
+        $student = DB::transaction(function () use ($studentData, $parentData, $parentMode, $existingNids, $guardianType, $transferredIn, $previousSchool, $transferNotes) {
             if (! empty($studentData['classroom_id'])) {
                 $newClassroom = Classroom::withCount(['students' => function ($query) {
                     $query->where('withdrawn', false)
@@ -163,6 +174,19 @@ class StudentController extends Controller
                 };
                 $student->guardian_id = $guardianId;
                 $student->save();
+            }
+
+            if ($transferredIn && $previousSchool) {
+                $activeYear = AcademicYear::activeCached();
+                StudentTransfer::create([
+                    'student_id' => $student->id,
+                    'direction' => 'incoming',
+                    'other_school_name' => $previousSchool,
+                    'notes' => $transferNotes,
+                    'transfer_date' => now(),
+                    'academic_year' => $activeYear?->name ?? now()->year,
+                    'created_by' => request()->user()?->id,
+                ]);
             }
 
             return $student;

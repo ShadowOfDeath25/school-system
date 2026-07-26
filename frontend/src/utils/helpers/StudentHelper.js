@@ -208,6 +208,31 @@ const FIELDS = {
             placeholder: "مثال: جد، عم، خال",
             visible: (formData) => formData?.guardian_type === 'other'
         },
+    },
+    TRANSFER: {
+        TRANSFERRED_IN: {
+            name: "transferred_in",
+            type: "checkbox",
+            id: "transferred_in",
+            label: "محول من مدرسة أخرى",
+        },
+        PREVIOUS_SCHOOL: {
+            name: "previous_school",
+            type: "text",
+            id: "previous_school",
+            label: "اسم المدرسة السابقة",
+            placeholder: "اسم المدرسة السابقة",
+            required: true,
+            visible: (formData) => formData?.transferred_in === true
+        },
+        TRANSFER_NOTES: {
+            name: "transfer_notes",
+            type: "text",
+            id: "transfer_notes",
+            label: "ملاحظات التحويل",
+            placeholder: "ملاحظات (اختياري)",
+            visible: (formData) => formData?.transferred_in === true
+        },
     }
 }
 export const StudentHelper = {

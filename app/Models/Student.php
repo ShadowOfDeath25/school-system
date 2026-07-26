@@ -32,6 +32,7 @@ class Student extends Model
         'nationality',
         'classroom_id',
         'withdrawn',
+        'transferred_out',
         'reg_number',
         'status',
         'language',
@@ -173,6 +174,11 @@ class Student extends Model
     public function marks(): HasMany
     {
         return $this->hasMany(Marks::class);
+    }
+
+    public function transfers(): HasMany
+    {
+        return $this->hasMany(StudentTransfer::class);
     }
 
     public function seatAssignments(): HasMany

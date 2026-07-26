@@ -47,6 +47,9 @@ class StoreStudentRequest extends FormRequest
             'guardian_phone_number' => ['required_if:guardian_type,other', 'nullable', 'string', 'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/'],
             'guardian_job' => ['nullable', 'string', 'max:255'],
             'guardian_edu' => ['nullable', 'string', 'max:255'],
+            'transferred_in' => ['sometimes', 'boolean'],
+            'previous_school' => ['required_if:transferred_in,true', 'nullable', 'string', 'max:255'],
+            'transfer_notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }
