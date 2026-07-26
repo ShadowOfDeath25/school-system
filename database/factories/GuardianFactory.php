@@ -23,6 +23,7 @@ class GuardianFactory extends Factory
             'job' => fake('ar_EG')->jobTitle(),
             'edu' => fake()->randomElement(['High School', 'Bachelor', 'Master']),
             'gender' => fake()->randomElement(['male', 'female']),
+            'nid' => $this->faker->unique()->numerify('##############'),
         ];
     }
 }

@@ -1,26 +1,18 @@
 <?php
 
-namespace App\Http\Requests\Guardian;
+namespace App\Http\Requests\Parent;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateGuardianRequest extends FormRequest
+class UpdateParentRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -28,7 +20,7 @@ class UpdateGuardianRequest extends FormRequest
             'gender' => ['in:male,female'],
             'phone_number' => ['string',
                 'regex:/^(?:\+20)?1[0125][0-9]{8}$/',
-                Rule::unique('student_parents', 'phone_number')
+                Rule::unique('parents', 'phone_number')
                     ->ignore($this->route('parent'))],
             'edu' => ['string'],
             'student_id' => ['exists:students,id'],

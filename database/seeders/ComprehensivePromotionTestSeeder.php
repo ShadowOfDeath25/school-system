@@ -60,7 +60,7 @@ class ComprehensivePromotionTestSeeder extends Seeder
         $studentIds = Student::where('nid', 'like', 'SEED%')->pluck('id');
 
         if ($studentIds->isNotEmpty()) {
-            DB::table('guardian_student')->whereIn('student_id', $studentIds)->delete();
+            DB::table('parent_student')->whereIn('student_id', $studentIds)->delete();
             DB::table('marks')->whereIn('student_id', $studentIds)->delete();
             DB::table('student_seat_assignments')->whereIn('student_id', $studentIds)->delete();
             DB::table('student_secret_assignments')->whereIn('student_id', $studentIds)->delete();
@@ -182,17 +182,18 @@ class ComprehensivePromotionTestSeeder extends Seeder
 
     private function createDefaultGuardian(): int
     {
-        $guardian = DB::table('guardians')->where('phone_number', '00000000000')->first();
+        $guardian = DB::table('parents')->where('phone_number', '00000000000')->first();
         if ($guardian) {
             return $guardian->id;
         }
 
-        return DB::table('guardians')->insertGetId([
+        return DB::table('parents')->insertGetId([
             'name' => 'ولي الأمر الافتراضي',
             'gender' => 'male',
             'phone_number' => '00000000000',
             'job' => 'موظف',
             'edu' => 'جامعي',
+            'nid' => '00000000000000',
         ]);
     }
 
@@ -223,9 +224,9 @@ class ComprehensivePromotionTestSeeder extends Seeder
                 'status' => $status,
             ]);
 
-            DB::table('guardian_student')->insert([
+            DB::table('parent_student')->insert([
                 'student_id' => $student->id,
-                'guardian_id' => $guardianId,
+                'parent_id' => $guardianId,
             ]);
 
             $created[] = [

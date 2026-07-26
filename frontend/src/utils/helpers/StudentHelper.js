@@ -85,13 +85,22 @@ const FIELDS = {
     }, FATHER: {
         NAME: {
             name: "father_name", type: "text", id: "name", label: "الاسم", placeholder: "الاسم"
+        }, NID: {
+            name: "father_nid",
+            type: "text",
+            id: "father_nid",
+            label: "الرقم القومي",
+            placeholder: "الرقم القومي",
+            required: true,
+            validator: validator.students.nid,
+            error: "هذا الرقم القومي غير صحيح"
         }, PHONE_NUMBER: {
             name: 'father_phone_number',
             type: 'text',
             id: "father_phone_number",
             label: "رقم الهاتف",
             placeholder: "رقم الهاتف",
-            validator: validator.guardians.phoneNumber,
+            validator: validator.parents.phoneNumber,
             error: "رقم الهاتف غير صحيح",
 
         }, EDU: {
@@ -102,13 +111,22 @@ const FIELDS = {
     }, MOTHER: {
         NAME: {
             name: "mother_name", type: "text", id: "name", label: "الاسم", placeholder: "الاسم"
+        }, NID: {
+            name: "mother_nid",
+            type: "text",
+            id: "mother_nid",
+            label: "الرقم القومي",
+            placeholder: "الرقم القومي",
+            required: true,
+            validator: validator.students.nid,
+            error: "هذا الرقم القومي غير صحيح"
         }, PHONE_NUMBER: {
             name: 'mother_phone_number',
             type: 'text',
             id: "mother_phone_number",
             label: "رقم الهاتف",
             placeholder: "رقم الهاتف",
-            validator: validator.guardians.phoneNumber,
+            validator: validator.parents.phoneNumber,
             error: "رقم الهاتف غير صحيح",
 
         }, EDU: {
@@ -116,6 +134,84 @@ const FIELDS = {
         }, JOB: {
             name: "mother_job", type: "text", id: "mother_job", label: "الوظيفة", placeholder: "الوظيفة"
         }
+    },
+    FATHER_NID_ONLY: {
+        NID: {
+            name: "father_nid",
+            type: "text",
+            id: "father_nid",
+            label: "الرقم القومي للاب",
+            placeholder: "الرقم القومي للاب",
+            required: true,
+            validator: validator.students.nid,
+            error: "هذا الرقم القومي غير صحيح"
+        }
+    },
+    MOTHER_NID_ONLY: {
+        NID: {
+            name: "mother_nid",
+            type: "text",
+            id: "mother_nid",
+            label: "الرقم القومي للام",
+            placeholder: "الرقم القومي للام",
+            required: true,
+            validator: validator.students.nid,
+            error: "هذا الرقم القومي غير صحيح"
+        }
+    },
+    GUARDIAN_TYPE: {
+        name: "guardian_type",
+        type: "radio",
+        id: "guardian_type",
+        label: "ولي الأمر الأساسي",
+        required: true,
+        options: [
+            {label: "الأب", value: "father"},
+            {label: "الأم", value: "mother"},
+            {label: "شخص آخر", value: "other"}
+        ]
+    },
+    GUARDIAN_OTHER: {
+        NAME: {
+            name: "guardian_name", type: "text", id: "guardian_other_name", label: "الاسم", placeholder: "الاسم",
+            visible: (formData) => formData?.guardian_type === 'other'
+        },
+        NID: {
+            name: "guardian_nid",
+            type: "text",
+            id: "guardian_other_nid",
+            label: "الرقم القومي",
+            placeholder: "الرقم القومي",
+            validator: validator.students.nid,
+            error: "هذا الرقم القومي غير صحيح",
+            visible: (formData) => formData?.guardian_type === 'other'
+        },
+        PHONE_NUMBER: {
+            name: 'guardian_phone_number',
+            type: 'text',
+            id: "guardian_other_phone",
+            label: "رقم الهاتف",
+            placeholder: "رقم الهاتف",
+            validator: validator.parents.phoneNumber,
+            error: "رقم الهاتف غير صحيح",
+            visible: (formData) => formData?.guardian_type === 'other'
+        },
+        JOB: {
+            name: "guardian_job", type: "text", id: "guardian_other_job", label: "الوظيفة", placeholder: "الوظيفة",
+            visible: (formData) => formData?.guardian_type === 'other'
+        },
+        EDU: {
+            name: "guardian_edu", type: "text", id: "guardian_other_edu", label: "المؤهل", placeholder: "المؤهل",
+            visible: (formData) => formData?.guardian_type === 'other'
+        },
+        RELATIONSHIP: {
+            name: "guardian_relationship",
+            type: "text",
+            id: "guardian_other_relationship",
+            label: "صلة القرابة",
+            placeholder: "مثال: جد، عم، خال",
+            visible: (formData) => formData?.guardian_type === 'other'
+        },
     }
 }
 export const StudentHelper = {
@@ -124,7 +220,14 @@ export const StudentHelper = {
     RELIGIONS,
     NOTES,
     FIELDS,
-    getAllFields: () => {
+    getAllFields: (mode = 'first') => {
+        const fatherFields = mode === 'sibling'
+            ? Object.values(StudentHelper.FIELDS.FATHER_NID_ONLY)
+            : Object.values(StudentHelper.FIELDS.FATHER);
+        const motherFields = mode === 'sibling'
+            ? Object.values(StudentHelper.FIELDS.MOTHER_NID_ONLY)
+            : Object.values(StudentHelper.FIELDS.MOTHER);
+
         return [
             {
                 title: "بيانات التلميذ",
@@ -132,11 +235,68 @@ export const StudentHelper = {
             },
             {
                 title: "بيانات الاب",
-                fields: Object.values(StudentHelper.FIELDS.FATHER)
+                fields: fatherFields
             },
             {
                 title: "بيانات الام",
-                fields: Object.values(StudentHelper.FIELDS.MOTHER)
+                fields: motherFields
+            },
+            {
+                title: "ولي الأمر الأساسي",
+                fields: [
+                    StudentHelper.FIELDS.GUARDIAN_TYPE,
+                    ...Object.values(StudentHelper.FIELDS.GUARDIAN_OTHER)
+                ]
+            }
+        ]
+    },
+    getMixedFields: (mixedData) => {
+        const existing = mixedData.existing[0];
+        const missing = mixedData.missing[0];
+        const existingRole = existing.gender === 'male' ? 'الأب' : 'الأم';
+        const missingRole = missing.gender === 'male' ? 'الأب' : 'الأم';
+        const missingPrefix = missing.gender === 'male' ? 'father' : 'mother';
+        const existingPrefix = existing.gender === 'male' ? 'father' : 'mother';
+
+        const missingFields = missing.gender === 'male'
+            ? Object.values(StudentHelper.FIELDS.FATHER)
+            : Object.values(StudentHelper.FIELDS.MOTHER);
+
+        const missingFieldsWithNid = missingFields.map(f => {
+            if (f.name === `${missingPrefix}_nid`) {
+                return {...f, value: missing.nid};
+            }
+            return f;
+        });
+
+        return [
+            {
+                title: "بيانات التلميذ",
+                fields: Object.values(StudentHelper.FIELDS.STUDENT)
+            },
+            {
+                title: `بيانات ${existingRole} (موجود)`,
+                fields: [
+                    {
+                        name: `${existingPrefix}_nid`,
+                        type: "text",
+                        label: `الرقم القومي لل${existingRole}`,
+                        value: existing.nid,
+                        disabled: true,
+                        required: true,
+                    }
+                ]
+            },
+            {
+                title: `بيانات ${missingRole} (مطلوب)`,
+                fields: missingFieldsWithNid
+            },
+            {
+                title: "ولي الأمر الأساسي",
+                fields: [
+                    StudentHelper.FIELDS.GUARDIAN_TYPE,
+                    ...Object.values(StudentHelper.FIELDS.GUARDIAN_OTHER)
+                ]
             }
         ]
     }

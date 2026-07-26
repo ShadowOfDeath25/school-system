@@ -21,9 +21,9 @@ class StudentResource extends JsonResource
 
         $father = null;
         $mother = null;
-        if ($this->relationLoaded('guardians')) {
-            $father = $this->guardians->get(0);
-            $mother = $this->guardians->get(1);
+        if ($this->relationLoaded('parents')) {
+            $father = $this->parents->get(0);
+            $mother = $this->parents->get(1);
         }
 
         return [
@@ -60,6 +60,24 @@ class StudentResource extends JsonResource
                     'level' => 'غير مقيد',
                 ],
             'has_siblings' => $this->has_siblings ? 'نعم' : 'لا',
+            'guardian_id' => $this->guardian_id,
+            'guardian_type' => $this->when($this->relationLoaded('guardian') && $this->guardian, function () {
+                if ($this->guardian->relationship) {
+                    return 'other';
+                }
+                if ($this->relationLoaded('parents')) {
+                    foreach ($this->parents as $i => $parent) {
+                        if ($parent->id === $this->guardian->id) {
+                            return $i === 0 ? 'father' : 'mother';
+                        }
+                    }
+                }
+                return 'other';
+            }, 'father'),
+            'guardian_relationship' => $this->guardian?->relationship,
+            'guardian_name' => $this->guardian?->name,
+            'guardian_nid' => $this->guardian?->nid,
+            'guardian_phone_number' => $this->guardian?->phone_number,
         ];
     }
 }

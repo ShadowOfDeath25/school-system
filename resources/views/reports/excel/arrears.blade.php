@@ -46,9 +46,7 @@
                     <td>{{ $student->exemption_amount ?? 0 }}</td>
                     <td>{{ ($student->total_sum ?? 0) - ($student->paid_sum ?? 0) }}</td>
                     <td>
-                        @foreach($student->guardians as $guardian)
-                            {{ $guardian->phone_number }}@if(!$loop->last)/@endif
-                        @endforeach
+                        {{ $student->guardian->phone_number ?? 'غير مسجل' }}
                     </td>
                     @if(request()->boolean("show_notes"))
                         <td>{{$student->note ?? "لا يوجد"}}</td>

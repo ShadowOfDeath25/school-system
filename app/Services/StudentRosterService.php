@@ -29,9 +29,8 @@ class StudentRosterService
         $startYear = (int) trim($academicYearParts[0]);
         $referenceDate = Carbon::create($startYear, 10, 1);
 
-        $query = Student::with(['guardians' => function ($q) {
-            $q->select('guardians.id', 'guardians.name', 'guardians.job', 'guardians.phone_number');
-        }])->with('classroom:id,name,level,grade,language');
+        $query = Student::with('guardian')
+            ->with('classroom:id,name,level,grade,language');
 
         $query->whereHas('classroom', function ($q) use ($academicYear) {
             $q->where('academic_year', $academicYear);
@@ -124,9 +123,8 @@ class StudentRosterService
         $startYear = (int) trim($academicYearParts[0]);
         $referenceDate = Carbon::create($startYear, 10, 1);
 
-        $query = Student::with(['guardians' => function ($q) {
-            $q->select('guardians.id', 'guardians.name', 'guardians.job', 'guardians.phone_number');
-        }])->with('classroom:id,name,level,grade,language');
+        $query = Student::with('guardian')
+            ->with('classroom:id,name,level,grade,language');
 
         $query->whereHas('classroom', function ($q) use ($academicYear) {
             $q->where('academic_year', $academicYear);
@@ -181,7 +179,7 @@ class StudentRosterService
     {
         $birthDate = Carbon::parse($student->birth_date);
         $ageDiff = $referenceDate->diff($birthDate);
-        $guardian = $student->guardians->first();
+        $guardian = $student->guardian;
 
         return [
             'id' => $student->id,

@@ -33,6 +33,8 @@ return [
         'GradeSubject' => 'مادة صف',
         'Guardian' => 'ولي أمر',
         'GuardianStudent' => 'صلة ولي أمر بطالب',
+        'Parent' => 'ولي أمر',
+        'ParentStudent' => 'صلة ولي أمر بطالب',
         'Income' => 'دخل',
         'IncomeType' => 'نوع دخل',
         'Payment' => 'دفعة',

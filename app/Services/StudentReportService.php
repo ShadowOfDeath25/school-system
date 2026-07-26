@@ -119,7 +119,7 @@ class StudentReportService
     ): Builder|EloquentBuilder {
         $query = Student::query()
             ->with([
-                'guardians:id,phone_number',
+                'guardian',
                 'classroom' => fn ($q) => $q->select('id', 'name', 'level', 'language', 'academic_year', 'grade', 'max_capacity')->withCount('students'),
             ])
             ->when($academicYear, fn ($query) => $query->whereHas('classroom', fn ($q) => $q->where('academic_year', $academicYear))

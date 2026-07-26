@@ -63,12 +63,12 @@ class StudentFactory extends Factory
             if ($numberOfGuardians === 1) {
 
                 $guardian = Guardian::factory()->create();
-                $student->guardians()->attach($guardian->id);
+                $student->parents()->attach($guardian->id);
             } else {
 
                 $father = Guardian::factory()->state(['gender' => 'male'])->create();
                 $mother = Guardian::factory()->state(['gender' => 'female'])->create();
-                $student->guardians()->attach([$father->id, $mother->id]);
+                $student->parents()->attach([$father->id, $mother->id]);
             }
         });
     }

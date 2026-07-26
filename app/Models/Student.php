@@ -40,6 +40,7 @@ class Student extends Model
         'tuition_id',
         'administrative_id',
         'has_siblings',
+        'guardian_id',
     ];
 
     public function classroom(): BelongsTo
@@ -52,9 +53,14 @@ class Student extends Model
         return $this->hasMany(Payment::class);
     }
 
-    public function guardians(): BelongsToMany
+    public function parents(): BelongsToMany
     {
-        return $this->belongsToMany(Guardian::class);
+        return $this->belongsToMany(Guardian::class, 'parent_student', 'student_id', 'parent_id');
+    }
+
+    public function guardian(): BelongsTo
+    {
+        return $this->belongsTo(Guardian::class, 'guardian_id');
     }
 
     public function bookPurchases(): HasMany
@@ -71,15 +77,15 @@ class Student extends Model
     {
         return Attribute::make(
             get: function () {
-                if (! $this->relationLoaded('guardians')) {
+                if (! $this->relationLoaded('parents')) {
                     return false;
                 }
-                $guardianIds = $this->guardians->pluck('id');
-                if ($guardianIds->isEmpty()) {
+                $parentIds = $this->parents->pluck('id');
+                if ($parentIds->isEmpty()) {
                     return false;
                 }
 
-                return GuardianStudent::whereIn('guardian_id', $guardianIds)
+                return GuardianStudent::whereIn('parent_id', $parentIds)
                     ->where('student_id', '!=', $this->id)
                     ->exists();
             }

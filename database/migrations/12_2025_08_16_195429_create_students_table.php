@@ -8,9 +8,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('students', function (Blueprint $table) {
@@ -33,13 +30,11 @@ return new class extends Migration
             $table->foreignIdFor(PaymentValue::class, 'tuition_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(PaymentValue::class, 'administrative_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignIdFor(Classroom::class)->nullable()->constrained()->nullOnDelete();
+            $table->unsignedBigInteger('guardian_id')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('students');

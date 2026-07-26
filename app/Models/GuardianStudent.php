@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 class GuardianStudent extends Pivot
 {
     use LogsActivityInArabic;
+
+    protected $table = 'parent_student';
 }

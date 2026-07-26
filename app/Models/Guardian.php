@@ -11,6 +11,8 @@ class Guardian extends Model
 {
     use HasFactory, LogsActivityInArabic;
 
+    protected $table = 'parents';
+
     protected $fillable = [
         'name',
         'edu',
@@ -18,10 +20,11 @@ class Guardian extends Model
         'phone_number',
         'job',
         'nid',
+        'relationship',
     ];
 
     public function students(): BelongsToMany
     {
-        return $this->belongsToMany(Student::class);
+        return $this->belongsToMany(Student::class, 'parent_student', 'parent_id', 'student_id');
     }
 }

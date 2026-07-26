@@ -15,7 +15,7 @@ export const validator = {
             return /^[0-9]{14}$/.test(nid)
         }
     },
-    guardians: {
+    parents: {
         phoneNumber: (phone_number) => {
             return /^(?:\+20|0)?1[0125][0-9]{8}$/.test(phone_number)
         }

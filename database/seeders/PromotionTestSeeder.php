@@ -123,14 +123,15 @@ class PromotionTestSeeder extends Seeder
             ]
         );
 
-        $guardian = DB::table('guardians')->where('phone_number', '00000000000')->first();
+        $guardian = DB::table('parents')->where('phone_number', '00000000000')->first();
         if (! $guardian) {
-            $guardianId = DB::table('guardians')->insertGetId([
+            $guardianId = DB::table('parents')->insertGetId([
                 'name' => 'ولي الأمر الافتراضي',
                 'gender' => 'male',
                 'phone_number' => '00000000000',
                 'job' => 'موظف',
                 'edu' => 'جامعي',
+                'nid' => '00000000000000',
             ]);
         } else {
             $guardianId = $guardian->id;
@@ -172,9 +173,9 @@ class PromotionTestSeeder extends Seeder
                 'status' => $data['status'] ?? 'نشط',
             ]);
 
-            DB::table('guardian_student')->insert([
+            DB::table('parent_student')->insert([
                 'student_id' => $student->id,
-                'guardian_id' => $guardianId,
+                'parent_id' => $guardianId,
             ]);
 
             if ($data['marks']) {

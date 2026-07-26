@@ -38,7 +38,7 @@ class StudentController extends Controller
         'name_in_arabic', 'name_in_english', 'nid', 'reg_number',
     ];
 
-    protected array $relationsToLoad = ['classroom', 'guardians'];
+    protected array $relationsToLoad = ['classroom', 'parents', 'guardian'];
 
     public function query()
     {
@@ -63,13 +63,67 @@ class StudentController extends Controller
 
     public function store(StoreStudentRequest $request): JsonResponse
     {
-
         $validated = $request->validated();
 
-        $guardianData = Arr::pull($validated, 'guardians', []);
+        $parentData = Arr::pull($validated, 'parents', []);
+        $parentMode = Arr::pull($validated, 'parent_mode', 'first');
+        $existingNids = Arr::pull($validated, 'existing_nids', []);
+        $guardianType = Arr::pull($validated, 'guardian_type', 'father');
+        Arr::pull($validated, 'guardian_relationship');
+        Arr::pull($validated, 'guardian_name');
+        Arr::pull($validated, 'guardian_nid');
+        Arr::pull($validated, 'guardian_phone_number');
+        Arr::pull($validated, 'guardian_job');
+        Arr::pull($validated, 'guardian_edu');
         $studentData = $validated;
 
-        $student = DB::transaction(function () use ($studentData, $guardianData) {
+        if ($parentMode === 'sibling') {
+            $nids = array_column($parentData, 'nid');
+            $foundParents = Guardian::whereIn('nid', $nids)->get()->keyBy('nid');
+
+            $existing = [];
+            $missing = [];
+
+            foreach ($parentData as $i => $parent) {
+                if (isset($foundParents[$parent['nid']])) {
+                    $g = $foundParents[$parent['nid']];
+                    $existing[] = [
+                        'nid' => $g->nid,
+                        'name' => $g->name,
+                        'gender' => $g->gender,
+                        'index' => $i,
+                    ];
+                } else {
+                    $missing[] = [
+                        'nid' => $parent['nid'],
+                        'gender' => $parent['gender'],
+                        'index' => $i,
+                    ];
+                }
+            }
+
+            if (count($missing) === 2) {
+                return response()->json([
+                    'message' => 'لا يوجد سجلات للوالدين',
+                    'parent_check' => ['case' => 'none_found'],
+                ], 422);
+            }
+
+            if (count($missing) === 1) {
+                $role = $missing[0]['gender'] === 'male' ? 'الأب' : 'الأم';
+                $existingRole = $existing[0]['gender'] === 'male' ? 'الأب' : 'الأم';
+                return response()->json([
+                    'message' => "لم يتم العثور على ولي أمر $role. تم العثور على $existingRole: {$existing[0]['name']}. الرجاء إدخال بيانات $role",
+                    'parent_check' => [
+                        'case' => 'one_found',
+                        'existing' => $existing,
+                        'missing' => $missing,
+                    ],
+                ], 422);
+            }
+        }
+
+        $student = DB::transaction(function () use ($studentData, $parentData, $parentMode, $existingNids, $guardianType) {
             if (! empty($studentData['classroom_id'])) {
                 $newClassroom = Classroom::withCount(['students' => function ($query) {
                     $query->where('withdrawn', false)
@@ -86,17 +140,29 @@ class StudentController extends Controller
             $student = new Student($studentData);
             $student->save();
 
-            $guardianIds = [];
-            foreach ($guardianData as $guardian) {
-                $newOrFoundGuardian = Guardian::firstOrCreate(
-                    ['phone_number' => $guardian['phone_number']],
-                    $guardian
-                );
-                $guardianIds[] = $newOrFoundGuardian->id;
+            $parentIds = [];
+            foreach ($parentData as $parent) {
+                if ($parentMode === 'mixed' && in_array($parent['nid'], $existingNids)) {
+                    $existingParent = Guardian::where('nid', $parent['nid'])->firstOrFail();
+                    $parentIds[] = $existingParent->id;
+                } else {
+                    $newOrFoundParent = Guardian::firstOrCreate(
+                        ['nid' => $parent['nid']],
+                        $parent
+                    );
+                    $parentIds[] = $newOrFoundParent->id;
+                }
             }
 
-            if (! empty($guardianIds)) {
-                $student->guardians()->attach($guardianIds);
+            if (! empty($parentIds)) {
+                $student->parents()->attach($parentIds);
+                $guardianId = match ($guardianType) {
+                    'father' => $parentIds[0] ?? null,
+                    'mother' => $parentIds[1] ?? null,
+                    'other' => $parentIds[2] ?? $parentIds[0],
+                };
+                $student->guardian_id = $guardianId;
+                $student->save();
             }
 
             return $student;
@@ -128,20 +194,28 @@ class StudentController extends Controller
                     }
                 }
             }
-            $guardianData = Arr::pull($validated, 'guardians');
+            $parentData = Arr::pull($validated, 'parents');
+            $guardianType = Arr::pull($validated, 'guardian_type');
             $student->update($validated);
-            if ($request->has('guardians')) {
-                $guardianIds = collect($guardianData)->map(function ($guardian) {
-                    if (empty($guardian['phone_number'])) {
+            if ($request->has('parents')) {
+                $parentIds = collect($parentData)->map(function ($parent) {
+                    if (empty($parent['nid'])) {
                         return null;
                     }
 
                     return Guardian::firstOrCreate(
-                        ['phone_number' => $guardian['phone_number']],
-                        $guardian
+                        ['nid' => $parent['nid']],
+                        $parent
                     )->id;
                 })->filter();
-                $student->guardians()->sync($guardianIds);
+                $student->parents()->sync($parentIds);
+                $guardianId = match ($guardianType ?? 'father') {
+                    'father' => $parentIds->first(),
+                    'mother' => $parentIds->count() > 1 ? $parentIds->values()->get(1) : $parentIds->first(),
+                    'other' => $parentIds->last(),
+                };
+                $student->guardian_id = $guardianId;
+                $student->save();
             }
         });
 

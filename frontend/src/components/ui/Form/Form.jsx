@@ -105,6 +105,7 @@ export default function Form({
     const isButtonDisabled = (isControlled ? hasEmptyRequiredFields : (isFormInvalid || hasEmptyRequiredFields));
 
     const renderField = (field) => {
+        if (typeof field.visible === 'function' && !field.visible(formData)) return null;
         const fieldError = errors[field.name];
         const isTouched = touched[field.name];
         const commonProps = {
