@@ -30,6 +30,7 @@ class MarksReportController extends Controller
         $validated = $request->validate([
             'language' => 'required|string',
             'sorting' => ['nullable', 'string', 'in:maleFirst,femaleFirst'],
+            'color_mode' => ['nullable', 'string', 'in:colors,color_names'],
         ]);
         $grade = (int) $request->input('grade');
         $language = $validated['language'];
@@ -53,6 +54,7 @@ class MarksReportController extends Controller
         );
 
         $data['detailed'] = $detailed;
+        $data['color_mode'] = $validated['color_mode'] ?? 'colors';
 
         if ($request->query('export') === 'pdf') {
             ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
@@ -87,6 +89,7 @@ class MarksReportController extends Controller
             'language' => 'required|string',
             'semester' => 'required|string|in:الأول,الثاني',
             'sorting' => ['nullable', 'string', 'in:maleFirst,femaleFirst'],
+            'color_mode' => ['nullable', 'string', 'in:colors,color_names'],
         ]);
         $grade = (int) $request->input('grade');
         $language = $validated['language'];
@@ -106,6 +109,7 @@ class MarksReportController extends Controller
             noteFilter: $noteFilter,
             sorting: $sorting,
         );
+        $data['color_mode'] = $validated['color_mode'] ?? 'colors';
 
         if ($request->query('export') === 'pdf') {
             ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
@@ -140,6 +144,7 @@ class MarksReportController extends Controller
             'language' => 'required|string',
             'semester' => 'required|string|in:الأول,الثاني',
             'sorting' => ['nullable', 'string', 'in:maleFirst,femaleFirst'],
+            'color_mode' => ['nullable', 'string', 'in:colors,color_names'],
         ]);
         $grade = (int) $request->input('grade');
         $language = $validated['language'];
@@ -159,6 +164,7 @@ class MarksReportController extends Controller
             noteFilter: $noteFilter,
             sorting: $sorting,
         );
+        $data['color_mode'] = $validated['color_mode'] ?? 'colors';
 
         if ($request->query('export') === 'pdf') {
             ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();

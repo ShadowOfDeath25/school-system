@@ -113,7 +113,7 @@ class SummaryService
      *
      * @returns array - An array including the monthly totals and the total for the past year
      */
-    public function getMonthlySummary(): array
+    public function getMonthlySummary(?string $academicYear = null): array
     {
         $startDate = now()->subMonth(11)->firstOfMonth();
         $endDate = now()->endOfMonth();
@@ -121,30 +121,35 @@ class SummaryService
         $payments = DB::table('payments')
             ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
             ->whereBetween('date', [$startDate, $endDate])
+            ->when($academicYear, fn ($query) => $query->where('academic_year', $academicYear))
             ->groupBy('year', 'month')
             ->get();
 
         $incomes = DB::table('incomes')
             ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
             ->whereBetween('date', [$startDate, $endDate])
+            ->when($academicYear, fn ($query) => $query->where('academic_year', $academicYear))
             ->groupBy('year', 'month')
             ->get();
 
         $expenses = DB::table('expenses')
             ->selectRaw('YEAR(date) as year, MONTH(date) as month, SUM(value) as value')
             ->whereBetween('date', [$startDate, $endDate])
+            ->when($academicYear, fn ($query) => $query->where('academic_year', $academicYear))
             ->groupBy('year', 'month')
             ->get();
 
         $bookExpenses = DB::table('books')
             ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(buy_price * imported_quantity) as value')
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($academicYear, fn ($query) => $query->where('academic_year', $academicYear))
             ->groupBy('year', 'month')
             ->get();
 
         $uniformExpenses = DB::table('uniforms')
             ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, SUM(buy_price * imported_quantity) as value')
             ->whereBetween('created_at', [$startDate, $endDate])
+            ->when($academicYear, fn ($query) => $query->where('academic_year', $academicYear))
             ->groupBy('year', 'month')
             ->get();
 

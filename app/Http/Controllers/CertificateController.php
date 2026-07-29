@@ -27,6 +27,7 @@ class CertificateController extends Controller
             'level' => 'nullable|string',
             'classroom_id' => 'nullable|integer|exists:classrooms,id',
             'semester' => 'nullable|string|in:both,الأول,الثاني',
+            'color_mode' => 'nullable|string|in:colors,color_names,color_only',
         ]);
 
         if (!$request->input('promotion_batch_id') && !$request->input('academic_year')) {
@@ -38,6 +39,7 @@ class CertificateController extends Controller
         ]));
 
         $data['semester'] = $request->input('semester', 'both');
+        $data['color_mode'] = $validated['color_mode'] ?? 'colors';
 
         if (empty($data['students'])) {
             return response()->json(['message' => 'لا توجد بيانات للشهادات'], 404);

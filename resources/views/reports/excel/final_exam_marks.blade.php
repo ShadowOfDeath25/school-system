@@ -1,3 +1,4 @@
+@if (($color_mode ?? 'colors') === 'colors')
 <table style="border-collapse:collapse;border:1px solid #999">
     <thead>
         <tr>
@@ -33,7 +34,7 @@
                 <td style="text-align:center;border:1px solid #999">{{ $student['seat_number'] ?? '—' }}</td>
                 <td style="text-align:center;border:1px solid #999">{{ $student['classroom_name'] ?? '—' }}</td>
                 @foreach ($student['marks'] as $mark)
-                    <td style="text-align:center;background-color:{{ $mark['color'] }};color:#fff;font-weight:bold;border:1px solid #999">{{ $mark['display'] }}</td>
+                    <td style="text-align:center;background-color:{{ $mark['color'] }};color:#000;font-weight:bold;border:1px solid #999">{{ $mark['display'] }}</td>
                 @endforeach
             </tr>
         @empty
@@ -43,3 +44,12 @@
         @endforelse
     </tbody>
 </table>
+@endif
+
+@if (($color_mode ?? 'colors') === 'color_names')
+@include('reports.partials.color_name_marks_table', [
+    'reportTitle' => 'نتائج امتحانات نهاية الفصل',
+    'detailed' => true,
+    'excel' => true,
+])
+@endif

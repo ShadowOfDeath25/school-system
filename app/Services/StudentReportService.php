@@ -16,12 +16,21 @@ class StudentReportService
      * Returns total number of students, total number of classrooms,
      * and the number of students grouped by student status.
      */
-    public function getStudentSummary(): array
+    public function getStudentSummary(?string $academicYear = null): array
     {
-        $totalStudents = Student::count();
-        $totalClassrooms = Classroom::count();
+        $students = Student::query()
+            ->when($academicYear, fn ($query) => $query->whereHas(
+                'classroom',
+                fn ($classrooms) => $classrooms->where('academic_year', $academicYear)
+            ));
 
-        $studentsByStatus = Student::select('status', DB::raw('count(*) as count'))
+        $totalStudents = (clone $students)->count();
+        $totalClassrooms = Classroom::query()
+            ->when($academicYear, fn ($query) => $query->where('academic_year', $academicYear))
+            ->count();
+
+        $studentsByStatus = $students
+            ->select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->pluck('count', 'status')
             ->toArray();

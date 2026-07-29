@@ -128,6 +128,27 @@
                 $mainSubjects = collect($student['subjects'])->where('added_to_total', true)->values();
                 $extraSubjects = collect($student['subjects'])->where('added_to_total', false)->values();
                 $isBoth = ($semester ?? 'both') === 'both';
+                $certificateColorMode = $color_mode ?? 'colors';
+                $markText = function (array $result) use ($certificateColorMode) {
+                    if ($certificateColorMode === 'color_only') {
+                        return '';
+                    }
+                    if ($certificateColorMode === 'color_names') {
+                        return $result['color_name'];
+                    }
+                    return $result['marks'] ?? '—';
+                };
+                $markStyle = function (array $result) use ($certificateColorMode) {
+                    if (!in_array($certificateColorMode, ['colors', 'color_only'], true)) {
+                        return '';
+                    }
+                    return "background-color:{$result['color']};color:#000;";
+                };
+                $totalResult = [
+                    'marks' => $student['total_marks'],
+                    'color' => $student['total_color'],
+                    'color_name' => $student['total_color_name'],
+                ];
             @endphp
             <table class="cert-table">
                 <thead>
@@ -201,19 +222,19 @@
                         <th style="background-color:#f0f0f0;font-weight:bold">الدرجة</th>
                         @foreach ($mainSubjects as $subject)
                             @if ($isBoth)
-                                <td style="font-weight:bold">{{ $subject['first']['marks'] ?? '—' }}</td>
-                                <td style="font-weight:bold">{{ $subject['second']['marks'] ?? '—' }}</td>
+                                <td style="font-weight:bold;{{ $markStyle($subject['first']) }}">{{ $markText($subject['first']) }}</td>
+                                <td style="font-weight:bold;{{ $markStyle($subject['second']) }}">{{ $markText($subject['second']) }}</td>
                             @else
-                                <td style="font-weight:bold">{{ $subject['marks'] ?? '—' }}</td>
+                                <td style="font-weight:bold;{{ $markStyle($subject) }}">{{ $markText($subject) }}</td>
                             @endif
                         @endforeach
-                        <th style="background-color:#f0f0f0;font-weight:bold">{{ $student['total_marks'] }}</th>
+                        <th style="font-weight:bold;{{ $markStyle($totalResult) }}">{{ $markText($totalResult) }}</th>
                         @foreach ($extraSubjects as $subject)
                             @if ($isBoth)
-                                <td style="font-weight:bold">{{ $subject['first']['marks'] ?? '—' }}</td>
-                                <td style="font-weight:bold">{{ $subject['second']['marks'] ?? '—' }}</td>
+                                <td style="font-weight:bold;{{ $markStyle($subject['first']) }}">{{ $markText($subject['first']) }}</td>
+                                <td style="font-weight:bold;{{ $markStyle($subject['second']) }}">{{ $markText($subject['second']) }}</td>
                             @else
-                                <td style="font-weight:bold">{{ $subject['marks'] ?? '—' }}</td>
+                                <td style="font-weight:bold;{{ $markStyle($subject) }}">{{ $markText($subject) }}</td>
                             @endif
                         @endforeach
                     </tr>

@@ -164,6 +164,7 @@ class MarksReportService
                         'value' => $effective,
                         'display' => $display,
                         'color' => $color,
+                        'color_name' => $this->markColorName($color),
                     ];
                 });
             } else {
@@ -184,6 +185,7 @@ class MarksReportService
                                 'value' => null,
                                 'display' => '—',
                                 'color' => '#7f8c8d',
+                                'color_name' => $this->markColorName('#7f8c8d'),
                                 'component_id' => $comp['id'] ?? null,
                                 'component_name' => $comp['name'] ?? $subj['name'],
                                 'component_max' => (float) ($comp['marks'] ?? 0),
@@ -222,6 +224,7 @@ class MarksReportService
                             'value' => $compValue,
                             'display' => is_float($compValue) || is_int($compValue) ? round($compValue, 1) : $compValue,
                             'color' => $color,
+                            'color_name' => $this->markColorName($color),
                             'component_id' => $comp['component_id'],
                             'component_name' => $comp['component_name'],
                             'component_max' => $comp['component_max'],
@@ -252,7 +255,7 @@ class MarksReportService
                 'subjects_count' => $subjectList->count(),
                 'columns_count' => $detailed
                     ? collect($subjectList)->sum(fn ($s) => count($s['components'])) + 3
-                    : count($subjectList) + 2,
+                    : count($subjectList) + 3,
             ],
         ];
     }
@@ -394,6 +397,7 @@ class MarksReportService
                             'value' => null,
                             'display' => '—',
                             'color' => '#7f8c8d',
+                            'color_name' => $this->markColorName('#7f8c8d'),
                             'component_id' => $comp['id'] ?? null,
                             'component_name' => $comp['name'] ?? $subj['name'],
                             'component_max' => (float) ($comp['marks'] ?? 0),
@@ -432,6 +436,7 @@ class MarksReportService
                         'value' => $compValue,
                         'display' => is_float($compValue) || is_int($compValue) ? round($compValue, 1) : $compValue,
                         'color' => $color,
+                        'color_name' => $this->markColorName($color),
                         'component_id' => $comp['component_id'],
                         'component_name' => $comp['component_name'],
                         'component_max' => $comp['component_max'],
@@ -602,6 +607,7 @@ class MarksReportService
                             'value' => null,
                             'display' => '—',
                             'color' => '#7f8c8d',
+                            'color_name' => $this->markColorName('#7f8c8d'),
                             'component_id' => $comp['id'] ?? null,
                             'component_name' => $comp['name'] ?? $subj['name'],
                             'component_max' => (float) ($comp['marks'] ?? 0),
@@ -640,6 +646,7 @@ class MarksReportService
                         'value' => $compValue,
                         'display' => is_float($compValue) || is_int($compValue) ? round($compValue, 1) : $compValue,
                         'color' => $color,
+                        'color_name' => $this->markColorName($color),
                         'component_id' => $comp['component_id'],
                         'component_name' => $comp['component_name'],
                         'component_max' => $comp['component_max'],
@@ -1041,6 +1048,17 @@ class MarksReportService
         };
     }
 
+    private function markColorName(string $color): string
+    {
+        return match ($color) {
+            '#3498db' => 'أزرق',
+            '#2ecc71' => 'أخضر',
+            '#f39c12' => 'أصفر',
+            '#e74c3c' => 'أحمر',
+            default => 'رمادي',
+        };
+    }
+
     private function emptyResponse(string $academicYear, int $grade, string $language, string $semester, bool $detailed = false): array
     {
         return [
@@ -1054,7 +1072,7 @@ class MarksReportService
             'totals' => [
                 'students_count' => 0,
                 'subjects_count' => 0,
-                'columns_count' => 2,
+                'columns_count' => 3,
             ],
         ];
     }

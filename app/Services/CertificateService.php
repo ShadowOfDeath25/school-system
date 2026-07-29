@@ -133,6 +133,7 @@ class CertificateService
                 if ($hasFirst) {
                     $firstPct = $firstMax > 0 ? (($firstData['marks'] ?? 0) / $firstMax) * 100 : null;
                     $firstData['color'] = $this->markColor($firstPct);
+                    $firstData['color_name'] = $this->markColorName($firstData['color']);
                     $firstData['grade_label'] = match (true) {
                         $firstPct === null => '—',
                         $firstPct >= 85 => 'ممتاز',
@@ -145,6 +146,7 @@ class CertificateService
                 if ($hasSecond) {
                     $secondPct = $secondMax > 0 ? (($secondData['marks'] ?? 0) / $secondMax) * 100 : null;
                     $secondData['color'] = $this->markColor($secondPct);
+                    $secondData['color_name'] = $this->markColorName($secondData['color']);
                     $secondData['grade_label'] = match (true) {
                         $secondPct === null => '—',
                         $secondPct >= 85 => 'ممتاز',
@@ -184,7 +186,7 @@ class CertificateService
                 };
                 $passed = $combinedMarks !== null && $combinedMarks >= $combinedMin;
 
-                $emptySub = ['max' => 0, 'min' => 0, 'marks' => null, 'color' => '#999', 'grade_label' => '—', 'passed' => false];
+                $emptySub = ['max' => 0, 'min' => 0, 'marks' => null, 'color' => '#999', 'color_name' => 'رمادي', 'grade_label' => '—', 'passed' => false];
                 $firstSub = $hasFirst ? array_merge($firstData, ['max' => $firstMax, 'min' => $firstMin]) : $emptySub;
                 $secondSub = $hasSecond ? array_merge($secondData, ['max' => $secondMax, 'min' => $secondMin]) : $emptySub;
 
@@ -194,6 +196,7 @@ class CertificateService
                     'min' => $combinedMin,
                     'marks' => $combinedMarks,
                     'color' => $color,
+                    'color_name' => $this->markColorName($color),
                     'grade_label' => $gradeLabel,
                     'passed' => $passed,
                     'added_to_total' => $gs->added_to_total,
@@ -217,6 +220,7 @@ class CertificateService
         $totalMax = $subjects->where('added_to_total', true)->sum('max');
         $totalMin = $subjects->where('added_to_total', true)->sum('min');
         $totalMarks = $subjects->where('added_to_total', true)->sum(fn ($s) => (float) ($s['marks'] ?? 0));
+        $totalColor = $this->markColor($totalMax > 0 ? ($totalMarks / $totalMax) * 100 : null);
 
         return [
             'id' => $student->id,
@@ -231,6 +235,8 @@ class CertificateService
             'total_max' => $totalMax,
             'total_min' => $totalMin,
             'total_marks' => $totalMarks,
+            'total_color' => $totalColor,
+            'total_color_name' => $this->markColorName($totalColor),
             'grade_label' => $this->calculateGradeLabel($totalMarks, $totalMax),
             'category' => $category,
             'category_text' => $this->getCategoryText($category, $student->grade),
@@ -307,6 +313,7 @@ class CertificateService
             'min' => $minMarks,
             'marks' => $effective,
             'color' => $color,
+            'color_name' => $this->markColorName($color),
             'grade_label' => $gradeLabel,
             'passed' => $passed,
         ];
@@ -320,6 +327,17 @@ class CertificateService
             $pct >= 65 => '#2ecc71',
             $pct >= 50 => '#f39c12',
             default    => '#e74c3c',
+        };
+    }
+
+    private function markColorName(string $color): string
+    {
+        return match ($color) {
+            '#3498db' => 'أزرق',
+            '#2ecc71' => 'أخضر',
+            '#f39c12' => 'أصفر',
+            '#e74c3c' => 'أحمر',
+            default => 'رمادي',
         };
     }
 

@@ -11,6 +11,7 @@
     </p>
 </x-pdf-header>
 
+@if (($color_mode ?? 'colors') === 'colors')
 <table class="table table-bordered" style="margin-top:10px;font-size:12px">
     <thead>
         @if ($detailed ?? false)
@@ -35,6 +36,7 @@
             <tr>
                 <th rowspan="2" style="vertical-align:middle">الطالب</th>
                 <th rowspan="2" style="vertical-align:middle">رقم الجلوس</th>
+                <th rowspan="2" style="vertical-align:middle">الفصل الدراسي</th>
                 @foreach ($subjects as $subj)
                     <th>{{ $subj['name'] }}<br><small>({{ $subj['max'] }})</small></th>
                 @endforeach
@@ -48,7 +50,7 @@
                 <td style="text-align:center">{{ $student['seat_number'] ?? '—' }}</td>
                 <td style="text-align:center">{{ $student['classroom_name'] ?? '—' }}</td>
                 @foreach ($student['marks'] as $mark)
-                    <td style="text-align:center;color:{{ $mark['color'] }};font-weight:bold">
+                    <td style="text-align:center;background-color:{{ $mark['color'] }};color:#000;font-weight:bold">
                         {{ $mark['display'] }}
                     </td>
                 @endforeach
@@ -62,3 +64,12 @@
         @endforelse
     </tbody>
 </table>
+@endif
+
+@if (($color_mode ?? 'colors') === 'color_names')
+@include('reports.partials.color_name_marks_table', [
+    'reportTitle' => 'كشف درجات الطلاب',
+    'detailed' => $detailed ?? false,
+    'excel' => false,
+])
+@endif

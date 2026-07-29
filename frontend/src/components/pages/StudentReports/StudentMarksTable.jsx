@@ -1,8 +1,9 @@
 import Button from "@mui/material/Button";
 import styles from "./styles.module.css";
 
-export default function StudentMarksTable({ data, detailed, onPrintCertificate }) {
+export default function StudentMarksTable({ data, detailed, colorMode = "colors", onPrintCertificate }) {
     const { subjects, students } = data;
+    const showColorNames = colorMode === "color_names";
 
     if (!subjects?.length) {
         return <div className={styles.emptyState}>لا توجد بيانات</div>;
@@ -19,7 +20,7 @@ export default function StudentMarksTable({ data, detailed, onPrintCertificate }
                                 <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>رقم الجلوس</th>
                                 <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الفصل الدراسي</th>
                                 {subjects.map((s, i) => (
-                                    <th key={i} className={styles.th} colSpan={s.components.length}>
+                                    <th key={i} className={styles.th} colSpan={s.components.length * (showColorNames ? 2 : 1)}>
                                         {s.name}<br /><small>({s.max})</small>
                                     </th>
                                 ))}
@@ -29,11 +30,14 @@ export default function StudentMarksTable({ data, detailed, onPrintCertificate }
                             </tr>
                             <tr>
                                 {subjects.map((s) =>
-                                    s.components.map((c, ci) => (
-                                        <th key={`${s.id}-${ci}`} className={styles.th}>
+                                    s.components.flatMap((c, ci) => [
+                                        <th key={`${s.id}-${ci}-mark`} className={styles.th}>
                                             {c.name}<br /><small>({c.marks})</small>
-                                        </th>
-                                    ))
+                                        </th>,
+                                        ...(showColorNames ? [
+                                            <th key={`${s.id}-${ci}-color`} className={styles.th}>اللون</th>,
+                                        ] : []),
+                                    ])
                                 )}
                             </tr>
                         </>
@@ -41,10 +45,17 @@ export default function StudentMarksTable({ data, detailed, onPrintCertificate }
                         <tr>
                             <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الطالب</th>
                             <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>رقم الجلوس</th>
+                            <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle" }}>الفصل الدراسي</th>
                             {subjects.map((s, i) => (
-                                <th key={i} className={styles.th}>
-                                    {s.name}<br /><small>({s.max})</small>
-                                </th>
+                                showColorNames ? (
+                                    <th key={i} className={styles.th} colSpan={2}>
+                                        {s.name}<br /><small>({s.max})</small>
+                                    </th>
+                                ) : (
+                                    <th key={i} className={styles.th}>
+                                        {s.name}<br /><small>({s.max})</small>
+                                    </th>
+                                )
                             ))}
                             {onPrintCertificate && (
                                 <th className={styles.th} rowSpan={2} style={{ verticalAlign: "middle", width: 60 }}>شهادة</th>
@@ -58,15 +69,24 @@ export default function StudentMarksTable({ data, detailed, onPrintCertificate }
                             <td className={styles.td}>{student.name}</td>
                             <td className={styles.td}>{student.seat_number ?? "—"}</td>
                             {detailed && <td className={styles.td}>{student.classroom_name ?? "—"}</td>}
-                            {student.marks.map((m, mi) => (
+                            {student.marks.flatMap((m, mi) => [
                                 <td
-                                    key={mi}
+                                    key={`${mi}-mark`}
                                     className={styles.td}
-                                    style={{ color: m.color, fontWeight: "bold" }}
+                                    style={showColorNames ? { fontWeight: "bold" } : {
+                                        backgroundColor: m.color,
+                                        color: "#000",
+                                        fontWeight: "bold",
+                                    }}
                                 >
                                     {m.display}
-                                </td>
-                            ))}
+                                </td>,
+                                ...(showColorNames ? [
+                                    <td key={`${mi}-color`} className={styles.td} style={{ fontWeight: "bold" }}>
+                                        {m.color_name}
+                                    </td>,
+                                ] : []),
+                            ])}
                             {onPrintCertificate && (
                                 <td className={styles.td} style={{ textAlign: "center" }}>
                                     <Button

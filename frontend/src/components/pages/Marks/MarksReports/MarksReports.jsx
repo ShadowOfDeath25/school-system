@@ -33,9 +33,26 @@ const SCORE_FILTER_OPTIONS = [
     { value: "below_50", label: "أقل من 50%" },
 ];
 
+const COLOR_MODE_OPTIONS = [
+    { value: "colors", label: "الألوان الفعلية" },
+    { value: "color_names", label: "أسماء الألوان بجوار الدرجات" },
+];
+
+const CERTIFICATE_COLOR_MODE_OPTIONS = [
+    { value: "colors", label: "الألوان الفعلية" },
+    { value: "color_names", label: "أسماء الألوان فقط" },
+    { value: "color_only", label: "ألوان فقط بدون درجات" },
+];
+
 export default function MarksReports() {
     const [reportType, setReportType] = useState("class_marks");
-    const [formData, setFormData] = useState({ semester: "both", score_filter: "", note_filter: "", sorting: "" });
+    const [formData, setFormData] = useState({
+        semester: "both",
+        score_filter: "",
+        note_filter: "",
+        sorting: "",
+        color_mode: "colors",
+    });
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { showPDFPreview } = usePDFPreview();
@@ -92,7 +109,7 @@ export default function MarksReports() {
 
     const normalizeCertificateData = () => {
         const result = {};
-        for (const key of ["academic_year", "semester", "language", "level", "grade", "classroom_id"]) {
+        for (const key of ["academic_year", "semester", "language", "level", "grade", "classroom_id", "color_mode"]) {
             const val = formData[key];
             if (val !== undefined && val !== "" && val !== null && val !== "الكل") {
                 result[key] = val;
@@ -361,6 +378,7 @@ export default function MarksReports() {
                 semester: formData.semester || "both",
                 student_id: studentId,
                 export: "pdf",
+                color_mode: formData.color_mode,
             };
             const response = await axiosClient.get("/reports/students/certificates", { params });
             showPDFPreview({ url: response.data.preview_url });
@@ -385,7 +403,13 @@ export default function MarksReports() {
     };
 
     const handleReset = () => {
-        setFormData({ semester: isSingleSemester ? "الأول" : "both", score_filter: "", note_filter: "", sorting: "" });
+        setFormData({
+            semester: isSingleSemester ? "الأول" : "both",
+            score_filter: "",
+            note_filter: "",
+            sorting: "",
+            color_mode: "colors",
+        });
         setReportData(null);
     };
 
@@ -480,6 +504,15 @@ export default function MarksReports() {
                         { label: "البنين اولًا", value: "maleFirst" },
                         { label: "البنات اولًا", value: "femaleFirst" },
                     ]}
+                />
+            )}
+            {!isTopStudents && !isClassroomStats && (
+                <SelectField
+                    label={"نسخة التقرير"}
+                    options={isCertificates ? CERTIFICATE_COLOR_MODE_OPTIONS : COLOR_MODE_OPTIONS}
+                    value={formData.color_mode}
+                    handleChange={handleChange}
+                    name={"color_mode"}
                 />
             )}
         </div>
@@ -590,7 +623,12 @@ export default function MarksReports() {
                 إجمالي الطلاب: {reportData.totals.students_count}
                 {" | "}عدد المواد: {reportData.totals.subjects_count}
             </p>
-            <StudentMarksTable data={reportData} detailed={true} onPrintCertificate={handleSingleCertificate} />
+            <StudentMarksTable
+                data={reportData}
+                detailed={true}
+                colorMode={formData.color_mode}
+                onPrintCertificate={handleSingleCertificate}
+            />
         </div>
     );
 
