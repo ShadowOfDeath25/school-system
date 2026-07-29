@@ -1,5 +1,6 @@
 import MarksIndex from "@pages/Marks/ClassroomPicker.jsx";
 import RecordMarks from "@pages/Marks/RecordMarks/RecordMarks.jsx";
+import RecordByName from "@pages/Marks/RecordByName/RecordByName.jsx";
 import SecondRoundStudents from "@pages/Marks/SecondRoundStudents.jsx";
 import MarksReports from "@pages/Marks/MarksReports/MarksReports.jsx";
 import PromotionDashboard from "@pages/PromoteStudents/PromotionDashboard.jsx";
@@ -31,6 +32,14 @@ const routes = {
             handle: {
                 sidebar: { title: "دور ثاني" },
                 action: "view marks",
+            },
+        },
+        {
+            path: "record-by-name",
+            element: <RecordByName />,
+            handle: {
+                sidebar: { title: "تسجيل بالاسم" },
+                action: "record-by-name marks",
             },
         },
         {

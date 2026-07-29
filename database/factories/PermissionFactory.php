@@ -41,6 +41,7 @@ class PermissionFactory extends Factory
         Permission::findOrCreate('view activity-logs');
         Permission::findOrCreate('delete activity-logs');
         Permission::findOrCreate('transfer students');
+        Permission::findOrCreate('record-by-name marks');
     }
 
     /**

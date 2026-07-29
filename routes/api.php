@@ -158,7 +158,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('payment-values', PaymentValueController::class)->withFilters();
         Route::apiResource('extra-dues', ExtraDueController::class)->withFilters();
         Route::apiResource('exemptions', ExemptionController::class);
-        Route::get('marks/students-by-name', [MarksController::class, 'studentsByName'])->middleware('authorization:record marks by name');
+        Route::get('marks/students-by-name/filters', [MarksController::class, 'studentsByNameFilters'])->middleware('authorization:record-by-name marks');
+        Route::get('marks/students-by-name', [MarksController::class, 'studentsByName'])->middleware('authorization:record-by-name marks');
         Route::get('marks/student/{student}/exams', [MarksController::class, 'studentExams'])->middleware('authorization:view marks');
         Route::get('marks/second-round/students', [MarksController::class, 'secondRoundStudents'])->middleware('authorization:view marks');
         Route::post('marks/second-round/{student}/promote', [MarksController::class, 'promoteSecondRound'])->middleware('authorization:update promotion');

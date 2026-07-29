@@ -161,4 +161,52 @@ class MarksController extends Controller
 
         return response()->json(['message' => 'تم ترقية الطالب بنجاح']);
     }
+
+    public function studentsByNameFilters(): JsonResponse
+    {
+        $grades = Grade::select('id', 'name')->orderBy('name')->get();
+        $languages = Student::distinct()->orderBy('language')->pluck('language');
+
+        return response()->json([
+            'grade' => $grades->map(fn ($g) => ['id' => $g->id, 'name' => $g->name]),
+            'language' => $languages,
+        ]);
+    }
+
+    public function studentsByName(Request $request): JsonResponse
+    {
+        $search = $request->input('search');
+        $grade = $request->input('grade');
+        $language = $request->input('language');
+        $academicYear = $request->input('academic_year', AcademicYear::activeCached()?->name);
+
+        $students = Student::query()
+            ->when($search, fn ($q) => $q->where('name_in_arabic', 'like', "%{$search}%"))
+            ->when($grade, fn ($q) => $q->where('grade', $grade))
+            ->when($language, fn ($q) => $q->where('language', $language))
+            ->with(['secretAssignments' => fn ($q) => $q->where('academic_year', $academicYear)])
+            ->orderBy('name_in_arabic')
+            ->paginate($request->input('per_page', 30));
+
+        $data = $students->map(fn ($student) => [
+            'id' => $student->id,
+            'name_in_arabic' => $student->name_in_arabic,
+            'grade' => $student->grade,
+            'grade_name' => Grade::find($student->grade)?->name,
+            'level' => $student->level,
+            'language' => $student->language,
+            'secret_number' => $student->secretAssignments->first()?->assigned_number,
+        ]);
+
+        return response()->json([
+            'data' => $data,
+            'meta' => [
+                'current_page' => $students->currentPage(),
+                'last_page' => $students->lastPage(),
+                'per_page' => $students->perPage(),
+                'total' => $students->total(),
+                'links' => $students->linkCollection(),
+            ],
+        ]);
+    }
 }

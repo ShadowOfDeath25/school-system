@@ -110,5 +110,12 @@
     "classroom.name": "الفصل",
     "classroom.grade": "الصف",
     "log": "الحدث",
-    "number": "الرقم"
+    "number": "الرقم",
+    "record-by-name": "تسجيل بالاسم",
+    "transfer": "تحويل",
+    "guardians": "أولياء الأمور",
+    "guardian-students": "الطلاب وأولياء الأمور",
+    "note-types": "أنواع الملاحظات",
+    "student-transfers": "تحويلات الطلاب",
+    "grade-ages": "أعمار الصفوف"
 }
