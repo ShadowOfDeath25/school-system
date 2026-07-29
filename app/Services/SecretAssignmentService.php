@@ -67,11 +67,7 @@ class SecretAssignmentService
                 continue;
             }
 
-            $sortedIds = $studentsToAssign->sortBy('name_in_arabic', SORT_REGULAR, false)->pluck('id');
-
-            $sortedStudents = Student::whereIn('id', $sortedIds)
-                ->orderByRaw('name_in_arabic COLLATE utf8mb4_unicode_ci ASC')
-                ->get(['id', 'name_in_arabic']);
+            $shuffledStudents = $studentsToAssign->shuffle()->values();
 
             $maxAssigned = StudentSecretAssignment::where('academic_year', $academicYear)
                 ->max('assigned_number');
@@ -84,7 +80,7 @@ class SecretAssignmentService
                 $availableSeats = $config->ends_at - $config->starts_at + 1;
             }
 
-            $needed = $sortedStudents->count();
+            $needed = $shuffledStudents->count();
 
             if ($needed > $availableSeats) {
                 $results['errors'][] = [
@@ -98,7 +94,7 @@ class SecretAssignmentService
             $now = now();
             $assignments = [];
 
-            foreach ($sortedStudents as $student) {
+            foreach ($shuffledStudents as $student) {
                 $assignments[] = [
                     'student_id' => $student->id,
                     'secret_number_id' => $config->id,

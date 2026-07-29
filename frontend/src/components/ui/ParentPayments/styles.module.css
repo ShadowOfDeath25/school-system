@@ -1,0 +1,38 @@
+.buttonWrapper {
+  margin-top: 10px;
+  grid-column: span 2;
+}
+
+.dialogTitle {
+  text-align: center;
+}
+
+.siblingsList {
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.label {
+  color: var(--ternary-text-color);
+}
+
+:global(.parentPaymentsModal .MuiPaper-root) {
+  background-color: var(--primary-color);
+  color: var(--primary-text-color);
+  border-radius: 20px;
+}
+
+:global(.parentPaymentsModal .MuiTableCell-root) {
+  color: var(--primary-text-color);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+:global(.parentPaymentsModal .MuiTableCell-root:first-child) {
+  width: 1%;
+  white-space: nowrap;
+}
+
+:global(.parentPaymentsModal .MuiDialogActions-root button) {
+  color: var(--secondary-color);
+}

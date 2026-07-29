@@ -1,6 +1,7 @@
 import Page from "@ui/Page/Page.jsx";
 import StudentData from "@ui/StudentData/StudentData.jsx";
 import StudentPayments from "@ui/StudentPayments/StudentPayments.jsx";
+import ParentPayments from "@ui/ParentPayments/ParentPayments.jsx";
 import styles from './styles.module.css'
 
 export default function DetailsPage({student, children, breadcrumbsLinks, academicYear, setAcademicYear}) {
@@ -17,6 +18,10 @@ export default function DetailsPage({student, children, breadcrumbsLinks, academ
                     academicYear={academicYear}
                 />
                 {children}
+                <ParentPayments
+                    student={student}
+                    academicYear={academicYear}
+                />
             </div>
 
 

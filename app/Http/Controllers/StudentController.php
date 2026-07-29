@@ -8,6 +8,7 @@ use App\Http\Resources\StudentResource;
 use App\Models\AcademicYear;
 use App\Models\Classroom;
 use App\Models\Guardian;
+use App\Models\GuardianStudent;
 use App\Models\Student;
 use App\Models\StudentTransfer;
 use App\Services\StudentPaymentsService;
@@ -255,6 +256,56 @@ class StudentController extends Controller
         $service = new StudentPaymentsService;
 
         return response()->json($service->getStudentPayments($student, $request->input('academic_year')));
+    }
+
+    public function getParentPayments(Request $request, Student $student)
+    {
+        $request->validate([
+            'academic_year' => ['required', 'exists:academic_years,name'],
+        ]);
+
+        $parentIds = $student->parents()->pluck('parent_id');
+        $siblingIds = GuardianStudent::whereIn('parent_id', $parentIds)
+            ->where('student_id', '!=', $student->id)
+            ->pluck('student_id')
+            ->push($student->id)
+            ->unique();
+
+        $siblings = Student::whereIn('id', $siblingIds)->get()->keyBy('id');
+        $service = new StudentPaymentsService;
+        $academicYear = $request->input('academic_year');
+
+        $aggregated = [
+            'required' => [],
+            'paid' => [],
+            'exemptions' => [],
+            'remaining' => [],
+            'total' => ['required' => 0, 'paid' => 0, 'exemption' => 0, 'remaining' => 0],
+        ];
+
+        foreach ($siblings as $sibling) {
+            $payments = $service->getStudentPayments($sibling, $academicYear);
+
+            foreach (StudentPaymentsService::PAYMENT_TYPES as $type) {
+                $aggregated['required'][$type] = ($aggregated['required'][$type] ?? 0) + ($payments['required'][$type] ?? 0);
+                $aggregated['paid'][$type] = ($aggregated['paid'][$type] ?? 0) + ($payments['paid'][$type] ?? 0);
+                $aggregated['remaining'][$type] = ($aggregated['remaining'][$type] ?? 0) + ($payments['remaining'][$type] ?? 0);
+            }
+
+            $aggregated['exemptions']['exemptions'] = ($aggregated['exemptions']['exemptions'] ?? 0) + ($payments['exemptions']['exemptions'] ?? 0);
+            $aggregated['total']['required'] += $payments['total']['required'] ?? 0;
+            $aggregated['total']['paid'] += $payments['total']['paid'] ?? 0;
+            $aggregated['total']['exemption'] += $payments['total']['exemption'] ?? 0;
+            $aggregated['total']['remaining'] += $payments['total']['remaining'] ?? 0;
+        }
+
+        return response()->json([
+            'siblings' => $siblings->values()->map(fn ($s) => [
+                'id' => $s->id,
+                'name' => $s->name_in_arabic,
+            ]),
+            ...$aggregated,
+        ]);
     }
 
     public function requiredExams(Request $request, Student $student)
