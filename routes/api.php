@@ -4,6 +4,7 @@ use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BankAccountController;
+use App\Http\Controllers\BankAccountReportController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\BookPurchaseController;
 use App\Http\Controllers\BuildingController;
@@ -94,6 +95,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('monthly', [FinancialReportsController::class, 'monthly'])->name('monthly')->middleware('authorization:view financial-reports');
             Route::get('summary', [FinancialReportsController::class, 'summary'])->name('summary')->middleware('authorization:view financial-reports');
             Route::get('summary/print', [FinancialReportsController::class, 'printSummary'])->name('summary.print')->middleware('authorization:view financial-reports');
+            Route::get('bank-accounts', BankAccountReportController::class)->name('bank-accounts')->middleware('authorization:view bank-accounts');
 
         });
 

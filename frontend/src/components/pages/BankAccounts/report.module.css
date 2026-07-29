@@ -1,0 +1,125 @@
+.container {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 20px;
+    box-sizing: border-box;
+    color: var(--primary-text-color);
+    background: var(--primary-color);
+    border-top: var(--container-border);
+    box-shadow: var(--container-box-shadow);
+}
+
+.title {
+    margin-top: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+    align-items: end;
+    padding: 16px 0;
+}
+
+.dateField {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.dateField input {
+    min-height: 48px;
+    padding: 0 12px;
+    color: var(--primary-text-color);
+    color-scheme: dark;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.summaryCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.summaryCards div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+}
+
+.summaryCards strong {
+    color: var(--secondary-color);
+    font-size: 20px;
+}
+
+.summaryCards .positive strong,
+.deposit {
+    color: #66bb6a;
+}
+
+.summaryCards .negative strong,
+.withdrawal {
+    color: #ef5350;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    min-width: 900px;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.table th {
+    color: var(--secondary-color);
+    border-bottom: 2px solid var(--secondary-color);
+}
+
+.table tbody tr:hover {
+    background: rgba(191, 161, 92, 0.12);
+}
+
+.table tfoot {
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.empty {
+    padding: 36px !important;
+    opacity: 0.65;
+}
+
+@media (max-width: 768px) {
+    .filters,
+    .summaryCards {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

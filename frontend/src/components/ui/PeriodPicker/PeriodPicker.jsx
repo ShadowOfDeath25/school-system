@@ -26,20 +26,23 @@ export default function PeriodPicker({onSubmit, onPrint, onExport}) {
                 case 'period':
                     onSubmit({
                         startDate: startDate,
-                        endDate: endDate
+                        endDate: endDate,
+                        academicYear
                     })
                     break;
                 case 'day':
                     onSubmit({
                         startDate: startDate,
                         endDate: startDate,
+                        academicYear,
                     })
                     break;
                 case 'year': {
-                    const [endYear, startYear] = academicYear.split('/');
+                    const [startYear, endYear] = academicYear.split('/');
                     onSubmit({
                         startDate: `${startYear}-09-01`,
-                        endDate: `${endYear}-08-31`
+                        endDate: `${endYear}-08-31`,
+                        academicYear
                     })
                 }
             }
@@ -51,20 +54,23 @@ export default function PeriodPicker({onSubmit, onPrint, onExport}) {
                 case 'period':
                     onPrint({
                         startDate: startDate,
-                        endDate: endDate
+                        endDate: endDate,
+                        academicYear
                     })
                     break;
                 case 'day':
                     onPrint({
                         startDate: startDate,
                         endDate: startDate,
+                        academicYear,
                     })
                     break;
                 case 'year': {
-                    const [endYear, startYear] = academicYear.split('/');
+                    const [startYear, endYear] = academicYear.split('/');
                     onPrint({
                         startDate: `${startYear}-09-01`,
-                        endDate: `${endYear}-08-31`
+                        endDate: `${endYear}-08-31`,
+                        academicYear
                     })
                 }
             }
@@ -76,20 +82,23 @@ export default function PeriodPicker({onSubmit, onPrint, onExport}) {
                 case 'period':
                     onExport({
                         startDate: startDate,
-                        endDate: endDate
+                        endDate: endDate,
+                        academicYear
                     })
                     break;
                 case 'day':
                     onExport({
                         startDate: startDate,
                         endDate: startDate,
+                        academicYear,
                     })
                     break;
                 case 'year': {
-                    const [endYear, startYear] = academicYear.split('/');
+                    const [startYear, endYear] = academicYear.split('/');
                     onExport({
                         startDate: `${startYear}-09-01`,
-                        endDate: `${endYear}-08-31`
+                        endDate: `${endYear}-08-31`,
+                        academicYear
                     })
                 }
             }
