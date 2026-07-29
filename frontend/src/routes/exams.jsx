@@ -1,5 +1,6 @@
 import AddExams from "@pages/Exams/AddExams.jsx";
 import ViewExams from "@pages/Exams/ViewExams.jsx";
+import ExamTimetable from "@pages/ExamReports/ExamTimetable.jsx";
 
 const routes = {
     path: "exams",
@@ -30,7 +31,16 @@ const routes = {
                 action: "create exams"
             }
         },
-
+        {
+            path: "timetable",
+            element: <ExamTimetable />,
+            handle: {
+                sidebar: {
+                    title: "جدول الامتحانات",
+                },
+                action: "view student-reports",
+            },
+        },
     ]
 }
 export default routes;

@@ -13,6 +13,7 @@ use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamController;
 use App\Http\Controllers\ExamHallController;
+use App\Http\Controllers\ExamReportController;
 use App\Http\Controllers\ExemptionController;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ExpenseTypeController;
@@ -76,6 +77,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('marks/top-students', [MarksReportController::class, 'topStudentsReport'])->name('marks.top-students')->middleware('authorization:view student-reports');
             Route::get('certificates', [CertificateController::class, 'print'])->name('certificates')->middleware('authorization:view student-reports');
             Route::get('exam-candidates', [SeatNumberController::class, 'candidates'])->name('exam-candidates')->middleware('authorization:view student-reports');
+            Route::get('exam-timetable', [ExamReportController::class, 'timetable'])->name('exam-timetable')->middleware('authorization:view student-reports');
             Route::get('behavior-register', [StudentReportController::class, 'behaviorRegister'])->name('behavior-register')->middleware('authorization:view student-reports');
             Route::prefix('/payments')->name('payments.')->group(function () {
 
@@ -156,6 +158,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('payment-values', PaymentValueController::class)->withFilters();
         Route::apiResource('extra-dues', ExtraDueController::class)->withFilters();
         Route::apiResource('exemptions', ExemptionController::class);
+        Route::get('marks/students-by-name', [MarksController::class, 'studentsByName'])->middleware('authorization:record marks by name');
         Route::get('marks/student/{student}/exams', [MarksController::class, 'studentExams'])->middleware('authorization:view marks');
         Route::get('marks/second-round/students', [MarksController::class, 'secondRoundStudents'])->middleware('authorization:view marks');
         Route::post('marks/second-round/{student}/promote', [MarksController::class, 'promoteSecondRound'])->middleware('authorization:update promotion');
