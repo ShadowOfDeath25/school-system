@@ -34,7 +34,6 @@ class PromotionController extends Controller
         $breakdown = [
             'passed' => 0,
             'دور_ثاني_eligible' => 0,
-            'repeat' => 0,
             'graduated' => 0,
             'total' => $results->count(),
         ];

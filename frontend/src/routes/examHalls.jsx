@@ -1,5 +1,6 @@
 import AddExamHalls from "@pages/ExamHalls/AddExamHalls.jsx";
 import ExamCandidates from "@pages/ExamHalls/ExamCandidates.jsx";
+import ExamHallSummary from "@pages/ExamHalls/ExamHallSummary.jsx";
 import ViewExamHalls from "@pages/ExamHalls/ViewExamHalls.jsx";
 
 const routes = {
@@ -37,6 +38,16 @@ const routes = {
             handle: {
                 sidebar: {
                     title: "كشف اللجان"
+                },
+                action: "view exam-halls"
+            }
+        },
+        {
+            path: "exam-summary",
+            element: <ExamHallSummary/>,
+            handle: {
+                sidebar: {
+                    title: "تقارير اللجان"
                 },
                 action: "view exam-halls"
             }

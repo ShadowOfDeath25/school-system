@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ExamCandidatesExport;
+use App\Exports\ExamHallSummaryExport;
 use App\Http\Requests\SeatAssignment\TriggerAssignmentRequest;
 use App\Http\Requests\SeatNumber\StoreSeatNumberRequest;
 use App\Http\Requests\SeatNumber\UpdateSeatNumberRequest;
@@ -203,6 +204,68 @@ class SeatNumberController extends Controller
         ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
 
         Pdf::view('reports.exam_candidates', $viewData)
+            ->format('a4')
+            ->orientation(Orientation::Landscape)
+            ->footerView('components.pdf-footer')
+            ->margins(10, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
+        ]);
+    }
+
+    public function candidatesSummary(GenerateExamCandidatesRequest $request): JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $filters = $request->filters();
+
+        $examHalls = ExamHall::with('classroom:id,name')
+            ->where('academic_year', $filters['academicYear'])
+            ->orderBy('number')
+            ->get();
+
+        $allAssignments = StudentSeatAssignment::query()
+            ->where('academic_year', $filters['academicYear'])
+            ->with('student')
+            ->get()
+            ->filter(fn ($a) => $a->student)
+            ->filter(fn ($a) => !$filters['level'] || $a->student->level === $filters['level'])
+            ->filter(fn ($a) => !$filters['grade'] || $a->student->grade === $filters['grade'])
+            ->filter(fn ($a) => !$filters['language'] || $a->student->language === $filters['language'])
+            ->values();
+
+        $groups = [];
+        $offset = 0;
+
+        foreach ($examHalls as $hall) {
+            $hallAssignments = $allAssignments->slice($offset, $hall->capacity);
+
+            $groups[] = [
+                'classroom_name'   => $hall->classroom->name,
+                'exam_hall_number' => $hall->number,
+                'boys'             => $hallAssignments->filter(fn ($a) => $a->student->gender === 'male')->count(),
+                'girls'            => $hallAssignments->filter(fn ($a) => $a->student->gender === 'female')->count(),
+                'damg'             => $hallAssignments->filter(fn ($a) => $a->student->note === 'دمج')->count(),
+                'muslims'          => $hallAssignments->filter(fn ($a) => $a->student->religion === 'مسلم')->count(),
+                'christians'       => $hallAssignments->filter(fn ($a) => $a->student->religion === 'مسيحي')->count(),
+            ];
+
+            $offset += $hall->capacity;
+        }
+
+        $viewData = [
+            'halls'        => collect($groups),
+            'academicYear' => $filters['academicYear'],
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new ExamHallSummaryExport($viewData), 'exam_hall_summary.xlsx');
+        }
+
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+        Pdf::view('reports.exam_hall_summary', $viewData)
             ->format('a4')
             ->orientation(Orientation::Landscape)
             ->footerView('components.pdf-footer')

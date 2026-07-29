@@ -9,7 +9,15 @@ import { useExport } from "@hooks/useExport.js";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 import styles from "./styles.module.css";
 
-export default function ExamCandidates() {
+const REPORT_TYPES = [
+    { label: "كشف إحصائي للجان", value: "summary" },
+];
+
+const ENDPOINTS = {
+    summary: "/reports/students/exam-candidates-summary",
+};
+
+export default function ExamHallSummary() {
     const [formData, setFormData] = useState({});
     const { showPDFPreview } = usePDFPreview();
     const { exportAsExcel } = useExport();
@@ -18,17 +26,16 @@ export default function ExamCandidates() {
         select: (data) => data?.data?.map((ay) => ay.name),
     });
 
-    const endpoint = "/reports/students/exam-candidates";
+    const reportType = formData.report_type || REPORT_TYPES[0].value;
+    const endpoint = ENDPOINTS[reportType];
 
     const handleChange = (e) => {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
     const normalizeData = () => {
-        const { sorting, ...rest } = formData;
-        const result = { ...rest };
-        if (sorting) result.sorting = sorting;
-        return result;
+        const { report_type, ...rest } = formData;
+        return { ...rest };
     };
 
     const handlePrint = async () => {
@@ -55,6 +62,17 @@ export default function ExamCandidates() {
             <div className={styles.container}>
                 <h4 className={styles.title}>خيارات العرض</h4>
                 <div className={styles.body}>
+                    <SelectField
+                        label={"نوع التقرير"}
+                        options={REPORT_TYPES.map((r) => r.label)}
+                        placeholder={"اختر نوع التقرير"}
+                        value={REPORT_TYPES.find((r) => r.value === reportType)?.label}
+                        handleChange={(e) => {
+                            const selected = REPORT_TYPES.find((r) => r.label === e.target.value);
+                            setFormData((prev) => ({ ...prev, report_type: selected?.value }));
+                        }}
+                        name={"report_type"}
+                    />
                     <SelectField
                         label={"العام الدراسي"}
                         options={academicYears}

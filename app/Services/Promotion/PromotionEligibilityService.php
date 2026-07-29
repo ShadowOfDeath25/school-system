@@ -98,11 +98,7 @@ class PromotionEligibilityService
             return 'passed';
         }
 
-        if ($failedCount <= 2) {
-            return 'دور_ثاني_eligible';
-        }
-
-        return 'repeat';
+        return 'دور_ثاني_eligible';
     }
 
     public function getStudentsWithMissingMarks(int $grade, string $language, string $fromYear): Collection

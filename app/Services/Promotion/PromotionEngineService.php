@@ -72,7 +72,6 @@ class PromotionEngineService
             $students = $query->get();
 
             $promotedCount = 0;
-            $repeatedCount = 0;
             $graduatedCount = 0;
 
             foreach ($students as $student) {
@@ -97,14 +96,6 @@ class PromotionEngineService
                         $graduatedCount++;
                         break;
 
-                    case 'repeat':
-                        $classroom = $this->allocator->allocate($student, $student->grade, $toYear->name);
-                        $this->enrollment->enrollStudent(
-                            $student, $batch, 'repeated', $student->grade, $classroom, $toYear->name,
-                        );
-                        $repeatedCount++;
-                        break;
-
                     case 'دور_ثاني_eligible':
                         PromotionBatchStudent::create([
                             'promotion_batch_id' => $batch->id,
@@ -121,7 +112,6 @@ class PromotionEngineService
             $batch->update([
                 'total_students' => $students->count(),
                 'promoted_count' => $promotedCount,
-                'repeated_count' => $repeatedCount,
                 'graduated_count' => $graduatedCount,
                 'status' => 'completed',
             ]);

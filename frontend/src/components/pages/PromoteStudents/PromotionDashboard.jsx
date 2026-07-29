@@ -10,7 +10,6 @@ import axiosClient from "../../../axiosClient.js";
 import EligibilityPreview from "./EligibilityPreview.jsx";
 import GroupsIcon from "@mui/icons-material/Groups";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import RepeatIcon from "@mui/icons-material/Repeat";
 import SchoolIcon from "@mui/icons-material/School";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
@@ -183,12 +182,6 @@ export default function PromotionDashboard() {
                                 label="دور ثاني"
                                 icon={<WarningAmberIcon />}
                                 backgroundColor="rgba(191,161,92,0.25)"
-                            />
-                            <StatCard
-                                stat={breakdown.repeat || 0}
-                                label="راسب (إعادة)"
-                                icon={<RepeatIcon />}
-                                backgroundColor="rgba(190,67,74,0.25)"
                             />
                             <StatCard
                                 stat={breakdown.graduated || 0}

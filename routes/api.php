@@ -77,6 +77,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('marks/top-students', [MarksReportController::class, 'topStudentsReport'])->name('marks.top-students')->middleware('authorization:view student-reports');
             Route::get('certificates', [CertificateController::class, 'print'])->name('certificates')->middleware('authorization:view student-reports');
             Route::get('exam-candidates', [SeatNumberController::class, 'candidates'])->name('exam-candidates')->middleware('authorization:view student-reports');
+            Route::get('exam-candidates-summary', [SeatNumberController::class, 'candidatesSummary'])->name('exam-candidates.summary')->middleware('authorization:view student-reports');
             Route::get('exam-timetable', [ExamReportController::class, 'timetable'])->name('exam-timetable')->middleware('authorization:view student-reports');
             Route::get('behavior-register', [StudentReportController::class, 'behaviorRegister'])->name('behavior-register')->middleware('authorization:view student-reports');
             Route::prefix('/payments')->name('payments.')->group(function () {

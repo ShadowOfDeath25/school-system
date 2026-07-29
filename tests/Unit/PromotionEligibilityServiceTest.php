@@ -122,7 +122,7 @@ it('evaluates a grade 11 student who passed as graduated', function () {
     expect($result['category'])->toBe('graduated');
 });
 
-it('evaluates a student with no marks as repeat', function () {
+it('evaluates a student with no marks as دور_ثاني_eligible', function () {
     $student = Student::factory()->create([
         'grade' => 5,
         'language' => 'عربي',
@@ -132,7 +132,7 @@ it('evaluates a student with no marks as repeat', function () {
 
     $result = $this->service->evaluateStudent($student, $this->year);
 
-    expect($result['category'])->toBe('repeat');
+    expect($result['category'])->toBe('دور_ثاني_eligible');
 });
 
 it('excludes withdrawn students from preview', function () {
@@ -171,7 +171,7 @@ it('determines category correctly for various scenarios', function () {
 
     expect($this->service->determineCategory(5, [
         ['passed' => false], ['passed' => false], ['passed' => false],
-    ]))->toBe('repeat');
+    ]))->toBe('دور_ثاني_eligible');
 
     expect($this->service->determineCategory(11, [
         ['passed' => true], ['passed' => true],
