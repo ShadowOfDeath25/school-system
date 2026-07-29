@@ -5,7 +5,7 @@ import {useGetAll} from "@hooks/api/useCrud.js";
 
 export default function StudentPayments({student, academicYear}) {
     const {data: fees, isLoading} = useGetAll(`students/${student?.id}/payments`, {academic_year: academicYear}, {
-        queryKey: ['payments', student.id]
+        queryKey: ['payments', student.id, academicYear]
     });
     if (isLoading) {
         return (<div className={styles.container}>

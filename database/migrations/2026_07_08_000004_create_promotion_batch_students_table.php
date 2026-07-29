@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('to_grade')->nullable();
             $table->foreignIdFor(Classroom::class, 'from_classroom_id')->nullable()->constrained('classrooms')->nullOnDelete();
             $table->foreignIdFor(Classroom::class, 'to_classroom_id')->nullable()->constrained('classrooms')->nullOnDelete();
+            $table->string('from_status')->nullable();
             $table->string('decision');
             $table->boolean('second_round_passed')->nullable();
             $table->boolean('rolled_back')->default(false);

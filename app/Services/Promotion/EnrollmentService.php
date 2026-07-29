@@ -29,7 +29,7 @@ class EnrollmentService
             $student, $batch, $decision, $toGrade, $toClassroom,
             $toAcademicYear, $notes, $fromGrade, $fromClassroomId
         ) {
-            $status = $decision === 'graduated' ? 'graduated' : ($decision === 'repeated' ? 'repeated' : 'promoted');
+            $status = $decision === 'graduated' ? 'متخرج' : ($decision === 'repeated' ? 'باقي' : 'مستجد');
 
             $enrollment = StudentEnrollment::create([
                 'student_id' => $student->id,
@@ -50,6 +50,7 @@ class EnrollmentService
                 'to_grade' => $toGrade,
                 'from_classroom_id' => $fromClassroomId,
                 'to_classroom_id' => $toClassroom?->id,
+                'from_status' => $student->getOriginal('status'),
                 'decision' => $decision,
                 'notes' => $notes,
             ]);
@@ -81,7 +82,7 @@ class EnrollmentService
         }
 
         if ($status !== null) {
-            $data['status'] = $status === 'graduated' ? 'متخرج' : 'نشط';
+            $data['status'] = $status;
         }
 
         if (! empty($data)) {

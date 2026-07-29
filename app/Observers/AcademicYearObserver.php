@@ -3,7 +3,10 @@
 namespace App\Observers;
 
 use App\Models\AcademicYear;
+use App\Models\ExtraDue;
 use App\Models\PaymentValue;
+use App\Models\Student;
+use App\Services\StudentPaymentsService;
 use Cache;
 
 class AcademicYearObserver
@@ -14,6 +17,33 @@ class AcademicYearObserver
     public function created(AcademicYear $academicYear): void
     {
         PaymentValue::AddNewAcademicYear($academicYear->name);
+
+        $activeYear = AcademicYear::activeCached();
+        if (! $activeYear || $activeYear->id === $academicYear->id) {
+            return;
+        }
+
+        $service = new StudentPaymentsService;
+
+        Student::query()
+            ->where('transferred_out', false)
+            ->chunkById(100, function ($students) use ($service, $activeYear, $academicYear) {
+                foreach ($students as $student) {
+                    $payments = $service->getStudentPayments($student, $activeYear->name);
+
+                    foreach (StudentPaymentsService::PAYMENT_TYPES as $key => $type) {
+                        $remaining = $payments['remaining'][$type] ?? 0;
+                        if ($remaining > 0) {
+                            ExtraDue::create([
+                                'student_id' => $student->id,
+                                'academic_year' => $academicYear->name,
+                                'value' => $remaining,
+                                'note' => "{$type} متبقي من {$activeYear->name}",
+                            ]);
+                        }
+                    }
+                }
+            });
     }
 
     /**

@@ -17,6 +17,7 @@ class PromotionBatchStudent extends Model
         'to_grade',
         'from_classroom_id',
         'to_classroom_id',
+        'from_status',
         'decision',
         'second_round_passed',
         'rolled_back',

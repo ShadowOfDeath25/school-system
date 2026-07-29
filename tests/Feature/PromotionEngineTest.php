@@ -76,6 +76,7 @@ it('executes promotion for passing students', function () {
 
     $student->refresh();
     expect($student->grade)->toBe(6);
+    expect($student->status)->toBe('مستجد');
 });
 
 it('processes mixed results in a single batch', function () {
