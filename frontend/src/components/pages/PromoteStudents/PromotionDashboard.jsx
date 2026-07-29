@@ -211,7 +211,7 @@ export default function PromotionDashboard() {
                     open={showExecuteModal}
                     onConfirm={handleExecute}
                     onCancel={() => setShowExecuteModal(false)}
-                    message={`تنفيذ الترقية للعام ${fromYear} ← ${toYear}؟ سيتم ترقية ${breakdown.total || 0} طالب. سيتم إنشاء العام الدراسي ${toYear} تلقائياً إذا لم يكن موجوداً.`}
+                    message={`إنشاء دفعة ترقية للعام ${fromYear} ← ${toYear}؟ سيتم إضافة ${breakdown.total || 0} طالب. لن تتم الترقية الفعلية إلا بعد إنهاء الدور الثاني.`}
                     warning="لا يمكن التراجع عن هذه العملية بسهولة."
                 />
             )}

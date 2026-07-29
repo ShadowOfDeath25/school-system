@@ -13,6 +13,7 @@ class PromotionBatchResource extends JsonResource
             'id' => $this->id,
             'from_academic_year' => $this->from_academic_year,
             'to_academic_year' => $this->to_academic_year,
+            'grade' => $this->grade,
             'total_students' => $this->total_students,
             'promoted_count' => $this->promoted_count,
             'repeated_count' => $this->repeated_count,

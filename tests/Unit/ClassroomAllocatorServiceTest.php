@@ -3,9 +3,10 @@
 use App\Models\Classroom;
 use App\Models\Student;
 use App\Services\Promotion\ClassroomAllocatorService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-uses(TestCase::class);
+uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function () {
     $this->service = new ClassroomAllocatorService;
@@ -33,7 +34,7 @@ it('allocates to existing classroom with remaining capacity', function () {
 });
 
 it('creates new classroom when all existing ones are full', function () {
-    Classroom::factory()->create([
+    $classroom = Classroom::factory()->create([
         'grade' => 5,
         'language' => 'عربي',
         'level' => 'ابتدائي',
@@ -47,7 +48,7 @@ it('creates new classroom when all existing ones are full', function () {
         'grade' => 5,
         'language' => 'عربي',
         'level' => 'ابتدائي',
-        'classroom_id' => 1,
+        'classroom_id' => $classroom->id,
         'withdrawn' => false,
     ]);
 
@@ -97,4 +98,72 @@ it('matches language correctly', function () {
 
     expect($result->id)->not->toBe($classroom->id);
     expect($result->language)->toBe('عربي');
+});
+it('assigns boys and girls to different classrooms during batch allocation', function () {
+    Classroom::factory()->create([
+        'grade' => 5,
+        'language' => 'عربي',
+        'level' => 'ابتدائي',
+        'class_number' => 1,
+        'max_capacity' => 30,
+        'academic_year' => '2027-2028',
+    ]);
+
+    $boy = Student::factory()->create([
+        'grade' => 4,
+        'language' => 'عربي',
+        'level' => 'ابتدائي',
+        'gender' => 'male',
+    ]);
+    $girl = Student::factory()->create([
+        'grade' => 4,
+        'language' => 'عربي',
+        'level' => 'ابتدائي',
+        'gender' => 'female',
+    ]);
+
+    $allocations = $this->service->allocateBatch(
+        collect([$boy, $girl]),
+        5,
+        '2027-2028',
+        ['group_by_gender' => true],
+    );
+
+    expect($allocations[$boy->id]->id)->not->toBe($allocations[$girl->id]->id);
+});
+
+it('keeps top students separate from regular students during batch allocation', function () {
+    Classroom::factory()->create([
+        'grade' => 5,
+        'language' => 'عربي',
+        'level' => 'ابتدائي',
+        'class_number' => 1,
+        'max_capacity' => 30,
+        'academic_year' => '2028-2029',
+    ]);
+
+    $students = Student::factory()->count(3)->create([
+        'grade' => 4,
+        'language' => 'عربي',
+        'level' => 'ابتدائي',
+        'gender' => 'male',
+    ]);
+    $scores = collect([
+        $students[0]->id => 100,
+        $students[1]->id => 80,
+        $students[2]->id => 60,
+    ]);
+
+    $allocations = $this->service->allocateBatch(
+        $students,
+        5,
+        '2028-2029',
+        ['top_student_count' => 1],
+        $scores,
+    );
+
+    expect($allocations[$students[0]->id]->id)
+        ->not->toBe($allocations[$students[1]->id]->id)
+        ->and($allocations[$students[1]->id]->id)
+        ->toBe($allocations[$students[2]->id]->id);
 });

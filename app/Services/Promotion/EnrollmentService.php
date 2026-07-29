@@ -21,13 +21,14 @@ class EnrollmentService
         ?Classroom $toClassroom,
         string $toAcademicYear,
         ?string $notes = null,
+        bool $skipBatchStudent = false,
     ): StudentEnrollment {
         $fromGrade = $student->grade;
         $fromClassroomId = $student->classroom_id;
 
         return DB::transaction(function () use (
             $student, $batch, $decision, $toGrade, $toClassroom,
-            $toAcademicYear, $notes, $fromGrade, $fromClassroomId
+            $toAcademicYear, $notes, $fromGrade, $fromClassroomId, $skipBatchStudent
         ) {
             $status = $decision === 'graduated' ? 'متخرج' : ($decision === 'repeated' ? 'باقي' : 'مستجد');
 
@@ -43,17 +44,19 @@ class EnrollmentService
                 'enrolled_at' => now(),
             ]);
 
-            PromotionBatchStudent::create([
-                'promotion_batch_id' => $batch->id,
-                'student_id' => $student->id,
-                'from_grade' => $fromGrade,
-                'to_grade' => $toGrade,
-                'from_classroom_id' => $fromClassroomId,
-                'to_classroom_id' => $toClassroom?->id,
-                'from_status' => $student->getOriginal('status'),
-                'decision' => $decision,
-                'notes' => $notes,
-            ]);
+            if (!$skipBatchStudent) {
+                PromotionBatchStudent::create([
+                    'promotion_batch_id' => $batch->id,
+                    'student_id' => $student->id,
+                    'from_grade' => $fromGrade,
+                    'to_grade' => $toGrade,
+                    'from_classroom_id' => $fromClassroomId,
+                    'to_classroom_id' => $toClassroom?->id,
+                    'from_status' => $student->getOriginal('status'),
+                    'decision' => $decision,
+                    'notes' => $notes,
+                ]);
+            }
 
             $this->updateStudentRecord($student, $toGrade, $toClassroom, $status);
 

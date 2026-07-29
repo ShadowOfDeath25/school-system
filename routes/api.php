@@ -110,6 +110,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('preview', [PromotionController::class, 'preview'])->middleware('authorization:view promotion');
         Route::post('execute', [PromotionController::class, 'execute'])->middleware('authorization:create promotion');
         Route::post('supplementary-exam/resolve', [PromotionController::class, 'resolveSupplementaryExam'])->middleware('authorization:update promotion');
+        Route::post('batches/{batch}/finalize', [PromotionController::class, 'finalize'])->middleware('authorization:create promotion');
+        Route::post('batches/{batch}/delete', [PromotionController::class, 'delete'])->middleware('authorization:delete promotion');
         Route::post('batches/{batch}/rollback', [PromotionController::class, 'rollback'])->middleware('authorization:delete promotion');
         Route::get('batches', [PromotionController::class, 'batches'])->middleware('authorization:view promotion');
         Route::get('batches/{batch}', [PromotionController::class, 'showBatch'])->middleware('authorization:view promotion');

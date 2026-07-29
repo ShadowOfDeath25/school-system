@@ -8,7 +8,7 @@ import styles from "./styles.module.css";
 import axiosClient from "../../../axiosClient.js";
 
 const STATUS_LABELS = {
-    pending: "معلق",
+    pending: "بانتظار التفعيل",
     completed: "مكتمل",
     rolled_back: "ملغي",
 };
@@ -45,6 +45,17 @@ export default function BatchHistory() {
             fetchBatches();
         } catch (err) {
             const msg = err.response?.data?.message || "حدث خطأ أثناء التراجع";
+            showSnackbar(msg, "error");
+        }
+    };
+
+    const handleDelete = async (batchId) => {
+        try {
+            await axiosClient.post(`/promotion/batches/${batchId}/delete`);
+            showSnackbar("تم حذف دفعة الترقية بنجاح");
+            fetchBatches();
+        } catch (err) {
+            const msg = err.response?.data?.message || "حدث خطأ أثناء الحذف";
             showSnackbar(msg, "error");
         }
     };
@@ -102,17 +113,32 @@ export default function BatchHistory() {
                                         <td>
                                             <div className={styles.actions}>
                                                 <Link
-                                                    to={`/promotion/batches/${batch.id}`}
+                                                    to={`/marks/promotions/batches/${batch.id}`}
                                                     className={styles.buttonInline}
                                                 >
                                                     عرض
                                                 </Link>
                                                 <Link
-                                                    to={`/promotion/graduation/${batch.id}`}
+                                                    to={`/marks/promotions/graduation/${batch.id}`}
                                                     className={styles.buttonInline}
                                                 >
                                                     المتخرجون
                                                 </Link>
+                                                {batch.status === "pending" && (
+                                                    <button
+                                                        className={`${styles.buttonInline} ${styles.buttonDanger}`}
+                                                        onClick={async () => {
+                                                            const confirmed = await confirm({
+                                                                message: "هل أنت متأكد من حذف هذه الدفعة؟",
+                                                            });
+                                                            if (confirmed) {
+                                                                handleDelete(batch.id);
+                                                            }
+                                                        }}
+                                                    >
+                                                        حذف
+                                                    </button>
+                                                )}
                                                 {batch.status === "completed" && (
                                                     <button
                                                         className={`${styles.buttonInline} ${styles.buttonDanger}`}

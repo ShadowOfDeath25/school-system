@@ -21,6 +21,8 @@ class RollbackService
                 ->where('rolled_back', false)
                 ->get();
 
+            $isFinalized = $batch->status === 'completed';
+
             foreach ($batchStudents as $batchStudent) {
                 $student = $batchStudent->student;
 
@@ -28,24 +30,26 @@ class RollbackService
                     continue;
                 }
 
-                $student->update([
-                    'grade' => $batchStudent->from_grade,
-                    'classroom_id' => $batchStudent->from_classroom_id,
-                    'status' => $batchStudent->from_status ?? 'نشط',
-                ]);
+                if ($isFinalized) {
+                    $student->update([
+                        'grade' => $batchStudent->from_grade,
+                        'classroom_id' => $batchStudent->from_classroom_id,
+                        'status' => $batchStudent->from_status ?? 'نشط',
+                    ]);
 
-                StudentSeatAssignment::where('student_id', $batchStudent->student_id)
-                    ->where('academic_year', $batch->to_academic_year)
-                    ->delete();
+                    StudentSeatAssignment::where('student_id', $batchStudent->student_id)
+                        ->where('academic_year', $batch->to_academic_year)
+                        ->delete();
 
-                StudentSecretAssignment::where('student_id', $batchStudent->student_id)
-                    ->where('academic_year', $batch->to_academic_year)
-                    ->delete();
+                    StudentSecretAssignment::where('student_id', $batchStudent->student_id)
+                        ->where('academic_year', $batch->to_academic_year)
+                        ->delete();
 
-                StudentEnrollment::where('student_id', $batchStudent->student_id)
-                    ->where('from_academic_year', $batch->from_academic_year)
-                    ->where('to_academic_year', $batch->to_academic_year)
-                    ->update(['status' => 'rolled_back']);
+                    StudentEnrollment::where('student_id', $batchStudent->student_id)
+                        ->where('from_academic_year', $batch->from_academic_year)
+                        ->where('to_academic_year', $batch->to_academic_year)
+                        ->update(['status' => 'rolled_back']);
+                }
 
                 $batchStudent->update(['rolled_back' => true]);
             }

@@ -15,6 +15,7 @@ class PromotionBatch extends Model
     protected $fillable = [
         'from_academic_year',
         'to_academic_year',
+        'grade',
         'total_students',
         'promoted_count',
         'repeated_count',

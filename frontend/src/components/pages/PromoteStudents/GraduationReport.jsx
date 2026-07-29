@@ -42,8 +42,8 @@ export default function GraduationReport() {
     return (
         <Page
             breadcrumbsLinks={[
-                <Link to="/promotion">الترقية</Link>,
-                <Link to="/promotion/batches">سجل الترقيات</Link>,
+                <Link to="/marks/promotion">الترقية</Link>,
+                <Link to="/marks/promotions/batches">سجل الترقيات</Link>,
             ]}
         >
             <div className={styles.container}>

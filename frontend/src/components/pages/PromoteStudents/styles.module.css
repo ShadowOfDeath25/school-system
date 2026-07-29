@@ -216,6 +216,91 @@
     font-weight: 600;
 }
 
+.finalizeOptions{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+.options{
+    display:flex;
+    width:100%;
+    gap:10px;
+    flex-wrap:wrap;
+}
+.finalizeOptions > div:first-child {
+    grid-column: 1 / -1;
+}
+
+.optionsDescription {
+    margin: -8px 0 0;
+    color: var(--ternary-text-color);
+    font-size: 0.9rem;
+}
+
+.optionCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid rgba(191, 161, 92, 0.35);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.optionCard:hover {
+    border-color: var(--secondary-color);
+}
+
+.optionCard input {
+    margin-top: 4px;
+    accent-color: var(--secondary-color);
+}
+
+.optionCard span {
+    display: grid;
+    gap: 4px;
+}
+
+.optionCard small {
+    color: var(--ternary-text-color);
+}
+
+.numberField {
+    display: grid;
+    grid-column: 1 / -1;
+    gap: 8px;
+    max-width: 280px;
+}
+
+.numberField input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(191, 161, 92, 0.5);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--primary-text-color);
+    font: inherit;
+}
+
+.numberField input:focus {
+    border-color: var(--secondary-color);
+    outline: none;
+}
+
+.finalizeActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 700px) {
+    .finalizeOptions {
+        grid-template-columns: 1fr;
+    }
+}
+
 .emptyState {
     text-align: center;
     padding: 48px 20px;

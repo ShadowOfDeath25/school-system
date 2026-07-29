@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import Page from "@ui/Page/Page.jsx";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
@@ -8,6 +8,7 @@ import axiosClient from "../../../axiosClient.js";
 
 export default function SupplementaryExamResolution() {
     const { batchId, studentId } = useParams();
+    const navigate = useNavigate();
     const { showSnackbar } = useSnackbar();
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -77,6 +78,7 @@ export default function SupplementaryExamResolution() {
                 results: subjectResults,
             });
             showSnackbar("تم حفظ نتائج الدور الثاني بنجاح");
+            navigate(`/marks/promotions/batches/${batchId}`);
         } catch (err) {
             showSnackbar("حدث خطأ أثناء الحفظ", "error");
         } finally {
@@ -95,8 +97,8 @@ export default function SupplementaryExamResolution() {
     return (
         <Page
             breadcrumbsLinks={[
-                <Link to="/promotion">الترقية</Link>,
-                <Link to="/promotion/batches">سجل الترقيات</Link>,
+                <Link to="/marks/promotion">الترقية</Link>,
+                <Link to="/marks/promotions/batches">سجل الترقيات</Link>,
             ]}
         >
             <div className={styles.container}>

@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->string('from_academic_year');
             $table->string('to_academic_year');
+            $table->integer('grade');
             $table->integer('total_students')->default(0);
             $table->integer('promoted_count')->default(0);
             $table->integer('repeated_count')->default(0);

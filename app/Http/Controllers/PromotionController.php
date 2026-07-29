@@ -98,10 +98,38 @@ class PromotionController extends Controller
             $batch,
             $student,
             $request->input('results'),
-            $batch->to_academic_year,
         );
 
         return response()->json(['message' => 'تم تحديث نتيجة الدور الثاني بنجاح']);
+    }
+
+    public function delete(PromotionBatch $batch): JsonResponse
+    {
+        if ($batch->status !== 'pending') {
+            return response()->json(['message' => 'يمكن حذف الدفعات المعلقة فقط'], 422);
+        }
+
+        $batch->delete();
+
+        return response()->json(['message' => 'تم حذف دفعة الترقية بنجاح']);
+    }
+
+    public function finalize(PromotionBatch $batch, Request $request): JsonResponse
+    {
+        if ($batch->status !== 'pending') {
+            return response()->json(['message' => 'هذه الدفعة غير جاهزة للإنهاء'], 422);
+        }
+
+        $config = $request->validate([
+            'group_by_gender' => 'boolean',
+            'top_student_count' => 'integer|min:0',
+        ]);
+
+        $this->engine->finalize($batch, $config);
+
+        return response()->json([
+            'batch' => new PromotionBatchResource($batch->fresh()->load('batchStudents.student')),
+        ]);
     }
 
     public function supplementarySubjects(PromotionBatch $batch, Student $student): JsonResponse

@@ -7,7 +7,6 @@ use App\Http\Requests\Marks\UpdateMarksRequest;
 use App\Http\Resources\MarksResource;
 use App\Http\Resources\SecondRoundStudentResource;
 use App\Http\Resources\SecretAssignmentListResource;
-use App\Services\Promotion\PromotionEngineService;
 use App\Models\AcademicYear;
 use App\Models\Exam;
 use App\Models\Grade;
@@ -154,12 +153,12 @@ class MarksController extends Controller
             ->with('batch')
             ->firstOrFail();
 
-        app(PromotionEngineService::class)->promoteSecondRoundStudent(
-            $batchStudent->batch,
-            $student,
-        );
+        $batchStudent->update([
+            'second_round_passed' => true,
+            'notes' => 'دور ثاني - نجح',
+        ]);
 
-        return response()->json(['message' => 'تم ترقية الطالب بنجاح']);
+        return response()->json(['message' => 'تم تسجيل نتيجة الدور الثاني بنجاح']);
     }
 
     public function studentsByNameFilters(): JsonResponse
