@@ -38,6 +38,7 @@ export default function StudentReports() {
         language: urlLanguage || "",
         note_filter: "",
         month: "",
+        sorting: "",
     });
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -80,12 +81,21 @@ export default function StudentReports() {
     };
 
     const normalizeData = () => {
-        const { language, ...rest } = formData;
+        const { language, sorting, ...rest } = formData;
         const result = { ...rest };
         if (language) result.language = language;
         if (!result.academic_year) return null;
         if (!result.note_filter) delete result.note_filter;
         if (!result.month) delete result.month;
+        if (sorting) {
+            if (reportType === "roster") {
+                result.sort_by = "gender";
+                result.sort_dir = sorting === "maleFirst" ? "asc" : "desc";
+            } else {
+                result.sorting = sorting;
+            }
+        }
+        delete result.sorting;
         return result;
     };
 
@@ -122,7 +132,7 @@ export default function StudentReports() {
     };
 
     const handleReset = () => {
-        setFormData({ note_filter: "" });
+        setFormData({ note_filter: "", sorting: "" });
         setReportData(null);
     };
 
@@ -193,6 +203,20 @@ export default function StudentReports() {
                             value={formData.month}
                             handleChange={handleChange}
                             name={"month"}
+                        />
+                    )}
+
+                    {(reportType === "behavior_register" || reportType === "roster") && (
+                        <SelectField
+                            label={"ترتيب / فرز"}
+                            value={formData.sorting}
+                            placeholder={"ترتيب / فرز"}
+                            handleChange={handleChange}
+                            name={"sorting"}
+                            options={[
+                                { label: "البنين اولًا", value: "maleFirst" },
+                                { label: "البنات اولًا", value: "femaleFirst" },
+                            ]}
                         />
                     )}
 

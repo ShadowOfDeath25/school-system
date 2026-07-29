@@ -24,8 +24,15 @@ export default function ExamCandidates() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
+    const normalizeData = () => {
+        const { sorting, ...rest } = formData;
+        const result = { ...rest };
+        if (sorting) result.sorting = sorting;
+        return result;
+    };
+
     const handlePrint = async () => {
-        const params = { ...formData, export: "pdf" };
+        const params = { ...normalizeData(), export: "pdf" };
         if (!params.academic_year) return;
         try {
             const response = await axiosClient.get(endpoint, { params });
@@ -34,7 +41,7 @@ export default function ExamCandidates() {
     };
 
     const handleExport = () => {
-        const params = { ...formData };
+        const params = normalizeData();
         if (!params.academic_year) return;
         exportAsExcel(endpoint, params);
     };

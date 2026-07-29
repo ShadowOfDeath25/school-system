@@ -20,6 +20,7 @@ export default function ViewSeatAssignments() {
     const [filters, setFilters] = useState({});
     const [assignModalOpen, setAssignModalOpen] = useState(false);
     const [selectedAcademicYear, setSelectedAcademicYear] = useState('');
+    const [selectedSorting, setSelectedSorting] = useState('');
     const { showSnackbar } = useSnackbar();
     const queryClient = useQueryClient();
 
@@ -45,6 +46,7 @@ export default function ViewSeatAssignments() {
 
     const handleAssign = () => {
         setSelectedAcademicYear('');
+        setSelectedSorting('');
         setAssignModalOpen(true);
     };
 
@@ -62,6 +64,7 @@ export default function ViewSeatAssignments() {
                 level: filters?.level,
                 grade: filters?.grade,
                 language: filters?.language,
+                sorting: selectedSorting || undefined,
             });
             showSnackbar(response.data.message);
             queryClient.invalidateQueries({ queryKey: ['seat-numbers/assignments'] });
@@ -104,6 +107,19 @@ export default function ViewSeatAssignments() {
                         value={selectedAcademicYear}
                         handleChange={(e) => setSelectedAcademicYear(e.target.value)}
                         options={academicYears}
+                        isModal
+                    />
+                    <SelectField
+                        name="sorting"
+                        label="طريقة التوزيع"
+                        placeholder="طريقة التوزيع"
+                        value={selectedSorting}
+                        handleChange={(e) => setSelectedSorting(e.target.value)}
+                        options={[
+                            { label: "الترتيب الأبجدي", value: "alphabetical" },
+                            { label: "البنين أولًا", value: "males_first" },
+                            { label: "البنات أولًا", value: "females_first" },
+                        ]}
                         isModal
                     />
                 </DialogContent>

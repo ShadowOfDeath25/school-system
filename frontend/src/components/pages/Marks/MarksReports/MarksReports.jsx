@@ -35,7 +35,7 @@ const SCORE_FILTER_OPTIONS = [
 
 export default function MarksReports() {
     const [reportType, setReportType] = useState("class_marks");
-    const [formData, setFormData] = useState({ semester: "both", score_filter: "", note_filter: "" });
+    const [formData, setFormData] = useState({ semester: "both", score_filter: "", note_filter: "", sorting: "" });
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { showPDFPreview } = usePDFPreview();
@@ -86,6 +86,7 @@ export default function MarksReports() {
         if (!result.academic_year) return null;
         if (!result.score_filter) delete result.score_filter;
         if (!result.note_filter) delete result.note_filter;
+        if (!result.sorting) delete result.sorting;
         return result;
     };
 
@@ -384,7 +385,7 @@ export default function MarksReports() {
     };
 
     const handleReset = () => {
-        setFormData({ semester: isSingleSemester ? "الأول" : "both", score_filter: "", note_filter: "" });
+        setFormData({ semester: isSingleSemester ? "الأول" : "both", score_filter: "", note_filter: "", sorting: "" });
         setReportData(null);
     };
 
@@ -468,6 +469,19 @@ export default function MarksReports() {
                 handleChange={handleChange}
                 name={"semester"}
             />
+            {!isTopStudents && !isCertificates && !isClassroomStats && (
+                <SelectField
+                    label={"ترتيب / فرز"}
+                    value={formData.sorting}
+                    placeholder={"ترتيب / فرز"}
+                    handleChange={handleChange}
+                    name={"sorting"}
+                    options={[
+                        { label: "البنين اولًا", value: "maleFirst" },
+                        { label: "البنات اولًا", value: "femaleFirst" },
+                    ]}
+                />
+            )}
         </div>
     );
 

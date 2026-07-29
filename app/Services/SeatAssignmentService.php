@@ -13,6 +13,7 @@ class SeatAssignmentService
         ?string $level = null,
         ?int $grade = null,
         ?string $language = null,
+        ?string $sorting = null,
     ): array {
         $configs = SeatNumber::where('academic_year', $academicYear);
 
@@ -62,11 +63,17 @@ class SeatAssignmentService
                 continue;
             }
 
-            $sortedIds = $studentsToAssign->sortBy('name_in_arabic', SORT_REGULAR, false)->pluck('id');
-
-            $sortedStudents = Student::whereIn('id', $sortedIds)
-                ->orderByRaw('name_in_arabic COLLATE utf8mb4_unicode_ci ASC')
-                ->get(['id', 'name_in_arabic']);
+            $sortedStudents = match ($sorting) {
+                'males_first' => $studentsToAssign->sortBy([
+                    fn ($s) => $s->gender === 'male' ? 0 : 1,
+                    fn ($s) => $s->name_in_arabic,
+                ]),
+                'females_first' => $studentsToAssign->sortBy([
+                    fn ($s) => $s->gender === 'female' ? 0 : 1,
+                    fn ($s) => $s->name_in_arabic,
+                ]),
+                default => $studentsToAssign->sortBy('name_in_arabic'),
+            };
 
             $maxAssigned = StudentSeatAssignment::where('seat_number_id', $config->id)
                 ->where('academic_year', $academicYear)

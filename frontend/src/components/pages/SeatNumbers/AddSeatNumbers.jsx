@@ -20,7 +20,18 @@ export default function AddSeatNumbers() {
         ClassroomHelper.FIELDS.GRADE,
         ClassroomHelper.FIELDS.LANGUAGE,
         SeatNumberHelper.FIELDS.STARTS_AT,
-        SeatNumberHelper.FIELDS.ENDS_AT
+        SeatNumberHelper.FIELDS.ENDS_AT,
+        {
+            name: "sorting",
+            type: "select",
+            label: "طريقة التوزيع",
+            options: [
+                { label: "الترتيب الأبجدي", value: "alphabetical" },
+                { label: "البنين أولًا", value: "males_first" },
+                { label: "البنات أولًا", value: "females_first" },
+            ],
+            placeholder: "طريقة التوزيع",
+        },
     ]
 
     const onSumbit = (data) => {

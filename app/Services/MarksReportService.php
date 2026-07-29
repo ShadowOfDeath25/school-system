@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class MarksReportService
 {
-    public function getClassReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, bool $detailed = false, ?string $scoreFilter = null, ?string $noteFilter = null): array
+    public function getClassReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, bool $detailed = false, ?string $scoreFilter = null, ?string $noteFilter = null, ?string $sorting = null): array
     {
         $gradeSubjects = GradeSubject::with(['exams', 'subject'])
             ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
@@ -120,8 +120,15 @@ class MarksReportService
             ->get()
             ->keyBy('student_id');
 
-        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers) {
-            return $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers, $sorting) {
+            $seat = $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+            $genderWeight = match (true) {
+                $sorting === 'maleFirst' => $s->gender === 'male' ? 0 : 1,
+                $sorting === 'femaleFirst' => $s->gender === 'female' ? 0 : 1,
+                default => 0,
+            };
+
+            return [$genderWeight, $seat];
         })->values();
 
         $studentRows = $sorted->map(function (Student $s) use ($subjectList, $firstRoundByStudent, $secondRound, $passedSecondRound, $gradeSubjects, $seatNumbers, $detailed) {
@@ -250,7 +257,7 @@ class MarksReportService
         ];
     }
 
-    public function getFinalExamReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, ?string $scoreFilter = null, ?string $noteFilter = null): array
+    public function getFinalExamReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, ?string $scoreFilter = null, ?string $noteFilter = null, ?string $sorting = null): array
     {
         $gradeSubjects = GradeSubject::with(['exams', 'subject'])
             ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
@@ -355,8 +362,15 @@ class MarksReportService
             ->get()
             ->keyBy('student_id');
 
-        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers) {
-            return $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers, $sorting) {
+            $seat = $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+            $genderWeight = match (true) {
+                $sorting === 'maleFirst' => $s->gender === 'male' ? 0 : 1,
+                $sorting === 'femaleFirst' => $s->gender === 'female' ? 0 : 1,
+                default => 0,
+            };
+
+            return [$genderWeight, $seat];
         })->values();
 
         $studentRows = $sorted->map(function (Student $s) use ($subjectList, $firstRoundByStudent, $secondRound, $passedSecondRound, $gradeSubjects, $seatNumbers) {
@@ -450,7 +464,7 @@ class MarksReportService
         ];
     }
 
-    public function getYearWorkReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, ?string $scoreFilter = null, ?string $noteFilter = null): array
+    public function getYearWorkReportData(string $academicYear, int $grade, string $language, string $semester, ?int $classroomId, ?string $scoreFilter = null, ?string $noteFilter = null, ?string $sorting = null): array
     {
         $gradeSubjects = GradeSubject::with(['exams', 'subject'])
             ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
@@ -556,8 +570,15 @@ class MarksReportService
             ->get()
             ->keyBy('student_id');
 
-        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers) {
-            return $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+        $sorted = $students->sortBy(function (Student $s) use ($seatNumbers, $sorting) {
+            $seat = $seatNumbers->get($s->id)?->assigned_number ?? PHP_INT_MAX;
+            $genderWeight = match (true) {
+                $sorting === 'maleFirst' => $s->gender === 'male' ? 0 : 1,
+                $sorting === 'femaleFirst' => $s->gender === 'female' ? 0 : 1,
+                default => 0,
+            };
+
+            return [$genderWeight, $seat];
         })->values();
 
         $studentRows = $sorted->map(function (Student $s) use ($subjectList, $firstRoundByStudent, $secondRound, $passedSecondRound, $gradeSubjects, $seatNumbers) {

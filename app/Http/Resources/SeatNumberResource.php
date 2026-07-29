@@ -19,6 +19,8 @@ class SeatNumberResource extends JsonResource
             'id' => $this->id,
             'level' => $this->level,
             'grade' => Grade::from((int) $this->grade)->label(),
+            'grade_value' => (int) $this->grade,
+            'language' => $this->language,
             'academic_year' => $this->academic_year,
             'starts_at' => $this->starts_at,
             'ends_at' => $this->ends_at,

@@ -132,7 +132,9 @@ class StudentReportService
             )
             ->when($classroom, fn ($query) => $query->where('classroom_id', $classroom)
             )
-            ->when($sorting, fn ($query) => $query->orderBy('gender', $sorting === 'maleFirst' ? 'asc' : 'desc')
+            ->when($sorting, fn ($query) => $query
+                ->orderBy('gender', $sorting === 'maleFirst' ? 'asc' : 'desc')
+                ->orderBy('name_in_arabic')
             )
             ->select('id', 'name_in_arabic', 'reg_number', 'tuition_id', 'administrative_id', 'classroom_id');
         if ($showNotes) {

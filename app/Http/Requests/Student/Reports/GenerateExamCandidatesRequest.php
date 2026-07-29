@@ -20,6 +20,7 @@ class GenerateExamCandidatesRequest extends FormRequest
             'grade' => ['nullable', 'integer', 'min:1', 'max:12'],
             'language' => ['nullable', 'string', Rule::in(['عربي', 'لغات'])],
             'classroom_id' => ['nullable', 'integer', 'exists:classrooms,id'],
+            'sorting' => ['nullable', 'string', Rule::in(['maleFirst', 'femaleFirst'])],
         ];
     }
 
@@ -33,6 +34,7 @@ class GenerateExamCandidatesRequest extends FormRequest
             'grade' => isset($validated['grade']) ? (int) $validated['grade'] : null,
             'language' => $validated['language'] ?? null,
             'classroomId' => isset($validated['classroom_id']) ? (int) $validated['classroom_id'] : null,
+            'sorting' => $validated['sorting'] ?? null,
         ];
     }
 }

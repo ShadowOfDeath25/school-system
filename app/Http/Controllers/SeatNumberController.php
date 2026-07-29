@@ -60,6 +60,7 @@ class SeatNumberController extends Controller
             $validated['level'],
             (int) $validated['grade'],
             $validated['language'],
+            $validated['sorting'] ?? null,
         );
 
         if (! empty($results['errors'])) {
@@ -80,11 +81,28 @@ class SeatNumberController extends Controller
     ): JsonResponse {
         $validated = $request->validated();
 
+        if (!empty($validated['redistribute'])) {
+            $deleteQuery = StudentSeatAssignment::where('academic_year', $validated['academic_year']);
+
+            if (!empty($validated['level'])) {
+                $deleteQuery->whereHas('seatNumberConfig', fn ($q) => $q->where('level', $validated['level']));
+            }
+            if (isset($validated['grade'])) {
+                $deleteQuery->whereHas('seatNumberConfig', fn ($q) => $q->where('grade', (string) $validated['grade']));
+            }
+            if (!empty($validated['language'])) {
+                $deleteQuery->whereHas('seatNumberConfig', fn ($q) => $q->where('language', $validated['language']));
+            }
+
+            $deleteQuery->delete();
+        }
+
         $results = $service->assign(
             $validated['academic_year'],
             $validated['level'] ?? null,
             isset($validated['grade']) ? (int) $validated['grade'] : null,
             $validated['language'] ?? null,
+            $validated['sorting'] ?? null,
         );
 
         if (! empty($results['errors'])) {
@@ -131,6 +149,7 @@ class SeatNumberController extends Controller
     public function candidates(GenerateExamCandidatesRequest $request): JsonResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $filters = $request->filters();
+        $sorting = $filters['sorting'] ?? null;
 
         $examHalls = ExamHall::with('classroom:id,name')
             ->where('academic_year', $filters['academicYear'])
@@ -146,7 +165,13 @@ class SeatNumberController extends Controller
             ->filter(fn ($a) => !$filters['grade'] || $a->student->grade === $filters['grade'])
             ->filter(fn ($a) => !$filters['language'] || $a->student->language === $filters['language'])
             ->filter(fn ($a) => !$filters['classroomId'] || $a->student->classroom_id === $filters['classroomId'])
-            ->sortBy('assigned_number')
+            ->when($sorting, fn ($collection) => $collection
+                ->sortBy([
+                    fn ($a) => $sorting === 'maleFirst' ? ($a->student->gender === 'male' ? 0 : 1)
+                        : ($sorting === 'femaleFirst' ? ($a->student->gender === 'female' ? 0 : 1) : 0),
+                    fn ($a) => $a->assigned_number,
+                ])
+            )
             ->values();
 
         $groups = [];

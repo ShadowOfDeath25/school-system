@@ -4,6 +4,7 @@ namespace App\Http\Requests\SeatNumber;
 
 use App\Models\SeatNumber;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreSeatNumberRequest extends FormRequest
 {
@@ -37,6 +38,7 @@ class StoreSeatNumberRequest extends FormRequest
                 },
             ],
             'ends_at' => ['required', 'numeric'],
+            'sorting' => ['nullable', 'string', Rule::in(['alphabetical', 'males_first', 'females_first'])],
         ];
     }
 }

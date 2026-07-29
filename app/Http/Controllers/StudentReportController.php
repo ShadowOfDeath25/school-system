@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PaymentType;
 use App\Exports\ArrearsExport;
+use Illuminate\Support\Collection;
 use App\Exports\ArrearsGroupedExport;
 use App\Exports\BehaviorRegisterExport;
 use App\Exports\DailyPaymentsExport;
@@ -391,7 +392,7 @@ class StudentReportController extends Controller
         $perChunk = $requestData['per_chunk'] ?? 12;
         $payments = $query->get()
             ->groupBy('recipient_id')
-            ->map(fn ($group) => $group->chunk($perChunk));
+            ->map(fn (Collection $group) => $group->chunk($perChunk));
 
         $viewData = [
             'payments' => $payments,
@@ -430,6 +431,7 @@ class StudentReportController extends Controller
             level: $validated['level'] ?? null,
             grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
             classroomId: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+            sorting: $validated['sorting'] ?? null,
         );
 
         $viewData = [

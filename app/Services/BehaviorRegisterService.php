@@ -14,6 +14,7 @@ class BehaviorRegisterService
         ?string $level = null,
         ?int $grade = null,
         ?int $classroomId = null,
+        ?string $sorting = null,
     ): array {
         $parts = explode('-', str_replace(' ', '', $academicYear));
         $startYear = (int) $parts[0];
@@ -32,8 +33,9 @@ class BehaviorRegisterService
             ];
         }
 
-        $classroomQuery = Classroom::with(['students' => function ($query) {
+        $classroomQuery = Classroom::with(['students' => function ($query) use ($sorting) {
             $query->where(fn ($sq) => $sq->where('status', '!=', 'متخرج')->orWhereNull('status'))
+                ->when($sorting, fn ($q) => $q->orderBy('gender', $sorting === 'maleFirst' ? 'asc' : 'desc'))
                 ->orderBy('name_in_arabic');
         }])
             ->where('academic_year', $academicYear)

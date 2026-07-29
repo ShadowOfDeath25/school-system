@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\Grade;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -9,15 +10,6 @@ class StudentSeatAssignmentResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $gradeWords = [
-            1 => 'الأول',
-            2 => 'الثاني',
-            3 => 'الثالث',
-            4 => 'الرابع',
-            5 => 'الخامس',
-            6 => 'السادس',
-        ];
-
         return [
             'id' => $this->id,
             'student_id' => $this->student_id,
@@ -25,7 +17,8 @@ class StudentSeatAssignmentResource extends JsonResource
             'seat_number' => $this->assigned_number,
             'academic_year' => $this->academic_year,
             'level' => $this->whenLoaded('seatNumberConfig', fn () => $this->seatNumberConfig->level),
-            'grade' => $this->whenLoaded('seatNumberConfig', fn () => $gradeWords[(int) $this->seatNumberConfig->grade] ?? $this->seatNumberConfig->grade),
+            'grade' => $this->whenLoaded('seatNumberConfig', fn () => Grade::from((int) $this->seatNumberConfig->grade)->label()),
+            'grade_value' => $this->whenLoaded('seatNumberConfig', fn () => (int) $this->seatNumberConfig->grade),
             'language' => $this->whenLoaded('seatNumberConfig', fn () => $this->seatNumberConfig->language),
         ];
     }

@@ -29,6 +29,7 @@ class MarksReportController extends Controller
         $academicYear = $request->input('academic_year', AcademicYear::activeCached()?->name);
         $validated = $request->validate([
             'language' => 'required|string',
+            'sorting' => ['nullable', 'string', 'in:maleFirst,femaleFirst'],
         ]);
         $grade = (int) $request->input('grade');
         $language = $validated['language'];
@@ -37,6 +38,7 @@ class MarksReportController extends Controller
         $detailed = $request->boolean('detailed', false);
         $scoreFilter = $request->input('score_filter');
         $noteFilter = $request->input('note_filter');
+        $sorting = $validated['sorting'] ?? null;
 
         $data = $this->reportService->getClassReportData(
             academicYear: $academicYear,
@@ -47,6 +49,7 @@ class MarksReportController extends Controller
             detailed: $detailed,
             scoreFilter: $scoreFilter,
             noteFilter: $noteFilter,
+            sorting: $sorting,
         );
 
         $data['detailed'] = $detailed;
@@ -83,6 +86,7 @@ class MarksReportController extends Controller
         $validated = $request->validate([
             'language' => 'required|string',
             'semester' => 'required|string|in:الأول,الثاني',
+            'sorting' => ['nullable', 'string', 'in:maleFirst,femaleFirst'],
         ]);
         $grade = (int) $request->input('grade');
         $language = $validated['language'];
@@ -90,6 +94,7 @@ class MarksReportController extends Controller
         $classroomId = $request->input('classroom_id') ? (int) $request->input('classroom_id') : null;
         $scoreFilter = $request->input('score_filter');
         $noteFilter = $request->input('note_filter');
+        $sorting = $validated['sorting'] ?? null;
 
         $data = $this->reportService->getFinalExamReportData(
             academicYear: $academicYear,
@@ -99,6 +104,7 @@ class MarksReportController extends Controller
             classroomId: $classroomId,
             scoreFilter: $scoreFilter,
             noteFilter: $noteFilter,
+            sorting: $sorting,
         );
 
         if ($request->query('export') === 'pdf') {
@@ -133,6 +139,7 @@ class MarksReportController extends Controller
         $validated = $request->validate([
             'language' => 'required|string',
             'semester' => 'required|string|in:الأول,الثاني',
+            'sorting' => ['nullable', 'string', 'in:maleFirst,femaleFirst'],
         ]);
         $grade = (int) $request->input('grade');
         $language = $validated['language'];
@@ -140,6 +147,7 @@ class MarksReportController extends Controller
         $classroomId = $request->input('classroom_id') ? (int) $request->input('classroom_id') : null;
         $scoreFilter = $request->input('score_filter');
         $noteFilter = $request->input('note_filter');
+        $sorting = $validated['sorting'] ?? null;
 
         $data = $this->reportService->getYearWorkReportData(
             academicYear: $academicYear,
@@ -149,6 +157,7 @@ class MarksReportController extends Controller
             classroomId: $classroomId,
             scoreFilter: $scoreFilter,
             noteFilter: $noteFilter,
+            sorting: $sorting,
         );
 
         if ($request->query('export') === 'pdf') {

@@ -14,7 +14,7 @@ class PromotionTestSeeder extends Seeder
 {
     public function run(): void
     {
-        $year = '2025/2026';
+        $year = '2026/2025';
         $lang = 'عربي';
 
         Student::where('nid', 'like', 'SEED%')->delete();
@@ -138,17 +138,23 @@ class PromotionTestSeeder extends Seeder
         }
 
         $studentData = [
-            ['name' => 'طالب ناجح أ', 'marks' => ['اللغة العربية' => 45, 'الرياضيات' => 40, 'العلوم' => 38, 'الدراسات الاجتماعية' => 35], 'expected' => 'passed'],
-            ['name' => 'طالب ناجح ب', 'marks' => ['اللغة العربية' => 35, 'الرياضيات' => 30, 'العلوم' => 28, 'الدراسات الاجتماعية' => 25], 'expected' => 'passed'],
-            ['name' => 'طالب دور ثاني 1', 'marks' => ['اللغة العربية' => 20, 'الرياضيات' => 30, 'العلوم' => 35, 'الدراسات الاجتماعية' => 28], 'expected' => 'دور_ثاني'],
-            ['name' => 'طالب دور ثاني 2', 'marks' => ['اللغة العربية' => 18, 'الرياضيات' => 22, 'العلوم' => 30, 'الدراسات الاجتماعية' => 30], 'expected' => 'دور_ثاني'],
-            ['name' => 'طالب راسب 3', 'marks' => ['اللغة العربية' => 15, 'الرياضيات' => 12, 'العلوم' => 20, 'الدراسات الاجتماعية' => 30], 'expected' => 'repeat'],
-            ['name' => 'طالب راسب 4', 'marks' => ['اللغة العربية' => 10, 'الرياضيات' => 8, 'العلوم' => 15, 'الدراسات الاجتماعية' => 12], 'expected' => 'repeat'],
-            ['name' => 'طالب منسحب', 'marks' => null, 'withdrawn' => true, 'expected' => 'excluded'],
-            ['name' => 'طالب متخرج سابقاً', 'marks' => ['اللغة العربية' => 30, 'الرياضيات' => 28, 'العلوم' => 32, 'الدراسات الاجتماعية' => 25], 'status' => 'متخرج', 'expected' => 'excluded'],
-            ['name' => 'طالب بلا درجات', 'marks' => null, 'expected' => 'incomplete'],
-            ['name' => 'طالب متخرج أ', 'marks' => ['اللغة العربية' => 45, 'الرياضيات' => 40, 'العلوم' => 38, 'الدراسات الاجتماعية' => 35], 'grade' => 11, 'expected' => 'graduated'],
-            ['name' => 'طالب متخرج ب', 'marks' => ['اللغة العربية' => 35, 'الرياضيات' => 30, 'العلوم' => 28, 'الدراسات الاجتماعية' => 25], 'grade' => 11, 'expected' => 'graduated'],
+            ['name' => 'أحمد محمد', 'marks' => ['اللغة العربية' => 45, 'الرياضيات' => 40, 'العلوم' => 38, 'الدراسات الاجتماعية' => 35], 'expected' => 'passed'],
+            ['name' => 'محمد إبراهيم', 'marks' => ['اللغة العربية' => 35, 'الرياضيات' => 30, 'العلوم' => 28, 'الدراسات الاجتماعية' => 25], 'expected' => 'passed'],
+            ['name' => 'يوسف أحمد', 'marks' => ['اللغة العربية' => 20, 'الرياضيات' => 30, 'العلوم' => 35, 'الدراسات الاجتماعية' => 28], 'expected' => 'دور_ثاني'],
+            ['name' => 'علي محمود', 'marks' => ['اللغة العربية' => 18, 'الرياضيات' => 22, 'العلوم' => 30, 'الدراسات الاجتماعية' => 30], 'expected' => 'دور_ثاني'],
+            ['name' => 'حسين علي', 'marks' => ['اللغة العربية' => 15, 'الرياضيات' => 12, 'العلوم' => 20, 'الدراسات الاجتماعية' => 30], 'status' => 'باقي', 'expected' => 'repeat'],
+            ['name' => 'محمود خالد', 'marks' => ['اللغة العربية' => 10, 'الرياضيات' => 8, 'العلوم' => 15, 'الدراسات الاجتماعية' => 12], 'status' => 'باقي', 'expected' => 'repeat'],
+            ['name' => 'سيد عبدالرحمن', 'marks' => null, 'withdrawn' => true, 'expected' => 'excluded'],
+            ['name' => 'عبدالرحمن سعيد', 'marks' => ['اللغة العربية' => 30, 'الرياضيات' => 28, 'العلوم' => 32, 'الدراسات الاجتماعية' => 25], 'status' => 'متخرج', 'expected' => 'excluded'],
+            ['name' => 'كريم حسين', 'marks' => null, 'expected' => 'incomplete'],
+            ['name' => 'عبدالله خالد', 'marks' => ['اللغة العربية' => 45, 'الرياضيات' => 40, 'العلوم' => 38, 'الدراسات الاجتماعية' => 35], 'grade' => 11, 'expected' => 'graduated'],
+            ['name' => 'إبراهيم محمود', 'marks' => ['اللغة العربية' => 35, 'الرياضيات' => 30, 'العلوم' => 28, 'الدراسات الاجتماعية' => 25], 'grade' => 11, 'expected' => 'graduated'],
+            ['name' => 'فاطمة علي', 'gender' => 'female', 'marks' => ['اللغة العربية' => 42, 'الرياضيات' => 38, 'العلوم' => 36, 'الدراسات الاجتماعية' => 33], 'expected' => 'passed'],
+            ['name' => 'مريم أحمد', 'gender' => 'female', 'marks' => ['اللغة العربية' => 14, 'الرياضيات' => 10, 'العلوم' => 18, 'الدراسات الاجتماعية' => 15], 'status' => 'باقي', 'expected' => 'repeat'],
+            ['name' => 'نورة سعيد', 'gender' => 'female', 'marks' => ['اللغة العربية' => 22, 'الرياضيات' => 20, 'العلوم' => 32, 'الدراسات الاجتماعية' => 26], 'expected' => 'دور_ثاني'],
+            ['name' => 'عائشة أحمد', 'gender' => 'female', 'marks' => ['اللغة العربية' => 40, 'الرياضيات' => 36, 'العلوم' => 34, 'الدراسات الاجتماعية' => 30], 'grade' => 11, 'expected' => 'graduated'],
+            ['name' => 'رقية سعيد', 'gender' => 'female', 'marks' => null, 'withdrawn' => true, 'expected' => 'excluded'],
+            ['name' => 'زينب حسين', 'gender' => 'female', 'marks' => ['اللغة العربية' => 38, 'الرياضيات' => 35, 'العلوم' => 32, 'الدراسات الاجتماعية' => 28], 'expected' => 'passed'],
         ];
 
         foreach ($studentData as $data) {
@@ -162,7 +168,7 @@ class PromotionTestSeeder extends Seeder
                 'nid' => 'SEED' . str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
                 'birth_date' => '2015-01-01',
                 'birth_address' => 'القاهرة',
-                'gender' => 'male',
+                'gender' => $data['gender'] ?? 'male',
                 'religion' => 'مسلم',
                 'nationality' => 'مصري',
                 'language' => $lang,
@@ -202,6 +208,6 @@ class PromotionTestSeeder extends Seeder
             }
         }
 
-        $this->command->info('PromotionTestSeeder: 11 students seeded across all promotion cases.');
+        $this->command->info('PromotionTestSeeder: 17 students seeded across all promotion cases (11 male, 6 female).');
     }
 }
