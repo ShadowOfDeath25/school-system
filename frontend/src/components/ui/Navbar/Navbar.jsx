@@ -11,7 +11,7 @@ export default function Navbar({handleMenuClick}) {
     return (
         <header className={styles.navbar}>
             <IconButton sx={{"&:hover":{backgroundColor:"rgba(0,0,0,0.2)"}}} onClick={handleMenuClick}><MenuIcon className={styles.menuIcon}/></IconButton>
-            <img src="/public/logo.svg" alt="logo"/>
+            <img src="/logo.svg" alt="logo"/>
             <ProfileMenu/>
         </header>
     );
