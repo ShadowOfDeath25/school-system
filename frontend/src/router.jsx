@@ -1,4 +1,4 @@
-import {createBrowserRouter, Navigate} from 'react-router-dom';
+import {createBrowserRouter} from 'react-router-dom';
 import LoginPage from '@pages/Login/LoginPage';
 import ProtectedRoute from '@components/guards/ProtectedRoute';
 import GuestLayout from '@layouts/Guest/GuestLayout';
@@ -8,6 +8,7 @@ import GuestRoute from "@components/guards/GuestRoute.jsx";
 import { appRoutes } from '@routes/routes.jsx';
 import NotFoundPage from '@pages/NotFoundPage/NotFoundPage';
 import ForbiddenPage from '@pages/ForbiddenPage/ForbiddenPage';
+import Welcome from '@pages/Welcome/Welcome.jsx';
 
 export const routes = [
     {
@@ -22,7 +23,7 @@ export const routes = [
                         children: [
                             {
                               index: true,
-                              element: <Navigate to={'/dashboard'}></Navigate>
+                              element: <Welcome/>
                             },
                             ...appRoutes
                         ]

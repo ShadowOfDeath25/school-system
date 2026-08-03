@@ -124,7 +124,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::apiResource('users', UserController::class)->withFilters();
         Route::get('academic-years', [AcademicYearController::class, 'index'])->name('academic-years.index');
         Route::post('academic-years', [AcademicYearController::class, 'store'])->name('academic-years.store');
-        Route::match(['put', 'patch'], 'academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate');
+        Route::match(['put', 'patch'], 'academic-years/{academicYear}/activate', [AcademicYearController::class, 'activate'])->name('academic-years.activate')->middleware('authorization:update academic-years');
 
         Route::apiResource('grade-ages', GradeAgeController::class)->withFilters();
         Route::apiResource('buses', BusController::class)->withFilters();

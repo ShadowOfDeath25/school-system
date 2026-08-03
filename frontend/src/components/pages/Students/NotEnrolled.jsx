@@ -8,7 +8,7 @@ import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
 
 export default function NotEnrolled() {
     const mutation = useUpdate('students', { all: true });
-    const { showEditModal, hideEditModal } = useInputModal();
+    const { showInputModal, hideInputModal } = useInputModal();
     const { showSnackbar } = useSnackbar();
     const { data: classrooms } = useGetAll('classrooms');
     const { data: academicYears = [] } = useGetAll('academic-years', {}, {
@@ -16,7 +16,7 @@ export default function NotEnrolled() {
     });
 
     const handleEnroll = (student) => {
-        showEditModal({
+        showInputModal({
             fields: [
                 {
                     ...ClassroomHelper.FIELDS.ACADEMIC_YEAR,
@@ -42,10 +42,10 @@ export default function NotEnrolled() {
                 mutation.mutate({ classroom_id: payload.classroom, id: student.id }, {
                     onSuccess: () => {
                         showSnackbar('تم الحاق الطالب بالفصل بنجاح')
-                        hideEditModal();
+                        hideInputModal();
                     }, onError: () => {
                         showSnackbar('حدث خطأ اثناء الحاق الطالب بالفصل', 'error')
-                        hideEditModal()
+                        hideInputModal()
                     },
                 })
             }

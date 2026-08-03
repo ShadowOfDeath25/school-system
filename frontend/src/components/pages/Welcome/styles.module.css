@@ -1,0 +1,137 @@
+.welcome {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 20px;
+    animation: fadeIn 0.4s ease;
+}
+
+@media (max-width: 768px) {
+    .welcome {
+        padding: 12px;
+    }
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    padding: 3rem 1.5rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #1b223c 0%, #273152 100%);
+    box-shadow: var(--container-box-shadow);
+    color: var(--primary-text-color);
+}
+
+.logoFrame {
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: #fefffe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+.logoFrame img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+}
+
+.hero h1 {
+    margin: 0;
+}
+
+.hero p {
+    margin: 0;
+    color: rgb(from var(--primary-text-color) r g b / 0.8);
+    font-size: clamp(1rem, 1vw + 0.5rem, 1.25rem);
+}
+
+.sectionTitle {
+    margin-bottom: 1rem;
+    color: var(--primary-text-color);
+}
+
+.tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.tile {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    background: var(--primary-color);
+    border-bottom: var(--container-border);
+    box-shadow: var(--container-box-shadow);
+    color: var(--primary-text-color);
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border 0.15s ease;
+}
+
+.tile:hover {
+    transform: translateY(-3px);
+    border-bottom-color: var(--ternary-text-color);
+}
+
+.tileIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    color: var(--primary-text-color);
+    background: var(--secondary-color);
+}
+
+.tileText {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.tileText strong {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tileText small {
+    color: rgb(from var(--primary-text-color) r g b / 0.6);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.empty {
+    color: var(--primary-text-color);
+    text-align: center;
+    padding: 2rem;
+    background: var(--primary-color);
+    border-radius: 12px;
+    box-shadow: var(--container-box-shadow);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

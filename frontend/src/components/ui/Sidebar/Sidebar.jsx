@@ -14,11 +14,12 @@ export default function Sidebar({isOpen, setIsOpen}) {
     const user = queryClient.getQueryData(["currentUser"]);
     const [expanded, setExpanded] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-    const allowedItems = sidebarItems.filter((item) => {
-        const regex = new RegExp(`^\\w+\\s${item?.name}$`);
-
-        return user?.role?.includes("Super Admin") || user?.permissions?.some((permission => regex.test(permission)));
-    })
+    const allowedItems = sidebarItems.map(item => ({
+        ...item,
+        links: user?.role?.includes("Super Admin")
+            ? item.links
+            : item.links.filter(link => user?.permissions?.contains(link.action))
+    })).filter(item => item.links.length > 0);
     const filteredItems = allowedItems.filter(item => item.header.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const handleChange = (panel) => (event, isExpanded) => {
@@ -54,7 +55,7 @@ export default function Sidebar({isOpen, setIsOpen}) {
                 onChange={handleChange(item.panel)}
             >
                 {
-                    item.links.filter((link) => user.role.includes("Super Admin") || user.permissions.contains(link.action)).map((link, index) =>
+                    item.links.map((link, index) =>
                         <SidebarLink
                             key={index}
                             setSideBarIsOpen={setIsOpen}

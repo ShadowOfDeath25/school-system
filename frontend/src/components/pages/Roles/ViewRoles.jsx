@@ -9,10 +9,9 @@ import {useQueryClient} from "@tanstack/react-query";
 export default function ViewRoles() {
     const {data: permissions} = useGetAll("permissions");
     const {t} = useTranslation();
-    const {showEditModal, hideEditModal} = useInputModal();
+    const {showInputModal, hideInputModal} = useInputModal();
     const {showSnackbar} = useSnackbar();
     const queryClient = useQueryClient();
-    const data = queryClient.getQueriesData({queryKey: ["roles"], type: "active"})[0]?.[1];
     const updateMutation = useUpdate("roles");
     const fields = [
         {
@@ -37,17 +36,21 @@ export default function ViewRoles() {
     }));
 
     const handleEdit = (item) => {
-        const originalItem = data?.data?.find(d => d.id === item.id);
+        const allRoles = queryClient
+            .getQueriesData({queryKey: ["roles"], type: "active"})
+            .flatMap(([, d]) => (Array.isArray(d?.data) ? d?.data : []));
+        const originalItem = allRoles.find(d => d.id === item.id) ?? item;
+        const rawPermissions = originalItem?.permissions ?? {};
         let permissions = {}
-
-        for (let [key, value] of Object.entries(originalItem?.permissions)) {
-            permissions[key] = value.map(action => `${action} ${key}`)
+        if (rawPermissions && typeof rawPermissions === "object" && !Array.isArray(rawPermissions)) {
+            for (let [key, value] of Object.entries(rawPermissions)) {
+                permissions[key] = value.map(action => `${action} ${key}`)
+            }
         }
-        originalItem.permissions = permissions;
 
-        showEditModal({
+        showInputModal({
             fields: fields,
-            item: originalItem,
+            item: {...originalItem, permissions},
             onSave: (formData) => {
                 let payload = {name: formData.name, permissions: []}
                 for (let [key, value] of Object.entries(formData)) {
@@ -58,7 +61,7 @@ export default function ViewRoles() {
                 updateMutation.mutate({...payload, id: item.id}, {
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
-                        hideEditModal();
+                        hideInputModal();
                     },
                     onError: (error) => {
                         showSnackbar("حدث خطأ اثناء تحديث العنصر")

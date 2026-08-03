@@ -6,12 +6,16 @@ import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 import Table from "@ui/Table/Table.jsx";
 import {useCreate} from "@hooks/api/useCrud.js";
 import ActivateAcademicYearButton from "@ui/ActivateAcademicYearButton/ActivateAcademicYearButton.jsx";
+import {useCurrentUser} from "@hooks/api/auth.js";
 
 
 export default function AcademicYears() {
+    const {data: user} = useCurrentUser();
     const [startYear, setStartYear] = useState(new Date().getFullYear());
     const mutation = useCreate('academic-years');
     const {showSnackbar} = useSnackbar();
+    const userCanCreate = user?.role.includes("Super Admin") || user?.permissions.includes("create academic-years");
+    const userCanUpdate = user?.role.includes("Super Admin") || user?.permissions.includes("update academic-years");
     const activateButton = {
         header: "تعيين كالعام الدراسي الحالي",
         content: (row) => <ActivateAcademicYearButton row={row}/>
@@ -35,6 +39,7 @@ export default function AcademicYears() {
     }
     return (<>
         <Page>
+            {userCanCreate && (
             <form className={styles.container} onSubmit={onSubmit}>
                 <h3 className={styles.title}>
                     اضافة عام دراسي جديد
@@ -67,13 +72,14 @@ export default function AcademicYears() {
                     <button type="submit">اضافة</button>
                 </div>
             </form>
+            )}
             <Table
                 resource={'academic-years'}
                 editable={false}
                 deletable={false}
                 fields={[{name: "name", label: "العام الدراسي"}, {name: "active", label: "الحالي"}]}
             >
-                {activateButton}
+                {userCanUpdate ? activateButton : null}
             </Table>
 
         </Page>

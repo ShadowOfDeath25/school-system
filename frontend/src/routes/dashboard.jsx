@@ -41,7 +41,7 @@ const route = {
                 sidebar: {
                     title: "الاعوام الدراسية"
                 },
-                action: ['view academic-years', 'create-academic-years']
+                action: "view academic-years"
             },
             element: <AcademicYears/>
         },
