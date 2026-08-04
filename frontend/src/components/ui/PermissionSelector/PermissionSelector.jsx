@@ -14,7 +14,7 @@ export default function PermissionSelector({
                                            }) {
     const {t} = useTranslation();
     const [searchTerm, setSearchTerm] = useState("");
-    const [collapsed, setCollapsed] = useState(() => new Set());
+    const [expandedKeys, setExpandedKeys] = useState(() => new Set());
 
     const normalizedTerm = searchTerm.trim().toLowerCase();
 
@@ -64,7 +64,7 @@ export default function PermissionSelector({
     };
 
     const toggleAccordion = (key) => {
-        setCollapsed(prev => {
+        setExpandedKeys(prev => {
             const next = new Set(prev);
             if (next.has(key)) {
                 next.delete(key);
@@ -97,7 +97,7 @@ export default function PermissionSelector({
             )}
 
             {filteredGroups.map(group => {
-                const expanded = normalizedTerm ? true : !collapsed.has(group.key);
+                const expanded = normalizedTerm ? true : expandedKeys.has(group.key);
                 const selectedCount = groupSelectedCount(group);
                 return (
                     <CustomAccordion
