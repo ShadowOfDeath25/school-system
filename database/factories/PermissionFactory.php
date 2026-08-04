@@ -42,6 +42,10 @@ class PermissionFactory extends Factory
         Permission::findOrCreate('delete activity-logs');
         Permission::findOrCreate('transfer students');
         Permission::findOrCreate('record-by-name marks');
+
+        foreach (['view', 'create', 'update', 'delete'] as $action) {
+            Permission::findOrCreate("$action roles");
+        }
     }
 
     /**

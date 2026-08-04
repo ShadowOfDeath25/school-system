@@ -31,7 +31,7 @@ export default function Welcome() {
                 <div className={styles.logoFrame}>
                     <img src="/logo.svg" alt="شعار مدرسة التربية الحديثة الخاصة"/>
                 </div>
-                <h1>أهلاً بك{user?.name ? `، ${user.name}` : ''} 👋</h1>
+                <h1>أهلاً بك{user?.name ? `، ${user.name}` : ''}</h1>
                 <p>نظام إدارة مدرسة التربية الحديثة الخاصة</p>
             </div>
 

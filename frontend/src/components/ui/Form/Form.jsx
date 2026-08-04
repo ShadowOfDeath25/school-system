@@ -3,6 +3,7 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import styles from './styles.module.css'
 import RadioField from "@ui/RadioField/RadioField.jsx";
 import AgeField from "@ui/AgeField/AgeField.jsx";
+import PermissionSelector from "@ui/PermissionSelector/PermissionSelector.jsx";
 import useForm from "@hooks/useForm.js";
 import { useEffect, useMemo, useRef } from "react";
 
@@ -32,6 +33,8 @@ export default function Form({
             if (field.type === 'age') {
                 acc[`${field.name}_years`] = "";
                 acc[`${field.name}_months`] = "";
+            } else if (field.type === 'permissions') {
+                acc[field.name] = field.value ?? [];
             } else {
                 acc[field.name] = field.value ?? (field.multiple ? [] : "");
             }
@@ -160,6 +163,15 @@ export default function Form({
                 return <RadioField key={field.id || field.name} {...commonProps} />;
             case 'age':
                 return <AgeField key={field.id || field.name} {...commonProps} />;
+            case 'permissions':
+                return (
+                    <PermissionSelector
+                        key={field.id || field.name}
+                        permissions={field.options}
+                        value={formData[field.name]}
+                        onChange={(value) => setFieldValue(field.name, value)}
+                    />
+                );
             default:
                 return <InputField key={field.id || field.name} {...commonProps} />;
         }

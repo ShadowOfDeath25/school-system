@@ -2,14 +2,11 @@ import Page from "@ui/Page/Page.jsx";
 import {useCreate, useGetAll} from "@hooks/api/useCrud.js";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import {useState} from "react";
-import {useTranslation} from "react-i18next";
 import Form from "@ui/Form/Form.jsx";
 import {useSnackbar} from "@contexts/SnackbarContext.jsx";
 
-
 export default function AddRoles() {
     const {data: permissions, isLoading, isError, error} = useGetAll("permissions");
-    const {i18n, t} = useTranslation();
     const [serverErrors, setServerErrors] = useState(null);
     const {showSnackbar} = useSnackbar()
     const creationMutation = useCreate("roles");
@@ -22,19 +19,15 @@ export default function AddRoles() {
             required: true,
             placeholder: "اسم الرتبة",
 
+        },
+        {
+            name: "permissions",
+            label: "الصلاحيات",
+            type: "permissions",
+            required: false,
+            options: permissions,
         }
     ]
-    fields.push(...Object.keys(permissions || {})?.map((key) => {
-        return {
-            name: key,
-            label: t(key),
-            type: "select",
-            multiple: true,
-            required: false,
-            options: permissions[key]?.map((permission) => ({label: t(permission), value: `${permission} ${key}`})),
-            placeholder: "لا صلاحية"
-        }
-    }));
 
 
     const handleSubmit = (data) => {
