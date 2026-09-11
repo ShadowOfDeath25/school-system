@@ -198,8 +198,9 @@ class MarksReportController extends Controller
         $validated = $request->validate([
             'language' => 'required|string',
             'semester' => 'required|string|in:الأول,الثاني',
+            'grade' => 'nullable|integer|min:1|max:12',
         ]);
-        $grade = (int) $request->input('grade');
+        $grade = $request->input('grade') ? (int) $request->input('grade') : null;
         $language = $validated['language'];
         $semester = $validated['semester'];
 

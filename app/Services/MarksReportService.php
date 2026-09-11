@@ -679,7 +679,48 @@ class MarksReportService
         ];
     }
 
-    public function getClassroomStatisticsData(string $academicYear, int $grade, string $language, string $semester): array
+    public function getClassroomStatisticsData(string $academicYear, ?int $grade, string $language, string $semester): array
+    {
+        // When a specific grade is provided, return single-grade data as before
+        if ($grade !== null) {
+            return $this->getSingleGradeClassroomStatisticsData($academicYear, $grade, $language, $semester);
+        }
+
+        // When no grade is specified, iterate over all grades that have classrooms
+        $availableGrades = Classroom::where('academic_year', $academicYear)
+            ->where('language', $language)
+            ->distinct()
+            ->pluck('grade')
+            ->sort()
+            ->values();
+
+        if ($availableGrades->isEmpty()) {
+            return [
+                'academic_year' => $academicYear,
+                'language' => $language,
+                'semester' => $semester,
+                'grades' => [],
+            ];
+        }
+
+        $gradesData = [];
+        foreach ($availableGrades as $g) {
+            $gradeResult = $this->getSingleGradeClassroomStatisticsData($academicYear, $g, $language, $semester);
+            // Only include grades that have data
+            if (!empty($gradeResult['classrooms']) && $gradeResult['classrooms']->count() > 0) {
+                $gradesData[] = $gradeResult;
+            }
+        }
+
+        return [
+            'academic_year' => $academicYear,
+            'language' => $language,
+            'semester' => $semester,
+            'grades' => $gradesData,
+        ];
+    }
+
+    private function getSingleGradeClassroomStatisticsData(string $academicYear, int $grade, string $language, string $semester): array
     {
         $gradeSubjects = GradeSubject::with('subject')
             ->whereHas('grade', fn ($q) => $q->where('grade', $grade))
