@@ -1,13 +1,22 @@
 @if (isset($grades))
-    {{-- Multi-grade mode --}}
+    {{-- Fallback if rendered as single view with all grades --}}
+    <table style="border-collapse:collapse;border:1px solid #999">
+        <thead>
+            <tr>
+                <th colspan="20" style="font-weight:bold;background-color:#d0d0d0;text-align:center;border:1px solid #999">
+                    احصائيات الفصول — {{ $language ?? '' }}
+                    — الفصل {{ ($semester ?? '') === 'الأول' ? 'الدراسي الأول' : 'الدراسي الثاني' }}
+                    — {{ $academic_year ?? '' }}
+                </th>
+            </tr>
+        </thead>
+    </table>
     @foreach ($grades as $gradeData)
         <table style="border-collapse:collapse;border:1px solid #999">
             <thead>
                 <tr>
-                    <th colspan="{{ count($gradeData['subjects']) * 3 + 2 }}" style="font-weight:bold;background-color:#d0d0d0;text-align:center;border:1px solid #999">
-                        احصائيات الفصول — {{ $gradeData['grade_name'] }} — {{ $gradeData['language'] }}
-                        — الفصل {{ $gradeData['semester'] === 'الأول' ? 'الدراسي الأول' : 'الدراسي الثاني' }}
-                        — {{ $gradeData['academic_year'] }}
+                    <th colspan="{{ max(count($gradeData['subjects']) * 3 + 2, 5) }}" style="font-weight:bold;background-color:#e0e0e0;text-align:center;border:1px solid #999">
+                        {{ $gradeData['grade_name'] }}
                     </th>
                 </tr>
                 <tr>
@@ -40,7 +49,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ count($gradeData['subjects']) * 3 + 2 }}" style="text-align:center;color:#999;border:1px solid #999">لا توجد بيانات</td>
+                        <td colspan="{{ max(count($gradeData['subjects']) * 3 + 2, 5) }}" style="text-align:center;color:#999;border:1px solid #999">لا توجد بيانات</td>
                     </tr>
                 @endforelse
                 @if (isset($gradeData['totals_row']))
@@ -61,27 +70,32 @@
         @endif
     @endforeach
 @else
-    {{-- Single-grade mode: original layout --}}
+    {{-- Per-sheet layout (each grade has its own sheet tab) --}}
     <table style="border-collapse:collapse;border:1px solid #999">
         <thead>
             <tr>
-                <th colspan="{{ count($subjects) * 3 + 2 }}" style="font-weight:bold;background-color:#d0d0d0;text-align:center;border:1px solid #999">
-                    احصائيات الفصول — {{ $grade_name }} — {{ $language }}
-                    — الفصل {{ $semester === 'الأول' ? 'الدراسي الأول' : 'الدراسي الثاني' }}
-                    — {{ $academic_year }}
+                <th colspan="{{ max(count($subjects ?? []) * 3 + 2, 5) }}" style="font-weight:bold;background-color:#d0d0d0;text-align:center;border:1px solid #999">
+                    احصائيات الفصول — {{ $language ?? '' }}
+                    — الفصل {{ ($semester ?? '') === 'الأول' ? 'الدراسي الأول' : 'الدراسي الثاني' }}
+                    — {{ $academic_year ?? '' }}
+                </th>
+            </tr>
+            <tr>
+                <th colspan="{{ max(count($subjects ?? []) * 3 + 2, 5) }}" style="font-weight:bold;background-color:#e0e0e0;text-align:center;border:1px solid #999">
+                    {{ $grade_name ?? '' }}
                 </th>
             </tr>
             <tr>
                 <th style="font-weight:bold;background-color:#e0e0e0;border:1px solid #999">الفصل</th>
                 <th style="font-weight:bold;background-color:#e0e0e0;border:1px solid #999">مقيد</th>
-                @foreach ($subjects as $subj)
+                @foreach ($subjects ?? [] as $subj)
                     <th colspan="3" style="font-weight:bold;background-color:#e0e0e0;border:1px solid #999;text-align:center">{{ $subj['name'] }} ({{ $subj['max'] }})</th>
                 @endforeach
             </tr>
             <tr>
                 <th style="border:1px solid #999"></th>
                 <th style="border:1px solid #999"></th>
-                @foreach ($subjects as $subj)
+                @foreach ($subjects ?? [] as $subj)
                     <th style="font-weight:bold;text-align:center;background-color:#f0f0f0;border:1px solid #999">حاضر</th>
                     <th style="font-weight:bold;text-align:center;background-color:#f0f0f0;border:1px solid #999">ناجح</th>
                     <th style="font-weight:bold;text-align:center;background-color:#f0f0f0;border:1px solid #999">نسبة النجاح</th>
@@ -89,7 +103,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($classrooms as $classroom)
+            @forelse ($classrooms ?? [] as $classroom)
                 <tr>
                     <td style="border:1px solid #999">{{ $classroom['name'] }}</td>
                     <td style="text-align:center;border:1px solid #999">{{ $classroom['total_students'] }}</td>
@@ -101,7 +115,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="{{ count($subjects) * 3 + 2 }}" style="text-align:center;color:#999;border:1px solid #999">لا توجد بيانات</td>
+                    <td colspan="{{ max(count($subjects ?? []) * 3 + 2, 5) }}" style="text-align:center;color:#999;border:1px solid #999">لا توجد بيانات</td>
                 </tr>
             @endforelse
             @if (isset($totals_row))

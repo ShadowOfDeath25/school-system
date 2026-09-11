@@ -2,49 +2,58 @@
 
 namespace App\Exports;
 
-use Illuminate\Contracts\View\View;
-use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class ClassroomStatisticsExport implements FromView, ShouldAutoSize, WithEvents
+class ClassroomStatisticsExport implements WithMultipleSheets
 {
     public function __construct(
         public array $viewData,
     ) {}
 
-    public function view(): View
+    public function sheets(): array
     {
-        return view('reports.excel.classroom_statistics', $this->viewData);
-    }
+        $sheets = [];
 
-    public function registerEvents(): array
-    {
-        return [
-            AfterSheet::class => function (AfterSheet $event) {
-                $sheet = $event->sheet->getDelegate();
-                $sheet->getStyle($sheet->calculateWorksheetDimension())
-                    ->getAlignment()
-                    ->setHorizontal(Alignment::HORIZONTAL_RIGHT);
-                $sheet->getParent()->getActiveSheet()->setRightToLeft(true);
+        if (isset($this->viewData['grades'])) {
+            $reportMeta = [
+                'academic_year' => $this->viewData['academic_year'] ?? '',
+                'language' => $this->viewData['language'] ?? '',
+                'semester' => $this->viewData['semester'] ?? '',
+            ];
 
-                $sheet->getStyle($sheet->calculateWorksheetDimension())
-                    ->applyFromArray([
-                        'borders' => [
-                            'allBorders' => [
-                                'borderStyle' => Border::BORDER_THIN,
-                                'color' => ['argb' => 'FF000000'],
-                            ],
-                            'outline' => [
-                                'borderStyle' => Border::BORDER_MEDIUM,
-                                'color' => ['argb' => 'FF000000'],
-                            ],
-                        ],
-                    ]);
-            },
-        ];
+            $sheetTitles = [];
+            foreach ($this->viewData['grades'] as $gradeData) {
+                $baseTitle = ClassroomStatisticsGradeSheet::sanitizeSheetTitle($gradeData['grade_name'] ?? 'صفحة');
+                $title = $baseTitle;
+                $counter = 2;
+                while (isset($sheetTitles[$title])) {
+                    $suffix = " ($counter)";
+                    $title = mb_substr($baseTitle, 0, 31 - mb_strlen($suffix)) . $suffix;
+                    $counter++;
+                }
+                $sheetTitles[$title] = true;
+
+                $sheets[] = new ClassroomStatisticsGradeSheet(
+                    array_merge($reportMeta, $gradeData),
+                    $title
+                );
+            }
+        } else {
+            $title = ClassroomStatisticsGradeSheet::sanitizeSheetTitle($this->viewData['grade_name'] ?? 'احصائيات الفصول');
+            $sheets[] = new ClassroomStatisticsGradeSheet($this->viewData, $title);
+        }
+
+        if (empty($sheets)) {
+            $sheets[] = new ClassroomStatisticsGradeSheet([
+                'academic_year' => $this->viewData['academic_year'] ?? '',
+                'language' => $this->viewData['language'] ?? '',
+                'semester' => $this->viewData['semester'] ?? '',
+                'grade_name' => 'احصائيات الفصول',
+                'subjects' => [],
+                'classrooms' => [],
+            ]);
+        }
+
+        return $sheets;
     }
 }
