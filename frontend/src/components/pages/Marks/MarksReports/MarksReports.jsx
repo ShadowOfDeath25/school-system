@@ -279,10 +279,6 @@ export default function MarksReports() {
     };
 
     const handleViewClassroomStats = async () => {
-        if (!formData.grade) {
-            showSnackbar("يجب اختيار صف دراسي", "error");
-            return;
-        }
         if (!formData.semester || formData.semester === "both") {
             showSnackbar("يجب اختيار فصل دراسي محدد", "error");
             return;
@@ -301,10 +297,6 @@ export default function MarksReports() {
     };
 
     const handlePrintClassroomStats = async () => {
-        if (!formData.grade) {
-            showSnackbar("يجب اختيار صف دراسي", "error");
-            return;
-        }
         if (!formData.semester || formData.semester === "both") {
             showSnackbar("يجب اختيار فصل دراسي محدد", "error");
             return;
@@ -321,10 +313,6 @@ export default function MarksReports() {
     };
 
     const handleExportClassroomStats = () => {
-        if (!formData.grade) {
-            showSnackbar("يجب اختيار صف دراسي", "error");
-            return;
-        }
         if (!formData.semester || formData.semester === "both") {
             showSnackbar("يجب اختيار فصل دراسي محدد", "error");
             return;
@@ -633,18 +621,37 @@ export default function MarksReports() {
     );
 
     const classroomStatsResults = reportData && isClassroomStats && (
-        <div className={styles.container} style={{ marginTop: 16 }}>
-            <h4 className={styles.title}>
-                احصائيات الفصول — {reportData.grade_name} — {reportData.language}
-                — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}
-                {" — "}{reportData.academic_year}
-            </h4>
-            <p className={styles.summary}>
-                عدد الفصول: {reportData.totals.classrooms_count}
-                {" | "}عدد المواد: {reportData.totals.subjects_count}
-            </p>
-            <ClassroomStatisticsTable data={reportData} />
-        </div>
+        reportData.grades ? (
+            // Multi-grade mode: render a section per grade
+            reportData.grades.map((gradeData, idx) => (
+                <div key={idx} className={styles.container} style={{ marginTop: 16 }}>
+                    <h4 className={styles.title}>
+                        احصائيات الفصول — {gradeData.grade_name} — {gradeData.language}
+                        — الفصل {gradeData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}
+                        {" — "}{gradeData.academic_year}
+                    </h4>
+                    <p className={styles.summary}>
+                        عدد الفصول: {gradeData.totals.classrooms_count}
+                        {" | "}عدد المواد: {gradeData.totals.subjects_count}
+                    </p>
+                    <ClassroomStatisticsTable data={gradeData} />
+                </div>
+            ))
+        ) : (
+            // Single-grade mode: original rendering
+            <div className={styles.container} style={{ marginTop: 16 }}>
+                <h4 className={styles.title}>
+                    احصائيات الفصول — {reportData.grade_name} — {reportData.language}
+                    — الفصل {reportData.semester === "الأول" ? "الدراسي الأول" : "الدراسي الثاني"}
+                    {" — "}{reportData.academic_year}
+                </h4>
+                <p className={styles.summary}>
+                    عدد الفصول: {reportData.totals.classrooms_count}
+                    {" | "}عدد المواد: {reportData.totals.subjects_count}
+                </p>
+                <ClassroomStatisticsTable data={reportData} />
+            </div>
+        )
     );
 
     const topStudentsResults = reportData && isTopStudents && (

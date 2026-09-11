@@ -101,8 +101,10 @@ export default function StudentReports() {
 
     const legacyEndpoint = reportType === "roster" ? "/reports/students/roster" : reportType === "student_stats" ? "/reports/students/stats" : reportType === "behavior_register" ? "/reports/students/behavior-register" : "/reports/students/demographics";
 
+    const gradeRequiredReports = ["student_stats", "behavior_register"];
+
     const handlePrint = async () => {
-        if (!formData.grade) {
+        if (gradeRequiredReports.includes(reportType) && !formData.grade) {
             showSnackbar("يجب اختيار صف دراسي", "error");
             return;
         }
@@ -122,7 +124,7 @@ export default function StudentReports() {
     };
 
     const handleExport = () => {
-        if (!formData.grade) {
+        if (gradeRequiredReports.includes(reportType) && !formData.grade) {
             showSnackbar("يجب اختيار صف دراسي", "error");
             return;
         }
