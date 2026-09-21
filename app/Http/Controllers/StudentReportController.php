@@ -493,6 +493,8 @@ class StudentReportController extends Controller
             $students = $query->get();
         }
 
+        $layout = $validated['layout'] ?? (!empty($validated['student_id']) ? 'single' : 'grid');
+
         $studentsWithQr = $students->map(function ($student) {
             $qrData = json_encode([
                 'name' => $student->name_in_arabic,
@@ -510,16 +512,21 @@ class StudentReportController extends Controller
 
         ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
 
-        Pdf::view('reports.id_cards', [
+        $pdf = Pdf::view('reports.id_cards', [
             'students' => $studentsWithQr,
             'layout' => $layout,
             'schoolName' => config('app.school_data.name'),
             'governorate' => config('app.school_data.governorate'),
             'administration' => config('app.school_data.administration'),
-        ])
-            ->format('a4')
-            ->margins(0, 0, 0, 0)
-            ->save(storage_path("app/$filePath"));
+        ])->margins(0, 0, 0, 0);
+
+        if ($layout === 'single') {
+            $pdf->paperSize(85.6, 54, 'mm');
+        } else {
+            $pdf->format('a4');
+        }
+
+        $pdf->save(storage_path("app/$filePath"));
 
         return response()->json([
             'uuid' => $uuid,

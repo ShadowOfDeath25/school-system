@@ -190,7 +190,7 @@ export default function Form({
                             <img
                                 src={URL.createObjectURL(formData[field.name])}
                                 alt="preview"
-                                style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #ccc' }}
+                                style={{ width: '70px', height: '89px', objectFit: 'fill', borderRadius: '4px', border: '1px solid #ccc' }}
                             />
                         )}
                     </div>

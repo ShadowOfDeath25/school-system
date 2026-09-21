@@ -8,11 +8,6 @@
         font-style: normal;
     }
 
-    @page {
-        size: A4 portrait;
-        margin: 0;
-    }
-
     * {
         margin: 0;
         padding: 0;
@@ -20,58 +15,102 @@
         font-family: 'readex-pro', sans-serif !important;
     }
 
-    html, body {
-        width: 210mm !important;
-        height: auto !important;
-        min-height: auto !important;
-        max-height: none !important;
-        display: block !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        direction: rtl !important;
-        background-color: #ffffff !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
+    @if($layout === 'single')
+        @page {
+            size: 85.6mm 54mm;
+            margin: 0;
+        }
 
-    .page {
-        width: 210mm !important;
-        height: 297mm !important;
-        box-sizing: border-box !important;
-        page-break-after: always !important;
-        page-break-inside: avoid !important;
-        break-after: page !important;
-        break-inside: avoid !important;
-        display: block !important;
-        overflow: hidden !important;
-        position: relative !important;
-    }
+        html, body {
+            width: 85.6mm !important;
+            height: 54mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            direction: rtl !important;
+            background-color: #ffffff !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            overflow: hidden !important;
+        }
 
-    .page:last-child {
-        page-break-after: auto !important;
-        break-after: auto !important;
-    }
+        .page {
+            width: 85.6mm !important;
+            height: 54mm !important;
+            max-height: 54mm !important;
+            box-sizing: border-box !important;
+            page-break-after: always !important;
+            page-break-inside: avoid !important;
+            break-after: page !important;
+            break-inside: avoid !important;
+            display: block !important;
+            overflow: hidden !important;
+            position: relative !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
 
-    .grid-layout {
-        width: 178mm;
-        margin: 14mm auto 0 auto;
-        display: grid;
-        grid-template-columns: 85.6mm 85.6mm;
-        grid-template-rows: repeat(4, 54mm);
-        column-gap: 6.8mm;
-        row-gap: 5mm;
-        justify-content: center;
-        direction: rtl;
-    }
+        .page:last-child {
+            page-break-after: avoid !important;
+            break-after: avoid !important;
+        }
 
-    .single-layout {
-        width: 210mm;
-        height: 297mm;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto;
-    }
+        .single-layout {
+            width: 85.6mm !important;
+            height: 54mm !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
+        }
+    @else
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        html, body {
+            width: 210mm !important;
+            height: auto !important;
+            min-height: auto !important;
+            max-height: none !important;
+            display: block !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            direction: rtl !important;
+            background-color: #ffffff !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .page {
+            width: 210mm !important;
+            height: 297mm !important;
+            box-sizing: border-box !important;
+            page-break-after: always !important;
+            page-break-inside: avoid !important;
+            break-after: page !important;
+            break-inside: avoid !important;
+            display: block !important;
+            overflow: hidden !important;
+            position: relative !important;
+        }
+
+        .page:last-child {
+            page-break-after: auto !important;
+            break-after: auto !important;
+        }
+
+        .grid-layout {
+            width: 178mm;
+            margin: 14mm auto 0 auto;
+            display: grid;
+            grid-template-columns: 85.6mm 85.6mm;
+            grid-template-rows: repeat(4, 54mm);
+            column-gap: 6.8mm;
+            row-gap: 5mm;
+            justify-content: center;
+            direction: rtl;
+        }
+    @endif
 
     .card {
         width: 85.6mm;
@@ -157,7 +196,7 @@
     .photo-section img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: fill;
         display: block;
     }
 
