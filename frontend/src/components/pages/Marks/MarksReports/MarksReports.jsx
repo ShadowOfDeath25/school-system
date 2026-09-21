@@ -52,7 +52,9 @@ export default function MarksReports() {
         note_filter: "",
         sorting: "",
         color_mode: "colors",
+        component_name: "",
     });
+    const [componentOptions, setComponentOptions] = useState([]);
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const { showPDFPreview } = usePDFPreview();
@@ -65,6 +67,20 @@ export default function MarksReports() {
             setFormData((prev) => ({ ...prev, semester: "الأول" }));
         }
     }, [reportType]);
+
+    useEffect(() => {
+        if (reportType !== "certificates" || !formData.grade) {
+            setComponentOptions([]);
+            return;
+        }
+        const params = { grade: formData.grade };
+        if (formData.language && formData.language !== "الكل") {
+            params.language = formData.language;
+        }
+        axiosClient.get("/reports/students/certificates/components", { params })
+            .then((res) => setComponentOptions(res.data || []))
+            .catch(() => setComponentOptions([]));
+    }, [reportType, formData.grade, formData.language]);
 
     const { data: academicYears = [] } = useGetAll("academic-years", {}, {
         select: (data) => data?.data?.map((ay) => ay.name),
@@ -109,7 +125,7 @@ export default function MarksReports() {
 
     const normalizeCertificateData = () => {
         const result = {};
-        for (const key of ["academic_year", "semester", "language", "level", "grade", "classroom_id", "color_mode"]) {
+        for (const key of ["academic_year", "semester", "language", "level", "grade", "classroom_id", "color_mode", "component_name"]) {
             const val = formData[key];
             if (val !== undefined && val !== "" && val !== null && val !== "الكل") {
                 result[key] = val;
@@ -368,6 +384,9 @@ export default function MarksReports() {
                 export: "pdf",
                 color_mode: formData.color_mode,
             };
+            if (formData.component_name) {
+                params.component_name = formData.component_name;
+            }
             const response = await axiosClient.get("/reports/students/certificates", { params });
             showPDFPreview({ url: response.data.preview_url });
         } catch (error) {
@@ -397,6 +416,7 @@ export default function MarksReports() {
             note_filter: "",
             sorting: "",
             color_mode: "colors",
+            component_name: "",
         });
         setReportData(null);
     };
@@ -481,6 +501,16 @@ export default function MarksReports() {
                 handleChange={handleChange}
                 name={"semester"}
             />
+            {isCertificates && (
+                <SelectField
+                    label={"المكون"}
+                    options={componentOptions}
+                    placeholder={"اختر المكون"}
+                    value={formData.component_name}
+                    handleChange={handleChange}
+                    name={"component_name"}
+                />
+            )}
             {!isTopStudents && !isCertificates && !isClassroomStats && (
                 <SelectField
                     label={"ترتيب / فرز"}

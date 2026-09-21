@@ -16,6 +16,7 @@ class CertificateService
     public function getCertificatesData(array $filters): array
     {
         $semester = $filters['semester'] ?? 'both';
+        $componentName = $filters['component_name'] ?? null;
 
         if ($batchId = $filters['promotion_batch_id'] ?? null) {
             $batch = PromotionBatch::with('batchStudents')->findOrFail($batchId);
@@ -23,7 +24,7 @@ class CertificateService
 
             $studentRows = $batch->batchStudents
                 ->filter(fn ($bs) => !$bs->rolled_back)
-                ->map(fn ($batchStudent) => $this->getStudentCertificateDataFromBatch($batchStudent, $academicYear, $semester))
+                ->map(fn ($batchStudent) => $this->getStudentCertificateDataFromBatch($batchStudent, $academicYear, $semester, $componentName))
                 ->filter()
                 ->values();
 
@@ -57,14 +58,14 @@ class CertificateService
             return ['students' => []];
         }
 
-        $studentRows = $students->map(fn (Student $student) => $this->getStudentCertificateData($student, $academicYear, $semester))
+        $studentRows = $students->map(fn (Student $student) => $this->getStudentCertificateData($student, $academicYear, $semester, $componentName))
             ->filter()
             ->values();
 
         return ['students' => $studentRows->all()];
     }
 
-    public function getStudentCertificateData(Student $student, string $academicYear, string $semester = 'both'): ?array
+    public function getStudentCertificateData(Student $student, string $academicYear, string $semester = 'both', ?string $componentName = null): ?array
     {
         $gradeSubjects = GradeSubject::with('subject')
             ->whereHas('grade', fn ($q) => $q->where('grade', $student->grade))
@@ -72,8 +73,22 @@ class CertificateService
             ->when($semester !== 'both', fn ($q) => $q->whereIn('semester', [$semester, 'طوال العام']))
             ->get();
 
+        if ($componentName) {
+            $gradeSubjects = $gradeSubjects->filter(function (GradeSubject $gs) use ($componentName) {
+                return collect($gs->components ?? [])->contains(fn ($c) => ($c['name'] ?? '') === $componentName);
+            })->values();
+        }
+
         if ($gradeSubjects->isEmpty()) {
             return null;
+        }
+
+        $componentMap = null;
+        if ($componentName) {
+            $componentMap = $gradeSubjects->mapWithKeys(function (GradeSubject $gs) use ($componentName) {
+                $comp = collect($gs->components ?? [])->firstWhere('name', $componentName);
+                return [$gs->id => $comp];
+            });
         }
 
         $seatAssignment = StudentSeatAssignment::where('student_id', $student->id)
@@ -89,6 +104,10 @@ class CertificateService
             ->where('marks.academic_year', $academicYear)
             ->where('marks.round', 'first')
             ->when($semester !== 'both', fn ($q) => $q->where('exams.semester', $semester))
+            ->when($componentMap, function ($q) use ($componentMap) {
+                $validComponentIds = $componentMap->pluck('id')->unique()->values()->all();
+                $q->whereIn('exams.component_id', $validComponentIds);
+            })
             ->select('exams.grade_subject_id', 'exams.semester', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
             ->groupBy('exams.grade_subject_id', 'exams.semester')
             ->get()
@@ -101,6 +120,10 @@ class CertificateService
             ->whereIn('exams.grade_subject_id', $gsIds)
             ->where('marks.academic_year', $academicYear)
             ->where('marks.round', 'second')
+            ->when($componentMap, function ($q) use ($componentMap) {
+                $validComponentIds = $componentMap->pluck('id')->unique()->values()->all();
+                $q->whereIn('exams.component_id', $validComponentIds);
+            })
             ->select('exams.grade_subject_id')
             ->distinct()
             ->get()
@@ -114,9 +137,10 @@ class CertificateService
             ->exists();
 
         if ($semester === 'both') {
-            $subjects = $gradeSubjects->map(function (GradeSubject $gs) use ($firstRoundMarks, $secondRoundGS, $passedSecondRound) {
-                $firstData = $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, 'الأول');
-                $secondData = $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, 'الثاني');
+            $subjects = $gradeSubjects->map(function (GradeSubject $gs) use ($firstRoundMarks, $secondRoundGS, $passedSecondRound, $componentMap) {
+                $compMarks = $componentMap ? (float) ($componentMap[$gs->id]['marks'] ?? 0) : null;
+                $firstData = $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, 'الأول', $compMarks);
+                $secondData = $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, 'الثاني', $compMarks);
 
                 $hasFirst = $firstData['marks'] !== null;
                 $hasSecond = $secondData['marks'] !== null;
@@ -207,18 +231,23 @@ class CertificateService
                 ];
             });
         } else {
-            $subjects = $gradeSubjects->map(function (GradeSubject $gs) use ($firstRoundMarks, $secondRoundGS, $passedSecondRound, $semester) {
-                return $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, $semester) + [
+            $subjects = $gradeSubjects->map(function (GradeSubject $gs) use ($firstRoundMarks, $secondRoundGS, $passedSecondRound, $semester, $componentMap) {
+                $compMarks = $componentMap ? (float) ($componentMap[$gs->id]['marks'] ?? 0) : null;
+                return $this->computeSubjectData($gs, $firstRoundMarks, $secondRoundGS, $passedSecondRound, $semester, $compMarks) + [
                     'name' => $gs->subject?->name,
                     'added_to_total' => $gs->added_to_total,
                 ];
             });
         }
 
-        $category = $this->determineCategory($student, $subjects, $academicYear);
+        if ($componentName) {
+            $category = null;
+        } else {
+            $category = $this->determineCategory($student, $subjects, $academicYear);
+        }
 
         $totalMax = $subjects->where('added_to_total', true)->sum('max');
-        $totalMin = $subjects->where('added_to_total', true)->sum('min');
+        $totalMin = $componentName ? 0 : $subjects->where('added_to_total', true)->sum('min');
         $totalMarks = $subjects->where('added_to_total', true)->sum(fn ($s) => (float) ($s['marks'] ?? 0));
         $totalColor = $this->markColor($totalMax > 0 ? ($totalMarks / $totalMax) * 100 : null);
 
@@ -239,16 +268,17 @@ class CertificateService
             'total_color_name' => $this->markColorName($totalColor),
             'grade_label' => $this->calculateGradeLabel($totalMarks, $totalMax),
             'category' => $category,
-            'category_text' => $this->getCategoryText($category, $student->grade),
+            'category_text' => $category ? $this->getCategoryText($category, $student->grade) : null,
+            'component_name' => $componentName,
         ];
     }
 
-    public function getStudentCertificateDataFromBatch(PromotionBatchStudent $batchStudent, string $academicYear, string $semester): ?array
+    public function getStudentCertificateDataFromBatch(PromotionBatchStudent $batchStudent, string $academicYear, string $semester, ?string $componentName = null): ?array
     {
         $student = Student::find($batchStudent->student_id);
         if (!$student) return null;
 
-        $data = $this->getStudentCertificateData($student, $academicYear, $semester);
+        $data = $this->getStudentCertificateData($student, $academicYear, $semester, $componentName);
         if (!$data) return null;
 
         $fromGrade = (int) $batchStudent->from_grade;
@@ -277,14 +307,14 @@ class CertificateService
         };
     }
 
-    private function computeSubjectData(GradeSubject $gs, Collection $firstRoundMarks, Collection $secondRoundGS, bool $passedSecondRound, string $semester): array
+    private function computeSubjectData(GradeSubject $gs, Collection $firstRoundMarks, Collection $secondRoundGS, bool $passedSecondRound, string $semester, ?float $componentMarks = null): array
     {
         $key = $gs->id . '|' . $semester;
         $firstTotal = (float) ($firstRoundMarks->get($key, 0));
         $hasAnyMark = $firstRoundMarks->has($key);
         $hasSecond = $secondRoundGS->contains($gs->id);
-        $maxMarks = (float) $gs->total_marks;
-        $minMarks = (float) $gs->min_marks;
+        $maxMarks = $componentMarks !== null ? $componentMarks : (float) $gs->total_marks;
+        $minMarks = $componentMarks !== null ? 0 : (float) $gs->min_marks;
 
         if (!$hasAnyMark && !$hasSecond) {
             $effective = null;

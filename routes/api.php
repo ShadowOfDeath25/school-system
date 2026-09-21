@@ -76,6 +76,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('marks/year-work', [MarksReportController::class, 'yearWorkReport'])->name('marks.year-work')->middleware('authorization:view student-reports');
             Route::get('marks/classroom-statistics', [MarksReportController::class, 'classroomStatisticsReport'])->name('marks.classroom-statistics')->middleware('authorization:view student-reports');
             Route::get('marks/top-students', [MarksReportController::class, 'topStudentsReport'])->name('marks.top-students')->middleware('authorization:view student-reports');
+            Route::get('certificates/components', [CertificateController::class, 'components'])->name('certificates.components')->middleware('authorization:view student-reports');
             Route::get('certificates', [CertificateController::class, 'print'])->name('certificates')->middleware('authorization:view student-reports');
             Route::get('exam-candidates', [SeatNumberController::class, 'candidates'])->name('exam-candidates')->middleware('authorization:view student-reports');
             Route::get('exam-candidates-summary', [SeatNumberController::class, 'candidatesSummary'])->name('exam-candidates.summary')->middleware('authorization:view student-reports');

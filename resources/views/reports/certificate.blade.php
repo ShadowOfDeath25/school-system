@@ -105,7 +105,12 @@
                     <span>{{ config('app.school_data.administration') }}</span>
                     <span>{{ config('app.school_data.name') }}</span>
                 </div>
-                <div style="flex:1;text-align:center;font-weight:bold;font-size:14px">شهادة درجات</div>
+                <div style="flex:1;text-align:center;font-weight:bold;font-size:14px">
+                    شهادة درجات
+                    @if (!empty($component_name))
+                        <div style="font-size:11px;font-weight:normal;color:#555;margin-top:1mm">{{ $component_name }}</div>
+                    @endif
+                </div>
                 <div class="cert-logo">
                     @php $logo = public_path('logo.svg'); @endphp
                     @inlinedImage($logo)
@@ -120,7 +125,9 @@
                 <span style="display:block;font-size:10px;font-weight:normal;color:#777;margin-top:1mm">
                     العام الدراسي: {{ $student['academic_year'] }}
                     | رقم الجلوس: {{ $student['seat_number'] ?? '—' }}
-                    | التقدير: {{ $student['grade_label'] }}
+                    @if (empty($component_name))
+                        | التقدير: {{ $student['grade_label'] }}
+                    @endif
                 </span>
             </div>
 
@@ -178,6 +185,7 @@
                     @endif
                 </thead>
                 <tbody>
+                    @if (empty($component_name))
                     <tr>
                         <th style="background-color:#f0f0f0;font-weight:bold">الدرجة الصغرى</th>
                         @foreach ($mainSubjects as $subject)
@@ -198,6 +206,7 @@
                             @endif
                         @endforeach
                     </tr>
+                    @endif
                     <tr>
                         <th style="background-color:#f0f0f0;font-weight:bold">الدرجة العظمى</th>
                         @foreach ($mainSubjects as $subject)
@@ -261,7 +270,7 @@
                 </tbody>
             </table>
 
-            @if (($semester ?? 'both') !== 'الأول' && $student['category'] !== 'graduated')
+            @if (empty($component_name) && ($semester ?? 'both') !== 'الأول' && $student['category'] !== 'graduated')
             <div class="cert-result">
                 {{ $student['category_text'] }}
             </div>
