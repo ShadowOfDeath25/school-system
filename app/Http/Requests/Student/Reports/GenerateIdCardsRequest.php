@@ -14,7 +14,7 @@ class GenerateIdCardsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'academic_year' => ['required', 'string', 'exists:academic_years,name'],
+            'academic_year' => ['required_without:student_id', 'nullable', 'string', 'exists:academic_years,name'],
             'language' => ['nullable', 'string', 'in:عربي,لغات'],
             'level' => ['nullable', 'string', 'in:ابتدائي,اعدادي,رياض أطفال'],
             'grade' => ['nullable', 'integer', 'min:1', 'max:11'],

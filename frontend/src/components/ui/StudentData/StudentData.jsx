@@ -3,7 +3,6 @@ import SelectField from "@ui/SelectField/SelectField.jsx";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 import {useGetAll} from "@hooks/api/useCrud.js";
 import Button from "@mui/material/Button";
-import BadgeIcon from "@mui/icons-material/Badge";
 import axiosClient from "../../../axiosClient.js";
 import { usePDFPreview } from "@contexts/PDFPreviewContext.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
@@ -86,7 +85,6 @@ export default function StudentData({student, academicYear, setAcademicYear}) {
                     <Button
                         variant="outlined"
                         size="small"
-                        startIcon={<BadgeIcon />}
                         onClick={handlePrintIdCard}
                     >
                         طباعة بطاقة الهوية

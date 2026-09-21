@@ -6,8 +6,10 @@ import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
 import { StudentHelper } from "@utils/helpers/StudentHelper.js";
 import WithdrawButton from "@ui/WithdrawButton/WithdrawButton.jsx";
 import { useGetAll } from "../../../hooks/api/useCrud.js";
+import { useNavigate } from "react-router-dom";
 
 export default function ViewStudents() {
+    const navigate = useNavigate();
     const [tableFilters, setTableFilters] = useState(null);
     const { data: classrooms } = useGetAll("classrooms", { all: "true" });
     const { data: noteTypes } = useGetAll("note-types", { activeOnly: true }, {
@@ -91,6 +93,7 @@ export default function ViewStudents() {
                 filters={tableFilters}
                 fields={fields}
                 editFields={editFields}
+                onClick={(row) => navigate(`/students/${row.id}`)}
             >
                 {withdrawButton}
             </Table>
