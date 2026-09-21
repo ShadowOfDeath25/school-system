@@ -4,9 +4,9 @@ import StudentPayments from "@ui/StudentPayments/StudentPayments.jsx";
 import ParentPayments from "@ui/ParentPayments/ParentPayments.jsx";
 import styles from './styles.module.css'
 
-export default function DetailsPage({student, children, breadcrumbsLinks, academicYear, setAcademicYear}) {
+export default function DetailsPage({student, children, breadcrumbsLinks, title, academicYear, setAcademicYear}) {
     return (<>
-        <Page breadcrumbsLinks={breadcrumbsLinks}>
+        <Page title={title} breadcrumbsLinks={breadcrumbsLinks}>
             <div className={styles.detailsWrapper}>
                 <StudentData
                     student={student}
