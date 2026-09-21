@@ -172,6 +172,29 @@ export default function Form({
                         onChange={(value) => setFieldValue(field.name, value)}
                     />
                 );
+            case 'file':
+                return (
+                    <div key={field.id || field.name} style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                        <label style={{ fontSize: '14px', fontWeight: 500 }}>{field.label}</label>
+                        <input
+                            type="file"
+                            name={field.name}
+                            accept={field.accept || 'image/*'}
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                setFieldValue(field.name, file || '');
+                            }}
+                            style={{ padding: '8px' }}
+                        />
+                        {formData[field.name] && typeof formData[field.name] === 'object' && (
+                            <img
+                                src={URL.createObjectURL(formData[field.name])}
+                                alt="preview"
+                                style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                        )}
+                    </div>
+                );
             default:
                 return <InputField key={field.id || field.name} {...commonProps} />;
         }

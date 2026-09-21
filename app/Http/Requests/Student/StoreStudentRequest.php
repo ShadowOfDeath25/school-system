@@ -50,6 +50,7 @@ class StoreStudentRequest extends FormRequest
             'transferred_in' => ['sometimes', 'boolean'],
             'previous_school' => ['required_if:transferred_in,true', 'nullable', 'string', 'max:255'],
             'transfer_notes' => ['nullable', 'string', 'max:1000'],
+            'photo' => ['nullable', 'image', 'max:2048'],
         ];
     }
 }

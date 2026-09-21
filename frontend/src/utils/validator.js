@@ -12,7 +12,7 @@ export const validator = {
     },
     students: {
         nid: (nid) => {
-            return /^[0-9]{14}$/.test(nid)
+            return /^([0-9]{14}|SEED[0-9]{8})$/.test(nid)
         }
     },
     parents: {

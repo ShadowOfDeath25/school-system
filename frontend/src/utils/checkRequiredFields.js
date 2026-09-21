@@ -1,5 +1,8 @@
 export default function checkRequiredFields(data, fields) {
     for (const field of fields) {
+        if (typeof field.visible === 'function' && !field.visible(data)) {
+            continue;
+        }
         if (field.type === 'age') {
             if (field.required && (!data[`${field.name}_years`] || !data[`${field.name}_months`])) {
                 return false;

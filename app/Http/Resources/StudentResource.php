@@ -28,13 +28,16 @@ class StudentResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'photo_url' => $this->photo ? asset('storage/' . $this->photo) : null,
             'language' => $this->language,
             'reg_number' => $this->reg_number,
             'name_in_arabic' => $this->name_in_arabic,
             'academic_year' => $this->classroom->academic_year ?? 'غير مقيد',
             'nid' => $this->nid,
             'father_name' => $father->name ?? 'غير مسجل',
+            'father_nid' => $father->nid ?? '',
             'mother_name' => $mother->name ?? 'غير مسجل',
+            'mother_nid' => $mother->nid ?? '',
             'father_edu' => $father->edu ?? 'غير مسجل',
             'father_job' => $father->job ?? 'غير مسجل',
             'father_phone_number' => $father->phone_number ?? 'غير مسجل',

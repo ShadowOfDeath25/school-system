@@ -102,6 +102,12 @@ export default function AddStudents() {
             normalizedData.existing_nids = mixedParentData.existing.map(g => g.nid);
         }
 
+        const photo = data.photo;
+        if (photo) {
+            normalizedData._photo = photo;
+        }
+        delete normalizedData.photo;
+
         return normalizedData;
     }
 
@@ -113,7 +119,43 @@ export default function AddStudents() {
 
     const onFormSubmit = (data, formActions) => {
         setServerErrors(undefined);
-        creationMutation.mutate(normalizeData(data), {
+        const normalized = normalizeData(data);
+        
+        let payload;
+        if (normalized._photo) {
+            const photo = normalized._photo;
+            delete normalized._photo;
+            const formData = new FormData();
+            formData.append('photo', photo);
+            // Flatten the normalized data into FormData
+            const appendToFormData = (fd, data, prefix = '') => {
+                for (const key in data) {
+                    const fullKey = prefix ? `${prefix}[${key}]` : key;
+                    const value = data[key];
+                    if (value === null || value === undefined) continue;
+                    if (Array.isArray(value)) {
+                        value.forEach((item, index) => {
+                            if (typeof item === 'object' && item !== null) {
+                                appendToFormData(fd, item, `${fullKey}[${index}]`);
+                            } else {
+                                fd.append(`${fullKey}[${index}]`, item);
+                            }
+                        });
+                    } else if (typeof value === 'object' && !(value instanceof File)) {
+                        appendToFormData(fd, value, fullKey);
+                    } else {
+                        fd.append(fullKey, value);
+                    }
+                }
+            };
+            appendToFormData(formData, normalized);
+            payload = formData;
+        } else {
+            delete normalized._photo;
+            payload = normalized;
+        }
+
+        creationMutation.mutate(payload, {
             onSuccess: () => {
                 showSnackbar("تم إضافة الطالب بنجاح");
                 setServerErrors(undefined);

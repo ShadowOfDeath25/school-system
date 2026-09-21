@@ -39,6 +39,7 @@ export default function StudentReports() {
         note_filter: "",
         month: "",
         sorting: "",
+        layout: "grid",
     });
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -95,11 +96,18 @@ export default function StudentReports() {
                 result.sorting = sorting;
             }
         }
+        if (reportType === 'id_cards' && formData.layout) {
+            result.layout = formData.layout;
+        }
         delete result.sorting;
         return result;
     };
 
-    const legacyEndpoint = reportType === "roster" ? "/reports/students/roster" : reportType === "student_stats" ? "/reports/students/stats" : reportType === "behavior_register" ? "/reports/students/behavior-register" : "/reports/students/demographics";
+    const legacyEndpoint = reportType === "roster" ? "/reports/students/roster" 
+        : reportType === "student_stats" ? "/reports/students/stats" 
+        : reportType === "behavior_register" ? "/reports/students/behavior-register" 
+        : reportType === "id_cards" ? "/reports/students/id-cards"
+        : "/reports/students/demographics";
 
     const gradeRequiredReports = ["student_stats", "behavior_register"];
 
@@ -188,14 +196,30 @@ export default function StudentReports() {
                         handleChange={handleChange}
                     />
 
-                    <SelectField
-                        label={"علامة مميزة"}
-                        options={noteFilterOptions}
-                        placeholder={"اختر العلامة"}
-                        value={formData.note_filter}
-                        handleChange={handleChange}
-                        name={"note_filter"}
-                    />
+                    {reportType === "id_cards" && (
+                        <SelectField
+                            label={"تنسيق الطباعة"}
+                            options={[
+                                { label: "عدة بطاقات في الصفحة", value: "grid" },
+                                { label: "بطاقة واحدة في الصفحة", value: "single" },
+                            ]}
+                            placeholder={"اختر التنسيق"}
+                            value={formData.layout}
+                            handleChange={handleChange}
+                            name={"layout"}
+                        />
+                    )}
+
+                    {reportType !== "id_cards" && (
+                        <SelectField
+                            label={"علامة مميزة"}
+                            options={noteFilterOptions}
+                            placeholder={"اختر العلامة"}
+                            value={formData.note_filter}
+                            handleChange={handleChange}
+                            name={"note_filter"}
+                        />
+                    )}
 
                     {reportType === "behavior_register" && (
                         <SelectField
@@ -268,9 +292,11 @@ export default function StudentReports() {
                     <Button variant={"contained"} color="primary" onClick={handlePrint}>
                         طباعة
                     </Button>
-                    <Button variant="outlined" color="primary" onClick={handleExport}>
-                        تصدير ك EXCEL
-                    </Button>
+                    {reportType !== "id_cards" && (
+                        <Button variant="outlined" color="primary" onClick={handleExport}>
+                            تصدير ك EXCEL
+                        </Button>
+                    )}
                     <Button variant={"contained"} color={"error"} onClick={handleReset}>
                         اعادة تعيين
                     </Button>

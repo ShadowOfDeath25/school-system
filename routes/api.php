@@ -82,6 +82,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('exam-candidates-summary', [SeatNumberController::class, 'candidatesSummary'])->name('exam-candidates.summary')->middleware('authorization:view student-reports');
             Route::get('exam-timetable', [ExamReportController::class, 'timetable'])->name('exam-timetable')->middleware('authorization:view student-reports');
             Route::get('behavior-register', [StudentReportController::class, 'behaviorRegister'])->name('behavior-register')->middleware('authorization:view student-reports');
+            Route::get('id-cards', [StudentReportController::class, 'idCards'])->name('id-cards')->middleware('authorization:view student-reports');
             Route::prefix('/payments')->name('payments.')->group(function () {
 
                 Route::get('/daily', [StudentReportController::class, 'dailyPayments']);

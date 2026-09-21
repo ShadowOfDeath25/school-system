@@ -16,6 +16,7 @@ use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateBehaviorRegisterRequest;
 use App\Http\Requests\Student\Reports\GenerateDailyPaymentsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateDemographicsReportRequest;
+use App\Http\Requests\Student\Reports\GenerateIdCardsRequest;
 use App\Http\Requests\Student\Reports\GenerateLetterRequest;
 use App\Http\Requests\Student\Reports\GenerateRosterReportRequest;
 use App\Http\Requests\Student\Reports\GenerateStudentStatsRequest;
@@ -26,6 +27,7 @@ use App\Services\DemographicsService;
 use App\Services\StudentReportService;
 use App\Services\StudentRosterService;
 use App\Services\StudentStatsService;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Spatie\LaravelPdf\Enums\Format;
@@ -450,6 +452,73 @@ class StudentReportController extends Controller
             ->orientation(Orientation::Landscape)
             ->footerView('components.pdf-footer')
             ->margins(10, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
+        ]);
+    }
+
+    public function idCards(GenerateIdCardsRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $layout = $validated['layout'] ?? 'grid';
+
+        if (!empty($validated['student_id'])) {
+            $students = Student::with('classroom')->where('id', $validated['student_id'])->get();
+        } else {
+            $query = Student::with('classroom')
+                ->where(function ($q) {
+                    $q->where('withdrawn', false)->orWhereNull('withdrawn');
+                })
+                ->where('transferred_out', false)
+                ->whereHas('classroom', function ($q) use ($validated) {
+                    $q->where('academic_year', $validated['academic_year']);
+                    if (!empty($validated['language'])) {
+                        $q->where('language', $validated['language']);
+                    }
+                    if (!empty($validated['level'])) {
+                        $q->where('level', $validated['level']);
+                    }
+                    if (!empty($validated['grade'])) {
+                        $q->where('grade', $validated['grade']);
+                    }
+                });
+
+            if (!empty($validated['classroom'])) {
+                $query->where('classroom_id', $validated['classroom']);
+            }
+
+            $students = $query->get();
+        }
+
+        $studentsWithQr = $students->map(function ($student) {
+            $qrData = json_encode([
+                'name' => $student->name_in_arabic,
+                'reg_number' => $student->reg_number,
+                'nid' => $student->nid,
+                'url' => url("/students/{$student->id}"),
+            ], JSON_UNESCAPED_UNICODE);
+
+            $qrSvg = QrCode::encoding('UTF-8')->margin(1)->format('svg')->size(100)->generate($qrData);
+            $student->qr_svg = base64_encode($qrSvg);
+            $student->photo_url = $student->photo ? public_path('storage/' . $student->photo) : null;
+
+            return $student;
+        });
+
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+        Pdf::view('reports.id_cards', [
+            'students' => $studentsWithQr,
+            'layout' => $layout,
+            'schoolName' => config('app.school_data.name'),
+            'governorate' => config('app.school_data.governorate'),
+            'administration' => config('app.school_data.administration'),
+        ])
+            ->format('a4')
+            ->margins(0, 0, 0, 0)
             ->save(storage_path("app/$filePath"));
 
         return response()->json([

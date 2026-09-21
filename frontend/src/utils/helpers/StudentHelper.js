@@ -67,6 +67,12 @@ const FIELDS = {
             name: "religion", type: "radio", id: "religion", label: "الديانة", options: RELIGIONS
         }, NOTE: {
             name: "note", type: "select", label: "علامة مميزة", options: [], placeholder: "لا يوجد", dynamicOptions: true
+        }, PHOTO: {
+            name: "photo",
+            type: "file",
+            id: "student_photo",
+            label: "صورة الطالب",
+            accept: "image/*",
         },
         LANGUAGE: {
             name: "language",
