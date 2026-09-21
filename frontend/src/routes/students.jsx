@@ -25,6 +25,7 @@ const routes = {
             path: ":id",
             element: <StudentDetailsLayout/>,
             handle: {
+                title: "بيانات التلميذ",
                 fallbackRedirect: "/students",
                 breadcrumbs: () => [
                     <Link className={style.breadcrumbLink} to={'/students'}>التلاميذ</Link>

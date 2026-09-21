@@ -4,18 +4,20 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import {useMatches} from "react-router";
 import {Link} from "react-router-dom";
 
-export default function Page({children, breadcrumbsLinks}) {
+export default function Page({children, breadcrumbsLinks, title}) {
     const matches = useMatches()
     const breadcrumbs =breadcrumbsLinks?
         [
-            ...breadcrumbsLinks.map((link) =>
-                React.cloneElement(link, { className: styles.breadcrumbLink })
+            ...breadcrumbsLinks.map((link, idx) =>
+                React.cloneElement(link, { key: link.key || idx, className: styles.breadcrumbLink })
             ),
             <Link
+                key="current-page"
                 className={styles.breadcrumbLink}
                 to={matches[matches.length - 1].pathname}
             >
                 {
+                    title ||
                     matches[matches.length - 1].handle?.sidebar?.header ||
                     matches[matches.length - 1].handle?.sidebar?.title ||
                     matches[matches.length - 1].handle?.title
@@ -25,6 +27,7 @@ export default function Page({children, breadcrumbsLinks}) {
         :
         matches.filter((match) => match.handle).map((match) => {
             return <Link
+                key={match.pathname}
                 className={styles.breadcrumbLink}
                 to={match.pathname}
             >
@@ -34,7 +37,7 @@ export default function Page({children, breadcrumbsLinks}) {
                     match?.handle?.title}
             </Link>
         })
-    const title2 = matches[matches.length - 1].handle?.sidebar?.title ?? matches[matches.length - 1].handle?.title;
+    const title2 = title ?? (matches[matches.length - 1].handle?.sidebar?.title ?? matches[matches.length - 1].handle?.title);
 
     return (
         <div className={styles.container}>

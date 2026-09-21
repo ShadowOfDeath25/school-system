@@ -9,8 +9,10 @@ export default function StudentDetailsLayout() {
     const matches = useMatches();
 
 
-    const currentRoute = matches[matches.length - 2];
-    const fallbackRedirect = currentRoute?.handle?.fallbackRedirect ?? "/";
+    const currentMatch = matches[matches.length - 1];
+    const parentMatch = matches[matches.length - 2];
+    const fallbackRedirect = currentMatch?.handle?.fallbackRedirect ?? parentMatch?.handle?.fallbackRedirect ?? "/";
+    const title = currentMatch?.handle?.title;
     const {data: currentUser} = useCurrentUser();
 
 
@@ -40,6 +42,7 @@ export default function StudentDetailsLayout() {
             academicYear={academicYear}
             setAcademicYear={setAcademicYear}
             breadcrumbsLinks={breadcrumbsLinks}
+            title={title}
         >
             <Outlet context={{student, academicYear, setAcademicYear, user: currentUser}}/>
         </DetailsPage>
