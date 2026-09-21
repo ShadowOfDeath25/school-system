@@ -115,12 +115,53 @@ export default function Table({
             fields: modalFields,
             item: item,
             onSave: (formData) => {
-                updateMutation.mutate({...formData, id: item.id}, {
+                const dataToSave = { ...formData, id: item.id };
+
+                // If photo is not a new File (e.g. empty string, null, or existing url string), don't send it
+                if ('photo' in dataToSave && !(dataToSave.photo instanceof File)) {
+                    delete dataToSave.photo;
+                }
+
+                // Check if any field is a File
+                const hasFile = Object.values(dataToSave).some(val => val instanceof File);
+
+                let payload;
+                if (hasFile) {
+                    const fd = new FormData();
+                    for (const key in dataToSave) {
+                        const val = dataToSave[key];
+                        if (val === null || val === undefined) continue;
+                        if (val instanceof File) {
+                            fd.append(key, val);
+                        } else if (Array.isArray(val)) {
+                            val.forEach((v, i) => {
+                                if (typeof v === 'object') {
+                                    for (const subK in v) {
+                                        fd.append(`${key}[${i}][${subK}]`, v[subK]);
+                                    }
+                                } else {
+                                    fd.append(`${key}[${i}]`, v);
+                                }
+                            });
+                        } else if (typeof val === 'object') {
+                            for (const subK in val) {
+                                fd.append(`${key}[${subK}]`, val[subK]);
+                            }
+                        } else {
+                            fd.append(key, val);
+                        }
+                    }
+                    payload = fd;
+                } else {
+                    payload = dataToSave;
+                }
+
+                updateMutation.mutate(payload, {
                     onSuccess: () => {
                         showSnackbar("تم تحديث العنصر بنجاح");
                         hideInputModal();
-                    }, onError: () => {
-                        showSnackbar("حدث خطأ أثناء تحديث العنصر", "error");
+                    }, onError: (error) => {
+                        showSnackbar(error?.response?.data?.message || "حدث خطأ أثناء تحديث العنصر", "error");
                     }
                 });
             }, isLoading: updateMutation.isLoading, serverErrors: updateMutation.error?.response?.data?.errors,

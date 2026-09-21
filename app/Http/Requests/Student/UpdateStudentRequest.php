@@ -20,7 +20,7 @@ class UpdateStudentRequest extends FormRequest
         return [
             'name_in_arabic' => ['sometimes', 'string'],
             'name_in_english' => ['sometimes', 'string'],
-            'nid' => ['sometimes', 'string', 'regex:/^[0-9]{14}$/', Rule::unique('students')->ignore($studentId)],
+            'nid' => ['sometimes', 'string', 'regex:/^([0-9]{14}|SEED[0-9]{8})$/', Rule::unique('students')->ignore($studentId)],
             'birth_date' => ['sometimes', 'date', new AgeForGrade],
             'birth_address' => ['sometimes', 'string'],
             'language' => ['string', 'in:عربي,لغات'],
@@ -48,6 +48,7 @@ class UpdateStudentRequest extends FormRequest
             'guardian_phone_number' => ['required_if:guardian_type,other', 'nullable', 'string', 'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/'],
             'guardian_job' => ['nullable', 'string', 'max:255'],
             'guardian_edu' => ['nullable', 'string', 'max:255'],
+            'photo' => ['nullable', 'sometimes', 'image', 'max:2048'],
         ];
     }
 }

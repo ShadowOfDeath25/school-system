@@ -2,11 +2,34 @@ import styles from './styles.module.css'
 import SelectField from "@ui/SelectField/SelectField.jsx";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
 import {useGetAll} from "@hooks/api/useCrud.js";
+import Button from "@mui/material/Button";
+import axiosClient from "../../../axiosClient.js";
+import { usePDFPreview } from "@contexts/PDFPreviewContext.jsx";
+import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 
 export default function StudentData({student, academicYear, setAcademicYear}) {
     const {data: academicYears = []} = useGetAll('academic-years', {}, {
         select: (data) => data?.data?.map((academicYear) => academicYear.name)
     });
+    
+    const { showPDFPreview } = usePDFPreview();
+    const { showSnackbar } = useSnackbar();
+
+    const handlePrintIdCard = async () => {
+        try {
+            const response = await axiosClient.get('/reports/students/id-cards', {
+                params: {
+                    student_id: student.id,
+                    academic_year: academicYear,
+                    layout: 'single',
+                }
+            });
+            showPDFPreview({ url: response.data.preview_url });
+        } catch (error) {
+            showSnackbar('فشل طباعة بطاقة الهوية', 'error');
+        }
+    };
+
     console.log(student)
     return (
         <>
@@ -58,6 +81,15 @@ export default function StudentData({student, academicYear, setAcademicYear}) {
 
                     </tbody>
                 </table>
+                <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'flex-end' }}>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={handlePrintIdCard}
+                    >
+                        طباعة بطاقة الهوية
+                    </Button>
+                </div>
             </div>
 
         </>

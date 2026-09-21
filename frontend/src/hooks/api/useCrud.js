@@ -66,7 +66,14 @@ export const useUpdate = (resource, options = {}) => {
     return useMutation({
         ...options,
         mutationKey: [resource, "update"],
-        mutationFn: (payload) => axiosClient.put(`/${resource}/${payload.id}`, payload),
+        mutationFn: (payload) => {
+            if (payload instanceof FormData) {
+                const id = payload.get('id');
+                payload.append('_method', 'PUT');
+                return axiosClient.post(`/${resource}/${id}`, payload);
+            }
+            return axiosClient.put(`/${resource}/${payload.id}`, payload);
+        },
         onSuccess: (data, variables, context) => {
             queryClient.invalidateQueries({queryKey: [resource]})
             options.onSuccess?.(data, variables, context)

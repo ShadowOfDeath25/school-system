@@ -42,6 +42,7 @@ class Student extends Model
         'administrative_id',
         'has_siblings',
         'guardian_id',
+        'photo',
     ];
 
     public function classroom(): BelongsTo

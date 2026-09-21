@@ -88,6 +88,7 @@ class StudentController extends Controller
         $previousSchool = Arr::pull($validated, 'previous_school');
         $transferNotes = Arr::pull($validated, 'transfer_notes');
         $studentData = $validated;
+        $photo = Arr::pull($studentData, 'photo');
 
         if ($parentMode === 'sibling') {
             $nids = array_column($parentData, 'nid');
@@ -135,7 +136,7 @@ class StudentController extends Controller
             }
         }
 
-        $student = DB::transaction(function () use ($studentData, $parentData, $parentMode, $existingNids, $guardianType, $transferredIn, $previousSchool, $transferNotes) {
+        $student = DB::transaction(function () use ($studentData, $parentData, $parentMode, $existingNids, $guardianType, $transferredIn, $previousSchool, $transferNotes, $photo) {
             if (! empty($studentData['classroom_id'])) {
                 $newClassroom = Classroom::withCount(['students' => function ($query) {
                     $query->where('withdrawn', false)
@@ -151,6 +152,12 @@ class StudentController extends Controller
 
             $student = new Student($studentData);
             $student->save();
+
+            if ($photo) {
+                $path = $photo->store('photos/students', 'public');
+                $student->photo = $path;
+                $student->save();
+            }
 
             $parentIds = [];
             foreach ($parentData as $parent) {
@@ -221,6 +228,13 @@ class StudentController extends Controller
             }
             $parentData = Arr::pull($validated, 'parents');
             $guardianType = Arr::pull($validated, 'guardian_type');
+            
+            if ($request->hasFile('photo')) {
+                $photo = Arr::pull($validated, 'photo');
+                $path = $photo->store('photos/students', 'public');
+                $student->photo = $path;
+            }
+
             $student->update($validated);
             if ($request->has('parents')) {
                 $parentIds = collect($parentData)->map(function ($parent) {

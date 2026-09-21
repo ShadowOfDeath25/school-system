@@ -5,6 +5,7 @@ const REPORT_TYPES = [
     { label: "إحصاءات الفصول", value: "student_stats" },
     { label: "كشف الطلاب", value: "roster" },
     { label: "دفتر 5 سلوك", value: "behavior_register" },
+    { label: "بطاقات الهوية", value: "id_cards" },
 ];
 
 export default function ReportSelector({ value, onChange }) {

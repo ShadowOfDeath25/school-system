@@ -7,6 +7,9 @@ import ViewNoteTypes from "@pages/NoteTypes/ViewNoteTypes.jsx";
 import ViewGradeAges from "@pages/GradeAges/ViewGradeAges.jsx";
 import TransferOut from "@pages/Transfers/TransferOut.jsx";
 import TransferHistory from "@pages/Transfers/TransferHistory.jsx";
+import StudentDetailsLayout from "@layouts/StudentDetailsLayout.jsx";
+import style from "@ui/Page/style.module.css";
+import { Link } from "react-router-dom";
 
 
 const routes = {
@@ -18,6 +21,16 @@ const routes = {
         }
     },
     children: [
+        {
+            path: ":id",
+            element: <StudentDetailsLayout/>,
+            handle: {
+                fallbackRedirect: "/students",
+                breadcrumbs: () => [
+                    <Link className={style.breadcrumbLink} to={'/students'}>التلاميذ</Link>
+                ]
+            }
+        },
         {
             index: true,
             element: <ViewStudents/>,
