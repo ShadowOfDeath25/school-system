@@ -28,6 +28,7 @@ class StudentResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'classroom_id' => $this->classroom_id,
             'photo_url' => $this->photo ? asset('storage/' . $this->photo) : null,
             'language' => $this->language,
             'reg_number' => $this->reg_number,

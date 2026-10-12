@@ -1,14 +1,23 @@
 {
     "agents": [
-        "junie",
-        "copilot",
         "zed",
         "claude_code",
         "codex",
-        "opencode"
+        "opencode",
+        "antigravity"
     ],
     "cloud": false,
     "mcp": true,
     "nightwatch": false,
-    "sail": false
+    "packages": [
+        "spatie/laravel-pdf"
+    ],
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "octane-development",
+        "pest-testing",
+        "tailwindcss-development",
+        "laravel-pdf"
+    ]
 }

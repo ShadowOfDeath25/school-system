@@ -6,8 +6,8 @@
             "enabled": true,
             "command": [
                 "wsl.exe",
-                "/usr/bin/php8.4",
-                "/home/abdelrahman/school-system/artisan",
+                "/usr/bin/php8.5",
+                "/home/abdelrahman/projects/school-system/artisan",
                 "boost:mcp"
             ]
         }

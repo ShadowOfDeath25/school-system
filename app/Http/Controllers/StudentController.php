@@ -224,6 +224,19 @@ class StudentController extends Controller
                             'classroom_id' => ['The selected classroom is full.'],
                         ]);
                     }
+
+                    $studentGrade = $student->grade ?? $student->classroom?->grade;
+                    if ($studentGrade && (string) $newClassroom->grade !== (string) $studentGrade) {
+                        throw ValidationException::withMessages([
+                            'classroom_id' => ['The selected classroom does not match the student grade.'],
+                        ]);
+                    }
+
+                    if ($student->language && $newClassroom->language !== $student->language) {
+                        throw ValidationException::withMessages([
+                            'classroom_id' => ['The selected classroom does not match the student language.'],
+                        ]);
+                    }
                 }
             }
             $parentData = Arr::pull($validated, 'parents');
