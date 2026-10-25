@@ -246,13 +246,47 @@ export const StudentHelper = {
     GENDERS,
     RELIGIONS,
     FIELDS,
-    getAllFields: (mode = 'first') => {
-        const fatherFields = mode === 'sibling'
+    getAllFields: (mode = 'first', isEdit = false) => {
+        let fatherFields = mode === 'sibling'
             ? Object.values(StudentHelper.FIELDS.FATHER_NID_ONLY)
             : Object.values(StudentHelper.FIELDS.FATHER);
-        const motherFields = mode === 'sibling'
+        let motherFields = mode === 'sibling'
             ? Object.values(StudentHelper.FIELDS.MOTHER_NID_ONLY)
             : Object.values(StudentHelper.FIELDS.MOTHER);
+        let guardianOtherFields = Object.values(StudentHelper.FIELDS.GUARDIAN_OTHER);
+
+        if (isEdit) {
+            fatherFields = fatherFields.map(field => {
+                if (field.name === 'father_nid') {
+                    return {
+                        ...field,
+                        required: false,
+                        validator: (nid) => !nid || validator.students.nid(nid)
+                    };
+                }
+                return field;
+            });
+            motherFields = motherFields.map(field => {
+                if (field.name === 'mother_nid') {
+                    return {
+                        ...field,
+                        required: false,
+                        validator: (nid) => !nid || validator.students.nid(nid)
+                    };
+                }
+                return field;
+            });
+            guardianOtherFields = guardianOtherFields.map(field => {
+                if (field.name === 'guardian_nid') {
+                    return {
+                        ...field,
+                        required: false,
+                        validator: (nid) => !nid || validator.students.nid(nid)
+                    };
+                }
+                return field;
+            });
+        }
 
         return [
             {
@@ -271,10 +305,13 @@ export const StudentHelper = {
                 title: "ولي الأمر الأساسي",
                 fields: [
                     StudentHelper.FIELDS.GUARDIAN_TYPE,
-                    ...Object.values(StudentHelper.FIELDS.GUARDIAN_OTHER)
+                    ...guardianOtherFields
                 ]
             }
         ]
+    },
+    getEditFields: () => {
+        return StudentHelper.getAllFields('first', true);
     },
     getMixedFields: (mixedData) => {
         const existing = mixedData.existing[0];

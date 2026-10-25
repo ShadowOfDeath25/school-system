@@ -39,13 +39,13 @@
             @foreach($chunk as $student)
                 <tr>
                     <td>{{ $i++ }}</td>
-                    <td>{{ $student->reg_number }}</td>
+                    <td data-type="s" style="text-align: center;">{{ $student->reg_number }}</td>
                     <td>{{ $student->name_in_arabic }}</td>
                     <td>{{ ($student->total_sum ?? 0) + ($student->exemption_amount ?? 0) }}</td>
                     <td>{{ $student->paid_sum ?? 0 }}</td>
                     <td>{{ $student->exemption_amount ?? 0 }}</td>
                     <td>{{ ($student->total_sum ?? 0) - ($student->paid_sum ?? 0) }}</td>
-                    <td>
+                    <td data-type="s" style="text-align: center;">
                         {{ $student->guardian->phone_number ?? 'غير مسجل' }}
                     </td>
                     @if(request()->boolean("show_notes"))

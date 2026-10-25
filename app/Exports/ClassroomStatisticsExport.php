@@ -2,9 +2,10 @@
 
 namespace App\Exports;
 
+use Maatwebsite\Excel\Concerns\Export;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class ClassroomStatisticsExport implements WithMultipleSheets
+class ClassroomStatisticsExport implements WithMultipleSheets, Export
 {
     public function __construct(
         public array $viewData,

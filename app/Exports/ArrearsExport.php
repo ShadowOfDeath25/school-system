@@ -42,6 +42,11 @@ class ArrearsExport implements FromView, ShouldAutoSize, WithEvents
                             ],
                         ],
                     ]);
+
+                $sheet->getStyle('B:B')->getNumberFormat()->setFormatCode('@');
+                $sheet->getStyle('B:B')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle('H:H')->getNumberFormat()->setFormatCode('@');
+                $sheet->getStyle('H:H')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             },
         ];
     }

@@ -66,7 +66,7 @@ export default function ViewStudents() {
     ]
 
     const editFields = useMemo(() => {
-        const fields = StudentHelper.getAllFields();
+        const fields = StudentHelper.getEditFields();
         if (!noteTypes || noteTypes.length === 0) return fields;
         const noteOptions = [{label: "لا يوجد", value: null}, ...noteTypes];
         return fields.map(section => ({

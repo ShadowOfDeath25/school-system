@@ -26,7 +26,7 @@
                 <td style="text-align: center;">{{ $index + 1 }}</td>
                 <td>{{ $student['name_in_arabic'] }}</td>
                 <td>{{ $student['name_in_english'] }}</td>
-                <td>{{ $student['nid'] }}</td>
+                <td data-type="s" style="text-align: center;">{{ $student['nid'] }}</td>
                 <td style="text-align: center;">{{ $student['birth_date_display'] }}</td>
                 <td style="text-align: center;">{{ $student['age_display'] }}</td>
                 <td style="text-align: center;">{{ $student['entry_date'] }}</td>
@@ -36,7 +36,7 @@
                 <td>{{ $student['classroom_name'] }}</td>
                 <td>{{ $student['guardian_name'] }}</td>
                 <td>{{ $student['guardian_job'] }}</td>
-                <td>{{ $student['guardian_phone'] }}</td>
+                <td data-type="s" style="text-align: center;">{{ $student['guardian_phone'] }}</td>
             </tr>
         @endforeach
     </tbody>

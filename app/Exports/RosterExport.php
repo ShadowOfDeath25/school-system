@@ -46,7 +46,9 @@ class RosterExport implements FromView, ShouldAutoSize, WithEvents
                     ]);
 
                 $sheet->getStyle('D:D')->getNumberFormat()->setFormatCode('@');
+                $sheet->getStyle('D:D')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
                 $sheet->getStyle('N:N')->getNumberFormat()->setFormatCode('@');
+                $sheet->getStyle('N:N')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             },
         ];
     }
