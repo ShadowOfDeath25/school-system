@@ -23,7 +23,10 @@ export default function WithdrawButton({student, children}) {
     return (
         <>
             <Button
-                onClick={() => handleWithdraw(student)}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleWithdraw(student);
+                }}
                 variant={"contained"}
                 sx={{backgroundColor: "var(--btn-danger-bg)"}}
             >

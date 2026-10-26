@@ -72,26 +72,32 @@ export default function TablePresenter({
                         {
                             childrenArray.map((child, index) => {
                                 if (typeof child.content === 'function') {
-                                    return <td key={`additionalColumn-${index}`} className={styles.actionCell}>
+                                    return <td key={`additionalColumn-${index}`} className={styles.actionCell} onClick={(e) => e.stopPropagation()}>
                                         {child.content(row)}
                                     </td>
                                 } else {
-                                    return <td key={`additionalColumn-${index}`} className={styles.actionCell}>
+                                    return <td key={`additionalColumn-${index}`} className={styles.actionCell} onClick={(e) => e.stopPropagation()}>
                                         {child.content}
                                     </td>
                                 }
                             })
                         }
                         {userCanEdit && row.name !== "Super Admin" &&
-                            <td className={styles.actionCell}>
-                                <IconButton onClick={() => onEditClick(row)}>
+                            <td className={styles.actionCell} onClick={(e) => e.stopPropagation()}>
+                                <IconButton onClick={(e) => {
+                                    e.stopPropagation();
+                                    onEditClick(row);
+                                }}>
                                     <EditIcon sx={{color: "var(--color-focus)"}}/>
                                 </IconButton>
                             </td>
                         }
                         {userCanDelete && row.name !== "Super Admin" &&
-                            <td className={styles.actionCell}>
-                                <IconButton onClick={() => onDeleteClick(row.id)}>
+                            <td className={styles.actionCell} onClick={(e) => e.stopPropagation()}>
+                                <IconButton onClick={(e) => {
+                                    e.stopPropagation();
+                                    onDeleteClick(row.id);
+                                }}>
                                     <DeleteIcon sx={{color: 'var(--color-danger)'}}/>
                                 </IconButton>
                             </td>
