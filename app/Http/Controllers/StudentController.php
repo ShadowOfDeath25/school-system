@@ -14,6 +14,7 @@ use App\Models\StudentTransfer;
 use App\Services\StudentPaymentsService;
 use App\Traits\HasCRUD;
 use App\Traits\HasFilters;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -42,6 +43,11 @@ class StudentController extends Controller
     ];
 
     protected array $relationsToLoad = ['classroom', 'parents', 'guardian'];
+
+    protected function applySearch(Builder $query, string $search): void
+    {
+        $query->searchByFullName($search);
+    }
 
     public function query()
     {
@@ -298,7 +304,7 @@ class StudentController extends Controller
             ->push($student->id)
             ->unique();
 
-        $siblings = Student::whereIn('id', $siblingIds)->get()->keyBy('id');
+        $siblings = Student::whereIn('id', $siblingIds)->with('parents')->get()->keyBy('id');
         $service = new StudentPaymentsService;
         $academicYear = $request->input('academic_year');
 
@@ -329,7 +335,7 @@ class StudentController extends Controller
         return response()->json([
             'siblings' => $siblings->values()->map(fn ($s) => [
                 'id' => $s->id,
-                'name' => $s->name_in_arabic,
+                'name' => $s->full_name,
             ]),
             ...$aggregated,
         ]);

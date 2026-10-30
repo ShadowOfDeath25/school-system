@@ -45,14 +45,16 @@
             <tbody>
                 @foreach($chunk as $payment)
                     @php
-                        if($payment->student->classroom_id){
-                        [$classroomNumber,$classroomLevel] = explode(' ',$payment->student->classroom->name,2);
+                        $classroomNumber = null;
+                        $classroomLevel = null;
+                        if($payment->student?->classroom_id && $payment->student?->classroom?->name){
+                            [$classroomNumber,$classroomLevel] = explode(' ',$payment->student->classroom->name,2);
                         }
                     @endphp
                     <tr>
                         <td style="text-align:center;width:120px">{{$payment->id}}</td>
                         <td style="text-align:center;width:50px">{{$payment->value}}</td>
-                        <td>{{$payment->student->name_in_arabic}}</td>
+                        <td>{{$payment->student?->full_name ?? '—'}}</td>
                         <td style="text-align:center">{{$classroomNumber??"غير مقيد"}}</td>
                         <td style="text-align:center">{{$classroomLevel??"غير مقيد"}}</td>
                     </tr>

@@ -317,7 +317,7 @@
                         <div class="info-section">
                             <div class="info-row name-row">
                                 <span class="info-label">الاسم:</span>
-                                <span class="info-value name-value">{{ $student->name_in_arabic }}</span>
+                                <span class="info-value name-value">{{ $student->full_name }}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">الرقم القومي:</span>

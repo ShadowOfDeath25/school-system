@@ -5,6 +5,7 @@ import { useGetAll, useUpdate } from "@hooks/api/useCrud.js";
 import { useInputModal } from "@contexts/InputModalContext.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { ClassroomHelper } from "@helpers/ClassroomHelper.js";
+import { StudentHelper } from "@helpers/StudentHelper.js";
 
 export default function NotEnrolled() {
     const mutation = useUpdate('students', { all: true });
@@ -68,7 +69,15 @@ export default function NotEnrolled() {
                 filters={{ classroom: "null" }}
                 children={enrollButton}
                 editable={false}
-                fields={[{ name: "name_in_arabic", label: "الاسم" }, { name: "birth_date" }, { name: "nid" }]}
+                fields={[
+                    {
+                        name: "name_in_arabic",
+                        label: "الاسم",
+                        render: (row) => StudentHelper.getStudentFullName(row)
+                    },
+                    { name: "birth_date" },
+                    { name: "nid" }
+                ]}
             >
 
             </Table>

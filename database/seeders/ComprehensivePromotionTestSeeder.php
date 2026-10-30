@@ -37,9 +37,7 @@ class ComprehensivePromotionTestSeeder extends Seeder
 
         $classrooms = $this->createClassrooms();
 
-        $guardianId = $this->createDefaultGuardian();
-
-        $students = $this->createStudents($classrooms, $guardianId);
+        $students = $this->createStudents($classrooms);
 
         $this->createSecretNumbers();
         app(SecretAssignmentService::class)->assign($this->year);
@@ -68,6 +66,8 @@ class ComprehensivePromotionTestSeeder extends Seeder
             DB::table('student_enrollments')->whereIn('student_id', $studentIds)->delete();
             Student::whereIn('id', $studentIds)->delete();
         }
+
+        DB::table('parents')->where('nid', 'like', 'SEEDF%')->delete();
 
         DB::table('exams')->where('academic_year', $this->year)->delete();
 
@@ -180,24 +180,7 @@ class ComprehensivePromotionTestSeeder extends Seeder
         return $classrooms;
     }
 
-    private function createDefaultGuardian(): int
-    {
-        $guardian = DB::table('parents')->where('phone_number', '00000000000')->first();
-        if ($guardian) {
-            return $guardian->id;
-        }
-
-        return DB::table('parents')->insertGetId([
-            'name' => 'ولي الأمر الافتراضي',
-            'gender' => 'male',
-            'phone_number' => '00000000000',
-            'job' => 'موظف',
-            'edu' => 'جامعي',
-            'nid' => '00000000000000',
-        ]);
-    }
-
-    private function createStudents(array $classrooms, int $guardianId): array
+    private function createStudents(array $classrooms): array
     {
         $definitions = $this->getStudentDefinitions();
         $created = [];
@@ -207,9 +190,27 @@ class ComprehensivePromotionTestSeeder extends Seeder
             $status = $data['status'] ?? 'نشط';
             $level = getLevel($data['grade']);
 
+            $parts = explode(' ', $data['name'], 2);
+            $firstName = $parts[0];
+            $fatherName = $parts[1] ?? 'محمد';
+
+            $father = DB::table('parents')->where('name', $fatherName)->where('gender', 'male')->first();
+            if (! $father) {
+                $fatherId = DB::table('parents')->insertGetId([
+                    'name' => $fatherName,
+                    'gender' => 'male',
+                    'phone_number' => '01' . random_int(100000000, 999999999),
+                    'job' => 'موظف',
+                    'edu' => 'جامعي',
+                    'nid' => 'SEEDF' . str_pad((string) random_int(0, 999999999), 9, '0', STR_PAD_LEFT),
+                ]);
+            } else {
+                $fatherId = $father->id;
+            }
+
             $student = Student::create([
-                'name_in_arabic' => $data['name'],
-                'name_in_english' => $data['name'],
+                'name_in_arabic' => $firstName,
+                'name_in_english' => $firstName,
                 'nid' => 'SEED' . str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
                 'birth_date' => '2015-01-01',
                 'birth_address' => 'القاهرة',
@@ -222,11 +223,12 @@ class ComprehensivePromotionTestSeeder extends Seeder
                 'classroom_id' => $isWithdrawn ? null : ($classrooms[$data['grade']][$data['lang']] ?? null),
                 'withdrawn' => $isWithdrawn,
                 'status' => $status,
+                'guardian_id' => $fatherId,
             ]);
 
             DB::table('parent_student')->insert([
                 'student_id' => $student->id,
-                'parent_id' => $guardianId,
+                'parent_id' => $fatherId,
             ]);
 
             $created[] = [

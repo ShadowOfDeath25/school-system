@@ -34,7 +34,8 @@ class BehaviorRegisterService
         }
 
         $classroomQuery = Classroom::with(['students' => function ($query) use ($sorting) {
-            $query->where(fn ($sq) => $sq->where('status', '!=', 'متخرج')->orWhereNull('status'))
+            $query->with('parents')
+                ->where(fn ($sq) => $sq->where('status', '!=', 'متخرج')->orWhereNull('status'))
                 ->when($sorting, fn ($q) => $q->orderBy('gender', $sorting === 'maleFirst' ? 'asc' : 'desc'))
                 ->orderBy('name_in_arabic');
         }])

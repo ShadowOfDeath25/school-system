@@ -29,7 +29,7 @@ class StudentRosterService
         $startYear = (int) trim($academicYearParts[0]);
         $referenceDate = Carbon::create($startYear, 10, 1);
 
-        $query = Student::with('guardian')
+        $query = Student::with(['parents', 'guardian'])
             ->with('classroom:id,name,level,grade,language');
 
         $query->whereHas('classroom', function ($q) use ($academicYear) {
@@ -75,11 +75,7 @@ class StudentRosterService
         }
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name_in_arabic', 'like', "%{$search}%")
-                    ->orWhere('nid', 'like', "%{$search}%")
-                    ->orWhere('reg_number', 'like', "%{$search}%");
-            });
+            $query->searchByFullName($search);
         }
 
         $query->orderBy($sortBy, $sortDir);
@@ -123,7 +119,7 @@ class StudentRosterService
         $startYear = (int) trim($academicYearParts[0]);
         $referenceDate = Carbon::create($startYear, 10, 1);
 
-        $query = Student::with('guardian')
+        $query = Student::with(['parents', 'guardian'])
             ->with('classroom:id,name,level,grade,language');
 
         $query->whereHas('classroom', function ($q) use ($academicYear) {
@@ -161,11 +157,7 @@ class StudentRosterService
             }
         }
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name_in_arabic', 'like', "%{$search}%")
-                    ->orWhere('nid', 'like', "%{$search}%")
-                    ->orWhere('reg_number', 'like', "%{$search}%");
-            });
+            $query->searchByFullName($search);
         }
 
         $query->orderBy($sortBy, $sortDir);
@@ -184,7 +176,7 @@ class StudentRosterService
         return [
             'id' => $student->id,
             'reg_number' => $student->reg_number,
-            'name_in_arabic' => $student->name_in_arabic,
+            'name_in_arabic' => $student->full_name,
             'name_in_english' => $student->name_in_english,
             'nid' => $student->nid,
             'gender' => $student->gender,

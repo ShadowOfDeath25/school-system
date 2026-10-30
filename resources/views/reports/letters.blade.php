@@ -8,7 +8,7 @@
                 <x-letter
                     :academic-year="$classroom['classroom']?->academic_year ?? 'N/A'"
                     :letter="$letter"
-                    :student="$student->name_in_arabic"
+                    :student="$student->full_name"
                     :classroom="$classroom['classroom']?->name ?? 'الغير مقيدون'"
                 >
                 </x-letter>

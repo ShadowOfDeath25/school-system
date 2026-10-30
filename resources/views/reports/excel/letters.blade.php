@@ -13,10 +13,10 @@
             @foreach($classroom["students"] as $chunk)
                 @foreach($chunk as $student)
                 <tr>
-                    <td>{{$student->name_in_arabic}}</td>
+                    <td>{{$student->full_name}}</td>
                     <td style="text-align:center">{{$classroom['classroom']?->name ?? 'الغير مقيدون'}}</td>
                     <td style="text-align:center">{{$classroom['classroom']?->academic_year ?? 'N/A'}}</td>
-                    <td>{{$student->name_in_arabic}}</td>
+                    <td>{{$student->full_name}}</td>
                     <td>{{$letter}}</td>
                 </tr>
                 @endforeach

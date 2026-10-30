@@ -36,7 +36,7 @@ class MarksController extends Controller
         'exam.semester',
     ];
 
-    protected array $relationsToLoad = ['student', 'exam.gradeSubject.subject'];
+    protected array $relationsToLoad = ['student.parents', 'exam.gradeSubject.subject'];
 
     protected string $model = Marks::class;
 
@@ -180,18 +180,20 @@ class MarksController extends Controller
         $academicYear = $request->input('academic_year', AcademicYear::activeCached()?->name);
 
         $students = Student::query()
-            ->when($search, fn ($q) => $q->where('name_in_arabic', 'like', "%{$search}%"))
+            ->when($search, fn ($q) => $q->searchByFullName($search))
             ->when($grade, fn ($q) => $q->where('grade', $grade))
             ->when($language, fn ($q) => $q->where('language', $language))
-            ->with(['secretAssignments' => fn ($q) => $q->where('academic_year', $academicYear)])
+            ->with(['secretAssignments' => fn ($q) => $q->where('academic_year', $academicYear), 'parents'])
             ->orderBy('name_in_arabic')
             ->paginate($request->input('per_page', 30));
 
+        $gradeNames = Grade::pluck('name', 'grade');
+
         $data = $students->map(fn ($student) => [
             'id' => $student->id,
-            'name_in_arabic' => $student->name_in_arabic,
+            'name_in_arabic' => $student->full_name,
             'grade' => $student->grade,
-            'grade_name' => Grade::find($student->grade)?->name,
+            'grade_name' => $gradeNames->get($student->grade),
             'level' => $student->level,
             'language' => $student->language,
             'secret_number' => $student->secretAssignments->first()?->assigned_number,

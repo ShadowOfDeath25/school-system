@@ -1,5 +1,6 @@
 import React, {forwardRef} from 'react';
 import {PaymentHelper} from "@helpers/PaymentHelper";
+import {StudentHelper} from "@helpers/StudentHelper";
 import styles from './Invoice.module.css';
 import ReportsHeader from "@reports/ReportsHeader/ReportsHeader.jsx";
 
@@ -36,7 +37,7 @@ export const InvoicePDF = forwardRef(({payment, student, academicYear, summaryDa
                 <div className={styles.receiptBody}>
                     <span className={styles.label} style={{textAlign: 'right', marginBottom: '3px'}}>وصل من ولي امر التلميذ:</span>
                     <span className={styles.amountText}
-                          style={{textAlign: 'center', marginBottom: '3px'}}>{student.name_in_arabic || "---"}</span>
+                          style={{textAlign: 'center', marginBottom: '3px'}}>{StudentHelper.getStudentFullName(student) || "---"}</span>
 
                     <span className={styles.valueText} style={{
                         textAlign: 'center',

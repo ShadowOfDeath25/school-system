@@ -26,7 +26,7 @@ class BookPurchaseController extends Controller
     protected string $resource = BookPurchaseResource::class;
 
     protected array $relationsToLoad = [
-        'book', 'student',
+        'book', 'student.parents',
     ];
 
     protected array $filterable = [

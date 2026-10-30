@@ -119,6 +119,7 @@ class PromotionEligibilityService
         }
 
         $students = Student::query()
+            ->with('parents')
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
@@ -147,7 +148,7 @@ class PromotionEligibilityService
         })->map(function (Student $s) use ($secretNumbers) {
             return [
                 'id' => $s->id,
-                'name' => $s->name_in_arabic,
+                'name' => $s->full_name,
                 'assigned_number' => $secretNumbers->get($s->id, '—'),
             ];
         })->values();

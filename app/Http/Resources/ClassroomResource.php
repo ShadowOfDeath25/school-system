@@ -34,7 +34,7 @@ class ClassroomResource extends JsonResource
             'level' => $this->level,
             'students' => $this->whenLoaded('students', function () {
                 return $this->students->map(fn ($student) => [
-                    'name' => $student->name_in_arabic,
+                    'name' => $student->full_name ?? $student->name_in_arabic,
                 ]);
             }),
         ];

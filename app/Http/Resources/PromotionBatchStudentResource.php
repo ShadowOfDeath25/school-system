@@ -12,7 +12,7 @@ class PromotionBatchStudentResource extends JsonResource
         return [
             'id' => $this->id,
             'student_id' => $this->student_id,
-            'student_name' => $this->student?->name_in_arabic,
+            'student_name' => $this->student?->full_name ?? $this->student?->name_in_arabic,
             'student_grade' => $this->student?->grade,
             'from_grade' => $this->from_grade,
             'to_grade' => $this->to_grade,

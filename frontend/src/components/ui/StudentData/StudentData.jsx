@@ -8,6 +8,7 @@ import axiosClient from "../../../axiosClient.js";
 import { usePDFPreview } from "@contexts/PDFPreviewContext.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { useInputModal } from "@contexts/InputModalContext.jsx";
+import { StudentHelper } from "@utils/helpers/StudentHelper.js";
 
 export default function StudentData({student, academicYear, setAcademicYear}) {
     const queryClient = useQueryClient();
@@ -151,7 +152,7 @@ export default function StudentData({student, academicYear, setAcademicYear}) {
                     <tbody>
                         <tr>
                             <td className={styles.label}>الاسم</td>
-                            <td colSpan={3}>{student?.name_in_arabic}</td>
+                            <td colSpan={3}>{StudentHelper.getStudentFullName(student)}</td>
                         </tr>
                         <tr>
                             <td className={styles.label}>رقم القيد</td>

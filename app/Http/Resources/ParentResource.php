@@ -11,7 +11,7 @@ class ParentResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'student' => $this->student->name_in_arabic,
+            'student' => $this->student?->full_name ?? $this->student?->name_in_arabic,
             'phone_number' => $this->phone_number,
             'edu' => $this->edu,
             'job' => $this->job,

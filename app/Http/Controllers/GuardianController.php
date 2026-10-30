@@ -19,4 +19,6 @@ class GuardianController extends Controller
     protected string $updateRequest = UpdateParentRequest::class;
 
     protected string $resource = ParentResource::class;
+
+    protected array $relationsToLoad = ['student.parents'];
 }

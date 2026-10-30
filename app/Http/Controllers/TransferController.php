@@ -99,13 +99,13 @@ class TransferController extends Controller
 
         return response()->json([
             'message' => 'تم تسجيل التحويل الصادر بنجاح',
-            'transfer' => new TransferResource($transfer->load(['student', 'creator'])),
+            'transfer' => new TransferResource($transfer->load(['student.parents', 'creator'])),
         ], 201);
     }
 
     public function history(Request $request): JsonResponse
     {
-        $query = StudentTransfer::with(['student', 'creator']);
+        $query = StudentTransfer::with(['student.parents', 'creator']);
 
         if ($request->filled('direction')) {
             $query->where('direction', $request->input('direction'));
@@ -121,11 +121,7 @@ class TransferController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->whereHas('student', function ($q) use ($search) {
-                $q->where('name_in_arabic', 'like', "%{$search}%")
-                    ->orWhere('name_in_english', 'like', "%{$search}%")
-                    ->orWhere('reg_number', 'like', "%{$search}%");
-            });
+            $query->whereHas('student', fn ($q) => $q->searchByFullName($search));
         }
 
         $transfers = $query->orderBy('transfer_date', 'desc')

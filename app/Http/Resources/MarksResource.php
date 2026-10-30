@@ -20,7 +20,7 @@ class MarksResource extends JsonResource
             'academic_year' => $this->academic_year,
             'student' => $this->whenLoaded('student', fn () => [
                 'id' => $this->student->id,
-                'name_in_arabic' => $this->student->name_in_arabic,
+                'name_in_arabic' => $this->student->full_name ?? $this->student->name_in_arabic,
                 'reg_number' => $this->student->reg_number,
             ]),
             'exam' => $this->whenLoaded('exam', fn () => [

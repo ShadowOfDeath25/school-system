@@ -4,6 +4,7 @@ import Table from "@ui/Table/Table.jsx";
 import { useState } from "react";
 import { Button } from "@mui/material";
 import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
+import { StudentHelper } from "@utils/helpers/StudentHelper.js";
 import { useInputModal } from "@contexts/InputModalContext.jsx";
 import { useConfirmModal } from "@contexts/ConfirmModalContext.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
@@ -39,7 +40,7 @@ export default function TransferOut() {
 
     const tableFields = [
         { name: "reg_number", label: "رقم القيد" },
-        { name: "name_in_arabic", label: "الاسم" },
+        { name: "name_in_arabic", label: "الاسم", render: (row) => StudentHelper.getStudentFullName(row) },
         { name: "classroom.name", label: "الفصل" },
         { name: "status", label: "حالة القيد" },
         { name: "language", label: "اللغة" },
@@ -66,7 +67,7 @@ export default function TransferOut() {
             buttonText: "تحويل",
             onSave: async (formData) => {
                 const confirmed = await confirm({
-                    message: `هل أنت متأكد من تحويل الطالب "${student.name_in_arabic}" إلى مدرسة "${formData.other_school_name}"؟`,
+                    message: `هل أنت متأكد من تحويل الطالب "${StudentHelper.getStudentFullName(student)}" إلى مدرسة "${formData.other_school_name}"؟`,
                     warning: 'سيتم إلغاء قيد الطالب من الفصل الحالي',
                 });
                 if (!confirmed) return;

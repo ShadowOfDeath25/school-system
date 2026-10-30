@@ -37,6 +37,7 @@ class SeatAssignmentService
 
         foreach ($configs as $config) {
             $students = Student::query()
+                ->with('parents')
                 ->where('level', $config->level)
                 ->where('grade', (int) $config->grade)
                 ->where('language', $config->language)
@@ -66,13 +67,13 @@ class SeatAssignmentService
             $sortedStudents = match ($sorting) {
                 'males_first' => $studentsToAssign->sortBy([
                     fn ($s) => $s->gender === 'male' ? 0 : 1,
-                    fn ($s) => $s->name_in_arabic,
+                    fn ($s) => $s->full_name,
                 ]),
                 'females_first' => $studentsToAssign->sortBy([
                     fn ($s) => $s->gender === 'female' ? 0 : 1,
-                    fn ($s) => $s->name_in_arabic,
+                    fn ($s) => $s->full_name,
                 ]),
-                default => $studentsToAssign->sortBy('name_in_arabic'),
+                default => $studentsToAssign->sortBy(fn ($s) => $s->full_name),
             };
 
             $maxAssigned = StudentSeatAssignment::where('seat_number_id', $config->id)

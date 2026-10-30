@@ -29,7 +29,7 @@ class ClassroomController extends Controller
         'grade',
     ];
 
-    protected array $relationsToLoad = ['students'];
+    protected array $relationsToLoad = ['students.parents'];
 
     protected function query(): Builder
     {
@@ -40,7 +40,7 @@ class ClassroomController extends Controller
         return $this->model::query()
             ->when($isActive, fn (Builder $query) => $query->active())
             ->withCount('students')
-            ->when($withStudents, fn (Builder $query) => $query->with('students'))
+            ->when($withStudents, fn (Builder $query) => $query->with('students.parents'))
             ->orderBy('academic_year', 'desc')
             ->orderBy('language')
             ->orderBy('level')

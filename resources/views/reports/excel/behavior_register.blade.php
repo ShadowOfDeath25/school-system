@@ -32,7 +32,7 @@
             </tr>
             @foreach($classroom->students as $student)
                 <tr>
-                    <td style="text-align:center;">{{ $student->name_in_arabic }}</td>
+                    <td style="text-align:center;">{{ $student->full_name }}</td>
                     <td style="text-align:center;">{{ $classroom->name }}</td>
                     @foreach($data['days'] as $day)
                         <td style="text-align:center;"></td>

@@ -27,7 +27,7 @@
                 @php
                     $classroomNumber = "غير مقيد";
                     $classroomLevel = "غير مقيد";
-                    if($payment->student->classroom_id){
+                    if($payment->student?->classroom_id && $payment->student?->classroom?->name){
                         $parts = explode(' ',$payment->student->classroom->name,2);
                         $classroomNumber = $parts[0] ?? "غير مقيد";
                         $classroomLevel = $parts[1] ?? "غير مقيد";
@@ -36,7 +36,7 @@
                 <tr>
                     <td style="text-align:center;">{{$payment->id}}</td>
                     <td style="text-align:center;">{{$payment->value}}</td>
-                    <td>{{$payment->student->name_in_arabic}}</td>
+                    <td>{{$payment->student?->full_name ?? '—'}}</td>
                     <td style="text-align:center">{{$classroomNumber}}</td>
                     <td style="text-align:center">{{$classroomLevel}}</td>
                 </tr>

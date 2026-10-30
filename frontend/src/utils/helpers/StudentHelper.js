@@ -246,6 +246,15 @@ export const StudentHelper = {
     GENDERS,
     RELIGIONS,
     FIELDS,
+    getStudentFullName: (student) => {
+        if (!student) return '';
+        if (student.full_name) return student.full_name;
+        const baseName = student.name_in_arabic || student.name || '';
+        if (student.father_name && student.father_name !== 'غير مسجل') {
+            return baseName ? `${baseName} ${student.father_name}`.trim() : student.father_name;
+        }
+        return baseName;
+    },
     getAllFields: (mode = 'first', isEdit = false) => {
         let fatherFields = mode === 'sibling'
             ? Object.values(StudentHelper.FIELDS.FATHER_NID_ONLY)

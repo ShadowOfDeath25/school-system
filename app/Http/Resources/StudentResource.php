@@ -22,9 +22,14 @@ class StudentResource extends JsonResource
         $father = null;
         $mother = null;
         if ($this->relationLoaded('parents')) {
-            $father = $this->parents->get(0);
-            $mother = $this->parents->get(1);
+            $father = $this->parents->firstWhere('gender', 'male');
+            $mother = $this->parents->firstWhere('gender', 'female');
+        } else {
+            $father = $this->father;
         }
+
+        $fatherName = $father?->name;
+        $fullName = $this->full_name;
 
         return [
             'id' => $this->id,
@@ -33,9 +38,10 @@ class StudentResource extends JsonResource
             'language' => $this->language,
             'reg_number' => $this->reg_number,
             'name_in_arabic' => $this->name_in_arabic,
+            'full_name' => $fullName,
             'academic_year' => $this->classroom->academic_year ?? 'غير مقيد',
             'nid' => $this->nid,
-            'father_name' => $father->name ?? 'غير مسجل',
+            'father_name' => $fatherName ?? 'غير مسجل',
             'father_nid' => $father->nid ?? '',
             'mother_name' => $mother->name ?? 'غير مسجل',
             'mother_nid' => $mother->nid ?? '',
@@ -54,7 +60,7 @@ class StudentResource extends JsonResource
             'religion' => $this->religion,
             'birth_date' => $this->birth_date,
             'birth_address' => $this->birth_address,
-            'joined_at' => $this->created_at->format('Y/m/d'),
+            'joined_at' => $this->created_at?->format('Y/m/d'),
             'grade' => $this->grade,
             'level' => $this->level,
             'classroom' => $this->classroom ??

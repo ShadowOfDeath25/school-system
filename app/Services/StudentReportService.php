@@ -129,6 +129,7 @@ class StudentReportService
         $query = Student::query()
             ->with([
                 'guardian',
+                'parents',
                 'classroom' => fn ($q) => $q->select('id', 'name', 'level', 'language', 'academic_year', 'grade', 'max_capacity')->withCount('students'),
             ])
             ->when($academicYear, fn ($query) => $query->whereHas('classroom', fn ($q) => $q->where('academic_year', $academicYear))

@@ -7,6 +7,7 @@ use App\Observers\StudentObserver;
 use App\Traits\LogsActivityInArabic;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -92,6 +93,55 @@ class Student extends Model
                     ->exists();
             }
         );
+    }
+
+    public function getFatherAttribute(): ?Guardian
+    {
+        if ($this->relationLoaded('parents')) {
+            return $this->parents->firstWhere('gender', 'male');
+        }
+
+        if ($this->relationLoaded('guardian') && $this->guardian?->gender === 'male') {
+            return $this->guardian;
+        }
+
+        return $this->parents()->where('gender', 'male')->first();
+    }
+
+    public function getFatherNameAttribute(): ?string
+    {
+        return $this->father?->name;
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        $fatherName = $this->father?->name;
+
+        if (! $fatherName || str_contains((string) $this->name_in_arabic, $fatherName)) {
+            return $this->name_in_arabic ?? '';
+        }
+
+        return trim("{$this->name_in_arabic} {$fatherName}");
+    }
+
+    public function scopeSearchByFullName(Builder $query, string $search): Builder
+    {
+        $parts = preg_split('/\s+/', trim($search), 2);
+
+        return $query->where(function (Builder $q) use ($search, $parts) {
+            $q->where('name_in_arabic', 'like', "%{$search}%")
+                ->orWhere('name_in_english', 'like', "%{$search}%")
+                ->orWhere('nid', 'like', "%{$search}%")
+                ->orWhere('reg_number', 'like', "%{$search}%")
+                ->orWhereHas('parents', fn ($pq) => $pq->where('name', 'like', "%{$search}%"));
+
+            if (count($parts) === 2) {
+                $q->orWhere(function (Builder $sub) use ($parts) {
+                    $sub->where('name_in_arabic', 'like', "%{$parts[0]}%")
+                        ->whereHas('parents', fn ($pq) => $pq->where('name', 'like', "%{$parts[1]}%"));
+                });
+            }
+        });
     }
 
     public function assignPaymentValues(): void

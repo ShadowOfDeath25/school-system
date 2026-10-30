@@ -85,7 +85,7 @@ class PromotionController extends Controller
         );
 
         return response()->json([
-            'batch' => new PromotionBatchResource($batch->load('batchStudents.student')),
+            'batch' => new PromotionBatchResource($batch->load('batchStudents.student.parents')),
         ], 201);
     }
 
@@ -128,7 +128,7 @@ class PromotionController extends Controller
         $this->engine->finalize($batch, $config);
 
         return response()->json([
-            'batch' => new PromotionBatchResource($batch->fresh()->load('batchStudents.student')),
+            'batch' => new PromotionBatchResource($batch->fresh()->load('batchStudents.student.parents')),
         ]);
     }
 
@@ -182,7 +182,7 @@ class PromotionController extends Controller
     public function showBatch(PromotionBatch $batch): PromotionBatchResource
     {
         return new PromotionBatchResource(
-            $batch->load(['batchStudents.student', 'creator', 'rollbacker'])
+            $batch->load(['batchStudents.student.parents', 'creator', 'rollbacker'])
         );
     }
 }

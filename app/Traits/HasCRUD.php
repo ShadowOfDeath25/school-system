@@ -35,16 +35,20 @@ trait HasCRUD
         $query = $this->getQuery();
 
         if ($request->filled('search')) {
-            $searchTerm = '%'.$request->input('search').'%';
-            $searchableFields = property_exists($this, 'searchable') && is_array($this->searchable)
-                ? $this->searchable
-                : ['name'];
+            if (method_exists($this, 'applySearch')) {
+                $this->applySearch($query, $request->input('search'));
+            } else {
+                $searchTerm = '%'.$request->input('search').'%';
+                $searchableFields = property_exists($this, 'searchable') && is_array($this->searchable)
+                    ? $this->searchable
+                    : ['name'];
 
-            $query->where(function ($q) use ($searchableFields, $searchTerm) {
-                foreach ($searchableFields as $field) {
-                    $q->orWhere($field, 'like', $searchTerm);
-                }
-            });
+                $query->where(function ($q) use ($searchableFields, $searchTerm) {
+                    foreach ($searchableFields as $field) {
+                        $q->orWhere($field, 'like', $searchTerm);
+                    }
+                });
+            }
         }
         if (property_exists($this, 'filterable') && ! empty($this->filterable)) {
             $modelInstance = new $this->model;

@@ -7,6 +7,7 @@ import { Button } from "@mui/material";
 import { useInputModal } from "@contexts/InputModalContext.jsx";
 import { useSnackbar } from "@contexts/SnackbarContext.jsx";
 import { ClassroomHelper } from "@utils/helpers/ClassroomHelper.js";
+import { StudentHelper } from "@utils/helpers/StudentHelper.js";
 
 export default function Withdrawn() {
     const { data: classrooms } = useGetAll('classrooms', { all: 'true' });
@@ -112,7 +113,7 @@ export default function Withdrawn() {
                 resource={"students"}
                 filters={filters}
                 params={{ withdrawn: true }}
-                fields={[{ name: "reg_number" }, { name: "name_in_arabic", label: "الاسم" }, { name: "classroom.name" }]}
+                fields={[{ name: "reg_number" }, { name: "name_in_arabic", label: "الاسم", render: (row) => StudentHelper.getStudentFullName(row) }, { name: "classroom.name" }]}
                 children={enrollButton}
                 editable={false}
             />

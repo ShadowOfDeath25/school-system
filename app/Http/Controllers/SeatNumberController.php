@@ -125,7 +125,7 @@ class SeatNumberController extends Controller
 
     public function getAssignments(Request $request)
     {
-        $query = StudentSeatAssignment::with(['student', 'seatNumberConfig']);
+        $query = StudentSeatAssignment::with(['student.parents', 'seatNumberConfig']);
 
         if ($request->filled('academic_year')) {
             $query->where('academic_year', $request->input('academic_year'));
@@ -159,7 +159,7 @@ class SeatNumberController extends Controller
 
         $allAssignments = StudentSeatAssignment::query()
             ->where('academic_year', $filters['academicYear'])
-            ->with('student')
+            ->with('student.parents')
             ->get()
             ->filter(fn ($a) => $a->student)
             ->filter(fn ($a) => !$filters['level'] || $a->student->level === $filters['level'])

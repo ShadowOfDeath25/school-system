@@ -22,7 +22,8 @@ export default function ViewStudents() {
         },
         {
             name: 'name_in_arabic',
-            label: 'الاسم'
+            label: 'الاسم',
+            render: (row) => StudentHelper.getStudentFullName(row)
         },
         {
             name: 'nid',

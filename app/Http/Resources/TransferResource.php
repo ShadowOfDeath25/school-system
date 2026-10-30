@@ -12,7 +12,7 @@ class TransferResource extends JsonResource
         return [
             'id' => $this->id,
             'student_id' => $this->student_id,
-            'student_name' => $this->whenLoaded('student', fn () => $this->student->name_in_arabic),
+            'student_name' => $this->whenLoaded('student', fn () => $this->student->full_name ?? $this->student->name_in_arabic),
             'student_reg_number' => $this->whenLoaded('student', fn () => $this->student->reg_number),
             'direction' => $this->direction,
             'other_school_name' => $this->other_school_name,

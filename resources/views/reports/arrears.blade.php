@@ -46,7 +46,7 @@
                     <tr>
                         <td>{{ $i++ }}</td>
                         <td>{{ $student->reg_number }}</td>
-                        <td>{{ $student->name_in_arabic }}</td>
+                        <td>{{ $student->full_name }}</td>
                         <td>{{ number_format(($student->total_sum ?? 0) + ($student->exemption_amount ?? 0), 2) }}</td>
                         <td>{{ number_format($student->paid_sum ?? 0, 2) }}</td>
                         <td>{{ number_format($student->exemption_amount ?? 0, 2) }}</td>

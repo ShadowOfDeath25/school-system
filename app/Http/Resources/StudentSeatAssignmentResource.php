@@ -13,7 +13,7 @@ class StudentSeatAssignmentResource extends JsonResource
         return [
             'id' => $this->id,
             'student_id' => $this->student_id,
-            'student_name' => $this->whenLoaded('student', fn () => $this->student->name_in_arabic),
+            'student_name' => $this->whenLoaded('student', fn () => $this->student->full_name ?? $this->student->name_in_arabic),
             'seat_number' => $this->assigned_number,
             'academic_year' => $this->academic_year,
             'level' => $this->whenLoaded('seatNumberConfig', fn () => $this->seatNumberConfig->level),

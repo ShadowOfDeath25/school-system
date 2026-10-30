@@ -22,7 +22,7 @@
             @foreach($group['assignments'] as $index => $assignment)
                 <tr>
                     <td style="text-align: center;">{{ $index + 1 }}</td>
-                    <td>{{ $assignment->student->name_in_arabic }}</td>
+                    <td>{{ $assignment->student->full_name }}</td>
                     <td style="text-align: center;">{{ $assignment->assigned_number }}</td>
                 </tr>
             @endforeach

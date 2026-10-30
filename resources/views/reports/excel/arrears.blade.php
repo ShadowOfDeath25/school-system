@@ -40,7 +40,7 @@
                 <tr>
                     <td>{{ $i++ }}</td>
                     <td data-type="s" style="text-align: center;">{{ $student->reg_number }}</td>
-                    <td>{{ $student->name_in_arabic }}</td>
+                    <td>{{ $student->full_name }}</td>
                     <td>{{ ($student->total_sum ?? 0) + ($student->exemption_amount ?? 0) }}</td>
                     <td>{{ $student->paid_sum ?? 0 }}</td>
                     <td>{{ $student->exemption_amount ?? 0 }}</td>

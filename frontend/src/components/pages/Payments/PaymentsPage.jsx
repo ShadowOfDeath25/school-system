@@ -4,6 +4,7 @@ import {useState} from "react";
 import Table from "@ui/Table/Table.jsx";
 import {useNavigate} from "react-router";
 import {ClassroomHelper} from "@helpers/ClassroomHelper.js";
+import {StudentHelper} from "@helpers/StudentHelper.js";
 import {useGetAll} from "@hooks/api/useCrud.js";
 
 export default function PaymentsPage({route = ""}) {
@@ -17,7 +18,8 @@ export default function PaymentsPage({route = ""}) {
         },
         {
             name: 'name_in_arabic',
-            label: 'الاسم'
+            label: 'الاسم',
+            render: (row) => StudentHelper.getStudentFullName(row)
         },
         {
             name: 'nid',

@@ -1,5 +1,6 @@
 import React, { forwardRef } from "react";
 import styles from './ClassroomsReport.module.css';
+import { StudentHelper } from "@helpers/StudentHelper.js";
 
 const ClassroomsReport = forwardRef(({ data }, ref) => {
     if (!data || !Array.isArray(data) || data.length === 0) {
@@ -36,7 +37,7 @@ const ClassroomsReport = forwardRef(({ data }, ref) => {
                                         <tr key={student.id || index}
                                             className={index % 2 !== 0 ? styles.trOdd : styles.trEven}>
                                             <td className={`${styles.td} ${styles.cellCenter}`}>{student.id || (index + 1)}</td>
-                                            <td className={styles.td}>{student.name_in_arabic || student.name}</td>
+                                            <td className={styles.td}>{StudentHelper.getStudentFullName(student)}</td>
                                         </tr>
                                     ))
                                 ) : (

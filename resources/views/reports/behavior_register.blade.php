@@ -91,7 +91,7 @@
         <tbody>
             @foreach($classroom->students as $student)
                 <tr>
-                    <td class="student-name">{{ $student->name_in_arabic }}</td>
+                    <td class="student-name">{{ $student->full_name }}</td>
                     <td class="classroom-name">{{ $classroom->name }}</td>
                     @foreach($data['days'] as $day)
                         <td class="empty-cell"></td>

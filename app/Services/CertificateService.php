@@ -34,6 +34,7 @@ class CertificateService
         $academicYear = $filters['academic_year'];
 
         $query = Student::query()
+            ->with(['classroom', 'parents'])
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false));
 
         if ($studentId = $filters['student_id'] ?? null) {
@@ -253,7 +254,7 @@ class CertificateService
 
         return [
             'id' => $student->id,
-            'name' => $student->name_in_arabic,
+            'name' => $student->full_name,
             'grade' => $student->grade,
             'grade_name' => Grade::where('grade', $student->grade)->value('name'),
             'language' => $student->language,

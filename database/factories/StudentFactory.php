@@ -33,8 +33,8 @@ class StudentFactory extends Factory
             ->first()?->id;
 
         return [
-            'name_in_arabic' => fake('ar_EG')->name($gender),
-            'name_in_english' => fake('en_EG')->name($gender),
+            'name_in_arabic' => fake('ar_EG')->firstName($gender),
+            'name_in_english' => fake('en_EG')->firstName($gender),
             'nid' => $this->faker->unique()->numerify('##############'),
             'birth_date' => $this->faker->dateTimeBetween('-13 years', '-5 years'),
             'birth_address' => fake()->city(),
@@ -63,15 +63,23 @@ class StudentFactory extends Factory
         return $this->afterCreating(function (Student $student) {
             $numberOfGuardians = $this->faker->numberBetween(1, 2);
 
+            $father = Guardian::factory()->state([
+                'gender' => 'male',
+                'name' => fake('ar_EG')->name('male'),
+            ])->create();
+
             if ($numberOfGuardians === 1) {
-
-                $guardian = Guardian::factory()->create();
-                $student->parents()->attach($guardian->id);
+                $student->parents()->attach($father->id);
             } else {
-
-                $father = Guardian::factory()->state(['gender' => 'male'])->create();
-                $mother = Guardian::factory()->state(['gender' => 'female'])->create();
+                $mother = Guardian::factory()->state([
+                    'gender' => 'female',
+                    'name' => fake('ar_EG')->name('female'),
+                ])->create();
                 $student->parents()->attach([$father->id, $mother->id]);
+            }
+
+            if (! $student->guardian_id) {
+                $student->updateQuietly(['guardian_id' => $father->id]);
             }
         });
     }

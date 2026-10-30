@@ -18,6 +18,7 @@ class PromotionTestSeeder extends Seeder
         $lang = 'عربي';
 
         Student::where('nid', 'like', 'SEED%')->delete();
+        DB::table('parents')->where('nid', 'like', 'SEEDF%')->delete();
         DB::table('marks')->where('academic_year', $year)->delete();
         DB::table('exams')->where('academic_year', $year)->delete();
         DB::table('grade_subject')->where('language', $lang)->delete();
@@ -123,20 +124,6 @@ class PromotionTestSeeder extends Seeder
             ]
         );
 
-        $guardian = DB::table('parents')->where('phone_number', '00000000000')->first();
-        if (! $guardian) {
-            $guardianId = DB::table('parents')->insertGetId([
-                'name' => 'ولي الأمر الافتراضي',
-                'gender' => 'male',
-                'phone_number' => '00000000000',
-                'job' => 'موظف',
-                'edu' => 'جامعي',
-                'nid' => '00000000000000',
-            ]);
-        } else {
-            $guardianId = $guardian->id;
-        }
-
         $studentData = [
             ['name' => 'أحمد محمد', 'marks' => ['اللغة العربية' => 45, 'الرياضيات' => 40, 'العلوم' => 38, 'الدراسات الاجتماعية' => 35], 'expected' => 'passed'],
             ['name' => 'محمد إبراهيم', 'marks' => ['اللغة العربية' => 35, 'الرياضيات' => 30, 'العلوم' => 28, 'الدراسات الاجتماعية' => 25], 'expected' => 'passed'],
@@ -162,9 +149,27 @@ class PromotionTestSeeder extends Seeder
             $classroom = $isGrade11 ? $classroom11 : $classroom3;
             $gNum = $isGrade11 ? 11 : 3;
 
+            $parts = explode(' ', $data['name'], 2);
+            $firstName = $parts[0];
+            $fatherName = $parts[1] ?? 'محمد';
+
+            $father = DB::table('parents')->where('name', $fatherName)->where('gender', 'male')->first();
+            if (! $father) {
+                $fatherId = DB::table('parents')->insertGetId([
+                    'name' => $fatherName,
+                    'gender' => 'male',
+                    'phone_number' => '01' . random_int(100000000, 999999999),
+                    'job' => 'موظف',
+                    'edu' => 'جامعي',
+                    'nid' => 'SEEDF' . str_pad((string) random_int(0, 999999999), 9, '0', STR_PAD_LEFT),
+                ]);
+            } else {
+                $fatherId = $father->id;
+            }
+
             $student = Student::create([
-                'name_in_arabic' => $data['name'],
-                'name_in_english' => $data['name'],
+                'name_in_arabic' => $firstName,
+                'name_in_english' => $firstName,
                 'nid' => 'SEED' . str_pad((string) random_int(0, 99999999), 8, '0', STR_PAD_LEFT),
                 'birth_date' => '2015-01-01',
                 'birth_address' => 'القاهرة',
@@ -177,11 +182,12 @@ class PromotionTestSeeder extends Seeder
                 'classroom_id' => ($data['withdrawn'] ?? false) ? null : $classroom->id,
                 'withdrawn' => $data['withdrawn'] ?? false,
                 'status' => $data['status'] ?? 'نشط',
+                'guardian_id' => $fatherId,
             ]);
 
             DB::table('parent_student')->insert([
                 'student_id' => $student->id,
-                'parent_id' => $guardianId,
+                'parent_id' => $fatherId,
             ]);
 
             if ($data['marks']) {

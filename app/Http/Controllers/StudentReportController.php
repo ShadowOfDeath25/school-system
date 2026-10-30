@@ -367,7 +367,7 @@ class StudentReportController extends Controller
 
         $query = Payment::query()
             ->with([
-                'student' => fn ($q) => $q->select('id', 'name_in_arabic', 'classroom_id'),
+                'student' => fn ($q) => $q->select('id', 'name_in_arabic', 'classroom_id', 'guardian_id')->with('parents'),
                 'student.classroom' => fn ($q) => $q->select('id', 'name'),
                 'recipient:id,name',
             ])
@@ -466,9 +466,9 @@ class StudentReportController extends Controller
         $layout = $validated['layout'] ?? 'grid';
 
         if (!empty($validated['student_id'])) {
-            $students = Student::with('classroom')->where('id', $validated['student_id'])->get();
+            $students = Student::with(['classroom', 'parents'])->where('id', $validated['student_id'])->get();
         } else {
-            $query = Student::with('classroom')
+            $query = Student::with(['classroom', 'parents'])
                 ->where(function ($q) {
                     $q->where('withdrawn', false)->orWhereNull('withdrawn');
                 })
@@ -497,7 +497,7 @@ class StudentReportController extends Controller
 
         $studentsWithQr = $students->map(function ($student) {
             $qrData = json_encode([
-                'name' => $student->name_in_arabic,
+                'name' => $student->full_name,
                 'reg_number' => $student->reg_number,
                 'nid' => $student->nid,
                 'url' => url("/students/{$student->id}"),

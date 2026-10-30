@@ -31,7 +31,7 @@ class BookPurchaseResource extends JsonResource
             'quantity' => $this->quantity,
             'price' => $this->book->price,
             'total_price' => $this->quantity * $this->book->price,
-            'student_name' => $this->student->name_in_arabic,
+            'student_name' => $this->student?->full_name ?? $this->student?->name_in_arabic,
             'student' => $this->student,
         ];
     }

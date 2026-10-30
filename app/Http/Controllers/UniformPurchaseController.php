@@ -36,7 +36,7 @@ class UniformPurchaseController extends Controller
     ];
 
     protected array $relationsToLoad = [
-        'uniform', 'student',
+        'uniform', 'student.parents',
     ];
 
     public function store(StoreUniformPurchaseRequest $request)

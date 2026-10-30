@@ -39,7 +39,7 @@ class MarksReportService
 
         $gsIds = $gradeSubjects->pluck('id');
 
-        $students = Student::with('classroom')
+        $students = Student::with(['classroom', 'parents'])
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
@@ -235,7 +235,7 @@ class MarksReportService
 
             return [
                 'id' => $s->id,
-                'name' => $s->name_in_arabic,
+                'name' => $s->full_name,
                 'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
                 'classroom_name' => $s->classroom?->name,
                 'marks' => $marks,
@@ -297,7 +297,7 @@ class MarksReportService
         $gsIds = $gradeSubjects->pluck('id');
         $finalComponentIds = $subjectList->flatMap(fn ($s) => collect($s['components'])->pluck('id'))->unique()->values();
 
-        $students = Student::with('classroom')
+        $students = Student::with(['classroom', 'parents'])
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
@@ -446,7 +446,7 @@ class MarksReportService
 
             return [
                 'id' => $s->id,
-                'name' => $s->name_in_arabic,
+                'name' => $s->full_name,
                 'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
                 'classroom_name' => $s->classroom?->name,
                 'marks' => $marks,
@@ -506,7 +506,7 @@ class MarksReportService
         $gsIds = $gradeSubjects->pluck('id');
         $workComponentIds = $subjectList->flatMap(fn ($s) => collect($s['components'])->pluck('id'))->unique()->values();
 
-        $students = Student::with('classroom')
+        $students = Student::with(['classroom', 'parents'])
             ->where('grade', $grade)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
@@ -656,7 +656,7 @@ class MarksReportService
 
             return [
                 'id' => $s->id,
-                'name' => $s->name_in_arabic,
+                'name' => $s->full_name,
                 'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
                 'classroom_name' => $s->classroom?->name,
                 'marks' => $marks,
@@ -751,7 +751,7 @@ class MarksReportService
             return $this->emptyClassroomStatsResponse($academicYear, $grade, $language, $semester);
         }
 
-        $students = Student::with('classroom')
+        $students = Student::with(['classroom', 'parents'])
             ->whereIn('classroom_id', $classrooms->pluck('id'))
             ->where('grade', $grade)
             ->where('language', $language)
@@ -921,7 +921,7 @@ class MarksReportService
         $allGSIds = $gradeSubjects->pluck('id');
         $maxScoreByGrade = $subjectsByGrade->map(fn ($group) => (float) $group->sum('total_marks'));
 
-        $students = Student::with('classroom')
+        $students = Student::with(['classroom', 'parents'])
             ->whereIn('grade', $gradesInLevel)
             ->where('language', $language)
             ->where(fn ($q) => $q->whereNull('withdrawn')->orWhere('withdrawn', false))
@@ -964,7 +964,7 @@ class MarksReportService
 
             $gradeStudentEntries = $gradeStudents->map(function (Student $s) use ($marksByStudent, $seatNumbers) {
                 return [
-                    'name' => $s->name_in_arabic,
+                    'name' => $s->full_name,
                     'seat_number' => $seatNumbers->get($s->id)?->assigned_number,
                     'classroom_name' => $s->classroom?->name,
                     'total_score' => $marksByStudent->get($s->id, 0),
