@@ -17,7 +17,7 @@ export const validator = {
     },
     parents: {
         phoneNumber: (phone_number) => {
-            return /^(?:\+20|0)?1[0125][0-9]{8}$/.test(phone_number)
+            return !phone_number || /^(?:\+20|0)?1[0125][0-9]{8}$/.test(phone_number)
         }
 
     },

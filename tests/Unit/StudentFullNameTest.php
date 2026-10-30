@@ -131,6 +131,8 @@ it('correctly searches full name through StudentController index', function () {
         'name_in_english' => 'Ahmed',
         'nid' => '33333333333333',
         'reg_number' => 'REG003',
+        'withdrawn' => false,
+        'transferred_out' => false,
     ]);
     $student->parents()->attach($father->id);
 

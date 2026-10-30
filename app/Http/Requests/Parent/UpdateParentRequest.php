@@ -18,8 +18,8 @@ class UpdateParentRequest extends FormRequest
         return [
             'name' => ['string'],
             'gender' => ['in:male,female'],
-            'phone_number' => ['string',
-                'regex:/^(?:\+20)?1[0125][0-9]{8}$/',
+            'phone_number' => ['nullable', 'string',
+                'regex:/^(?:\+20|0)?1[0125][0-9]{8}$/',
                 Rule::unique('parents', 'phone_number')
                     ->ignore($this->route('parent'))],
             'edu' => ['string'],
