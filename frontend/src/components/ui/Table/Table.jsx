@@ -1,5 +1,6 @@
 import styles from './styles.module.css';
 import {useEffect, useMemo, useState} from "react";
+import {useQueryClient} from "@tanstack/react-query";
 import LoadingScreen from "@ui/LoadingScreen/LoadingScreen.jsx";
 import {useDelete, useGetAll, useUpdate} from "@hooks/api/useCrud.js";
 import {useCurrentUser} from "@hooks/api/auth.js";
@@ -28,6 +29,7 @@ export default function Table({
     const [searchTerm, setSearchTerm] = useState("");
     const [perPage, setPerPage] = useState(localStorage.getItem('per_page') ?? 30);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+    const queryClient = useQueryClient();
     const {data: user, isLoading: userIsLoading} = useCurrentUser();
     const {confirm} = useConfirmModal();
     const {showSnackbar} = useSnackbar();
@@ -158,6 +160,10 @@ export default function Table({
 
                 updateMutation.mutate(payload, {
                     onSuccess: () => {
+                        queryClient.invalidateQueries({ queryKey: [resource] });
+                        if (resource === 'students') {
+                            queryClient.invalidateQueries({ queryKey: ['classrooms'] });
+                        }
                         showSnackbar("تم تحديث العنصر بنجاح");
                         hideInputModal();
                     }, onError: (error) => {

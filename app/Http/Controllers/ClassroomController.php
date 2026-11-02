@@ -39,7 +39,10 @@ class ClassroomController extends Controller
 
         return $this->model::query()
             ->when($isActive, fn (Builder $query) => $query->active())
-            ->withCount('students')
+            ->withCount(['students' => function ($query) {
+                $query->where('withdrawn', false)
+                    ->orWhereNull('withdrawn');
+            }])
             ->when($withStudents, fn (Builder $query) => $query->with('students.parents'))
             ->orderBy('academic_year', 'desc')
             ->orderBy('language')

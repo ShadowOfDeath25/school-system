@@ -121,6 +121,11 @@
     color: var(--color-danger);
 }
 
+.pillInternal {
+    background: rgba(33, 150, 243, 0.2);
+    color: #42a5f5;
+}
+
 .emptyState {
     text-align: center;
     padding: 48px 20px;

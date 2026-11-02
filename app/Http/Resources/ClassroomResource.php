@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\AcademicYear;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,6 +27,7 @@ class ClassroomResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'academic_year' => $this->academic_year,
+            'is_active' => $this->academic_year === AcademicYear::activeCached()?->name,
             'max_capacity' => $this->max_capacity,
             'language' => $this->language,
             'capacity' => $studentCount,

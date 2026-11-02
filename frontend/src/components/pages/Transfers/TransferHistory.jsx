@@ -9,11 +9,13 @@ import axiosClient from "../../../axiosClient.js";
 const DIRECTION_LABELS = {
     incoming: "تحويل الي المدرسة",
     outgoing: "تحويل من المدرسة",
+    internal: "نقل داخلي",
 };
 
 const DIRECTION_PILLS = {
     incoming: styles.pillIncoming,
     outgoing: styles.pillOutgoing,
+    internal: styles.pillInternal,
 };
 
 export default function TransferHistory() {
@@ -128,7 +130,7 @@ export default function TransferHistory() {
                                     <th>التلميذ</th>
                                     <th>رقم القيد</th>
                                     <th>النوع</th>
-                                    <th>اسم المدرسة</th>
+                                    <th>المدرسة / تفاصيل الفصل</th>
                                     <th>العام الدراسي</th>
                                     <th>ملاحظات</th>
                                     <th>تاريخ التحويل</th>

@@ -246,6 +246,73 @@ export const StudentHelper = {
     GENDERS,
     RELIGIONS,
     FIELDS,
+    getClassroomOptions: (formData, classrooms = [], activeAcademicYear = null) => {
+        const list = Array.isArray(classrooms) ? classrooms : (classrooms?.data ?? []);
+        if (!list || list.length === 0) return [];
+
+        const currentClassroomId = formData?.classroom_id ?? formData?.classroom?.id;
+        const currentClassroom = currentClassroomId
+            ? list.find((c) => String(c.id) === String(currentClassroomId))
+            : null;
+
+        const activeYear = activeAcademicYear || list.find((c) => c.is_active)?.academic_year;
+
+        let studentAcademicYear = currentClassroom?.academic_year;
+        if (!studentAcademicYear && formData?.academic_year && formData.academic_year !== 'غير مقيد') {
+            studentAcademicYear = formData.academic_year;
+        }
+        if (!studentAcademicYear) {
+            studentAcademicYear = activeYear;
+        }
+
+        const studentGrade = formData?.grade ?? formData?.classroom?.grade ?? currentClassroom?.grade;
+        const studentLanguage = formData?.language;
+
+        return list
+            .filter((c) => {
+                // Must strictly match the target academic year (or active year if unassigned)
+                if (studentAcademicYear) {
+                    if (c.academic_year !== studentAcademicYear) {
+                        return false;
+                    }
+                } else if (c.is_active !== undefined) {
+                    if (!c.is_active) {
+                        return false;
+                    }
+                }
+
+                // Lateral transfer: Grade filter
+                if (studentGrade && String(c.grade) !== String(studentGrade)) {
+                    return false;
+                }
+
+                // Strict language filter
+                if (studentLanguage && c.language !== studentLanguage) {
+                    return false;
+                }
+
+                return true;
+            })
+            .map((c) => {
+                const isCurrent = currentClassroomId && String(c.id) === String(currentClassroomId);
+                const currentCap = c.capacity ?? c.students_count ?? 0;
+                const maxCap = c.max_capacity ?? 0;
+                const isFull = maxCap > 0 && currentCap >= maxCap;
+
+                const label = `${c.name} (${isFull && !isCurrent ? 'ممتلئ - ' : ''}الكثافة: ${currentCap}/${maxCap})`;
+                return {
+                    label,
+                    value: c.id,
+                    disabled: isFull && !isCurrent,
+                };
+            });
+    },
+    isClassroomDisabled: (formData) => {
+        if (!formData) return false;
+        const isWithdrawn = formData.withdrawn === true || formData.withdrawn === 'نعم' || formData.status === 'تم سحب ملفه';
+        const isTransferredOut = formData.transferred_out === true || formData.status === 'محول';
+        return isWithdrawn || isTransferredOut;
+    },
     getStudentFullName: (student) => {
         if (!student) return '';
         if (student.full_name) return student.full_name;
@@ -255,7 +322,7 @@ export const StudentHelper = {
         }
         return baseName;
     },
-    getAllFields: (mode = 'first', isEdit = false) => {
+    getAllFields: (mode = 'first', isEdit = false, classrooms = [], activeAcademicYear = null) => {
         let fatherFields = mode === 'sibling'
             ? Object.values(StudentHelper.FIELDS.FATHER_NID_ONLY)
             : Object.values(StudentHelper.FIELDS.FATHER);
@@ -297,10 +364,36 @@ export const StudentHelper = {
             });
         }
 
+        let studentFields = Object.values(StudentHelper.FIELDS.STUDENT);
+
+        if (isEdit) {
+            const classroomField = {
+                name: "classroom_id",
+                type: "select",
+                id: "classroom_id",
+                label: "الفصل",
+                placeholder: "اختر الفصل",
+                required: false,
+                options: (formData) => StudentHelper.getClassroomOptions(formData, classrooms, activeAcademicYear),
+                disabled: (formData) => StudentHelper.isClassroomDisabled(formData),
+            };
+
+            const gradeIdx = studentFields.findIndex(f => f.name === 'grade');
+            if (gradeIdx !== -1) {
+                studentFields = [
+                    ...studentFields.slice(0, gradeIdx + 1),
+                    classroomField,
+                    ...studentFields.slice(gradeIdx + 1),
+                ];
+            } else {
+                studentFields = [...studentFields, classroomField];
+            }
+        }
+
         return [
             {
                 title: "بيانات التلميذ",
-                fields: Object.values(StudentHelper.FIELDS.STUDENT)
+                fields: studentFields
             },
             {
                 title: "بيانات الاب",
@@ -319,8 +412,8 @@ export const StudentHelper = {
             }
         ]
     },
-    getEditFields: () => {
-        return StudentHelper.getAllFields('first', true);
+    getEditFields: (classrooms = [], activeAcademicYear = null) => {
+        return StudentHelper.getAllFields('first', true, classrooms, activeAcademicYear);
     },
     getMixedFields: (mixedData) => {
         const existing = mixedData.existing[0];

@@ -10,6 +10,7 @@ use App\Models\Classroom;
 use App\Models\Guardian;
 use App\Models\GuardianStudent;
 use App\Models\Student;
+use App\Models\StudentEnrollment;
 use App\Models\StudentTransfer;
 use App\Services\StudentPaymentsService;
 use App\Traits\HasCRUD;
@@ -215,32 +216,48 @@ class StudentController extends Controller
         $validated = $request->validated();
 
         DB::transaction(function () use ($student, $validated, $request) {
+            $newClassroom = null;
+            $oldClassroomId = $student->classroom_id;
 
             if ($request->has('classroom_id')) {
                 $newClassroomId = $validated['classroom_id'] ?? null;
-                $oldClassroomId = $student->classroom_id;
                 if ($newClassroomId !== $oldClassroomId && $newClassroomId) {
+                    if ($student->withdrawn || $student->transferred_out) {
+                        throw ValidationException::withMessages([
+                            'classroom_id' => ['لا يمكن نقل طالب تم سحب ملفه أو تحويله خارج المدرسة.'],
+                        ]);
+                    }
+
                     $newClassroom = Classroom::withCount(['students' => function ($query) {
                         $query->where('withdrawn', false)
                             ->orWhereNull('withdrawn');
                     }])
                         ->findOrFail($newClassroomId);
+
                     if ($newClassroom->students_count >= $newClassroom->max_capacity) {
                         throw ValidationException::withMessages([
                             'classroom_id' => ['The selected classroom is full.'],
                         ]);
                     }
 
-                    $studentGrade = $student->grade ?? $student->classroom?->grade;
+                    $studentGrade = $validated['grade'] ?? $student->grade ?? $student->classroom?->grade;
                     if ($studentGrade && (string) $newClassroom->grade !== (string) $studentGrade) {
                         throw ValidationException::withMessages([
                             'classroom_id' => ['The selected classroom does not match the student grade.'],
                         ]);
                     }
 
-                    if ($student->language && $newClassroom->language !== $student->language) {
+                    $studentLanguage = $validated['language'] ?? $student->language;
+                    if ($studentLanguage && $newClassroom->language !== $studentLanguage) {
                         throw ValidationException::withMessages([
                             'classroom_id' => ['The selected classroom does not match the student language.'],
+                        ]);
+                    }
+
+                    $studentAcademicYear = $student->classroom?->academic_year ?? AcademicYear::activeCached()?->name;
+                    if ($studentAcademicYear && $newClassroom->academic_year !== $studentAcademicYear) {
+                        throw ValidationException::withMessages([
+                            'classroom_id' => ['The selected classroom does not match the student academic year.'],
                         ]);
                     }
                 }
@@ -255,6 +272,30 @@ class StudentController extends Controller
             }
 
             $student->update($validated);
+
+            if ($request->has('classroom_id')) {
+                $newClassroomId = $validated['classroom_id'] ?? null;
+                if ($newClassroomId !== $oldClassroomId && $newClassroomId) {
+                    $academicYear = $newClassroom?->academic_year
+                        ?? $student->classroom?->academic_year
+                        ?? AcademicYear::activeCached()?->name
+                        ?? (string) now()->year;
+                    $grade = (int) ($student->grade ?? $student->classroom?->grade ?? $newClassroom?->grade ?? 1);
+
+                    StudentEnrollment::create([
+                        'student_id' => $student->id,
+                        'from_grade' => $grade,
+                        'to_grade' => $grade,
+                        'from_classroom_id' => $oldClassroomId,
+                        'to_classroom_id' => $newClassroomId,
+                        'from_academic_year' => $academicYear,
+                        'to_academic_year' => $academicYear,
+                        'status' => 'نقل داخلي',
+                        'reason' => 'نقل داخلي',
+                        'enrolled_at' => now(),
+                    ]);
+                }
+            }
             if ($request->has('parents')) {
                 $parentIds = collect($parentData)->map(function ($parent) {
                     if (empty($parent['nid'])) {

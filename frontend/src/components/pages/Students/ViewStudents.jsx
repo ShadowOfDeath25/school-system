@@ -12,9 +12,16 @@ export default function ViewStudents() {
     const navigate = useNavigate();
     const [tableFilters, setTableFilters] = useState(null);
     const { data: classrooms } = useGetAll("classrooms", { all: "true" });
+    const { data: academicYears } = useGetAll("academic-years", {}, {
+        select: (data) => data?.data ?? []
+    });
     const { data: noteTypes } = useGetAll("note-types", { activeOnly: true }, {
         select: (data) => data?.data?.map(nt => ({ label: nt.name, value: nt.name })) ?? []
     });
+
+    const activeAcademicYear = useMemo(() => {
+        return academicYears?.find?.(y => y.active)?.name ?? null;
+    }, [academicYears]);
     const fields = [
         {
             name: "reg_number",
@@ -67,7 +74,8 @@ export default function ViewStudents() {
     ]
 
     const editFields = useMemo(() => {
-        const fields = StudentHelper.getEditFields();
+        const classroomsList = Array.isArray(classrooms) ? classrooms : (classrooms?.data ?? []);
+        const fields = StudentHelper.getEditFields(classroomsList, activeAcademicYear);
         if (!noteTypes || noteTypes.length === 0) return fields;
         const noteOptions = [{label: "لا يوجد", value: null}, ...noteTypes];
         return fields.map(section => ({
@@ -76,7 +84,7 @@ export default function ViewStudents() {
                 field.name === "note" ? {...field, options: noteOptions} : field
             )
         }));
-    }, [noteTypes]);
+    }, [noteTypes, classrooms, activeAcademicYear]);
 
     const withdrawButton = {
         header: "سحب الملف", content: (student) => <WithdrawButton student={student} />
