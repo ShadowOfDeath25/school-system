@@ -4,6 +4,7 @@ const REPORT_TYPES = [
     { label: "إحصائيات الطلاب", value: "demographics" },
     { label: "إحصاءات الفصول", value: "student_stats" },
     { label: "كشف الطلاب", value: "roster" },
+    { label: "قوائم الفصول", value: "classroom_roster" },
     { label: "دفتر 5 سلوك", value: "behavior_register" },
     { label: "بطاقات الهوية", value: "id_cards" },
 ];

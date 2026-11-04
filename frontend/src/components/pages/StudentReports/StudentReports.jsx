@@ -104,6 +104,7 @@ export default function StudentReports() {
     };
 
     const legacyEndpoint = reportType === "roster" ? "/reports/students/roster" 
+        : reportType === "classroom_roster" ? "/reports/students/classroom-roster"
         : reportType === "student_stats" ? "/reports/students/stats" 
         : reportType === "behavior_register" ? "/reports/students/behavior-register" 
         : reportType === "id_cards" ? "/reports/students/id-cards"
@@ -232,7 +233,7 @@ export default function StudentReports() {
                         />
                     )}
 
-                    {(reportType === "behavior_register" || reportType === "roster") && (
+                    {(reportType === "behavior_register" || reportType === "roster" || reportType === "classroom_roster") && (
                         <SelectField
                             label={"ترتيب / فرز"}
                             value={formData.sorting}
@@ -246,7 +247,7 @@ export default function StudentReports() {
                         />
                     )}
 
-                    {reportType === "roster" && (
+                    {(reportType === "roster" || reportType === "classroom_roster") && (
                         <>
                             <SelectField
                                 label={"الحالة"}

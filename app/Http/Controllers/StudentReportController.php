@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\PaymentType;
 use App\Exports\ArrearsExport;
+use App\Exports\ClassroomRosterExport;
 use Illuminate\Support\Collection;
 use App\Exports\ArrearsGroupedExport;
 use App\Exports\BehaviorRegisterExport;
@@ -14,6 +15,7 @@ use App\Exports\RosterExport;
 use App\Exports\StudentStatsExport;
 use App\Http\Requests\Student\Reports\GenerateArrearsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateBehaviorRegisterRequest;
+use App\Http\Requests\Student\Reports\GenerateClassroomRosterRequest;
 use App\Http\Requests\Student\Reports\GenerateDailyPaymentsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateDemographicsReportRequest;
 use App\Http\Requests\Student\Reports\GenerateIdCardsRequest;
@@ -21,6 +23,7 @@ use App\Http\Requests\Student\Reports\GenerateLetterRequest;
 use App\Http\Requests\Student\Reports\GenerateRosterReportRequest;
 use App\Http\Requests\Student\Reports\GenerateStudentStatsRequest;
 use App\Services\BehaviorRegisterService;
+use App\Services\ClassroomRosterService;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Services\DemographicsService;
@@ -357,6 +360,51 @@ class StudentReportController extends Controller
         );
 
         return response()->json($result);
+    }
+
+    public function classroomRoster(
+        GenerateClassroomRosterRequest $request,
+        ClassroomRosterService $service
+    ): JsonResponse|BinaryFileResponse {
+        $validated = $request->validated();
+
+        $classrooms = $service->getData(
+            academicYear: $validated['academic_year'],
+            language: $validated['language'] ?? null,
+            level: $validated['level'] ?? null,
+            grade: isset($validated['grade']) ? (int) $validated['grade'] : null,
+            classroomId: isset($validated['classroom']) ? (int) $validated['classroom'] : null,
+            status: $validated['status'] ?? null,
+            religion: $validated['religion'] ?? null,
+            gender: $validated['gender'] ?? null,
+            noteFilter: $request->input('note_filter'),
+            sorting: $validated['sorting'] ?? null,
+        );
+
+        $viewData = [
+            'classrooms' => $classrooms,
+            'academic_year' => $validated['academic_year'],
+            'show_notes' => (bool) ($validated['show_notes'] ?? true),
+            'title' => 'قوائم الفصول',
+        ];
+
+        if ($request->query('export') === 'excel') {
+            return Excel::download(new ClassroomRosterExport($viewData), 'classroom_roster.xlsx');
+        }
+
+        ['uuid' => $uuid, 'filePath' => $filePath] = generateReportUUID();
+
+        Pdf::view('reports.classroom_roster', $viewData)
+            ->format('a4')
+            ->orientation(Orientation::Landscape)
+            ->footerView('components.pdf-footer')
+            ->margins(10, 5, 10, 5)
+            ->save(storage_path("app/$filePath"));
+
+        return response()->json([
+            'uuid' => $uuid,
+            'preview_url' => route('reports.preview', $uuid, true),
+        ]);
     }
 
     public function dailyPayments(GenerateDailyPaymentsReportRequest $request): JsonResponse|BinaryFileResponse

@@ -70,6 +70,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('summary', [StudentReportController::class, 'summary'])->name('summary')->middleware('authorization:view student-reports');
             Route::get('demographics', [StudentReportController::class, 'demographicsReport'])->name('demographics')->middleware('authorization:view student-reports');
             Route::get('roster', [StudentReportController::class, 'roster'])->name('roster')->middleware('authorization:view student-reports');
+            Route::get('classroom-roster', [StudentReportController::class, 'classroomRoster'])->name('classroom-roster')->middleware('authorization:view student-reports');
             Route::get('stats', [StudentReportController::class, 'studentStatsReport'])->name('stats')->middleware('authorization:view student-reports');
             Route::get('marks/class', [MarksReportController::class, 'classReport'])->name('marks.class')->middleware('authorization:view student-reports');
             Route::get('marks/final-exam', [MarksReportController::class, 'finalExamReport'])->name('marks.final-exam')->middleware('authorization:view student-reports');
