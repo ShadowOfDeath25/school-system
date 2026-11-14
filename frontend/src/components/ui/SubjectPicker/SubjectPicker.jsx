@@ -1,6 +1,6 @@
 import {useState} from "react";
 import styles from '@ui/SubjectPicker/styles.module.css';
-import {Button, Dialog, DialogActions, DialogContent, IconButton} from "@mui/material";
+import {Button, Dialog, DialogActions, DialogContent, IconButton, Tooltip} from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -26,11 +26,17 @@ const semesterAliases = {
     'Ø·ÙˆØ§Ù„ Ø§Ù„Ø¹Ø§Ù…': 'طوال العام',
 };
 
+const monthlyExamNames = {
+    'الاول': ['شهري اكتوبر', 'شهري نوفمبر'],
+    'الثاني': ['شهري مارس', 'شهري ابريل'],
+};
+
 const blankComponent = () => ({
     id: '',
     name: '',
     marks: '',
     is_final_exam: false,
+    is_monthly_exam: false,
 });
 
 const normalizeSemester = (semester) => semesterAliases[semester] ?? semester ?? '';
@@ -59,6 +65,7 @@ const serializeComponents = (components, semester) => {
         name: component.name,
         marks: Number(component.marks),
         is_final_exam: !!component.is_final_exam,
+        is_monthly_exam: !!component.is_monthly_exam,
     }));
 
     if (!isYearLongSemester(semester)) {
@@ -66,7 +73,7 @@ const serializeComponents = (components, semester) => {
     }
 
     return normalizedComponents.flatMap((component) => {
-        if (isExpandedSemesterComponent(component)) {
+        if (component.is_monthly_exam || isExpandedSemesterComponent(component)) {
             return [component];
         }
 
@@ -91,6 +98,7 @@ const toEditorValues = ({subject, includeSubject}) => ({
     added_to_total: subject ? !!subject.added_to_total : true,
     added_to_report: subject ? !!subject.added_to_report : true,
     semester: normalizeSemester(subject?.semester),
+    use_monthly_median: subject ? !!subject.use_monthly_median : false,
 });
 
 const toEditorComponents = (subject) => {
@@ -101,6 +109,7 @@ const toEditorComponents = (subject) => {
         name: component.name ?? '',
         marks: component.marks ?? '',
         is_final_exam: !!component.is_final_exam,
+        is_monthly_exam: !!component.is_monthly_exam,
     }));
 };
 
@@ -114,18 +123,144 @@ function SubjectGradingModal({
                                  onSave,
                                  isLoading,
                              }) {
+    const {showSnackbar} = useSnackbar();
     const includeSubject = mode === 'create';
     const [values, setValues] = useState(() => toEditorValues({subject, includeSubject}));
     const [components, setComponents] = useState(() => toEditorComponents(subject));
-    const storedTotalMarks = serializeComponents(components, values.semester)
-        .reduce((sum, component) => sum + Number(component.marks || 0), 0);
-    const totalMarks = isYearLongSemester(values.semester) ? storedTotalMarks / 2 : storedTotalMarks;
+
+    const normalizedSem = normalizeSemester(values.semester);
+    const hasSemester = !!normalizedSem;
+    const isYearLong = isYearLongSemester(normalizedSem);
+    const hasMonthlyExams = components.some(c => c.is_monthly_exam);
+
+    const calculateTotalMarks = () => {
+        const serialized = serializeComponents(components, values.semester);
+        if (values.use_monthly_median) {
+            if (isYearLongSemester(values.semester)) {
+                const s1Monthly = serialized.filter(c => c.is_monthly_exam && (c.id?.includes('first_semester') || c.id?.includes('s1')));
+                const s2Monthly = serialized.filter(c => c.is_monthly_exam && (c.id?.includes('second_semester') || c.id?.includes('s2')));
+                const otherMonthly = serialized.filter(c => c.is_monthly_exam && !s1Monthly.includes(c) && !s2Monthly.includes(c));
+
+                const s1Avg = s1Monthly.length > 0 ? (s1Monthly.reduce((s, c) => s + Number(c.marks || 0), 0) / s1Monthly.length) : 0;
+                const s2Avg = s2Monthly.length > 0 ? (s2Monthly.reduce((s, c) => s + Number(c.marks || 0), 0) / s2Monthly.length) : 0;
+                const otherAvg = otherMonthly.length > 0 ? (otherMonthly.reduce((s, c) => s + Number(c.marks || 0), 0) / otherMonthly.length) : 0;
+
+                const nonMonthly = serialized.filter(c => !c.is_monthly_exam);
+                const nonMonthlySum = nonMonthly.reduce((sum, c) => sum + Number(c.marks || 0), 0);
+
+                const totalYear = nonMonthlySum + s1Avg + s2Avg + otherAvg;
+                const perSemester = totalYear / 2;
+                return Math.round(perSemester * 10) / 10;
+            }
+
+            const monthly = serialized.filter(c => c.is_monthly_exam);
+            const nonMonthly = serialized.filter(c => !c.is_monthly_exam);
+            const nonMonthlySum = nonMonthly.reduce((sum, c) => sum + Number(c.marks || 0), 0);
+            const monthlyAvg = monthly.length > 0
+                ? (monthly.reduce((sum, c) => sum + Number(c.marks || 0), 0) / monthly.length)
+                : 0;
+            const total = nonMonthlySum + monthlyAvg;
+            return Math.round(total * 10) / 10;
+        }
+
+        const sum = serialized.reduce((sum, c) => sum + Number(c.marks || 0), 0);
+        return isYearLongSemester(values.semester) ? sum / 2 : sum;
+    };
+
+    const totalMarks = calculateTotalMarks();
     const totalMarksLabel = isYearLongSemester(values.semester)
         ? 'إجمالي درجات الفصل الواحد'
         : 'إجمالي درجات المادة';
 
+    const addMonthlyExams = () => {
+        if (hasMonthlyExams) {
+            showSnackbar('تم إضافة الامتحانات الشهرية مسبقاً', 'warning');
+            return;
+        }
+
+        if (!hasSemester) {
+            showSnackbar('يرجى اختيار الفصل الدراسي أولاً', 'error');
+            return;
+        }
+
+        let newMonthlyComps = [];
+
+        if (isYearLong) {
+            newMonthlyComps = [
+                {
+                    id: 'monthly_october_first_semester',
+                    name: 'شهري اكتوبر',
+                    marks: '',
+                    is_final_exam: false,
+                    is_monthly_exam: true,
+                },
+                {
+                    id: 'monthly_november_first_semester',
+                    name: 'شهري نوفمبر',
+                    marks: '',
+                    is_final_exam: false,
+                    is_monthly_exam: true,
+                },
+                {
+                    id: 'monthly_march_second_semester',
+                    name: 'شهري مارس',
+                    marks: '',
+                    is_final_exam: false,
+                    is_monthly_exam: true,
+                },
+                {
+                    id: 'monthly_april_second_semester',
+                    name: 'شهري ابريل',
+                    marks: '',
+                    is_final_exam: false,
+                    is_monthly_exam: true,
+                },
+            ];
+        } else {
+            const names = monthlyExamNames[normalizedSem];
+            if (!names) {
+                showSnackbar('يرجى اختيار فصل دراسي صحيح', 'error');
+                return;
+            }
+
+            newMonthlyComps = names.map((name, i) => ({
+                id: `monthly_${normalizedSem === 'الاول' ? 's1' : 's2'}_${i + 1}`,
+                name,
+                marks: '',
+                is_final_exam: false,
+                is_monthly_exam: true,
+            }));
+        }
+
+        setComponents((current) => {
+            const filtered = current.filter(c => (c.name || '').trim() !== '' || c.marks !== '');
+            return [...(filtered.length ? filtered : []), ...newMonthlyComps];
+        });
+    };
+
+    let monthlyButtonDisabled = false;
+    let monthlyButtonTooltip = '';
+
+    if (!hasSemester) {
+        monthlyButtonDisabled = true;
+        monthlyButtonTooltip = 'يرجى اختيار الفصل الدراسي أولاً';
+    } else if (hasMonthlyExams) {
+        monthlyButtonDisabled = true;
+        monthlyButtonTooltip = 'تم إضافة الامتحانات الشهرية مسبقاً';
+    }
+
     const updateValue = (event) => {
         const {name, value, type, checked} = event.target;
+        if (name === 'semester') {
+            const oldSem = normalizeSemester(values.semester);
+            const newSem = normalizeSemester(value);
+            if (oldSem !== newSem) {
+                setComponents((current) => {
+                    const withoutMonthly = current.filter(c => !c.is_monthly_exam);
+                    return withoutMonthly.length ? withoutMonthly : [blankComponent()];
+                });
+            }
+        }
         setValues((current) => ({
             ...current,
             [name]: type === 'checkbox' ? checked : value,
@@ -133,9 +268,15 @@ function SubjectGradingModal({
     };
 
     const updateComponent = (index, field, value) => {
-        setComponents((current) => current.map((component, componentIndex) => (
-            componentIndex === index ? {...component, [field]: value} : component
-        )));
+        setComponents((current) => current.map((component, componentIndex) => {
+            if (componentIndex === index) {
+                if (field === 'name' && component.is_monthly_exam) {
+                    return component;
+                }
+                return {...component, [field]: value};
+            }
+            return component;
+        }));
     };
 
     const addComponent = () => {
@@ -220,19 +361,37 @@ function SubjectGradingModal({
 
                     <div className={styles.componentsEditorHeader}>
                         <h3>تقسيم الدرجات</h3>
-                        <Button
-                            type="button"
-                            variant="contained"
-                            color="primary"
-                            onClick={addComponent}
-                        >
-                            إضافة مكون
-                        </Button>
+                        <div className={styles.editorHeaderActions}>
+                            <Tooltip title={monthlyButtonTooltip} arrow>
+                                <span>
+                                    <Button
+                                        type="button"
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={addMonthlyExams}
+                                        disabled={monthlyButtonDisabled}
+                                    >
+                                        اضافة امتحانات شهرية
+                                    </Button>
+                                </span>
+                            </Tooltip>
+                            <Button
+                                type="button"
+                                variant="contained"
+                                color="primary"
+                                onClick={addComponent}
+                            >
+                                إضافة مكون
+                            </Button>
+                        </div>
                     </div>
 
                     <div className={styles.componentsEditor}>
                         {components.map((component, index) => (
-                            <div className={styles.componentRow} key={`${component.id || 'component'}-${index}`}>
+                            <div
+                                className={`${styles.componentRow} ${component.is_monthly_exam ? styles.monthlyComponentRow : ''}`}
+                                key={`${component.id || 'component'}-${index}`}
+                            >
                                 <div className={styles.componentField}>
                                     <InputField
                                         name={`component_name_${index}`}
@@ -241,6 +400,8 @@ function SubjectGradingModal({
                                         placeholder="اسم المكون"
                                         value={component.name}
                                         handleChange={(event) => updateComponent(index, 'name', event.target.value)}
+                                        disabled={component.is_monthly_exam}
+                                        readOnly={component.is_monthly_exam}
                                         isModal
                                     />
                                 </div>
@@ -256,25 +417,41 @@ function SubjectGradingModal({
                                         isModal
                                     />
                                 </div>
-                                <label className={styles.finalExamToggle}>
+                                <label className={`${styles.finalExamToggle} ${component.is_monthly_exam ? styles.disabledToggle : ''}`}>
                                     <input
                                         type="checkbox"
                                         checked={!!component.is_final_exam}
+                                        disabled={component.is_monthly_exam}
                                         onChange={(event) => updateComponent(index, 'is_final_exam', event.target.checked)}
                                     />
                                     <span>اختبار نهائي</span>
                                 </label>
-                                <IconButton
-                                    type="button"
-                                    onClick={() => removeComponent(index)}
-                                    disabled={components.length === 1}
-                                    className={styles.removeComponentButton}
-                                >
-                                    <DeleteIcon/>
-                                </IconButton>
+                                {!component.is_monthly_exam && (
+                                    <IconButton
+                                        type="button"
+                                        onClick={() => removeComponent(index)}
+                                        disabled={components.length === 1}
+                                        className={styles.removeComponentButton}
+                                    >
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                )}
                             </div>
                         ))}
                     </div>
+
+                    {hasMonthlyExams && (
+                        <div className={styles.medianOption}>
+                            <InputField
+                                name="use_monthly_median"
+                                type="checkbox"
+                                label="استخدام متوسط الامتحانات الشهرية"
+                                value={values.use_monthly_median}
+                                handleChange={updateValue}
+                                isModal
+                            />
+                        </div>
+                    )}
 
                     <div className={styles.totalMarks}>
                         {totalMarksLabel}: {totalMarks}
@@ -401,11 +578,16 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
                 <div className={styles.componentsList}>
                     {subject.components?.map((component) => (
                         <span key={component.id} className={styles.componentItem}>
-                            {component.name}: {component.marks} {component.is_final_exam ? ' - نهائي' : ''}
+                            {component.name}: {component.marks} {component.is_final_exam ? ' - نهائي' : ''} {component.is_monthly_exam ? ' - شهري' : ''}
                         </span>
                     ))}
                 </div>
             )
+        },
+        {
+            key: 'use_monthly_median',
+            label: 'متوسط الشهري',
+            render: (subject) => (subject.use_monthly_median ? 'نعم' : 'لا')
         },
         {
             key: 'added_to_total',
@@ -437,6 +619,7 @@ export default function SubjectPicker({grade, title, config = {}, language}) {
             semester: data.semester,
             language,
             components: data.components,
+            use_monthly_median: !!data.use_monthly_median,
         };
 
         if (mode === 'edit') {

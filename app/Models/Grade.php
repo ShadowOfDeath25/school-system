@@ -19,6 +19,6 @@ class Grade extends Model
     {
         return $this->BelongsToMany(Subject::class)
             ->using(GradeSubject::class)
-            ->withPivot(['id', 'min_marks', 'max_marks', 'added_to_total', 'added_to_report', 'semester', 'components', 'language']);
+            ->withPivot(['id', 'min_marks', 'max_marks', 'added_to_total', 'added_to_report', 'semester', 'components', 'language', 'use_monthly_median']);
     }
 }

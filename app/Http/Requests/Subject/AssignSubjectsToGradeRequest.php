@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Subject;
 
+use App\Services\GradingComponentService;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -30,6 +31,8 @@ class AssignSubjectsToGradeRequest extends FormRequest
             'components.*.name' => ['required', 'string', 'max:255'],
             'components.*.marks' => ['required', 'numeric', 'gt:0'],
             'components.*.is_final_exam' => ['required', 'boolean'],
+            'components.*.is_monthly_exam' => ['nullable', 'boolean'],
+            'use_monthly_median' => ['nullable', 'boolean'],
             'added_to_total' => ['boolean'],
             'added_to_report' => ['boolean'],
             'semester' => ['string', 'required', 'in:الاول,الثاني,طوال العام'],
@@ -41,7 +44,8 @@ class AssignSubjectsToGradeRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $components = $this->input('components', []);
-            $totalMarks = collect($components)->sum(fn ($c) => (float) ($c['marks'] ?? 0));
+            $useMedian = filter_var($this->input('use_monthly_median', false), FILTER_VALIDATE_BOOLEAN);
+            $totalMarks = app(GradingComponentService::class)->totalMarks($components, $useMedian, $this->semester);
 
             if ((float) $this->min_marks > $totalMarks) {
                 $validator->errors()->add(

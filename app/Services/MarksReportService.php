@@ -8,6 +8,7 @@ use App\Models\PromotionBatchStudent;
 use App\Models\Student;
 use App\Models\StudentSeatAssignment;
 use App\Models\Classroom;
+use App\Services\GradingComponentService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -67,24 +68,15 @@ class MarksReportService
 
         $studentIds = $students->pluck('id');
 
-        $firstRoundQuery = DB::table('marks')
+        $firstRound = DB::table('marks')
             ->join('exams', 'marks.exam_id', '=', 'exams.id')
             ->whereIn('marks.student_id', $studentIds)
             ->whereIn('exams.grade_subject_id', $gsIds)
             ->where('marks.academic_year', $academicYear)
-            ->where('marks.round', 'first');
-
-        if ($detailed) {
-            $firstRound = (clone $firstRoundQuery)
-                ->select('marks.student_id', 'exams.grade_subject_id', 'marks.component_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
-                ->groupBy('marks.student_id', 'exams.grade_subject_id', 'marks.component_id')
-                ->get();
-        } else {
-            $firstRound = $firstRoundQuery
-                ->select('marks.student_id', 'exams.grade_subject_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
-                ->groupBy('marks.student_id', 'exams.grade_subject_id')
-                ->get();
-        }
+            ->where('marks.round', 'first')
+            ->select('marks.student_id', 'exams.grade_subject_id', 'marks.component_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id', 'exams.grade_subject_id', 'marks.component_id')
+            ->get();
 
         $secondRound = DB::table('marks')
             ->join('exams', 'marks.exam_id', '=', 'exams.id')
@@ -112,7 +104,12 @@ class MarksReportService
                     ->map(fn ($byGS) => $byGS->keyBy('component_id')->map(fn ($r) => (float) $r->total)));
         } else {
             $firstRoundByStudent = $firstRound->groupBy('student_id')
-                ->map(fn ($group) => $group->keyBy('grade_subject_id')->map(fn ($r) => (float) $r->total));
+                ->map(fn ($group) => $group->groupBy('grade_subject_id')
+                    ->map(function ($byGS, $gsId) use ($gradeSubjects) {
+                        $gs = $gradeSubjects->firstWhere('id', $gsId);
+                        $componentMarks = $byGS->keyBy('component_id')->map(fn ($r) => (float) $r->total);
+                        return $gs ? $gs->calculateStudentSubjectTotal($componentMarks) : (float) $componentMarks->sum();
+                    }));
         }
 
         $seatNumbers = StudentSeatAssignment::whereIn('student_id', $studentIds)
@@ -194,7 +191,6 @@ class MarksReportService
                         continue;
                     }
 
-                    $rawTotal = 0;
                     $rawComponents = [];
                     foreach ($components as $comp) {
                         $compRaw = (float) ($subjectMarks->get($comp['id']) ?? 0);
@@ -204,8 +200,9 @@ class MarksReportService
                             'component_name' => $comp['name'] ?? $subj['name'],
                             'component_max' => (float) ($comp['marks'] ?? 0),
                         ];
-                        $rawTotal += $compRaw;
                     }
+
+                    $rawTotal = $gs ? ($gs->calculateStudentSubjectTotal($subjectMarks) ?? 0) : (float) collect($rawComponents)->sum('value');
 
                     $effectiveTotal = $rawTotal;
                     if ($passedSecond && $hasSecond && $rawTotal < $minMarks) {
@@ -406,7 +403,6 @@ class MarksReportService
                     continue;
                 }
 
-                $rawTotal = 0;
                 $rawComponents = [];
                 foreach ($components as $comp) {
                     $compRaw = (float) ($subjectMarks->get($comp['id']) ?? 0);
@@ -416,8 +412,9 @@ class MarksReportService
                         'component_name' => $comp['name'] ?? $subj['name'],
                         'component_max' => (float) ($comp['marks'] ?? 0),
                     ];
-                    $rawTotal += $compRaw;
                 }
+
+                $rawTotal = $gs ? ($gs->calculateStudentSubjectTotal($subjectMarks) ?? 0) : (float) collect($rawComponents)->sum('value');
 
                 $effectiveTotal = $rawTotal;
                 if (in_array($s->id, $passedSecondRound) && $hasSecond && $rawTotal < $minMarks) {
@@ -491,10 +488,13 @@ class MarksReportService
                 return null;
             }
 
+            $useMedian = (bool) ($gs->use_monthly_median ?? false);
+            $max = (float) app(GradingComponentService::class)->totalMarks($workComponents, $useMedian, $gs->semester);
+
             return [
                 'id' => $gs->id,
                 'name' => $gs->subject?->name,
-                'max' => (float) collect($workComponents)->sum('marks'),
+                'max' => $max,
                 'components' => $workComponents,
             ];
         })->filter()->values();
@@ -616,7 +616,6 @@ class MarksReportService
                     continue;
                 }
 
-                $rawTotal = 0;
                 $rawComponents = [];
                 foreach ($components as $comp) {
                     $compRaw = (float) ($subjectMarks->get($comp['id']) ?? 0);
@@ -626,8 +625,9 @@ class MarksReportService
                         'component_name' => $comp['name'] ?? $subj['name'],
                         'component_max' => (float) ($comp['marks'] ?? 0),
                     ];
-                    $rawTotal += $compRaw;
                 }
+
+                $rawTotal = $gs ? ($gs->calculateStudentSubjectTotal($subjectMarks) ?? 0) : (float) collect($rawComponents)->sum('value');
 
                 $effectiveTotal = $rawTotal;
                 if (in_array($s->id, $passedSecondRound) && $hasSecond && $rawTotal < $minMarks) {
@@ -771,8 +771,8 @@ class MarksReportService
             ->whereIn('exams.grade_subject_id', $gsIds)
             ->where('marks.academic_year', $academicYear)
             ->where('marks.round', 'first')
-            ->select('marks.student_id', 'exams.grade_subject_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
-            ->groupBy('marks.student_id', 'exams.grade_subject_id')
+            ->select('marks.student_id', 'exams.grade_subject_id', 'marks.component_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id', 'exams.grade_subject_id', 'marks.component_id')
             ->get();
 
         $secondRound = DB::table('marks')
@@ -796,7 +796,12 @@ class MarksReportService
             ->toArray();
 
         $firstRoundByStudent = $firstRound->groupBy('student_id')
-            ->map(fn ($group) => $group->keyBy('grade_subject_id')->map(fn ($r) => (float) $r->total));
+            ->map(fn ($group) => $group->groupBy('grade_subject_id')
+                ->map(function ($byGS, $gsId) use ($gradeSubjects) {
+                    $gs = $gradeSubjects->firstWhere('id', $gsId);
+                    $componentMarks = $byGS->keyBy('component_id')->map(fn ($r) => (float) $r->total);
+                    return $gs ? $gs->calculateStudentSubjectTotal($componentMarks) : (float) $componentMarks->sum();
+                }));
 
         $studentsByClassroom = $students->groupBy('classroom_id');
 
@@ -934,17 +939,25 @@ class MarksReportService
 
         $studentIds = $students->pluck('id');
 
-        $marksByStudent = DB::table('marks')
+        $marksByStudentRaw = DB::table('marks')
             ->join('exams', 'marks.exam_id', '=', 'exams.id')
             ->whereIn('marks.student_id', $studentIds)
             ->whereIn('exams.grade_subject_id', $allGSIds)
             ->where('marks.academic_year', $academicYear)
             ->where('marks.round', 'first')
-            ->select('marks.student_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
-            ->groupBy('marks.student_id')
-            ->get()
-            ->keyBy('student_id')
-            ->map(fn ($r) => (float) $r->total);
+            ->select('marks.student_id', 'exams.grade_subject_id', 'marks.component_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id', 'exams.grade_subject_id', 'marks.component_id')
+            ->get();
+
+        $marksByStudent = $marksByStudentRaw->groupBy('student_id')
+            ->map(function ($studentMarks) use ($gradeSubjects) {
+                return (float) $studentMarks->groupBy('grade_subject_id')
+                    ->sum(function ($byGS, $gsId) use ($gradeSubjects) {
+                        $gs = $gradeSubjects->firstWhere('id', $gsId);
+                        $componentMarks = $byGS->keyBy('component_id')->map(fn ($r) => (float) $r->total);
+                        return $gs ? ($gs->calculateStudentSubjectTotal($componentMarks) ?? 0) : (float) $componentMarks->sum();
+                    });
+            });
 
         $seatNumbers = StudentSeatAssignment::whereIn('student_id', $studentIds)
             ->where('academic_year', $academicYear)
@@ -1044,17 +1057,25 @@ class MarksReportService
 
         $studentIds = $students->pluck('id');
 
-        $totals = DB::table('marks')
+        $totalsRaw = DB::table('marks')
             ->join('exams', 'marks.exam_id', '=', 'exams.id')
             ->whereIn('marks.student_id', $studentIds)
             ->whereIn('exams.grade_subject_id', $addedToTotalIds)
             ->where('marks.academic_year', $academicYear)
             ->where('marks.round', 'first')
-            ->select('marks.student_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
-            ->groupBy('marks.student_id')
-            ->get()
-            ->keyBy('student_id')
-            ->map(fn ($r) => (float) $r->total);
+            ->select('marks.student_id', 'exams.grade_subject_id', 'marks.component_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('marks.student_id', 'exams.grade_subject_id', 'marks.component_id')
+            ->get();
+
+        $totals = $totalsRaw->groupBy('student_id')
+            ->map(function ($studentMarks) use ($addedToTotalGS) {
+                return (float) $studentMarks->groupBy('grade_subject_id')
+                    ->sum(function ($byGS, $gsId) use ($addedToTotalGS) {
+                        $gs = $addedToTotalGS->firstWhere('id', $gsId);
+                        $componentMarks = $byGS->keyBy('component_id')->map(fn ($r) => (float) $r->total);
+                        return $gs ? ($gs->calculateStudentSubjectTotal($componentMarks) ?? 0) : (float) $componentMarks->sum();
+                    });
+            });
 
         return $students->filter(function (Student $s) use ($totals, $maxTotal, $scoreFilter) {
             $pct = $maxTotal > 0 ? ($totals->get($s->id, 0) / $maxTotal) * 100 : 0;

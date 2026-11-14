@@ -64,7 +64,7 @@ class PromotionEligibilityService
 
     public function getStudentMarksBySubject(Student $student, AcademicYear $year, string $round = 'first'): Collection
     {
-        return DB::table('marks')
+        $rawMarks = DB::table('marks')
             ->join('exams', 'marks.exam_id', '=', 'exams.id')
             ->join('grade_subject', 'exams.grade_subject_id', '=', 'grade_subject.id')
             ->where('marks.student_id', $student->id)
@@ -72,11 +72,27 @@ class PromotionEligibilityService
             ->where('marks.round', $round)
             ->select(
                 'grade_subject.id as grade_subject_id',
-                DB::raw('SUM(marks.marks) as total'),
+                'marks.component_id',
+                DB::raw('COALESCE(SUM(marks.marks), 0) as total'),
                 'grade_subject.min_marks'
             )
-            ->groupBy('grade_subject.id', 'grade_subject.min_marks')
+            ->groupBy('grade_subject.id', 'marks.component_id', 'grade_subject.min_marks')
             ->get();
+
+        $gradeSubjectModels = GradeSubject::whereIn('id', $rawMarks->pluck('grade_subject_id')->unique())->get()->keyBy('id');
+
+        return $rawMarks->groupBy('grade_subject_id')
+            ->map(function ($group, $gsId) use ($gradeSubjectModels) {
+                $gs = $gradeSubjectModels->get($gsId);
+                $componentMarks = $group->keyBy('component_id')->map(fn ($r) => (float) $r->total);
+                $total = $gs ? ($gs->calculateStudentSubjectTotal($componentMarks) ?? 0) : (float) $componentMarks->sum();
+
+                return (object) [
+                    'grade_subject_id' => (int) $gsId,
+                    'total' => $total,
+                    'min_marks' => $group->first()->min_marks,
+                ];
+            })->values();
     }
 
     public function isSubjectPassed(Student $student, GradeSubject $gradeSubject, AcademicYear $year, string $round = 'first'): bool

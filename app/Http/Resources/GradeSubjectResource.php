@@ -15,7 +15,7 @@ class GradeSubjectResource extends JsonResource
     public function toArray(Request $request): array
     {
         $components = $this->pivot->components ?? [];
-        $totalMarks = collect($components)->sum(fn ($component) => (float) ($component['marks'] ?? 0));
+        $totalMarks = $this->pivot->total_marks ?? collect($components)->sum(fn ($component) => (float) ($component['marks'] ?? 0));
         $finalExamMarks = collect($components)
             ->where('is_final_exam', true)
             ->sum(fn ($component) => (float) ($component['marks'] ?? 0));
@@ -33,6 +33,7 @@ class GradeSubjectResource extends JsonResource
             'added_to_total' => $this->pivot->added_to_total,
             'added_to_report' => $this->pivot->added_to_report,
             'semester' => $this->pivot->semester,
+            'use_monthly_median' => (bool) ($this->pivot->use_monthly_median ?? false),
             'components' => $components,
             'exam_marks' => $finalExamMarks,
             'final_exam_marks' => $finalExamMarks,

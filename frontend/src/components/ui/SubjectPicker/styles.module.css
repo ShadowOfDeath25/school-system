@@ -175,6 +175,31 @@
     font-size: 1.05rem;
 }
 
+.editorHeaderActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.medianOption {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.disabledToggle {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.disabledToggle input {
+    cursor: not-allowed;
+}
+
+.monthlyComponentRow {
+    border-color: rgba(191, 161, 92, 0.4);
+    background-color: rgba(191, 161, 92, 0.05);
+}
+
 .componentsEditor {
     display: flex;
     flex-direction: column;

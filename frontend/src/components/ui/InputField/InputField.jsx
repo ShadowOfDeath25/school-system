@@ -18,7 +18,10 @@ export default function InputField({
                                        min,
                                        max,
                                        helperText = "",
-                                       props = {}
+                                       disabled = false,
+                                       readOnly = false,
+                                       props = {},
+                                       ...rest
 
                                    }) {
     const [showPassword, setShowPassword] = useState(false);
@@ -48,7 +51,10 @@ export default function InputField({
                         onBlur={handleBlur}
                         {...(min !== undefined && min !== null ? { min } : {})}
                         {...(max !== undefined && max !== null ? { max } : {})}
-                        {...{props}}
+                        {...props}
+                        {...rest}
+                        disabled={disabled}
+                        readOnly={readOnly}
                     />
                     {helperText && <span className={styles.helperText}>{helperText}</span>}
                     {type === "password" &&

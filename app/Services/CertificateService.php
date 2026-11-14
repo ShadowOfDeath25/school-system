@@ -98,7 +98,7 @@ class CertificateService
 
         $gsIds = $gradeSubjects->pluck('id');
 
-        $firstRoundMarks = DB::table('marks')
+        $firstRoundRaw = DB::table('marks')
             ->join('exams', 'marks.exam_id', '=', 'exams.id')
             ->where('marks.student_id', $student->id)
             ->whereIn('exams.grade_subject_id', $gsIds)
@@ -109,11 +109,17 @@ class CertificateService
                 $validComponentIds = $componentMap->pluck('id')->unique()->values()->all();
                 $q->whereIn('exams.component_id', $validComponentIds);
             })
-            ->select('exams.grade_subject_id', 'exams.semester', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
-            ->groupBy('exams.grade_subject_id', 'exams.semester')
-            ->get()
-            ->keyBy(fn ($r) => $r->grade_subject_id . '|' . $r->semester)
-            ->map(fn ($r) => (float) $r->total);
+            ->select('exams.grade_subject_id', 'exams.semester', 'marks.component_id', DB::raw('COALESCE(SUM(marks.marks), 0) as total'))
+            ->groupBy('exams.grade_subject_id', 'exams.semester', 'marks.component_id')
+            ->get();
+
+        $firstRoundMarks = $firstRoundRaw->groupBy(fn ($r) => $r->grade_subject_id . '|' . $r->semester)
+            ->map(function ($group, $key) use ($gradeSubjects) {
+                [$gsId] = explode('|', $key);
+                $gs = $gradeSubjects->firstWhere('id', (int) $gsId);
+                $componentMarks = $group->keyBy('component_id')->map(fn ($r) => (float) $r->total);
+                return $gs ? $gs->calculateStudentSubjectTotal($componentMarks) : (float) $componentMarks->sum();
+            });
 
         $secondRoundGS = DB::table('marks')
             ->join('exams', 'marks.exam_id', '=', 'exams.id')

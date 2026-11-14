@@ -17,8 +17,11 @@ class GradeController extends Controller
     public function assignSubjects(Grade $grade, AssignSubjectsToGradeRequest $request, GradingComponentService $components)
     {
         $subjectData = $request->validated();
-        $subjectData['components'] = $components->validate($subjectData['components'] ?? [], $subjectData['min_marks'] ?? null);
-        $subjectData['max_marks'] = $components->totalMarks($subjectData['components']);
+        $useMonthlyMedian = filter_var($subjectData['use_monthly_median'] ?? false, FILTER_VALIDATE_BOOLEAN);
+        $semester = $subjectData['semester'] ?? null;
+        $subjectData['use_monthly_median'] = $useMonthlyMedian;
+        $subjectData['components'] = $components->validate($subjectData['components'] ?? [], $subjectData['min_marks'] ?? null, $useMonthlyMedian, $semester);
+        $subjectData['max_marks'] = $components->totalMarks($subjectData['components'], $useMonthlyMedian, $semester);
 
         $grade->subjects()->attach($subjectData['subject_id'], $subjectData);
 
@@ -34,9 +37,19 @@ class GradeController extends Controller
     {
         $subjectData = $request->validated();
 
+        $existingPivot = $grade->subjects()->where('subject_id', $subjectData['subject_id'])->first()?->pivot;
+        $useMonthlyMedian = array_key_exists('use_monthly_median', $subjectData)
+            ? filter_var($subjectData['use_monthly_median'], FILTER_VALIDATE_BOOLEAN)
+            : (bool) ($existingPivot?->use_monthly_median ?? false);
+
+        if (array_key_exists('use_monthly_median', $subjectData)) {
+            $subjectData['use_monthly_median'] = $useMonthlyMedian;
+        }
+
         if (array_key_exists('components', $subjectData)) {
-            $subjectData['components'] = $components->validate($subjectData['components'], $subjectData['min_marks'] ?? null);
-            $subjectData['max_marks'] = $components->totalMarks($subjectData['components']);
+            $semester = $subjectData['semester'] ?? $existingPivot?->semester;
+            $subjectData['components'] = $components->validate($subjectData['components'], $subjectData['min_marks'] ?? null, $useMonthlyMedian, $semester);
+            $subjectData['max_marks'] = $components->totalMarks($subjectData['components'], $useMonthlyMedian, $semester);
         }
 
         $grade->subjects()->updateExistingPivot($subjectData['subject_id'], $subjectData);
